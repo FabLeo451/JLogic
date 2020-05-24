@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Properties</title>
+<link rel="stylesheet" href="/css/w3.css">
+<link rel='stylesheet' href='/css/snackbar.css'>
+<link rel='stylesheet' href='/css/main.css'>
+<link rel='stylesheet' href='/css/button.css'>
+<link rel='stylesheet' href='/css/table.css'>
+<link rel='stylesheet' href='/css/sidebar.css'>
+<link rel='stylesheet' href='/css/modal.css'>
+
+<!--script src="/jsDynamic"></script>
+<script src="/jsBlueprints"></script-->
+<script>
+/**SERVER_DATA**/
+</script>
+<script src="/js/utils.js"></script>
+<!--script src="js/server.js"></script-->
+<script src="/js/properties.js"></script>
+<script src="/js/dialog.js"></script>
+<script src="/js/editor/globals.js"></script>
+
+<style>
+.dropbtn {
+  cursor: pointer;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+  background-color: darkgreen;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  border: 1px solid gainsboro;
+  /*color: black;*/
+  min-width: 160px;
+  overflow: auto;
+  /*box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);*/
+  z-index: 1;
+  -webkit-border-radius: 3%;
+          border-radius: 3%;
+}
+
+.dropdown-content a {
+  /*color: white;*/
+  padding: 5px 5px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-icon {
+  color: gray;
+}
+
+.dropdown a:hover {background-color: silver;}
+
+.show {display: block;}
+</style>
+
+</head>
+
+<body>
+<input id="file-dialog" type="file" name="Import" style="display: none;" />
+
+<!-- The actual snackbar -->
+<div id="snackbar"></div>
+
+<!-- Top container -->
+<!--div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+  <div class="w3-bar-item w3-right"><i class="icon i-project-diagram" style="color:darkslategray; min-width: 2em;"></i><span class="title"></span>&nbsp;<span class="version"/></div>
+</div-->
+
+<!--div w3-include-html="header.htm" id="header"></div-->
+  <div w3-include-html="/sidebar" id="sidebar">
+    <!--script>include('sidebar', 'sidebar.htm');</script-->
+  </div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:210px;">
+  
+  <!--div class="w3-panel">
+    <h2><i class="icon i-database" style="color:#4CAF50"></i> Data</h2>
+    <button class="btnApp" onclick="refreshData ();"><i class="icon i-refresh"></i> Reload</button>
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search key..." title="Type in a name">
+    <div id="data"></div>
+  </div>
+  <br-->
+
+
+  <!-- Header -->
+  <header class="w3-container">
+    <h4 style="color:black"><i class="icon i-sliders-h" style="color:slategray"></i> <b><span th:text="${title}"></span></b></h4>
+    <hr style="margin:5px">
+  </header>
+  
+  <div class="w3-container">
+    <button class="btnApp" onclick="addString();"><i class="icon i-add"></i> Add property</button>
+    <!--div class="dropdown">
+      <button class="btnApp dropbtn" onclick="toggleButton();">Add data <i class="icon i-caret-down dropbtn"></i></button>
+      <div id="myDropdown" class="dropdown-content">
+        <a href="JavaScript:void(0);" onclick="addInteger();"><i class="icon i-calculator dropdown-icon"></i> Integer</a>
+        <a href="JavaScript:void(0);" onclick="addNumber();"><i class="icon i-calculator dropdown-icon"></i> Float</a>
+        <a href="JavaScript:void(0);" onclick="addBoolean();"><i class="icon i-check-square dropdown-icon"></i> Boolean</a>
+        <a href="JavaScript:void(0);" onclick="addString();"><i class="icon i-align-left dropdown-icon"></i> String</a>
+        <a href="JavaScript:void(0);" onclick="addJson();"><i class="icon i-code dropdown-icon"></i> Json</a>
+        <a href="JavaScript:void(0);" onclick="addTimestamp();"><i class="icon i-clock dropdown-icon"></i> Timestamp</a>
+      </div>
+    </div-->
+    
+    <button class="btnApp" onclick="importData ();"><i class="icon i-upload"></i> Import</button>
+    <button class="btnApp" onclick="exportData ();"><i class="icon i-download"></i> Export</button>
+    <button class="btnApp" onclick="deleteSelected ();"><i class="icon i-trash-alt"></i> Delete</button>
+
+    <button class="btnApp w3-right" onclick="refreshData ();"><i class="icon i-refresh"></i> Reload</button>
+    <input class="w3-input w3-border w3-margin-top w3-margin-bottom" type="text" id="myInput" onkeyup="searchData()" style="font-family:Arial, myWebFonts; font-style: normal; font-weight: normal; text-decoration: inherit;" placeholder="&#xf002;" title="Type in a name">
+    <div id="data" class="w3-container w3-stretch">
+      <table id="myTable" class="table1">
+      </table>
+    </div>
+    
+  </div>
+  
+</div>    
+
+<script>
+  var __request = window.location.pathname == '/edit-properties' ? 'properties' : __request = window.location.pathname.replace('/edit-properties', '/properties');
+  var __title = window.location.pathname == '/edit-properties' ? 'Properties' : 'Program properties';
+  
+  //document.getElementById("title").innerHTML = __title;
+  //document.title = __SERVER.package.application_name;
+  
+  includeHTML();
+  refreshData ();
+  
+  document.getElementById('file-dialog').addEventListener('change', readFile, false);
+  
+  function searchData() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        //console.log(txtValue+' '+filter);
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }       
+    }
+  }
+
+  /* When the user clicks on the button, 
+  toggle between hiding and showing the dropdown content */
+  function toggleButton() {
+    document.getElementById("myDropdown").classList.toggle("show");
+  }
+
+  // Close the dropdown if the user clicks outside of it
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+        }
+      }
+    }
+  }
+  
+  function addInteger () {
+    var dialog = new DialogData ();
+    dialog.callbackOK = callbackSaveData;
+    dialog.callbackCancel = function (dialog) { dialog.destroy(); };
+    dialog.create(DataType.INTEGER, '', 0, DataFlags.DEFAULT);
+  }
+  
+  function addTimestamp () {
+    var dialog = new DialogData ();
+    dialog.callbackOK = callbackSaveData;
+    dialog.callbackCancel = function (dialog) { dialog.destroy(); };
+    dialog.create(DataType.INTEGER, '', 0, DataFlags.DEFAULT | DataFlags.TIMESTAMP);
+  }
+  
+  function addNumber () {
+    //dialogEditData (DataType.NUMBER, '', DataFlags.DEFAULT, callbackSaveData);
+    var dialog = new DialogData ();
+    dialog.callbackOK = callbackSaveData;
+    dialog.callbackCancel = function (dialog) { dialog.destroy(); };
+    dialog.create(DataType.NUMBER, '', 0, DataFlags.DEFAULT);
+  }
+  
+  function addBoolean () {
+    //dialogEditData (DataType.BOOLEAN, '', true, DataFlags.DEFAULT, callbackSaveData);
+    var dialog = new DialogData ();
+    dialog.callbackOK = callbackSaveData;
+    dialog.callbackCancel = function (dialog) { dialog.destroy(); };
+    dialog.create(DataType.BOOLEAN, '', true, DataFlags.DEFAULT);
+  }
+  
+  function addString () {
+    //dialogEditData (DataType.STRING, '', '', DataFlags.DEFAULT, callbackSaveData);
+    var dialog = new DialogData ();
+    dialog.callbackOK = callbackSaveData;
+    dialog.callbackCancel = function (dialog) { dialog.destroy(); };
+    dialog.create(DataType.STRING, '', '', DataFlags.DEFAULT);
+  }
+  
+  function addJson () {
+    //dialogEditData (DataType.JSON, '', { }, DataFlags.DEFAULT, callbackSaveData);
+    var dialog = new DialogData ();
+    dialog.callbackOK = callbackSaveData;
+    dialog.callbackCancel = function (dialog) { dialog.destroy(); };
+    dialog.create(DataType.JSON, '', { }, DataFlags.DEFAULT);
+  }
+
+</script>
+
+</body>
+
+</html>

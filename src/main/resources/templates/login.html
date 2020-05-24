@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<title>Login</title>
+<link rel="stylesheet" href='css/w3.css'>
+<link rel='stylesheet' href='css/main.css'>
+<link rel='stylesheet' href='css/button.css'>
+
+
+<body>
+  <div class="w3-panel w3-margin">
+    <center>
+      <img class="logo" src="img/bpflow.png" width="10%">
+    </center>    
+      <!--h3>
+        <div style="padding-bottom:1em; border-bottom: 1px dotted grey"><strong><span class="title"/></strong></div>
+      </h3-->
+      <br>
+  </div>
+  
+  
+  <div class="w3-container" style="margin-left:35%;margin-right:35%;">
+    <center>
+      <div class="w3-container w3-card-4 w3-round w3-padding w3-light-grey w3-left-align">
+      
+        <form th:action="@{/login}" method="post">
+          <b>Login</b>
+          <br><br>
+          <i class="icon i-user" style="color:slategray;"></i> Username
+          <br>
+          <input class="w3-input w3-border w3-round" type="text" name="username"/>
+          <br>
+          <i class="icon i-key" style="color:slategray;"></i> Password
+          <br>
+          <input class="w3-input w3-border w3-round" type="password" name="password"/>
+          <br>
+   
+          <!--button id="btnLogin" type="submit" class="w3-button w3-round-medium w3-right" onclick="login();"><i class="icon i-sign-in"></i> Log in</button-->
+          <input type="submit" class="w3-button w3-round-medium w3-green w3-right" value="Log in"/>
+        </form>
+  
+      </div>
+    </center>
+    <br>
+    <div th:if="${param.error}" class="w3-text-red">
+        Invalid username and password.
+    </div>
+    <div th:if="${param.logout}">
+        Logged out.
+    </div>
+    <div th:if="${param.expired}">
+        Session expired.
+    </div>
+  </div>
+  
+
+</body>
+</html>

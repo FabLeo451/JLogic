@@ -1,0 +1,38 @@
+<nav class="w3-sidebar w3-collapse w3-light-grey w3-border-right" style="z-index:3;width:210px;" id="mySidebar"><br>
+  <!--div class="w3-container w3-row">
+    <div class="w3-col s4">
+      <h3><i class="icon i-project-diagram" style="color:green;"></i></h3>
+    </div>
+    <div class="w3-col s8 w3-bar">
+      <b><span class="title"></span>&nbsp;<span class="version"/></b>
+    </div>
+  </div-->
+  <div class="w3-container">
+    <span style="margin-right:1em;"><img src="/img/bpflow-flat.png" width="15%"></span> <b><span th:text="${name}" style="font-size:16px"></span>&nbsp;<span th:text="${version}" style="font-size:18px"/></b>
+  </div>
+  
+  <hr style="border-top:1px solid lightgray;">
+  
+  <div class="w3-bar-block" style="color:darkslategray;">
+    <div class="w3-bar-item"><i class="icon i-server" style="color:slategray; min-width: 1.5em;"></i> <span th:text="${nodeName}"></span></div>
+    <div th:fragment="logout" class="w3-bar-item" sec:authorize="isAuthenticated()">
+      <i class="icon i-user" style="color:slategray; min-width: 1.5em;"></i> <!--span sec:authentication="name"/--><a href="/user/edit" sec:authentication="name"/>
+      <div id='logout_button' class="w3-right"><a target="Javascript:void(0);" href="/logout" style="cursor:pointer;"><i class="icon i-sign-out w3-text-gray w3-hover-text-orange"></i></a></div>
+    </div>
+  </div>
+
+  <hr style="border-top:1px solid lightgray;">
+  
+  <div id="menu" class="w3-bar-block" th:fragment="menu" sec:authorize="isAuthenticated()">
+    <!--a class="w3-bar-item w3-button w3-padding" th:each="item : ${items}" th:utext="${item.label}" th:href="${item.href}"></a-->
+    <a class="w3-bar-item w3-button w3-padding" href="/home" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-home" style="color:lightslategray; min-width: 1.5em;"></i> Home</a>
+    <a class="w3-bar-item w3-button w3-padding" href="/bp" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-project-diagram" style="color:lightslategray; min-width: 1.5em;"></i> Blueprints</a>
+    <a class="w3-bar-item w3-button w3-padding" href="/apipanel" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-cube" style="color:lightslategray; min-width: 1.5em;"></i> APIs</a>
+    <a class="w3-bar-item w3-button w3-padding" href="/edit-properties" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-sliders-h" style="color:lightslategray; min-width: 1.5em;"></i> Properties</a>
+    <a class="w3-bar-item w3-button w3-padding" href="/view-sessions" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-sign-in" style="color:lightslategray; min-width: 1.5em;"></i> Sessions</a>
+    <a class="w3-bar-item w3-button w3-padding" href="/metrics" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-chart-bar" style="color:lightslategray; min-width: 1.5em;"></i> Metrics</a>
+    <a class="w3-bar-item w3-button w3-padding" href="/view-users" sec:authorize="hasAuthority('ADMIN')"><i class="icon i-users" style="color:lightslategray; min-width: 1.5em;"></i> Users</a>
+  </div>
+</nav>
+
+

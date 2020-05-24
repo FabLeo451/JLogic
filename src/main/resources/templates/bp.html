@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title th:text="${name}"></title>
+<meta charset="utf-8">
+<title>Catalog</title>
+<link rel='stylesheet' href='/css/w3.css'>
+<link rel='stylesheet' href='/css/snackbar.css'>
+<link rel='stylesheet' href='/css/main.css'>
+<link rel='stylesheet' href='/css/button.css'>
+<link rel='stylesheet' href='/css/table.css'>
+<link rel='stylesheet' href='/css/sidebar.css'>
+<link rel='stylesheet' href='/css/modal.css'>
+<link rel='stylesheet' href='/css/context-menu.css'>
+<link rel='stylesheet' href='/css/catalog.css'>
+
+<!--script src="/jsDynamic"></script-->
+
+<script src="/js/context-menu.js"></script>
+<script src="/js/utils.js"></script>
+<script src="/js/dialog.js"></script>
+<script src="/js/catalog.js"></script>
+
+</head>
+
+<body>
+<!-- The actual snackbar -->
+<div id="snackbar"></div>
+
+<!-- For file downloading -->
+<iframe id="my_iframe" style="display:none;"></iframe>
+
+<!-- Top container -->
+<!--div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+  <div class="w3-bar-item w3-right"><i class="icon i-project-diagram" style="color:darkslategray; min-width: 2em;"></i><span class="title"></span>&nbsp;<span class="version"/></div>
+</div-->
+
+<!--div w3-include-html="header.htm" id="header"></div-->
+  <!--div w3-include-html="sidebar.htm" id="sidebar" class="sidebar"-->
+  <div w3-include-html="sidebar" id="sidebar">
+  </div>
+ 
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:210px;">
+  
+  <!-- Header -->
+  <header class="w3-container">
+    <h4 style="color:black"><i class="icon i-project-diagram" style="color:slategray"></i> <b>Blueprints</b></h4>
+    <hr style="margin:5px">
+  </header>
+  
+  <div class="w3-container">
+    <button class="btnApp" onclick="createProgram ();"><i class="icon i-cog"></i> New Program</button>
+    <button class="btnApp" onclick="createFolder (null);"><i class="icon i-folder"></i> Create folder</button>
+    <button class="btnApp w3-right" onclick="refreshCatalog ();"><i class="icon i-refresh"></i> Refresh</button>
+    <div id="catalog-container" class="w3-container w3-stretch">
+      <div class="w3-row catalog-row catalog-header">
+        <div class="w3-col s2"><b>Name</b></div>
+        <div class="w3-col s2"><b>Status</b></div>
+        <div class="w3-col s2"><b>Modified</b></div>
+        <div class="w3-col s2"></div>
+        <div class="w3-col s4"></div>
+      </div>
+      <div id="catalog"></div>
+    </div>
+    
+    <!--div id="catalog-table" class="w3-container w3-stretch">
+
+    <div-->
+  </div>
+  
+</div>
+
+  <script>
+  //document.title = __SERVER.system.application_name;
+  includeHTML();
+/*  
+  function hideContextMenu () {
+    if (contextMenu)
+      contextMenu.remove ();
+  }*/
+/*  
+  const menu = new ContextMenu(
+  {
+    'theme': 'default',
+      'items': [
+        {'icon': 'i-folder', 'name': 'Add subfolder',  action: () => console.log('clicked jquery')  },
+        {'icon': 'download', 'name': 'Script',  action: () => console.log('clicked script')  },
+        {'icon': 'trash',    'name': 'Net', action: () => console.log('clicked net') },
+      ]
+  }
+);*/
+  //document.addEventListener('contextmenu', openContextMenu, false);
+
+function openContextMenu(evt){
+    evt.preventDefault();
+    const time = menu.isOpen() ? 100 : 0;
+
+    menu.hide();
+    setTimeout(() => { menu.show(evt.pageX, evt.pageY) }, time);
+    document.addEventListener('click', hideContextMenu, false);
+}
+
+  
+  refreshCatalog ();
+  </script>
+
+</body>
+
+</html>

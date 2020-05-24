@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="utf-8">
+<title>User</title>
+<link rel="stylesheet" href="/css/w3.css">
+<link rel='stylesheet' href='/css/snackbar.css'>
+<link rel='stylesheet' href='/css/main.css'>
+<link rel='stylesheet' href='/css/button.css'>
+<link rel='stylesheet' href='/css/table.css'>
+<link rel='stylesheet' href='/css/modal.css'>
+<link rel='stylesheet' href='/css/tree.css'>
+
+<script>
+/**SERVER_DATA**/
+/**_blueprints**/
+</script>
+
+<script src="/js/utils.js"></script>
+<script src="/js/dialog.js"></script>
+<script src="/js/users.js"></script>
+
+</head>
+
+<body>
+<!-- The actual snackbar -->
+<div id="snackbar"></div>
+
+<main>
+
+<!-- Top container -->
+<!--div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+  <div class="w3-bar-item w3-right"><i class="icon i-project-diagram" style="color:darkslategray; min-width: 2em;"></i><span class="title"></span>&nbsp;<span class="version"/></div>
+</div-->
+
+<!--div w3-include-html="header.htm" id="header"></div-->
+
+<!-- Sidebar/menu -->
+<div w3-include-html="/sidebar" id="sidebar"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:210px;">
+
+  <!-- Header -->
+  <header class="w3-container">
+    <h4 style="color:black"><i class="icon i-user" style="color:slategray"></i> <b><span th:text="${title}"></span></b></h4>
+    <hr style="margin:5px">
+  </header>
+
+  <div class="w3-container" style="margin-right:60%;">
+    <input id="userId" type="hidden" th:value="${id}">
+
+    Username
+    <input id="username" class="w3-input w3-border w3-round" type="text" th:value="${username}" th:readonly="${updating}">
+    <br>
+
+    First name
+    <input id="firstName" class="w3-input w3-border w3-round" type="text" th:value="${firstName}">
+    <br>
+
+    Last name
+    <input id="lastName" class="w3-input w3-border w3-round" type="text" th:value="${lastName}">
+    <br>
+
+    <!-- Set password if creating a new user -->
+    <div th:if="${creating}">
+      Password
+      <input id="password" class="w3-input w3-border w3-round" type="password">
+      <br>
+
+      Confirm password
+      <input id="password_confirmed" class="w3-input w3-border w3-round" type="password">
+      <br>
+    </div>
+
+    <!-- Link to change password page if updating a user -->
+    <div th:if="${updating_current_user}">
+      <a href="/change-password">Change password</a>
+    </div>
+
+    <div sec:authorize="hasAuthority('ADMIN')">
+      Role
+      <select id='role' class="w3-select">
+        <option value="0">ADMIN</option>
+        <option value="1">EDITOR</option>
+        <option value="2">VIEWER</option>
+        <option value="3">USER</option>
+      </select>
+    </div>
+    <br><br>
+    
+    <button th:if="${creating}" class="w3-button w3-round-medium w3-green" onclick="createUser();">Create</button>
+    <button th:if="${updating}" class="w3-button w3-round-medium w3-green" onclick="updateUser();">Update</button>
+    <!--button id="btnDebug" class="btnApp" onclick="debugDate();">Debug</button-->
+    <br><br>
+    
+    <div id="response"></div>
+  </div>
+</div>
+
+</main>
+
+  <script th:inline="javascript">
+  if (document.getElementById('role'))
+    document.getElementById('role').value = [[${roleSet}]];
+    
+  includeHTML();
+  
+  </script>
+
+</body>
+
+</html>

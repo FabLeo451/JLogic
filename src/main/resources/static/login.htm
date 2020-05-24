@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>E-Flow - Login</title>
+<link rel="stylesheet" href='css/w3.css'>
+<link rel='stylesheet' href='css/main.css'>
+<link rel='stylesheet' href='css/button.css'>
+
+<script src="/js/utils.js"></script>
+
+</head>
+
+<body>
+  <div class="w3-panel w3-margin">
+    <center>
+      <img class="logo" src="img/bpflow.png" width="10%">
+    </center>    
+      <!--h3>
+        <div style="padding-bottom:1em; border-bottom: 1px dotted grey"><strong><span class="title"/></strong></div>
+      </h3-->
+      <br>
+  </div>
+
+  <div class="w3-container" style="margin-left:35%;margin-right:35%;">
+    <center>
+      <div class="w3-container w3-card-4 w3-round w3-padding w3-light-grey w3-left-align">
+      
+        <b>Login</b>
+        <br><br>
+        <i class="icon i-user" style="color:slategray;"></i> Username
+        <br>
+        <input id="inUsr" class="w3-input w3-border w3-round" type="text">
+        <br>
+        <i class="icon i-key" style="color:slategray;"></i> Password
+        <br>
+        <input id="inPwd" class="w3-input w3-border w3-round" type="password">
+        <br>
+ 
+        <button id="btnLogin" type="submit" class="btnApp w3-right" onclick="login();"><i class="icon i-sign-in"></i> Log in</button>
+  
+      </div>
+    </center>
+    <br>
+    <div id="response"></div>
+  </div>
+  
+</body>
+
+<script>
+
+// Get the input field
+var input = document.getElementById("inPwd");
+
+// Execute a function when the user releases a key on the keyboard
+input.addEventListener("keyup", function(event) {
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.keyCode === 13) {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Trigger the button element with a click
+    document.getElementById("btnLogin").click();
+  }
+});
+
+function login () {
+  var username = document.getElementById("inUsr").value;
+  var password = document.getElementById("inPwd").value;
+  var responseElem = document.getElementById("response");
+  
+  //responseElem.style.visibility = "visible";
+  
+  callServer ("POST", '/login', 'username='+username+'&password='+password, function (xhttp) {
+    if (xhttp.readyState == 4) {
+      if (xhttp.status == 200) {
+        responseElem.innerHTML = '<i class="icon i-check w3-text-green"></i> Authenticated. Redirecting...';
+        window.location = '/home';
+      }
+      else
+        responseElem.innerHTML = "<i class=\"icon i-ban w3-text-red\"></i> "+xhttp.responseText;
+    }
+    else {
+      responseElem.innerHTML = '<i class="icon i-spinner w3-spin"></i> Authenticating...';
+    }
+  }
+  );
+}
+</script>
+
+</html>

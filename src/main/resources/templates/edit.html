@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Edit blueprint</title>
+<link rel='stylesheet' href='/css/w3.css'>
+<link rel='stylesheet' href='/css/main.css'>
+<link rel='stylesheet' href='/css/snackbar.css'>
+<link rel='stylesheet' href='/css/modal.css'>
+<link rel='stylesheet' href='/css/button.css'>
+<link rel='stylesheet' href='/css/table.css'>
+<link rel='stylesheet' href='/css/select.css'>
+<link rel='stylesheet' href='/css/context-menu-bp.css'>
+<link rel='stylesheet' href='/css/blueprint.css'>
+<link rel='stylesheet' href='/css/dropdown-menu.css'>
+<link rel='stylesheet' href='/css/sidebar.css'>
+<link rel='stylesheet' href='/css/tree.css'>
+
+<!--script src="/jsDynamic"></script-->
+<script src="/jsAsset"></script>
+<script src="/jsBlueprints"></script>
+<script>
+/**SERVER_DATA**/
+/**_blueprints**/
+/**_jbp**/
+/**_asset**/
+/*
+var _blueprints = null;
+var _asset = null;
+*/
+var _jbp = null;
+</script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/editor/context-menu-bp.js"></script>
+<script src="/js/editor/menu.js"></script>
+<script src="/js/editor/globals.js"></script>
+<script src="/js/editor/edge.js"></script>
+<script src="/js/editor/connector.js"></script>
+<script src="/js/editor/node.js"></script>
+<script src="/js/editor/blueprint.js"></script>
+<script src="/js/dialog.js"></script>
+<script src="/js/editor/bpconsole.js"></script>
+<script src="/js/editor/undo.js"></script>
+<script src="/js/editor/application.js"></script>
+
+<!--script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css"/-->
+
+<script src="/js/jquery-latest.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/jquery-ui.css"/>
+
+<!--link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script-->
+
+</head>
+
+<body>
+
+<input id="file-dialog" type="file" name="Import" style="display: none;" />
+<!--input id="file-dialog" type="file" name="name"" /-->
+
+
+<main id="main">
+
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+    </div>
+  </div>
+    
+  <!-- Menubar and toolbar -->
+  <div id="mb1" class="menubar"></div>
+  <div id="toolbar" class="toolbar"></div>
+
+  <div class="horizontal-pane">
+  
+    <!-- Sidebar -->
+    <div class="sidebar">
+    
+      <!-- Program -->
+      <div class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
+        <div class="w3-margin-bottom" style="border-bottom: 1px dotted grey"><i class="icon i-cog" style="color:lightslategray"></i> <b>Program</b></div>
+        <table class="tabVars">
+          <tr><td class="tdVars">Program</td><td class="tdVars"><div id="programName"></div></td></tr>
+          <tr><td class="tdVars">Status</td><td class="tdVars"><div id="programStatus"></div></td></tr>
+        </table>
+      </div>
+      
+      <!-- Blueprint -->
+      <div class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
+        <div class="w3-margin-bottom" style="border-bottom: 1px dotted grey"><i class="icon i-project-diagram" style="color:lightslategray"></i> <b>Blueprint</b></div>
+        <table class="tabVars">
+          <tr>
+            <td class="tdVars">Blueprint</td>
+            <td class="tdVars">
+              <input class="inputConnector" id="bpName" type="text" name="bpName" value="Name" onfocus="beginEdit();" onblur="endEdit();" onchange="onNameChanged();">
+            </td>
+          </tr>
+          <tr><td class="tdVars">Status</td><td class="tdVars"><div id="bpStatus"></div></td></tr>
+        </table>
+      </div>
+      
+      <div id="input-panel" class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
+          <div class="w3-margin-bottom" style="border-bottom: 1px dotted grey"><i class="icon i-sign-in" style="color:lightslategray"></i> <b>Input</b></div>
+
+          <!--legend>Input</legend-->
+          
+            <table id="tab_input" class="tabVars">
+              <!--tr><th class="thVars">Name</th><th class="thVars">Type</th><th class="thVars"></th></tr-->
+            </table>
+         
+          <button class="btnApp" onclick="addInputCallback();" ><i class="icon i-add"></i> Add input</button>
+      </div>
+
+      <div id="output-panel" class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
+          <div class="w3-margin-bottom" style="border-bottom: 1px dotted grey"><i class="icon i-sign-out" style="color:lightslategray"></i> <b>Output</b></div>
+       
+          <!--legend>Output</legend-->
+
+            <table id="tab_output" class="tabVars">
+              <!--tr><th class="thVars">Name</th><th class="thVars">Type</th><th class="thVars"></th></tr-->
+            </table>
+
+          <button id="btn_add_output" class="btnApp" onclick="addOutputCallback();" ><i class="icon i-add"></i> Add output</button>
+      </div>
+      
+      <div class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
+          <div class="w3-margin-bottom" style="border-bottom: 1px dotted grey"><i class="icon i-square" style="color:lightslategray"></i> <b>Variables</b></div>
+       
+          <!--legend>Variables</legend-->
+
+            <table id="tab_variables" class="tabVars">
+            </table>
+            <div id="vars"></div>
+
+          <button class="btnApp" onclick="addVariableCallback();" ><i class="icon i-add"></i> Add variable</button>
+      </div>
+    </div>
+
+
+    <div class="bpcontainer">
+      <div id="bp1" class="blueprint">
+        <div id="status" style="position: absolute; top:0px"></div>
+        <div id="mouse" style="position: absolute; top:20px"></div>
+        <div id="bp-title" class="bp-title"></div>
+        <div class="bp-bg"></div>
+      </div>
+      
+      <!--div class="splitter-horizontal">
+      </div-->
+                
+        <!-- Console -->
+        <div id="myConsole" class="bpconsole">
+          <div id="consoleToolbar" class="bpconsoleToolbar">
+            <!--button title="Clear console" onclick="bpConsole.clear();"><i class="icon i-broom"></i></button>
+            <button title="Hide console" onclick="toggleConsoleVisibility();" style="float: right;"><i class="icon i-times"></i></button-->
+            <span class="bp-console-text" title="Clear console" onclick="bpConsole.clear();"><i class="icon i-broom"></i></span>
+            <span class="bp-console-text" title="Hide console" onclick="toggleConsoleVisibility();" style="float: right;"><i class="icon i-times"></i></span>
+          </div>
+          <div id="consoleText" class="terminal"></div>
+        </div>
+    </div>
+
+    <!-- The actual snackbar -->
+    <div id="snackbar"></div>
+
+  </div>
+</main>
+
+
+<script>
+setInputFilter(document.getElementById("bpName"), function(value) { return /^[a-zA-Z0-9_\\-\\.]+$/.test(value); });
+
+createMenu ("mb1");
+appStart ();
+
+
+ $(".blueprint").resizable({
+   /*handleSelector: ".splitter-horizontal",*/
+   /*resizeWidth: false,*/
+   handles: 's'
+ });
+
+//bpStart(null);
+//blueprint.bpDiv.addEventListener('keydown', appKeyPressed, false);
+//blueprint.bpDiv.addEventListener('keyup', appKeyReleased, false);
+</script>
+
+
+
+</body>
+</html>

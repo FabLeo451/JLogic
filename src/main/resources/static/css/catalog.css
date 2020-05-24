@@ -1,0 +1,21 @@
+
+.catalog-row {
+  padding: 2px 0 2px 2px;
+  vertical-align: middle;
+}
+
+.catalog-header {
+  background-color: gainsboro;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.catalog-row:hover {
+  background-color:#f0f0f0; 
+  cursor: pointer;
+}
+
+.catalog-selected {
+  background-color: lemonchiffon;
+}
+

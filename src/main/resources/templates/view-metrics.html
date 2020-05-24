@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="utf-8">
+<title>Metrics</title>
+<link rel="stylesheet" href="/css/w3.css">
+<link rel='stylesheet' href='/css/snackbar.css'>
+<link rel='stylesheet' href='/css/main.css'>
+<link rel='stylesheet' href='/css/button.css'>
+<link rel='stylesheet' href='/css/table.css'>
+<link rel='stylesheet' href='/css/modal.css'>
+<link rel='stylesheet' href='/css/tree.css'>
+
+<script>
+/**SERVER_DATA**/
+/**_blueprints**/
+</script>
+
+<script src="/js/utils.js"></script>
+<script src="/js/dialog.js"></script>
+<script src="/js/users.js"></script>
+<script src="/js/canvasjs.min.js"></script>
+
+</head>
+
+<body>
+<!-- The actual snackbar -->
+<div id="snackbar"></div>
+
+<main>
+
+<!-- Top container -->
+<!--div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+  <div class="w3-bar-item w3-right"><i class="icon i-project-diagram" style="color:darkslategray; min-width: 2em;"></i><span class="title"></span>&nbsp;<span class="version"/></div>
+</div-->
+
+<!--div w3-include-html="header.htm" id="header"></div-->
+
+<!-- Sidebar/menu -->
+<div w3-include-html="/sidebar" id="sidebar"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:210px;">
+
+  <!-- Title -->
+  <header class="w3-container">
+    <h4 style="color:black"><i class="icon i-chart-bar" style="color:slategray"></i> <b>Metrics</b></h4>
+    <hr style="margin:5px">
+  </header>
+  
+  <div id="chartContainer" style="height: 50%; width: 75%;"></div>
+  <div style="height: 50%;"></div>
+
+  <div class="w3-container" style="position: absolute; top: 55%; width:80%;">
+    <div class="w3-row">
+      <div class="w3-col s4">
+        <!-- System -->
+        <div class=" w3-light-grey w3-round-medium w3-margin w3-padding">
+          <b>System</b>
+          <br><br>
+          <table>
+            <tr><td>CPU count:</td><td id="system.cpu.count"></td></tr>
+            <tr><td>CPU usage:</td><td id="system.cpu.usage"></td></tr>
+            <tr><td>Load average 1m:</td><td id="system.load.average.1m"></td></tr>
+          </table>
+        </div>
+      </div>
+      
+      <div class="w3-col s4">
+        <!-- Process -->
+        <div class=" w3-light-grey w3-round-medium w3-margin w3-padding">
+          <b>Process</b>
+          <br><br>
+          <table>
+            <tr><td>Start time:</td><td id="process.start.time"></td></tr>
+            <tr><td>Total sessions:</td><td id="tomcat.sessions.created"></td></tr>
+            <tr><td>Max sessions:</td><td id="tomcat.sessions.active.max"></td></tr>
+            <tr><td>Active sessions:</td><td id="tomcat.sessions.active.current"></td></tr>
+          </table>
+        </div>
+      </div>
+      
+      <div class="w3-col s4">
+        <!-- Process -->
+        <div class=" w3-light-grey w3-round-medium w3-margin w3-padding">
+          <b>Java Virtual Machine</b>
+          <br><br>
+          <table>
+            <!--tr><td>CPU usage for VM:</td><td id="process.cpu.usage"></td></tr-->
+            <tr><td>Total memory (MB):</td><td id="jvm.memory.max"></td></tr>
+            <tr><td>Used memory (MB):</td><td id="jvm.memory.used"></td></tr>
+            <tr><td>Used memory (pct):</td><td id="used_memory_pct"></td></tr>
+          </table>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+</main>
+
+  <script th:inline="javascript">
+  
+  'use strict';
+
+  includeHTML();
+
+  callServer ("GET", "/stats", null, function (xhttp) {
+      if (xhttp.readyState == 4) {
+        if (xhttp.status == 200) {
+          var jstats = JSON.parse(xhttp.responseText);
+          
+          var jchart = {
+            animationEnabled: false,  
+            title:{
+              text: "Requests in the last 10 minutes"
+            },
+            axisY: {
+              title: "Requests",
+              //valueFormatString: "#0,,.",
+              //suffix: "mn",
+              stripLines: [{
+                value: 0,
+                label: "Average"
+              }]
+            },
+            axisX: {
+              title: "Time",
+              valueFormatString: "HH:mm"
+            },
+            data: [{
+              //yValueFormatString: "#,### Units",
+              xValueFormatString: "HH:mm",
+              type: "spline",
+              dataPoints: [
+                /*{x: new Date(2002, 0), y: 2506000},
+                {x: new Date(2016, 0), y: 2821000},
+                {x: new Date(2017, 0), y: 2000000}*/
+              ]
+            }]
+          };
+          
+          var sum = 0;
+          
+          for (var t in jstats) {
+            var point = {x:new Date(t), y:jstats[t]};
+            
+            //console.log(point);
+            
+            jchart.data[0].dataPoints.push(point);
+            sum += jstats[t];
+          }
+          
+          var average = sum / Object.keys(jstats).length;
+          jchart.axisY.stripLines[0].label = "Average ("+average.toFixed(0)+" / min)";
+          jchart.axisY.stripLines[0].value = average;
+          //console.log(jchart);
+
+          var chart = new CanvasJS.Chart("chartContainer", jchart);
+          chart.render();
+          
+          //document.getElementById("chartContainer").style.position = 'relative';
+        }
+        else {
+          console.log(xhttp.statusText);
+        }
+      }
+    }
+  ); 
+
+  
+  function setPct(memMax, memUsed) {
+    if (memMax < 0 || memUsed < 0)
+      return;
+      
+    var pct = (memUsed / memMax) * 100;
+    /*console.log(memUsed);
+    console.log(memMax);
+    console.log(pct);*/
+    document.getElementById("used_memory_pct").innerHTML = pct.toFixed(2).toString() + '%';
+  }
+  
+  var metrics = [
+    "jvm.memory.max",
+    "jvm.memory.used",
+    "tomcat.sessions.created",
+    "tomcat.sessions.active.max",
+    "tomcat.sessions.active.current",
+    "process.start.time",
+    //"process.cpu.usage",
+    "system.cpu.count",
+    "system.cpu.usage",
+    "system.load.average.1m"
+  ];
+  
+  var jvmMemoryMax = -1;
+  var jvmMemoryUsed = -1;
+  
+  for (var i=0; i<metrics.length; i++) {
+    //var label = metrics[i].label;
+    //var metric = metrics[i].metric;
+    //var uri = metrics[i].uri;
+    var metric = metrics[i];
+    
+    callServer ("GET", "/actuator/metrics/"+metric, null, function (xhttp) {
+        if (xhttp.readyState == 4) {
+          if (xhttp.status == 200) {
+            var jresponse = JSON.parse(xhttp.responseText);
+            var name = jresponse.name;
+            var baseUnit = jresponse.baseUnit;
+            var value = jresponse.measurements[0].value;
+            
+            switch (name) {
+              case 'jvm.memory.max':
+                jvmMemoryMax = value;
+                setPct(jvmMemoryMax, jvmMemoryUsed);
+                break;
+                
+              case 'jvm.memory.used':
+                jvmMemoryUsed = value;
+                setPct(jvmMemoryMax, jvmMemoryUsed);
+                break;
+                
+              default:
+                break;
+            }
+            
+            if (baseUnit == "bytes")
+              value = (value / (1024*1024)).toFixed(1);
+            else if (baseUnit == "seconds")
+              value = secondsToString(value.toFixed(0));
+            else {
+              switch (name) {
+                case 'system.cpu.count':
+                case 'tomcat.sessions.created':
+                case 'tomcat.sessions.active.max':
+                case 'tomcat.sessions.active.current':
+                  value = value.toFixed(0);
+                  break;
+                  
+                default:
+                  value = value.toFixed(2);
+                  break;
+              }
+            }
+                          
+            //console.log(jresponse.name);
+            var col = document.getElementById(jresponse.name);
+            
+            col.innerHTML = value;
+          }
+          else {
+            console.log(xhttp.statusText);
+          }
+        }
+      }
+    );
+  }
+  
+  </script>
+
+</body>
+
+</html>

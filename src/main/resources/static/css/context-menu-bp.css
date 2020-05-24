@@ -1,0 +1,56 @@
+.menu {
+  /*width: 120px;*/
+  z-index: 100;
+          box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
+     -moz-box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  display: none;
+  transition: 0.5s display ease-in;
+  border-radius: 5px;
+  /*background: rgba(0.0, 0.0, 0.0, 0.7);*/
+  background: rgba(0,0,0,0.8);
+  min-width: 12em;
+ 
+  /* For scrollbar */
+  max-height: 50%;
+  overflow-y: auto;
+}
+
+.context-menu-content {
+
+}
+
+.menu-options {
+  list-style: none;
+  padding: 0px 0;
+  margin: 5px;
+  z-index: 101;
+}
+  
+.menu-option {
+  z-index: 1;
+  font-size: 13px;
+  color: white;
+  padding: 3px 5px 3px 5px;
+  /*border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);*/
+  cursor: pointer;
+  border-radius: 5%;
+}
+
+.menu-option:hover {
+  background: rgba(0, 0, 0, 1.0);
+}
+  
+.ctxSearchEntry {
+  /*background-image: url('../img/search.png');
+  \/*background-position: 10px 12px;*\/ 
+  background-repeat: no-repeat;*/ 
+  
+  /*background: rgba(255, 255, 255, 0.8);*/
+  border: solid 1px rgba(150, 150, 150, 0.5);
+  -webkit-border-radius: 3px;
+          border-radius: 3px;
+  margin: 5px;
+  padding: 5px;
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<title>Sessions</title>
+<link rel="stylesheet" href="css/w3.css">
+<link rel='stylesheet' href='css/snackbar.css'>
+<link rel='stylesheet' href='css/main.css'>
+<link rel='stylesheet' href='css/button.css'>
+<link rel='stylesheet' href='css/table.css'>
+<link rel='stylesheet' href='css/sidebar.css'>
+
+<script>
+/**SERVER_DATA**/
+</script>
+
+<script src="js/utils.js"></script>
+<!--script src="js/server.js"></script-->
+<script src="js/sessions.js"></script>
+
+</head>
+
+<body>
+<!-- The actual snackbar -->
+<div id="snackbar"></div>
+
+<main>
+
+<!-- Top container -->
+<!--div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+  <div class="w3-bar-item w3-right"><i class="icon i-project-diagram" style="color:darkslategray; min-width: 2em;"></i><span class="title"></span>&nbsp;<span class="version"/></div>
+</div-->
+
+<!--div w3-include-html="header.htm" id="header"></div-->
+  <div w3-include-html="/sidebar" id="sidebar">
+    <!--script>include('sidebar', 'sidebar.htm');</script-->
+  </div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:210px;">
+  
+  <!--div class="content">
+    <h2><i class="icon i-list" style="color:cornflowerblue"></i> Sessions</h2>
+    <button class="btnApp" onclick="refreshSessions ();"><i class="icon i-refresh"></i> Refresh</button>
+    <div id="sessions"></div>
+  </div>
+  <b--r>
+
+  <!-- Header -->
+  <header class="w3-container">
+    <h4 style="color:black"><i class="icon i-list" style="color:slategray"></i> <b>Sessions</b></h4>
+    <hr style="margin:5px">
+  </header>
+  
+  <div class="w3-container">
+    <button class="btnApp w3-right" onclick="refreshSessions ();"><i class="icon i-refresh"></i> Refresh</button>
+    <div id="sessions" class="w3-container w3-stretch">
+      <!--TABLE-->
+    <div>
+  </div>
+    
+</div>
+
+</main>
+
+  <script>
+  includeHTML();
+  refreshSessions ();
+  </script>
+
+</body>
+
+</html>

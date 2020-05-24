@@ -1,0 +1,103 @@
+/* Application buttons */
+
+.btnApp {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 2px 6px 2px 6px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.btnApp {
+  -webkit-transition-duration: 0.3s; /* Safari */
+          transition-duration: 0.3s;
+}
+.btnApp:hover {
+  background-color: #4CCA50;
+  /*color: white;*/
+}
+.btnApp:active {
+  background-color: #4C9F50;
+}
+.btnApp:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btnAddPin {
+  background-color: #888888;
+  border: none;
+  color: white;
+  padding: 0px 6px 0px 6px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.btnAddPin {
+  -webkit-transition-duration: 0.3s; /* Safari */
+          transition-duration: 0.3s;
+}
+.btnAddPin:hover {
+  background-color: #aaaaaa;
+}
+.btnAddPin:active {
+  background-color: #dddddd;
+}
+
+
+/* Toolbar buttons */
+
+.tbApp {
+  float: left;
+  overflow: hidden;
+  background-color: transparent;
+  border-radius: 3px;
+  border: none;
+  outline: none;
+  min-width: 10px;
+  min-height: 10px;
+  -webkit-transition-duration: 0.3s; /* Safari */
+          transition-duration: 0.3s;
+}
+
+.tbApp:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.tbApp:active {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+
+/* Table buttons */
+
+.btnTab {
+  background-color: darkgray;
+  border: none;
+  color: white;
+  padding: 4px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.btnTab {
+  -webkit-transition-duration: 0.3s; /* Safari */
+          transition-duration: 0.3s;
+}
+.btnTab:hover {
+  background-color: silver;
+  /*color: white;*/
+}
