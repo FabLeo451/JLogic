@@ -49,9 +49,9 @@ public class ProgramEntity {
 
     // Run result
     public static final int SUCCESS = 0;  
-    public static final int METHOD_NOT_FOUND = 1;  
-    public static final int BAD_INPUT = 2;  
-    public static final int EXCEPTION = 99; 
+    public static final int METHOD_NOT_FOUND = -1;  
+    public static final int BAD_INPUT = -2;  
+    public static final int EXCEPTION = -99; 
     
     @Transient
     Logger logger = LoggerFactory.getLogger(ProgramEntity.class);
@@ -291,7 +291,7 @@ public class ProgramEntity {
       // Others
       //content = new String (Files.readAllBytes(Paths.get(getDepsFilename())));
       //ja = new JSONArray(content);
-      ja = (JSONArray) jsonParser.parse(new FileReader(getDefaultDepsFilename()));
+      ja = (JSONArray) jsonParser.parse(new FileReader(getDepsFilename()));
 
       ja.forEach (jdep -> {
         addClassPath(getClassesDir() + "/" + jdep.toString());

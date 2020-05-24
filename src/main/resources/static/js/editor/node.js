@@ -727,18 +727,20 @@ class NodeBlueprint extends Node {
   
   createFromJson (j, preserveId = true) {
      //this.method = j.method;
-     this.blueprintId = j.blueprintId;     
-     this.name = programIndex[this.blueprintId].name;
+     this.blueprintId = j.id;     
+     //this.name = programIndex[this.blueprintId].name;
+     this.name = j.name;
      j.name = this.name;
      super.createFromJson (j, preserveId);
      
-     console.log ("Creating blueprint node "+this.name);
+     console.log ("Creating blueprint node "+this.name+" "+this.blueprintId);
   }
   
   toJSON() {
     var jo = super.toJSON();
     //jo.method = this.method;
     jo.blueprintId = this.blueprintId;
+    console.log ("blueprintId = "+this.blueprintId);
     return (jo);
   }
 }
