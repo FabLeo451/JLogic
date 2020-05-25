@@ -446,7 +446,7 @@ function runCallback (xhttp) {
 
 function run (dialog) {
   var input = document.getElementById('inputTextArea').value;
-  var trace = document.getElementById('_trace').checked ? '&trace=1' : '';
+  //var trace = document.getElementById('_trace').checked ? '&trace=1' : '';
   dialog.destroy();
   
   //console.log('input = '+input);
@@ -810,7 +810,7 @@ function processAction (a) {
       
       input += '\n}';
       
-      content.innerHTML = '<textarea class="w3-border" id="inputTextArea" rows="15" cols="30">'+input+'</textarea><input id="_trace" class="w3-check" type="checkbox"> Trace';
+      content.innerHTML = '<textarea class="w3-border" id="inputTextArea" rows="15" cols="30">'+input+'</textarea><!--<input id="_trace" class="w3-check" type="checkbox"> Trace -->';
       break;
     /* 
     case MenuItems.BLUEPRINT_COMMAND_LINE:
@@ -1192,8 +1192,9 @@ function appAddVariable(paramType, target)
       cbTypeChanged = 'connectorTypeChanged';
       cbDelete = 'deleteConnectorCallback';
       
-      if (paramType = AppParameterType.OUTPUT)
+      if (paramType == AppParameterType.OUTPUT)
         document.getElementById("btn_add_output").style.display = "none";
+        
       break;
       
     default:

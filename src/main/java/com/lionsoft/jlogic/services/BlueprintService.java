@@ -131,7 +131,7 @@ public class BlueprintService {
 	    String content = new String (Files.readAllBytes(Paths.get(templateFilename)));
       
       if (saveContent(blueprint.getFilename(), blueprint, content)) {
-        blueprint.getProgram().updateIndex(blueprint.getId(), content);
+        blueprint.getProgram().updateIndex(blueprint, content);
         repository.save(blueprint);
       }
       else
@@ -148,14 +148,14 @@ public class BlueprintService {
 
   public void update (BlueprintEntity blueprint, String content) {
     if (saveContent(blueprint.getFilename(), blueprint, content)) {
-      blueprint.getProgram().updateIndex(blueprint.getId(), content);
+      blueprint.getProgram().updateIndex(blueprint, content);
       repository.save(blueprint);
     }
   }
 
   public void delete (BlueprintEntity blueprint) {
     repository.delete(blueprint);
-    blueprint.getProgram().updateIndex(blueprint.getId(), null);
+    blueprint.getProgram().updateIndex(blueprint, null);
     File file = new File(getFilename(blueprint));
     file.delete();
   }

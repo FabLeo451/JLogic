@@ -104,6 +104,9 @@ public class ProgramEntity {
     
     @Transient
 	  private String httpResponse;
+    
+    @Transient
+	  private String programDir = null;
           
     public ProgramEntity() {
     
@@ -115,14 +118,21 @@ public class ProgramEntity {
       setId(id);
       setName(name);
       setStatus(ProgramStatus.READY);
+      
+      File f = new File(home.getDir()+"/../data/program/"+getId());
+      
+      try {
+        programDir = f.getCanonicalPath();
+      } catch (IOException e) {
+        logger.error("Creating program "+name+": "+e.getMessage());
+      }
     }
      
     //Setters and getters
  
     @Override
     public String toString() {
-        return "ProgramEntity [id=" + id + ", name=" + name + 
-                ", status=" + status + "]";
+        return "ProgramEntity [id=" + id + ", name=" + name + ", status=" + status + "]";
     }
     
     public String getId() {
@@ -206,7 +216,8 @@ public class ProgramEntity {
     }
     
 	  public String getMyDir() {
-		  return home.getDir()+"/../data/program/"+getId();
+		  //return home.getDir()+"/../data/program/"+getId();
+		  return(programDir != null ? programDir : home.getDir()+"/../data/program/"+getId());
 	  }
     
   public String getJavaFile() {
@@ -321,7 +332,7 @@ public class ProgramEntity {
     return index;
 	}
 	
-	public void updateIndex (String blueprintId, String content) {
+	public void updateIndex (BlueprintEntity blueprint, String content) {
     JSONObject jindex, jbp = null;
     JSONParser jsonParser = new JSONParser();
 
@@ -346,19 +357,19 @@ public class ProgramEntity {
     if (content != null) {
       // Crete item
       JSONObject jitem = new JSONObject();
-      jitem.put("id", blueprintId);
-      jitem.put("name", jbp.get("name"));
-      jitem.put("type", jbp.get("type"));
+      jitem.put("id", blueprint.getId());
+      jitem.put("name", blueprint.getName());
+      jitem.put("type", blueprint.getType().ordinal());
       jitem.put("input", jbp.get("input"));
       jitem.put("output", jbp.get("output"));
       
       //if (jbp.containsKey("method"))
         jitem.put("method", jbp.get("method"));
         
-      jindex.put(blueprintId, jitem);
+      jindex.put(blueprint.getId(), jitem);
     } else {
       // Delete item
-      jindex.remove(blueprintId);
+      jindex.remove(blueprint.getId());
     }
 
     // Write JSON file

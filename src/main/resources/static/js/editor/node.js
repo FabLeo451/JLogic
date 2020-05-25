@@ -655,14 +655,6 @@ class Node extends NodeBase {
       
       this.nodeElem.appendChild(this.addOutputButton);
     }
-    
-    this.nodeElem.ondblclick = function (ev) {
-      if (nodeSelf.type === BPNodeTypeID.BLUEPRINT) {
-        //console.log ('Open blueprint '+nodeSelf.blueprintId);
-        //window.open('edit.htm?id='+nodeSelf.blueprintId);
-        window.open('/blueprint/'+nodeSelf.blueprintId+'/edit');
-      }
-    }
   }
 }
 
@@ -724,16 +716,24 @@ class NodeBlueprint extends Node {
     //this.method = null;
     this.blueprintId = null;
   }
-  
+
   createFromJson (j, preserveId = true) {
-     //this.method = j.method;
-     this.blueprintId = j.id;     
-     //this.name = programIndex[this.blueprintId].name;
-     this.name = j.name;
-     j.name = this.name;
-     super.createFromJson (j, preserveId);
+    //this.method = j.method;
+    this.blueprintId = j.blueprintId;     
+    //this.name = programIndex[this.blueprintId].name;
+    this.name = j.name;
+    j.name = this.name;
+    super.createFromJson (j, preserveId);
+    
+    var nodeSelf = this;
      
-     console.log ("Creating blueprint node "+this.name+" "+this.blueprintId);
+    this.nodeElem.ondblclick = function (ev) {
+        //console.log ('Open blueprint '+nodeSelf.blueprintId);
+        //window.open('edit.htm?id='+nodeSelf.blueprintId);
+        window.open('/blueprint/'+nodeSelf.blueprintId+'/edit');
+    }
+         
+    console.log ("Creating blueprint node "+this.name+" "+this.blueprintId);
   }
   
   toJSON() {

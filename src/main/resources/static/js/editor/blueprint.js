@@ -45,6 +45,7 @@ function bpAddNode (id, data) {
               console.log (bp);
               
               bp.type = BPNodeTypeID.BLUEPRINT;
+              bp.blueprintId = bp.id;
               
               var node = blueprint.addNodeFromJson(bp, false);
               //node.blueprintId = bp.id;
@@ -843,6 +844,7 @@ class Blueprint {
         }
 
         this.redrawEdges ();
+        this.onModified ();
         break;
         
       case BPEvent.NODE_SELECTED:
