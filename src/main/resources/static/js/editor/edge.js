@@ -206,6 +206,14 @@ class Edge {
     this.zoom = z;
   }
   
+  toJSON() {
+    var from = this.connector1.direction == BPDirection.OUTPUT ? this.connector1.id : this.connector2.id;
+    var to = this.connector1.direction == BPDirection.OUTPUT ? this.connector2.id : this.connector1.id;
+    
+    var jo = { "from": from, "to": to };
+    return (jo);
+  }
+  
   toString () {
     var s, from, to;
     from = this.connector1.direction == BPDirection.OUTPUT ? this.connector1.id : this.connector2.id;

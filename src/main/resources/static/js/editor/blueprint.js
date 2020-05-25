@@ -1237,6 +1237,7 @@ class Blueprint {
     this.setZoom (Number(this.zoom) - Number(this.zoomFactor));
   }
   
+  /* Used when running from web */
   getInputArray () {
     var input = [];
     
@@ -1275,54 +1276,105 @@ class Blueprint {
 
     return (input);
   }
-    
+  
+  /* Used when running from web */
   getInputArrayAsString () {
     return (JSON.stringify(this.getInputArray ()));
-    /*
-    var input = '[', value;
+  }
+  
+  toJson () {
+    var jo = {
+      "x0":this.x0, "y0":this.y0,
+      "name":this.name,
+      "type":this.type,
+      "method":this.method,
+    };
     
-    input += '{ "type": '+BPTypeID.EXEC+',  "label": "" }';
+    /* Variables and types */
+    jo.variables = [];   
+    jo.types = [];
+
+    for (var i=0; i<this.variables.length; i++) {
+      var jv = this.variables[i].toJSON();
+      
+      var t = this.getType (jv.type);
+      jv.typeName = t.name;
+      jo.types.push(t);
+
+      jo.variables.push(jv);
+    }
+
+    /* Input */
+    jo.input = [];
+    
+    var input = '"input": [', /*k = 0,*/ value;
+    
+    // Check if returns a value
+    //if (!this.returns())
+      jo.input.push({ "type": BPTypeID.EXEC,  "label": "" });
     
     for (var i=0; i<this.entryPointNode.connectors.length; i++) {
       if (!this.entryPointNode.connectors[i].exec) {
-          input += ', ';
-          
-        switch (this.entryPointNode.connectors[i].dataType.id) {
-          case BPTypeID.INTEGER:
-            value = ', "value": 0';
-            break;
-          case BPTypeID.FLOAT:
-            value = ', "value": 0.0';
-            break;
-          case BPTypeID.BOOLEAN:
-            value = ', "value": true';
-            break;
-          case BPTypeID.STRING:
-            value = ', "value": ""';
-            break;
-          case BPTypeID.JSON:
-            value = ', "value": { }';
-            break;
-          default:
-            break;
-        }
-          
-        input += '{ "label": "'+this.entryPointNode.connectors[i].getLabel()+'", "type": '+this.entryPointNode.connectors[i].dataType.id+', "dimensions": '+this.entryPointNode.connectors[i].dimensions+value+' }';
+          //input += (this.returns() ? '' : ', ');
+
+        //input += this.entryPointNode.connectors[i].toString();
+        var jconn = this.entryPointNode.connectors[i].toJSON();
+        jconn.value = this.entryPointNode.connectors[i].getDefaultValue();
+             
+        jo.input.push(jconn);
         //k ++;
       }
     }
     
-    input += '] ';
+    /* Output */
+    jo.output = [];
     
-    return (input);*/
+    if (true/*!this.returns()*/) {
+      var jexec = { "type": BPTypeID.EXEC, "label": ""};
+      jo.output.push(jexec);
+    }
+    
+    for (var i=0; i<this.returnNode.connectors.length; i++) {
+      if (!this.returnNode.connectors[i].exec) {
+        var jconn = this.returnNode.connectors[i].toJSON();
+        
+        jconn.java = { "references": {"type": this.returnNode.connectors[i].getDataType().name, "name":"out_"+i }};
+        
+        if (jconn.hasOwnProperty('value'))
+          delete jconn.value;
+          
+        console.log (jconn);
+ 
+        jo.joutput.push(jconn);
+      }
+    }
+    
+    /* Nodes */
+    jo.nodes = [];
+
+    for (var i=0; i<this.nodes.length; i++) {
+      jo.nodes.push(this.nodes[i].toJSON());
+    }
+    
+    /* Edges */
+    jo.edges = [];
+    
+    for (var i=0; i<this.edges.length; i++) {
+      jo.edges.push(this.edges[i].toJSON());
+    }
+              
+    return(jo);
   }
 
   toString () {
+    return(JSON.stringify(this.toJson()));
+    
+    /*
     var s, delim;
     s = '{  ';
     
-    /*if (this.id)
-      s += '"id": '+this.id+', ';*/
+    \/*if (this.id)
+      s += '"id": '+this.id+', ';*\/
       
     s += '"x0":'+this.x0+', "y0":'+this.y0+', ';
       
@@ -1332,7 +1384,7 @@ class Blueprint {
     // If method is not set, assign name
     s += '"method":"'+(this.method ? this.method : this.name)+'", ';  
     
-    /* Variables */
+    \/* Variables *\/
     var usedTypes = [];
     
     s += '"variables": [ ';
@@ -1353,16 +1405,16 @@ class Blueprint {
     
     s += '], ';
     
-    /* Types */
+    \/* Types *\/
     if (usedTypes.length > 0)
       s += '"types": '+JSON.stringify(usedTypes)+', ';
     
-    /* Input */
-    var input = '"input": [', /*k = 0,*/ value;
+    \/* Input *\/
+    var input = '"input": [', \/*k = 0,*\/ value;
     
     // Check if returns a value
-    if (!this.returns())
-      input += '{ "type": '+BPTypeID.EXEC+',  "label": "" }';
+    //if (!this.returns())
+      input += '{ "type": '+BPTypeID.EXEC+',  "label": "" },';
     
     for (var i=0; i<this.entryPointNode.connectors.length; i++) {
       if (!this.entryPointNode.connectors[i].exec) {
@@ -1383,11 +1435,11 @@ class Blueprint {
     
     s += input + ', ';
     
-    /* Output */
+    \/* Output *\/
     var joutput = [];
     
-    if (!this.returns()) {
-      var jexec = { "type": BPTypeID.EXEC,  "label": ""};
+    if (true\/*!this.returns()*\/) {
+      var jexec = { "type": BPTypeID.EXEC, "label": ""};
       joutput.push(jexec);
     }
     
@@ -1395,8 +1447,12 @@ class Blueprint {
       if (!this.returnNode.connectors[i].exec) {
         var jconn = this.returnNode.connectors[i].toJSON();
         
+        jconn.java = { "references": {"type": this.returnNode.connectors[i].getDataType().name, "name":"out_"+i }};
+        
         if (jconn.hasOwnProperty('value'))
           delete jconn.value;
+          
+        console.log (jconn);
  
         joutput.push(jconn);
       }
@@ -1405,7 +1461,7 @@ class Blueprint {
     s += '"output": '+JSON.stringify(joutput) + ', ';
     //console.log ('"output": '+JSON.stringify(joutput) + ', ');
     
-    /* Nodes */
+    \/* Nodes *\/
     s += '"nodes": [ ';
 
     for (var i=0; i<this.nodes.length; i++) {
@@ -1414,10 +1470,10 @@ class Blueprint {
       var content;
       
       switch (this.nodes[i].type) {
-        /*case BPNodeTypeID.BLUEPRINT:
+        \/*case BPNodeTypeID.BLUEPRINT:
           var bp = (NodeBlueprint(this.nodes[i]);
           content = bp.toString();
-          break;*/
+          break;*\/
       
         default:
           content = this.nodes[i].toString();
@@ -1429,7 +1485,7 @@ class Blueprint {
     
     s += '], ';
     
-    /* Edges */
+    \/* Edges *\/
     s += '"edges": [ ';
     for (var i=0; i<this.edges.length; i++) {
       delim = i > 0 ? "," : "";
@@ -1440,8 +1496,10 @@ class Blueprint {
     s += ' }';
     
     return (s);
+    */
   }
   
+  /*
   toJson () {
     //console.log (this.toString());
     try {
@@ -1452,7 +1510,7 @@ class Blueprint {
       console.log (this.toString());
       return null;
     }
-  }
+  }*/
 }
 
 

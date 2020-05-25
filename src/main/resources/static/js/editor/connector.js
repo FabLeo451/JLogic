@@ -353,6 +353,10 @@ class Connector {
     return(this.pinType);
   }
   
+  getDataType () {
+    return(this.dataType);
+  }
+  
   setType (typeId) {
     this.setDataType (typeId);
     this.setPinType (typeId);
