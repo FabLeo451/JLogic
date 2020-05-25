@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import com.lionsoft.jlogic.BlueprintType;
 
 @Service
+//@Transactional
 public class BlueprintService {
 
   @Autowired
@@ -111,7 +113,7 @@ public class BlueprintService {
 	  
 	  BlueprintEntity blueprint = new BlueprintEntity (UUID.randomUUID().toString(), name, type);
 	  blueprint.setProgram(program);
-	  repository.saveAndFlush(blueprint);
+	  repository.save(blueprint);
 	  
 	  //String filename = program.getMyDir()+"/BP_"+blueprint.getId()+".json";
 	  

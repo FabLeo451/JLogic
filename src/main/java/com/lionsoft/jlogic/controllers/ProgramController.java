@@ -8,9 +8,10 @@ import java.io.IOException;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
-import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.core.io.Resource;
@@ -94,15 +95,35 @@ public class ProgramController {
 	  if (program.isPresent()) {
 	    BlueprintEntity blueprint = blueprintService.create(program.get(), BlueprintType.GENERIC, name);
 	    
-	    if (blueprint != null)
+	    if (blueprint != null) {
 	      logger.info("Created "+blueprint.toString());
-	    else {
+	      
+	      program.get().addBlueprint(blueprint);
+	      /*
+	      while (true) {
+	        Optional<BlueprintEntity> b = blueprintService.findById(blueprint.getId());
+	        
+	        if (b.isPresent())
+	          break;
+	          
+	        logger.info("Waiting for blueprint...");
+	        
+	        try {
+	          TimeUnit.SECONDS.sleep(3);
+	        } catch (InterruptedException e) {
+	          e.printStackTrace();
+	        }
+	      }*/
+	  
+	    } else {
 	      logger.error("Can't create blueprint "+name);
 	      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't create blueprint "+name);
 	    }
 	  } else {
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found: "+programId);
 	  }
+	  
+
 	  
 		return new ResponseEntity<>(tree.equals("0") ? "" : catalogService.getCatalog().toString(), HttpStatus.OK);
 	}

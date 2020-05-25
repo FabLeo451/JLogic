@@ -214,6 +214,10 @@ public class ProgramEntity {
     public List<BlueprintEntity> getBlueprints() {
       return (blueprints);
     }
+
+    public void addBlueprint(BlueprintEntity b) {
+      blueprints.add(b);
+    }
     
 	  public String getMyDir() {
 		  //return home.getDir()+"/../data/program/"+getId();

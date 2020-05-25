@@ -346,6 +346,8 @@ function myCallback (xhttp) {
       
       var jresponse = null, status, message, output;
       
+      //console.log(xhttp.responseText);
+      
       try {
         jresponse = JSON.parse(xhttp.responseText);
         
@@ -367,10 +369,10 @@ function myCallback (xhttp) {
           
         }
         else {
+        }
           // Update catalog tree
           jsonResponse = jresponse;
           refreshTable ();
-        }
       }
     }
     else {

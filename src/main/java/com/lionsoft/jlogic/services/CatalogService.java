@@ -45,6 +45,8 @@ public class CatalogService {
     List<ProgramEntity> programs = programRepository.findAll();
     
     for (ProgramEntity p : programs) {
+      //System.out.println(p.toString());
+      
       JSONObject jprogram = new JSONObject();
       jprogram.put("name", p.getName());
       jprogram.put("type", 1);
@@ -63,6 +65,8 @@ public class CatalogService {
       
       if (p.getBlueprints() != null) {
         for (BlueprintEntity b : p.getBlueprints()) {
+          //System.out.println("   "+b.toString());
+          
           JSONObject jbp = new JSONObject();
           jbp.put("id", b.getId());
           jbp.put("name", b.getName());
