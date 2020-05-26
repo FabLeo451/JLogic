@@ -653,7 +653,9 @@ class Connector {
     
     jo.id = this.id;
     jo.dataType = this.dataType.id;
+    jo.dataTypeName = this.dataType.name;
     jo.pinType = this.pinType.id;
+    jo.pinTypeName = this.pinType.name;
     jo.label = this.getLabel();
     jo.exec = this.exec;
     jo.dimensions = this.dimensions;
