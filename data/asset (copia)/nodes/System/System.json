@@ -1,0 +1,15 @@
+[
+  {
+    "name": "Get Context",
+    "type": 4,
+    "version": 1,
+    "input": [
+      { "type": 0, "label": "" }
+    ],
+    "output": [
+      { "type": 0, "label": "" },
+      { "type": 5, "label": "Context" }
+    ]
+  }
+]
+

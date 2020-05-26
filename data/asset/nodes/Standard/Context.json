@@ -1,0 +1,31 @@
+{
+  "nodes": [
+    {
+      "name": "HTTP Get Parameter",
+      "type": 4,
+      "version": 1,
+      "java": "if (context.getParameters() != null) { out{1} = context.getParameters().size() > 0 ? (context.getParameters().containsKey(in{1}) ? context.getParameters().get(in{1})[0] : \"\") : \"\"; } else out{1} = \"\";",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Name", "value":"", "single_line":true }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Value", "java": {"references": { "type":"String", "name":"param"}}}
+      ]
+    },
+    {
+      "name": "HTTP Set Response",
+      "type": 4,
+      "version": 1,
+      "java": "context.setResponse(in{1});",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Response", "value":"" }
+      ],
+      "output": [
+        { "type": 0, "label": "" }
+      ]
+    }
+  ]
+}

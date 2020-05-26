@@ -1,0 +1,49 @@
+{
+  "nodes": [
+    {
+      "name": "Get property",
+      "type": 4,
+      "version": 1,
+      "import": ["java.util.Properties"],
+      "java":"switch(in{1}) { case 0: out{1} = System.getProperty(in{2}); break; case 1: out{1} = context.globalProperties.getProperty(in{2}); break; default: out{1} = context.programProperties.getProperty(in{2}); break; }",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 1, "label": "Properties", "value": 0, "enum": [ "System", "Global", "Program" ] },
+        { "type": 3, "label": "Key", "value": "", "single_line": true, "not_null":true }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Value", "java": { "references":{"type":"String", "name":"value"} } }
+      ]
+    },
+    {
+      "name": "Set property",
+      "type": 4,
+      "version": 1,
+      "import": ["java.util.Properties"],
+      "java":"out{1} = in{2}; context.programProperties.setProperty(in{1}, in{2});",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Key", "value": "", "single_line": true, "not_null":true },
+        { "type": 3, "label": "Value", "value": "", "single_line": true, "not_null":true }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Value", "java": { "references":{"type":"String", "name":"value"} } }
+      ]
+    },
+    {
+      "name": "Save properties",
+      "type": 4,
+      "version": 1,
+      "import": ["java.util.Properties", "java.io.*"],
+      "java":"try (OutputStream output = new FileOutputStream(context.programPropertiesFile)) { context.programProperties.store(output, null); } catch (IOException io) { io.printStackTrace(); }",
+      "input": [
+        { "type": 0, "label": "" }
+      ],
+      "output": [
+        { "type": 0, "label": "" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Array Get",
+  "icon": "<i class=\"icon i-ellipsis-h\"></i>",
+  "type": 5,
+  "version": 1,
+  "inner_text": "[&nbsp;]",
+  "java": "in{0}[in{1}]",
+  "input": [
+    { "type": -1, "label": "Array", "dimensions":1 },
+    { "type": 1, "label": "Index", "value":0 }
+  ],
+  "output": [
+    { "type": -1, "label": "Element" }
+  ]
+}

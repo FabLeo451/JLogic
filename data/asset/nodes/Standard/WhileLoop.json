@@ -1,0 +1,15 @@
+{
+  "name": "While Loop",
+  "icon": "<i class=\"icon i-retweet\"></i>",
+  "type": 13,
+  "version": 1,
+  "can_delete": true,
+  "input": [
+    { "type": 0, "label": "" },
+    { "type": 4, "label": "Condition" }
+  ],
+  "output": [
+    { "type": 0, "label": "Iteration" },
+    { "type": 0, "label": "Completed" }
+  ]
+}

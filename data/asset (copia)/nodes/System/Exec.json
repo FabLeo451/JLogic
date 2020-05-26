@@ -1,0 +1,21 @@
+{
+  "nodes": [
+    {
+      "name": "Exec",
+      "icon": "<i class=\"icon i-cog\"></i>",
+      "type": 4,
+      "version": 1,
+      "addInput": { "type": 3, "label": "Argument", "value": "" },
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Input", "value": "" },
+        { "type": 3, "label": "Program", "value": "" }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 1, "label": "Exit code" },
+        { "type": 3, "label": "Output" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+   "output":[
+      {
+         "label":"",
+         "type":0
+      }
+   ],
+   "input":[
+      {
+         "label":"",
+         "type":0
+      },
+      {
+         "label":"input",
+         "type":3,
+         "value":"",
+         "dimensions":1
+      }
+   ],
+   "variables":[
+
+   ],
+   "nodes":[
+      {
+         "output":[
+            {
+               "pinType":0,
+               "dataType":0,
+               "id":1,
+               "label":"Start",
+               "exec":true,
+               "dimensions":0
+            },
+            {
+               "pinType":3,
+               "dataType":3,
+               "id":3,
+               "label":"input",
+               "exec":false,
+               "dimensions":1
+            }
+         ],
+         "inner_text":" ",
+         "input":[
+
+         ],
+         "can_delete":false,
+         "name":"Entry point",
+         "x":50,
+         "icon":"<i class=\"icon i-sign-in\"><\/i>",
+         "y":250,
+         "id":1,
+         "type":0,
+         "version":1
+      },
+      {
+         "output":[
+
+         ],
+         "inner_text":" ",
+         "input":[
+            {
+               "pinType":0,
+               "dataType":0,
+               "id":2,
+               "label":"",
+               "exec":true,
+               "dimensions":0
+            }
+         ],
+         "can_delete":false,
+         "name":"Return",
+         "x":650,
+         "icon":"<i class=\"icon i-sign-out\"><\/i>",
+         "y":250,
+         "id":2,
+         "type":1,
+         "version":1
+      }
+   ],
+   "y0":0,
+   "x0":0,
+   "name":"Main",
+   "method":"_main",
+   "type":1,
+   "edges":[
+
+   ]
+}

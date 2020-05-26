@@ -1,0 +1,18 @@
+{
+  "name": "For Loop",
+  "icon": "<i class=\"icon i-retweet\"></i>",
+  "type": 9,
+  "version": 1,
+  "java":"@ForLoop.java",
+  "input": [
+    { "type": 0, "label": "" },
+    { "type": 1, "label": "From", "value":0 },
+    { "type": 1, "label": "To", "value":0 },
+    { "type": 4, "label": "Break", "value": false }
+  ],
+  "output": [
+    { "type": 0, "label": "Iteration" },
+    { "type": 1, "label": "Index", "java":{ "references": {"type":"Integer", "name":"index"}} },
+    { "type": 0, "label": "Completed" }
+  ]
+}

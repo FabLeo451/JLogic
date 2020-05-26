@@ -1,0 +1,16 @@
+  {
+    "name": "Log",
+    "type": 4,
+    "version": 1,
+    "can_delete": true,
+    "input": [
+      { "type": 0, "label": "" },
+      { "type": 3, "label": "Text", "value": "" },
+      { "type": 4, "label": "Timestamp", "value": true },
+      { "type": 4, "label": "New line", "value": true },
+      { "type": 4, "label": "Only if tracing", "value": false }
+    ],
+    "output": [
+      { "type": 0, "label": "" }
+    ]
+  }

@@ -1,0 +1,33 @@
+{
+  "nodes": [
+    {
+      "name": "Print",
+      "type": 4,
+      "version": 1,
+      "can_delete": true,
+      "java":"System.out.println(in{1});",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": -1, "label": "Object" }
+      ],
+      "output": [
+        { "type": 0, "label": "" }
+      ]
+    },
+    {
+      "name": "Print String",
+      "type": 4,
+      "version": 1,
+      "can_delete": true,
+      "java":"System.out.println(in{1});",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Text", "value": "" }
+      ],
+      "output": [
+        { "type": 0, "label": "" }
+      ]
+    }
+  ]
+}
+

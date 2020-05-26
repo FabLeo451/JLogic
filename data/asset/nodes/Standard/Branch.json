@@ -1,0 +1,15 @@
+{
+  "name": "Branch",
+  "icon": "<i class=\"icon i-code-branch\"></i>",
+  "type": 3,
+  "version": 1,
+  "can_delete": true,
+  "input": [
+    { "type": 0, "label": "" },
+    { "type": 4, "label": "Condition" }
+  ],
+  "output": [
+    { "type": 0, "label": "True" },
+    { "type": 0, "label": "False" }
+  ]
+}

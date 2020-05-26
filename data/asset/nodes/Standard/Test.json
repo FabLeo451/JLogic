@@ -1,0 +1,14 @@
+  {
+    "name": "Test",
+    "type": 4,
+    "version": 1,
+    "java":"out{1} = 5/0;",
+    "input": [
+      { "type": 0, "label": "" },
+      { "type": 3, "label": "Text", "value": "" }
+    ],
+    "output": [
+      { "type": 0, "label": "" },
+      { "type": 1, "label": "code", "java": { "references":{"type":"Integer", "name":"code"} } }
+    ]
+  }

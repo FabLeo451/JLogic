@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    {
+      "name": "File Load",
+      "type": 4,
+      "version": 1,
+      "import": ["java.io.FileReader", "java.nio.file.Files", "java.nio.file.Paths", "java.io.IOException", "java.nio.file.NoSuchFileException"],
+      "java": "@Load.java",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "File name", "value": "", "single_line":true }
+      ],
+      "output": [
+        { "type": 0, "label": "Success" },
+        { "type": 3, "label": "Content", "java": {"references": {"type":"String", "name":"content"}} },
+        { "type": 0, "label": "Error" },
+        { "type": 3, "label": "Message", "java": {"references": {"type":"String", "name":"msg"}} }
+      ]
+    },
+    {
+      "name": "File Save",
+      "type": 4,
+      "version": 1,
+      "import": ["java.io.FileWriter", "java.nio.file.Files", "java.nio.file.Paths", "java.io.IOException", "java.nio.file.NoSuchFileException"],
+      "java": "@Save.java",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "File name", "value": "", "single_line":true },
+        { "type": -1, "label": "Buffer" }
+      ],
+      "output": [
+        { "type": 0, "label": "Success" },
+        { "type": 0, "label": "Error" },
+        { "type": 3, "label": "Message", "java": {"references": {"type":"String", "name":"msg"}} }
+      ]
+    }
+  ]
+}

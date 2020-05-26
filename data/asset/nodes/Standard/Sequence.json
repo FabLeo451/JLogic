@@ -1,0 +1,14 @@
+{
+  "name": "Sequence",
+  "icon": "<i class=\"icon i-list-ol\"></i>",
+  "type": 2,
+  "version": 1,
+  "input": [
+    { "type": 0, "label": "" }
+  ],
+  "output": [
+    { "type": 0, "label": "First" },
+    { "type": 0, "label": "Then" }
+  ],
+  "addOutput": { "type": 0, "label": "Then" }
+}

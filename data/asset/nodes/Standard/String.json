@@ -1,0 +1,50 @@
+{
+  "nodes": [
+    {
+      "name": "String Concat",
+      "type": 5,
+      "version": 1,
+      "inner_text": "+",
+      "symbol": "+",
+      "addInput": { "type": 3, "label": "", "value": "" },
+      "input": [
+        { "type": 3, "label": "", "value": "" },
+        { "type": 3, "label": "", "value": "" },
+      ],
+      "output": [
+        { "type": 3, "label": "" }
+      ]
+    },
+    {
+      "name": "String Split Lines",
+      "type": 4,
+      "version": 1,
+      "java": "out{1} = in{1}.split(\"\\\\r?\\\\n\"); out{2} = out{1}.length; ",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "String" }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Lines", "dimensions":1, "java": {"references": {"type":"String[]", "name":"lines"}} },
+        { "type": 1, "label":"Count", "java": {"references": {"type":"Integer", "name":"count"}} }
+      ]
+    },
+    {
+      "name": "String Split",
+      "type": 4,
+      "version": 1,
+      "java": "out{1} = in{1}.split(in{2}, -1); out{2} = out{1}.length; ",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "String", "value":"" },
+        { "type": 3, "label": "Regex", "value":"", "single_line":true }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Array", "dimensions":1, "java": {"references": {"type":"String[]", "name":"lines"}} },
+        { "type": 1, "label":"Count", "java": {"references": {"type":"Integer", "name":"count"}} }
+      ]
+    }
+  ]
+}

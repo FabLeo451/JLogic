@@ -1,0 +1,82 @@
+{
+  "types": [
+    { "id":300, "name":"ElasticsearchClient", "color":"lightslategray" }
+  ],
+  "nodes": [
+    {
+      "name": "Elasticsearch Client",
+      "type": 4,
+      "version": 1,
+      "import": ["com.lionsoft.elasticsearch.ElasticsearchClient", "org.elasticsearch.rest.RestStatus", "java.util.*"],
+      "jar": ["ElasticsearchClient.jar"],
+      "java":"out{1} = new ElasticsearchClient((in{1} == 0 ? \"http\" : \"https\"), in{2}, in{3}, in{4}, in{5}, in{6}, in{7});",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 1, "label": "Protocol", "value": 0, "enum": [ "HTTP", "HTTPS" ] },
+        { "type": 3, "label": "Hostname", "value": "localhost" },
+        { "type": 1, "label": "Port", "value": 9200 },
+        { "type": 3, "label": "Username", "value": "" },
+        { "type": 3, "label": "Password", "value": "", "password":true },
+        { "type": 4, "label": "Check certificate", "value": false },
+        { "type": 3, "label": "Certificate", "value": "", "single_line":true },
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 300, "label": "Client", "java": { "references":{"type":"ElasticsearchClient", "name":"client"} } }
+      ]
+    },
+    {
+      "name": "Elasticsearch Close Client",
+      "type": 4,
+      "version": 1,
+      "import": ["com.lionsoft.elasticsearch.ElasticsearchClient", "org.elasticsearch.rest.RestStatus", "java.util.*"],
+      "jar": ["ElasticsearchClient.jar"],
+      "java":"in{1}.close();",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 300, "label": "Client" }
+      ],
+      "output": [
+        { "type": 0, "label": "" }
+      ]
+    },
+    {
+      "name": "Elasticsearch Empty Index",
+      "type": 4,
+      "version": 1,
+      "import": ["com.lionsoft.elasticsearch.ElasticsearchClient", "org.elasticsearch.rest.RestStatus", "java.util.*"],
+      "jar": ["ElasticsearchClient.jar"],
+      "java":"out{2} = in{1}.emptyIndex(in{2});",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 300, "label": "Client" },
+        { "type": 3, "label": "Index", "value": "", "single_line":true }
+      ],
+      "output": [
+        { "type": 0, "label": "Success" },
+        { "type": 300, "label": "Client", "java": { "references":{"input":1 } } },
+        { "type": 1, "label": "Deleted", "java": { "references":{"type":"Long", "name":"deleted"} } }
+      ]
+    },
+    {
+      "name": "Elasticsearch Put Document",
+      "type": 4,
+      "version": 1,
+      "import": ["com.lionsoft.elasticsearch.ElasticsearchClient", "org.elasticsearch.rest.RestStatus", "java.util.*"],
+      "jar": ["ElasticsearchClient.jar"],
+      "java":"if (in{1}.putDocumentJSON(in{2}, in{3}, in{4})) { exec{0} } else { out{2} = in{1}.getMessage(); exec{1} }",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 300, "label": "Client", "must_connect":true },
+        { "type": 3, "label": "Index", "value":"", "single_line":true },
+        { "type": 3, "label": "_id", "value":"", "single_line":true },
+        { "type": 200, "label": "Document", "must_connect":true }
+      ],
+      "output": [
+        { "type": 0, "label": "Success" },
+        { "type": 0, "label": "Error" },
+        { "type": 3, "label": "Message", "java": { "references":{"type":"String", "name":"msg"} } }
+      ]
+    }
+  ]
+}

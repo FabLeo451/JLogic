@@ -1,0 +1,11 @@
+{
+"types": [
+        { "id":-1, "name":"Any", "color":"gray" },
+        { "id":0, "name":"Exec", "color":"SteelBlue", "exec":true },
+        { "id":1, "name":"Integer", "color":"green" },
+        { "id":2, "name":"Double", "color":"darkorange" },
+        { "id":3, "name":"String", "color":"mediumpurple" },
+        { "id":4, "name":"Boolean", "color":"firebrick" }
+        
+      ]
+}

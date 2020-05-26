@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Telegram Send Message",
+    "icon": "<i class=\"icon i-paper-plane\"></i>",
+    "type": 4,
+    "version": 1,
+    "input": [
+      { "type": 0, "label": "" },
+      { "type": 3, "label": "Bot token", "value": "" },
+      { "type": 3, "label": "Chat id", "value": "" },
+      { "type": 3, "label": "Text", "value": "" },
+      { "type": 4, "label": "URL encode", "value": true }
+    ],
+    "output": [
+      { "type": 0, "label": "" },
+      { "type": 1, "label": "Result code" },
+      { "type": 3, "label": "Result message" },
+      { "type": 1, "label": "HTTP code" },
+      { "type": 3, "label": "HTTP response" }
+    ]
+  }
+]
+

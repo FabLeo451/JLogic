@@ -1,0 +1,13 @@
+        {
+          "name": "Delay",
+          "icon": "<i class=\"icon i-clock\"></i>",
+          "type": 4,
+          "version": 1,
+          "input": [
+            { "type": 0, "label": "" },
+            { "type": 1, "label": "Seconds", "value": 0 }
+          ],
+          "output": [
+            { "type": 0, "label": "" }
+          ]
+        }

@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "name": "Length",
+      "type": 5,
+      "version": 1,
+      "java": "in{0}.length()",
+      "input": [
+        { "type": -1, "label": "Object" }
+      ],
+      "output": [
+        { "type": 1, "label": "Length"}
+      ]
+    },
+    {
+      "name": "Array Length",
+      "type": 5,
+      "version": 1,
+      "java": "in{0}.length",
+      "input": [
+        { "type": -1, "label": "Array", "dimensions":1 }
+      ],
+      "output": [
+        { "type": 1, "label": "Length" }
+      ]
+    }
+  ]
+}

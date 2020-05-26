@@ -1,0 +1,17 @@
+[
+          {
+          "name": "Multiply float",
+          "type": 5,
+          "version": 1,
+          "inner_text": "&times;",
+          "addInput": { "type": 2, "label": "", "value": "" },
+          "input": [
+            { "type": 2, "label": "", "value": 0 },
+            { "type": 2, "label": "", "value": 0 }
+          ],
+          "output": [
+            { "type": 2, "label": "" }
+          ]
+        }
+    ]
+

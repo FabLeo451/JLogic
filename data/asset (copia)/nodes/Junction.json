@@ -1,0 +1,12 @@
+{
+  "name": "Junction",
+  "type": 11,
+  "version": 1,
+  "can_delete": true,
+  "input": [
+    { "type": 0, "label": "" }
+  ],
+  "output": [
+    { "type": 0, "label": "" }
+  ]
+}

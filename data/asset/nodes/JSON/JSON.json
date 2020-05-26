@@ -1,0 +1,109 @@
+{
+  "types": [
+    { "id":200, "name":"JSONObject", "color":"lightslategray" },
+    { "id":201, "name":"JSONArray", "color":"lightslategray" }
+  ],
+  "nodes": [
+    {
+      "name": "JSON Object New",
+      "type": 4,
+      "version": 1,
+      "jar": ["json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"out{1} = new JSONObject();",
+      "input": [
+        { "type": 0, "label": "" }
+      ],
+      "output": [
+        { "type": 0, "label": "Success" },
+        { "type": 200, "label": "Json", "java": { "references":{"type":"JSONObject", "name":"jo"} } }
+      ]
+    },
+    {
+      "name": "JSON Parse",
+      "type": 4,
+      "version": 1,
+      "jar": ["json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*", "org.json.simple.parser.*"],
+      "java":"@Parse.java",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "String", "value": "" }
+      ],
+      "output": [
+        { "type": 0, "label": "Success" },
+        { "type": 200, "label": "Json", "java": { "references":{"type":"JSONObject", "name":"jo"} } },
+        { "type": 0, "label": "Error" }
+      ]
+    },
+    {
+      "name": "JSON Get String",
+      "type": 4,
+      "version": 1,
+      "jar": ["json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"out{1} = (String) in{1}.get(in{2});",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 200, "label": "Json" },
+        { "type": 3, "label": "Key", "value": "", "single_line":true }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Value", "java": { "references":{"type":"String", "name":"s"} } }
+      ]
+    },
+    {
+      "name": "JSON To String",
+      "type": 4,
+      "version": 1,
+      "jar": ["json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"out{1} = in{1}.toJSONString();",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 200, "label": "Json" }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "String", "java": { "references":{"type":"String", "name":"s"} } }
+      ]
+    },
+    {
+      "name": "JSON Put",
+      "type": 4,
+      "version": 1,
+      "jar": ["json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"in{1}.put(in{2}, in{3});",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 200, "label": "Json" },
+        { "type": 3, "label": "Key", "value":"", "single_line":true },
+        { "type": -1, "label": "Object" }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 200, "label": "Json", "java": { "references":{"input":1} } }
+      ]
+    },
+    {
+      "name": "JSON Put String",
+      "type": 4,
+      "version": 1,
+      "jar": ["json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"in{1}.put(in{2}, in{3});",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 200, "label": "Json" },
+        { "type": 3, "label": "Key", "value":"", "single_line":true },
+        { "type": 3, "label": "String", "value":"" }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 200, "label": "Json", "java": { "references":{"input":1} } }
+      ]
+    }
+  ]
+}

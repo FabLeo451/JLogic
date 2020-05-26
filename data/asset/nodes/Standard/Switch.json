@@ -1,0 +1,14 @@
+{
+  "name": "Switch Integer",
+  "_icon": "<i class=\"icon i-list-ol\"></i>",
+  "type": 12,
+  "version": 1,
+  "input": [
+    { "type": 0, "label": "" },
+    { "type": 1, "label": "", "value":0 }
+  ],
+  "output": [
+    { "pinType": 0, "dataType": 1, "label": "Default" }
+  ],
+  "addOutput": { "pinType": 0, "dataType": 1, "label": "Case", "value":0 }
+}

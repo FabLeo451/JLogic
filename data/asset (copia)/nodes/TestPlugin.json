@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Test Plugin",
+    "type": 4,
+    "version": 1,
+    "plugin": "test.so",
+    "function_name": "testf",
+    "input": [
+      { "type": 0, "label": "In" },
+      { "type": 3, "label": "", "value": "Foo" }
+    ],
+    "output": [
+      { "type": 0, "label": "Out" }
+    ]
+  }
+]

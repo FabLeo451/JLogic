@@ -1,0 +1,139 @@
+{
+  "nodes": [
+    {
+      "name": "String Concat",
+      "type": 4,
+      "version": 1,
+      "plugin": "string.so",
+      "function_name": "String_Concat",
+      "inner_text": "+",
+      "addInput": { "type": 3, "label": "", "value": "" },
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "", "value": "" },
+        { "type": 3, "label": "", "value": "" },
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "" }
+      ]
+    },
+    {
+      "name": "String Replace",
+      "type": 4,
+      "version": 1,
+      "plugin": "string.so",
+      "function_name": "String_Replace",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "String", "value": "" },
+        { "type": 3, "label": "Old", "value": "" },
+        { "type": 3, "label": "New", "value": "" },
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "" }
+      ]
+    },
+    {
+      "name": "String Split",
+      "type": 4,
+      "version": 1,
+      "plugin": "string.so",
+      "function_name": "String_Split",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "String", "value": "" },
+        { "type": 3, "label": "Delimiters", "value": "", "single_line": true },
+        { "type": 3, "label": "Quaifier", "value": "", "single_line": true },
+        { "type": 4, "label": "Exclude null values", "value": false }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Array", "array": true },
+        { "type": 1, "label": "Count" }
+      ]
+    },
+    {
+      "name": "String Split Lines",
+      "type": 4,
+      "version": 1,
+      "plugin": "string.so",
+      "function_name": "String_Split_Lines",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "String", "value": "" }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Array", "array": true },
+        { "type": 1, "label": "Count" }
+      ]
+    },
+    {
+      "name": "String Array Get",
+      "type": 4,
+      "version": 1,
+      "plugin": "string.so",
+      "function_name": "String_Array_Get",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Array", "value": "", "array": true },
+        { "type": 1, "label": "Index", "value": 0 }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Value" }
+      ]
+    },
+    {
+      "name": "String Array Get Associative",
+      "type": 4,
+      "version": 1,
+      "plugin": "string.so",
+      "function_name": "String_Array_Get_Associative",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Values", "value": "", "array": true },
+        { "type": 3, "label": "Headers", "value": "", "array": true },
+        { "type": 3, "label": "Field", "value": "" }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Value" }
+      ]
+    },
+    {
+      "name": "Regular Expression",
+      "type": 4,
+      "version": 1,
+      "plugin": "string.so",
+      "function_name": "Regexpr",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "String", "value": "" },
+        { "type": 3, "label": "Pattern", "value": "", "single_line": true },
+      ],
+      "output": [
+        { "type": 0, "label": "Success" },
+        { "type": 0, "label": "Errors" },
+        { "type": 3, "label": "Matches", "array": true },
+        { "type": 1, "label": "Number of matches" }
+      ]
+    },
+    {
+      "name": "String To Integer",
+      "type": 5,
+      "version": 1,
+      "plugin": "string.so",
+      "function_name": "String_To_Integer",
+      "input": [
+        { "type": 3, "label": "" }
+      ],
+      "output": [
+        { "type": 1, "label": "" }
+      ]
+    }
+
+  ]
+}

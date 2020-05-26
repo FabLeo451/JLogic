@@ -1,0 +1,17 @@
+{
+"node_types": [
+        { "id":0, "name":"Entry point", "color":"darkslategray" },   
+        { "id":1, "name":"Return", "color":"darkslategray" },
+        { "id":2, "name":"Sequence", "color":"slategray" },    
+        { "id":3, "name":"Branch", "color":"slategray" },    
+        { "id":4, "name":"Internal", "color":"darkgreen" },
+        { "id":5, "name":"Operator", "color":"slategray" } ,
+        { "id":6, "name":"Get", "color":"slategray" } ,
+        { "id":7, "name":"Set", "color":"slategray" } ,
+        { "id":8, "name":"Blueprint", "color":"steelblue" },
+        { "id":9, "name":"ForLoop", "color":"slategray" },
+        { "id":10, "name":"Exit", "color":"orange" },
+        { "id":11, "name":"Junction", "color":"SteelBlue" },
+        { "id":12, "name":"Switch Integer", "color":"slategray" }  
+      ]
+}
