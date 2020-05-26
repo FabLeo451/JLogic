@@ -1345,7 +1345,7 @@ class Blueprint {
           
         console.log (jconn);
  
-        jo.joutput.push(jconn);
+        jo.output.push(jconn);
       }
     }
     
