@@ -4,7 +4,7 @@
 boolean _{node.id}_getOK = true;
 
 try {
-    if (in{3} != null)
+    if (!in{3}.isEmpty())
       in{1}.get(in{2}, in{3});
     else
       in{1}.get(in{2});

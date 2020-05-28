@@ -311,32 +311,32 @@ public class Program {
     if (_conn_channel_11 != null) {
       // Node: SFTP List
 
-      boolean _7_ls_result = true;
-      Vector _7_ls_vec = null;
+      boolean _9_ls_result = true;
+      Vector _9_ls_vec = null;
 
       try {
-        if ("" != null) _7_ls_vec = _conn_channel_11.ls(".");
-        else _7_ls_vec = _conn_channel_11.ls("");
+        if ("*te*".isEmpty()) _9_ls_vec = _conn_channel_11.ls(".");
+        else _9_ls_vec = _conn_channel_11.ls("*te*");
 
-        _conn_ls_25 = new ChannelSftp.LsEntry[_7_ls_vec.size()];
-        _7_ls_vec.toArray(_conn_ls_25);
+        _conn_ls_25 = new ChannelSftp.LsEntry[_9_ls_vec.size()];
+        _9_ls_vec.toArray(_conn_ls_25);
 
-        _7_ls_result = true;
+        _9_ls_result = true;
       } catch (SftpException e) {
         _conn_msg_27 = e.getMessage();
-        _7_ls_result = false;
+        _9_ls_result = false;
       } catch (ArrayStoreException e) {
         _conn_msg_27 = e.getMessage();
-        _7_ls_result = false;
+        _9_ls_result = false;
       } catch (NullPointerException e) {
         _conn_msg_27 = e.getMessage();
-        _7_ls_result = false;
+        _9_ls_result = false;
       }
 
-      if (_7_ls_result) {
+      if (_9_ls_result) {
         // Node: Print
 
-        System.out.println(_conn_ls_25[0]);
+        System.out.println(_conn_ls_25[0].getFilename());
         // Node: SFTP Disconnect
 
         try {

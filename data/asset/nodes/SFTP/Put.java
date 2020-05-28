@@ -2,7 +2,7 @@
 boolean _{node.id}_putOK = true;
 
 try {
-    if (in{3} != null)
+    if (!in{3}.isEmpty())
       in{1}.put(in{2}, in{3});
     else
       in{1}.put(in{2});

@@ -3,7 +3,7 @@ boolean _{node.id}_ls_result = true;
 Vector _{node.id}_ls_vec = null;
 
 try {
-    if (in{2} != null)
+    if (in{2}.isEmpty())
       _{node.id}_ls_vec = in{1}.ls(".");
     else
       _{node.id}_ls_vec = in{1}.ls(in{2});
