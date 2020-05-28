@@ -22,6 +22,13 @@ import java.nio.file.Paths;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import org.json.simple.*;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
+import java.lang.ArrayStoreException;
+import java.util.Vector;
 
 public class Program {
 
@@ -268,5 +275,86 @@ public class Program {
 
     System.out.println(_conn_bp_out_6);
     return;
+  }
+
+  public static void method_SFTP() throws ExitException {
+    ChannelSftp _conn_channel_11 = null;
+    String _conn_msg_13 = null;
+    ChannelSftp.LsEntry[] _conn_ls_25 = null;
+    String _conn_msg_27 = null;
+
+    // Node: SFTP Connect
+
+    // SFTP Connect
+
+    _conn_channel_11 = null;
+
+    try {
+      JSch _3_jsch = new JSch();
+      // _3_jsch.setKnownHosts("/Users/john/.ssh/known_hosts");
+      Session _3_jschSession = _3_jsch.getSession("oracle", "localhost");
+      _3_jschSession.setConfig("StrictHostKeyChecking", "no");
+
+      if (0 == 0) _3_jschSession.setPassword("oracle");
+      /*else
+      _3_jschSession.addIdentity("");*/
+
+      _3_jschSession.connect();
+      _conn_channel_11 = (ChannelSftp) _3_jschSession.openChannel("sftp");
+
+      _conn_channel_11.connect();
+    } catch (JSchException e) {
+      _conn_msg_13 = e.getMessage();
+      _conn_channel_11 = null;
+    }
+
+    if (_conn_channel_11 != null) {
+      // Node: SFTP List
+
+      boolean _7_ls_result = true;
+      Vector _7_ls_vec = null;
+
+      try {
+        if ("" != null) _7_ls_vec = _conn_channel_11.ls(".");
+        else _7_ls_vec = _conn_channel_11.ls("");
+
+        _conn_ls_25 = new ChannelSftp.LsEntry[_7_ls_vec.size()];
+        _7_ls_vec.toArray(_conn_ls_25);
+
+        _7_ls_result = true;
+      } catch (SftpException e) {
+        _conn_msg_27 = e.getMessage();
+        _7_ls_result = false;
+      } catch (ArrayStoreException e) {
+        _conn_msg_27 = e.getMessage();
+        _7_ls_result = false;
+      } catch (NullPointerException e) {
+        _conn_msg_27 = e.getMessage();
+        _7_ls_result = false;
+      }
+
+      if (_7_ls_result) {
+        // Node: Print
+
+        System.out.println(_conn_ls_25[0]);
+        // Node: SFTP Disconnect
+
+        try {
+          _conn_channel_11.disconnect();
+          _conn_channel_11.getSession().disconnect();
+        } catch (JSchException e) {
+        }
+        return;
+      } else {
+        // Node: Exit
+
+        _exit(1, _conn_msg_27);
+      }
+
+    } else {
+      // Node: Exit
+
+      _exit(1, _conn_msg_13);
+    }
   }
 };
