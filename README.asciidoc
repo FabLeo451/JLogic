@@ -6,6 +6,8 @@ JLogic is a tool for creating functions and programs using a graphic interface i
 
 With JLogic you can visually edit, test and deploy functional graphs, called "blueprints", and use them as RESTful APIs or batch scripts.
 
+![example](http://hal9k.altervista.org/jlogic/bp-sample.jpg)
+
 === Key features
 
 * Visual editing
