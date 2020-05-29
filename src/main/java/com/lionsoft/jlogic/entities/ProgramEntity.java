@@ -42,6 +42,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.http.HttpServletRequest;
+
  
 @Entity
 @Table(name="PROGRAM")
@@ -649,9 +650,9 @@ public class ProgramEntity {
     // jar -cvfm Hello.jar MANIFEST.MF Program.class
     args.add("jar");
     args.add("-cvfm");
-    args.add(getName()+".jar");
+    args.add(getJARFilename());
     args.add(mf);
-    args.add("Program.class");
+    args.add(getClassFilename());
                
     for (int i = 0; i < classPathList.size(); i++) {
       args.add(classPathList.get(i));

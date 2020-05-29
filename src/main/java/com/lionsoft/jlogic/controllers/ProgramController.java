@@ -61,7 +61,8 @@ public class ProgramController {
 	  
 	  if (program != null) {
 	    logger.info("Created "+program.toString());
-	    blueprintService.create(program, BlueprintType.MAIN, "Main"/*, programService.getProgramBaseDirectory()+"/"+program.getId()*/);
+	    BlueprintEntity blueprint = blueprintService.create(program, BlueprintType.MAIN, "Main");
+	    //program.addBlueprint(blueprint);
 	  }
 	      
     return (catalogService.getCatalog().toString());

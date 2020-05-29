@@ -344,35 +344,37 @@ function myCallback (xhttp) {
     if (dialogWorking)
       dialogWorking.destroy();
       
-      var jresponse = null, status, message, output;
+    var jresponse = null, status, message, output;
+    
+    //console.log(xhttp.responseText);
+    
+    try {
+      jresponse = JSON.parse(xhttp.responseText);
       
-      //console.log(xhttp.responseText);
-      
-      try {
-        jresponse = JSON.parse(xhttp.responseText);
-        
-        if (jresponse.hasOwnProperty('status')) {
-          status = jresponse.status;
-          message = jresponse.message;
-          output = jresponse.output;
-        }
+      if (jresponse.hasOwnProperty('status') && jresponse.hasOwnProperty('message')) {
+        status = jresponse.status;
+        message = jresponse.message;
+        output = jresponse.output;
       }
-      catch (err) {
-        console.error(err.message);
-      }
+    }
+    catch (err) {
+      console.error(err.message);
+    }
             
     if (xhttp.status == 200) {
-      showSnacknar(BPResult.SUCCESS, "Success", 2000);
+      
       
       if (jresponse) {
-        if (jresponse.hasOwnProperty('status')) {
-          
+        if (jresponse.hasOwnProperty('message')) {
+          showSnacknar(BPResult.SUCCESS, message, 2000);
         }
         else {
-        }
+          showSnacknar(BPResult.SUCCESS, "Success", 2000);
+          
           // Update catalog tree
           jsonResponse = jresponse;
           refreshTable ();
+        }
       }
     }
     else {

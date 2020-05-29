@@ -15,7 +15,7 @@ while [ -h "$SCRIPT" ] ; do
   fi
 done
 
-# determine Elasticsearch home; to do this, we strip from the path until we find
+# determine JLogic home; to do this, we strip from the path until we find
 # bin, and then strip bin (there is an assumption here that there is no nested
 # directory under bin also named bin)
 JL_HOME=`dirname "$SCRIPT"`
