@@ -15,3 +15,9 @@ image:http://hal9k.altervista.org/jlogic/bp-sample.jpg["Area of a circle"]
 * HTTPS and authentication with roles
 * Administration tools
 * Expandable by plugins
+
+== Getting started
+_Under construction_
+
+== Documentation
+_Under construction_
