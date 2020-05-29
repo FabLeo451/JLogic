@@ -45,6 +45,9 @@ public class ProgramController {
   static ApplicationHome home = new ApplicationHome(ProgramController.class);
   
   @Autowired
+  ProgramRepository programRepository;
+  
+  @Autowired
   ProgramService programService;
   
   @Autowired
@@ -63,6 +66,7 @@ public class ProgramController {
 	    logger.info("Created "+program.toString());
 	    BlueprintEntity blueprint = blueprintService.create(program, BlueprintType.MAIN, "Main");
 	    //program.addBlueprint(blueprint);
+	    programRepository.refresh(program);
 	  }
 	      
     return (catalogService.getCatalog().toString());
@@ -99,7 +103,8 @@ public class ProgramController {
 	    if (blueprint != null) {
 	      logger.info("Created "+blueprint.toString());
 	      
-	      program.get().addBlueprint(blueprint);
+	      //program.get().addBlueprint(blueprint);
+	      programRepository.refresh(program.get());
 	      /*
 	      while (true) {
 	        Optional<BlueprintEntity> b = blueprintService.findById(blueprint.getId());

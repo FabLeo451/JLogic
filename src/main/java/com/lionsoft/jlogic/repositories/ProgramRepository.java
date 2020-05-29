@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.List;
  
 @Repository
-public interface ProgramRepository extends JpaRepository<ProgramEntity, Long> {
+public interface ProgramRepository extends CustomRepository<ProgramEntity, Long> {
   List<ProgramEntity> findAll();
   Optional<ProgramEntity> findById(String id);
 }

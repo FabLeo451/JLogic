@@ -5,11 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SpringBootApplication
+@EnableJpaRepositories(repositoryBaseClass = CustomRepositoryImpl.class)
 public class JLogicApplication {
 
   private static final Logger logger = LoggerFactory.getLogger(JLogicApplication.class);
