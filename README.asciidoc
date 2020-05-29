@@ -10,7 +10,6 @@ With JLogic you can visually edit, test and deploy functional graphs, called "bl
 
 * Visual editing
 * RESTful APIs
-* HTTPS
-* User authentication with roles and grants
+* HTTPS and authentication with roles and grants
 * Administration tools
 * Expandable by plugins
