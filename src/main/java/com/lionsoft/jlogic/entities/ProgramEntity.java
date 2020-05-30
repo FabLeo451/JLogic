@@ -29,6 +29,7 @@ import org.json.simple.parser.ParseException;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -546,6 +547,8 @@ public class ProgramEntity {
 	  
 	  logger.info ("Compiling "+getName());
 	  
+	  clean();
+	  
 	  System.setProperty("user.dir", getMyDir());
 	  
 	  if (generateJava()) {
@@ -706,8 +709,17 @@ public class ProgramEntity {
       logger.error("Can't create manifest file");
       return false;
     }
+  
+    List<String> args = new ArrayList<String>();
     
-    // Unpack dependencies
+    // jar -cvfm Hello.jar MANIFEST.MF Program.class
+    args.add("jar");
+    args.add("-cvfm");
+    args.add(getJARFilename());
+    args.add(mf);
+    args.add("../"+className/*getClassFilename()*/); // We are in temp directory
+    
+    // Unpack dependencies in temp directory
     
     String tempDir = getMyDir()+"/temp";
     File tempDirFile = new File(tempDir);
@@ -721,31 +733,31 @@ public class ProgramEntity {
     for (int i = 0; i < classPathList.size(); i++) {
       //args.add(classPathList.get(i));
       logger.info("Unpacking "+classPathList.get(i)+" ...");
-      //unpackJAR(classPathList.get(i), tempDir);
+      unpackJAR(classPathList.get(i), tempDir);
     }
+    
+    //System.setProperty("user.dir", tempDir);
     
     File[] allContents = tempDirFile.listFiles();
     
     if (allContents != null) {
       for (File file : allContents) {
-        System.out.println(file.toString());
+        Path path = Paths.get(file.toString()); 
+        
+        System.out.println(path.getFileName());
+        
+        if (!path.getFileName().toString().equals("META-INF"))
+          args.add(path.getFileName().toString());
       }
     }
-  
-    List<String> args = new ArrayList<String>();
-    
-    // jar -cvfm Hello.jar MANIFEST.MF Program.class
-    args.add("jar");
-    args.add("-cvfm");
-    args.add(getJARFilename());
-    args.add(mf);
-    args.add(className/*getClassFilename()*/);
     
     logger.debug(args.toString());
 
     ProcessBuilder processBuilder = new ProcessBuilder();
     processBuilder.inheritIO().command(args);
-    processBuilder.directory(new File(getMyDir()));
+    
+    // Move in the directory with all dependencies
+    processBuilder.directory(new File(tempDir));
     
     try {
       Process process = processBuilder.start();
