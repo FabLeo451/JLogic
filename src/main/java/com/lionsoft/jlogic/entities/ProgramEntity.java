@@ -52,7 +52,10 @@ public class ProgramEntity {
     public static final int SUCCESS = 0;  
     public static final int METHOD_NOT_FOUND = -1;  
     public static final int BAD_INPUT = -2;  
-    public static final int EXCEPTION = -99; 
+    public static final int EXCEPTION = -99;
+    
+    public final String jarName = "Program.jar";
+    public final String className = "Program.class";
     
     @Transient
     Logger logger = LoggerFactory.getLogger(ProgramEntity.class);
@@ -93,6 +96,9 @@ public class ProgramEntity {
     
     @Transient
     private List<String> classPathList;
+    
+    //@Transient
+    //private List<String> dependencies;
 
     @Transient
 	  private int result;
@@ -230,7 +236,7 @@ public class ProgramEntity {
   }
   
   public String getJARFilename() {
-	  return getMyDir()+"/Program.jar";
+	  return getMyDir()+"/"+jarName;
   }
 	
 	public String getDefaultDepsFilename() {
@@ -246,7 +252,7 @@ public class ProgramEntity {
 	}
 	
 	public String getClassFilename() {
-		return getMyDir()+"/Program.class";
+		return getMyDir()+"/"+className;
 	}
 	
 	public String getLogDir() {
@@ -282,6 +288,11 @@ public class ProgramEntity {
 	  if (!classPathList.contains(cp))
 		  classPathList.add(cp);
 	}
+	/*
+	public void addDependency(String item) {
+	  if (!dependencies.contains(item))
+		  dependencies.add(item);
+	}*/
 	
 	public String getClassesDir() {
 		return home.getDir()+"/../classes";
@@ -290,6 +301,7 @@ public class ProgramEntity {
 	public void loadDeps() {
 	  String content;
     classPathList = new ArrayList<String>();
+    //dependencies = new ArrayList<String>();
     JSONParser jsonParser = new JSONParser();
     JSONArray ja;
 	  
@@ -302,6 +314,7 @@ public class ProgramEntity {
 
       ja.forEach (jdep -> {
         addClassPath(getClassesDir() + "/" + jdep.toString());
+        //addDependency(jdep.toString());
       });
       
       // Others
@@ -311,6 +324,7 @@ public class ProgramEntity {
 
       ja.forEach (jdep -> {
         addClassPath(getClassesDir() + "/" + jdep.toString());
+        //addDependency(jdep.toString());
       });      
     } 
     catch (FileNotFoundException e) {
@@ -610,12 +624,12 @@ public class ProgramEntity {
 	  String manifest;
 	  
 	  manifest = "Manifest-version: 1.0" + System.lineSeparator() +
-               "Main-Class: Program" + System.lineSeparator() +
-               "Class-path:";
+               "Main-Class: Program" + System.lineSeparator();
+               /*"Class-path: ";
                
-    for (int i = 0; i < classPathList.size(); i++) {
-      manifest += " " + classPathList.get(i);
-    }
+    for (int i = 0; i < dependencies.size(); i++) {
+      manifest += " classes/" + dependencies.get(i);
+    }*/
     
     manifest += System.lineSeparator();
                      
@@ -628,6 +642,52 @@ public class ProgramEntity {
       return false;
     }
     
+    logger.debug(manifest);
+    
+    return true;
+	}
+	
+	public boolean unpackJAR(String jarFile, String destDir) {
+	  java.util.jar.JarFile jar;
+	  
+	  try {
+      jar = new java.util.jar.JarFile(jarFile);
+    } catch (IOException e) {
+      logger.error(e.getMessage());
+      return false;
+    }
+    
+    java.util.Enumeration items = jar.entries();
+    
+    while (items.hasMoreElements()) {
+	    java.util.jar.JarEntry file = (java.util.jar.JarEntry) items.nextElement();
+	    java.io.File f = new java.io.File(destDir + java.io.File.separator + file.getName());
+	    
+	    if (file.isDirectory()) { // if its a directory, create it
+		    f.mkdir();
+		    continue;
+	    }
+	    
+	    java.io.InputStream is = null;
+	    java.io.FileOutputStream fos = null;
+	    
+	    try {
+	      is = jar.getInputStream(file); // get the input stream
+	      fos = new java.io.FileOutputStream(f);
+	      
+	      while (is.available() > 0) {  // write contents of 'is' to 'fos'
+		      fos.write(is.read());
+	      }
+	      
+	      fos.close();
+	      is.close();
+	    
+      } catch (IOException e) {
+        logger.error(e.getMessage());
+      } finally {
+	    }
+    }
+    
     return true;
 	}
 			
@@ -635,14 +695,41 @@ public class ProgramEntity {
 	  boolean result = true;
 	  String mf = getMyDir()+"/MANIFEST.MF";
 	  
-	  logger.info ("Creating JAR for "+getName());
-	  //System.out.println("Current direcotry: "+System.getProperty("user.dir"));
+	  System.setProperty("user.dir", getMyDir());
+	  
+	  logger.info("Creating JAR for "+getName());
+	  logger.debug("Current direcotry: "+System.getProperty("user.dir"));	  
 
     loadDeps();
     
     if (!createManifest(mf)) {
       logger.error("Can't create manifest file");
       return false;
+    }
+    
+    // Unpack dependencies
+    
+    String tempDir = getMyDir()+"/temp";
+    File tempDirFile = new File(tempDir);
+    tempDirFile.mkdir();
+    
+    /*if (!tempDirFile.mkdir()) {
+      logger.error("Can't create "+tempDir);
+      return false;
+    }*/
+               
+    for (int i = 0; i < classPathList.size(); i++) {
+      //args.add(classPathList.get(i));
+      logger.info("Unpacking "+classPathList.get(i)+" ...");
+      //unpackJAR(classPathList.get(i), tempDir);
+    }
+    
+    File[] allContents = tempDirFile.listFiles();
+    
+    if (allContents != null) {
+      for (File file : allContents) {
+        System.out.println(file.toString());
+      }
     }
   
     List<String> args = new ArrayList<String>();
@@ -652,11 +739,9 @@ public class ProgramEntity {
     args.add("-cvfm");
     args.add(getJARFilename());
     args.add(mf);
-    args.add(getClassFilename());
-               
-    for (int i = 0; i < classPathList.size(); i++) {
-      args.add(classPathList.get(i));
-    }
+    args.add(className/*getClassFilename()*/);
+    
+    logger.debug(args.toString());
 
     ProcessBuilder processBuilder = new ProcessBuilder();
     processBuilder.inheritIO().command(args);

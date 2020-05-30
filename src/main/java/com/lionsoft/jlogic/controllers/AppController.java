@@ -61,6 +61,16 @@ public class AppController {
 		model.addAttribute("name", buildProperties.getName());
 		model.addAttribute("version", buildProperties.getVersion());
 		model.addAttribute("buildTime", buildProperties.getTime().toString());
+		
+		// JRE info
+		model.addAttribute("java_class_path", System.getProperty("java.class.path"));
+		model.addAttribute("java_home", System.getProperty("java.home"));
+		model.addAttribute("java_vendor", System.getProperty("java.vendor"));
+		model.addAttribute("java_vendor_url", System.getProperty("java.vendor.url"));
+		model.addAttribute("java_version", System.getProperty("java.version"));
+		
+		// OS info
+		model.addAttribute("os", System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
 
     try {
       InetAddress addr;

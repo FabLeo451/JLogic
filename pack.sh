@@ -46,6 +46,7 @@ cp -rp data/asset/nodes/JSON ${target_dir}/data/asset/nodes
 cp -rp data/asset/nodes/SFTP ${target_dir}/data/asset/nodes
 cp -rp data/asset/nodes/File ${target_dir}/data/asset/nodes
 
+cp -p LICENSE ${target_dir}
 cp -p env.sh ${target_dir}/bin
 
 echo "# GLobal properties" > ${target_dir}/data/global.properties
