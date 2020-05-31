@@ -278,70 +278,69 @@ public class Program {
   }
 
   public static void method_SFTP() throws ExitException {
-    ChannelSftp _conn_channel_11 = null;
-    String _conn_msg_13 = null;
     ChannelSftp.LsEntry[] _conn_ls_25 = null;
     String _conn_msg_27 = null;
+    ChannelSftp _conn_channel_10 = null;
+    String _conn_msg_12 = null;
 
     // Node: SFTP Connect
 
     // SFTP Connect
 
-    _conn_channel_11 = null;
+    _conn_channel_10 = null;
 
     try {
-      JSch _3_jsch = new JSch();
-      // _3_jsch.setKnownHosts("/Users/john/.ssh/known_hosts");
-      Session _3_jschSession = _3_jsch.getSession("oracle", "localhost");
-      _3_jschSession.setConfig("StrictHostKeyChecking", "no");
+      JSch _10_jsch = new JSch();
+      // _10_jsch.setKnownHosts("/Users/john/.ssh/known_hosts");
+      Session _10_jschSession = _10_jsch.getSession("fabio", "192.168.9.137");
+      _10_jschSession.setConfig("StrictHostKeyChecking", "no");
 
-      if (0 == 0) _3_jschSession.setPassword("oracle");
-      /*else
-      _3_jschSession.addIdentity("");*/
+      if (1 == 0) _10_jschSession.setPassword("");
+      else _10_jsch.addIdentity("~/.ssh/id_rsa");
 
-      _3_jschSession.connect();
-      _conn_channel_11 = (ChannelSftp) _3_jschSession.openChannel("sftp");
+      _10_jschSession.connect();
+      _conn_channel_10 = (ChannelSftp) _10_jschSession.openChannel("sftp");
 
-      _conn_channel_11.connect();
+      _conn_channel_10.connect();
     } catch (JSchException e) {
-      _conn_msg_13 = e.getMessage();
-      _conn_channel_11 = null;
+      _conn_msg_12 = e.getMessage();
+      _conn_channel_10 = null;
     }
 
-    if (_conn_channel_11 != null) {
+    if (_conn_channel_10 != null) {
       // Node: SFTP List
 
-      boolean _9_ls_result = true;
-      Vector _9_ls_vec = null;
+      boolean _8_ls_result = true;
+      Vector _8_ls_vec = null;
 
       try {
-        if ("*te*".isEmpty()) _9_ls_vec = _conn_channel_11.ls(".");
-        else _9_ls_vec = _conn_channel_11.ls("*te*");
+        if ("Scaricati".isEmpty()) _8_ls_vec = _conn_channel_10.ls(".");
+        else _8_ls_vec = _conn_channel_10.ls("Scaricati");
 
-        _conn_ls_25 = new ChannelSftp.LsEntry[_9_ls_vec.size()];
-        _9_ls_vec.toArray(_conn_ls_25);
+        _conn_ls_25 = new ChannelSftp.LsEntry[_8_ls_vec.size()];
+        _8_ls_vec.toArray(_conn_ls_25);
 
-        _9_ls_result = true;
+        _8_ls_result = true;
       } catch (SftpException e) {
         _conn_msg_27 = e.getMessage();
-        _9_ls_result = false;
+        _8_ls_result = false;
       } catch (ArrayStoreException e) {
         _conn_msg_27 = e.getMessage();
-        _9_ls_result = false;
+        _8_ls_result = false;
       } catch (NullPointerException e) {
         _conn_msg_27 = e.getMessage();
-        _9_ls_result = false;
+        _8_ls_result = false;
       }
 
-      if (_9_ls_result) {
+      if (_8_ls_result) {
         // Node: Print
 
         System.out.println(_conn_ls_25[0].getFilename());
         // Node: SFTP Disconnect
 
         try {
-          _conn_channel_11.disconnect();
-          _conn_channel_11.getSession().disconnect();
+          _conn_channel_10.disconnect();
+          _conn_channel_10.getSession().disconnect();
         } catch (JSchException e) {
         }
         return;
@@ -354,7 +353,7 @@ public class Program {
     } else {
       // Node: Exit
 
-      _exit(1, _conn_msg_13);
+      _exit(1, _conn_msg_12);
     }
   }
 };

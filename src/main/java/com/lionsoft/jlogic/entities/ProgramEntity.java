@@ -649,6 +649,18 @@ public class ProgramEntity {
     
     return true;
 	}
+
+  boolean deleteDirectory(File directoryToBeDeleted) {
+    File[] allContents = directoryToBeDeleted.listFiles();
+    
+    if (allContents != null) {
+      for (File file : allContents) {
+        deleteDirectory(file);
+        file.delete();
+      }
+    }
+    return directoryToBeDeleted.delete();
+  }
 	
 	public boolean unpackJAR(String jarFile, String destDir) {
 	  java.util.jar.JarFile jar;
@@ -719,7 +731,7 @@ public class ProgramEntity {
     args.add(mf);
     args.add("../"+className/*getClassFilename()*/); // We are in temp directory
     
-    // Unpack dependencies in temp directory
+    // Create temporary directory
     
     String tempDir = getMyDir()+"/temp";
     File tempDirFile = new File(tempDir);
@@ -730,31 +742,37 @@ public class ProgramEntity {
       return false;
     }*/
                
+    
+    // Unpack dependencies in temp directory
+
     for (int i = 0; i < classPathList.size(); i++) {
       //args.add(classPathList.get(i));
       logger.info("Unpacking "+classPathList.get(i)+" ...");
       unpackJAR(classPathList.get(i), tempDir);
     }
     
-    //System.setProperty("user.dir", tempDir);
-    
+    // Add directories to jar command line
+   
     File[] allContents = tempDirFile.listFiles();
     
     if (allContents != null) {
       for (File file : allContents) {
         Path path = Paths.get(file.toString()); 
         
-        System.out.println(path.getFileName());
+        //System.out.println(path.getFileName());
         
         if (!path.getFileName().toString().equals("META-INF"))
           args.add(path.getFileName().toString());
       }
     }
     
-    logger.debug(args.toString());
+    //System.out.println(args.toString());
+    
+    // Run jar
 
     ProcessBuilder processBuilder = new ProcessBuilder();
-    processBuilder.inheritIO().command(args);
+    //processBuilder.inheritIO().command(args);
+    processBuilder.command(args);
     
     // Move in the directory with all dependencies
     processBuilder.directory(new File(tempDir));
@@ -787,6 +805,8 @@ public class ProgramEntity {
     catch (InterruptedException e) {
 	    setMessage (e.getMessage());
 	    result = false;
+    } finally {
+      deleteDirectory(tempDirFile);
     }
   
 	  return result;

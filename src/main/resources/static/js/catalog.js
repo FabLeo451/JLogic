@@ -477,7 +477,7 @@ function createProgram (parentId) {
 }
 
 function createJAR (programId) {
-  dialogWorking = dialogMessage ('Working', 'Creating JAR...', DialogButtons.NONE, DialogIcon.RUNNING, null);
+  dialogWorking = dialogMessage ('Working', 'Creating JAR with all dependencies.<br>This will take a while...', DialogButtons.NONE, DialogIcon.RUNNING, null);
   callServer ("POST", '/program/'+programId+'/jar', null, myCallback);
 }
 

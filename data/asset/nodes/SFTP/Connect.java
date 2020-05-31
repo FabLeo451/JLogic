@@ -11,8 +11,8 @@ try {
     
     if (in{4} == 0)
       _{node.id}_jschSession.setPassword(in{5});
-    /*else
-      _{node.id}_jschSession.addIdentity(in{6});*/
+    else
+      _{node.id}_jsch.addIdentity("~/.ssh/id_rsa");
     
     _{node.id}_jschSession.connect();
     out{1} = (ChannelSftp) _{node.id}_jschSession.openChannel("sftp");
