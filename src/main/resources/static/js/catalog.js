@@ -106,7 +106,7 @@ function createContextMenu(event) {
               {'icon': 'i-archive', 'name': 'Create JAR',  action: () => createJAR(id) },
               {'icon': 'i-sliders-h', 'name': 'Edit properties',  action: () => window.location = '/program/'+id+'/edit-properties' },
               {'icon': 'i-edit',   'name': 'Rename',  action: () => renameProgram(id, name) },
-              {'icon': 'i-broom',   'name': 'Clean',  action: () => cleanProgram(id) },
+              //{'icon': 'i-broom',   'name': 'Clean',  action: () => cleanProgram(id) },
               {'name': 'separator' },
               /*{'icon': 'i-arrow-up',  'name': 'Unparent',  action: () => moveFolder(id, "_root") },
               {'name': 'separator' },*/
@@ -503,10 +503,11 @@ function deleteProgram (id, name) {
   );
 }
 
+/*
 function cleanProgram (programId) {
   dialogWorking = dialogMessage ('Working', 'Cleaning...', DialogButtons.NONE, DialogIcon.RUNNING, null);
   callServer ("PUT", '/program/'+programId+'/clean', null, myCallback);
-}
+}*/
 
 function addBlueprint (programId) {
   editFolderDialog ('Add blueprint', 'New blueprint', function (data) {

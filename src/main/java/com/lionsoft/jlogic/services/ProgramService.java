@@ -123,6 +123,7 @@ public class ProgramService {
 	public boolean compile (ProgramEntity program) {
 	  boolean result = program.compile();
 	  repository.save(program);
+	  repository.refresh(program);
 	  return (result);
 	}
 

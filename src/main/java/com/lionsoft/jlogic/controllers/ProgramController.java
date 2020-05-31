@@ -202,6 +202,10 @@ public class ProgramController {
 	  Optional<ProgramEntity> program = programService.findById(id);
 	  
 	  if (program.isPresent()) {
+	      
+	      if (program.get().getStatus() != ProgramStatus.COMPILED)
+	        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Program not compiled");
+	      
         if (program.get().createJAR()) {
           logger.info(program.get().getMessage());
         }
@@ -274,6 +278,7 @@ public class ProgramController {
 	}
 
 	// PUT /program/{id}/clean
+	/*
 	@PutMapping(value = "/program/{id}/clean")
 	public ResponseEntity<String> clean(@PathVariable("id") String id) {
 
@@ -286,7 +291,7 @@ public class ProgramController {
 	  }
 	   
 		return new ResponseEntity<>("{\"status\":0}", HttpStatus.OK);
-	}
+	}*/
 	
 	// POST /program/{id}/run/{method}
 	@PostMapping(value = "/program/{id}/run/{method}", produces = MediaType.APPLICATION_JSON_VALUE)

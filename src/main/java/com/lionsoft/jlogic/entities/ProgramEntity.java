@@ -548,6 +548,7 @@ public class ProgramEntity {
 	  logger.info ("Compiling "+getName());
 	  
 	  clean();
+	  setStatus(ProgramStatus.ERRORS);
 	  
 	  System.setProperty("user.dir", getMyDir());
 	  
@@ -563,7 +564,7 @@ public class ProgramEntity {
         cp += ":"+classPathList.get(i);
       }
       
-      System.out.println("cp = "+cp);
+      //System.out.println("cp = "+cp);
     	    
 	    // javac -cp ".:json-simple-1.1.1.jar" Program.java
       args.add("javac");
