@@ -163,7 +163,7 @@ function addObjects (containerElem, jtree) {
     if (!expanded.hasOwnProperty(key))
       expanded.key = false;
     
-    console.log(jo);
+    //console.log(jo);
 
     row = document.createElement('div');
     row.classList.add('w3-row');
