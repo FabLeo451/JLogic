@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>JLogic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo">
+</head>
+
+<style>
+.w3-myFont {
+  font-family: 'Exo', serif;
+}
+</style>
+<body>
+  <!-- Header -->
+  <div class="w3-top w3-padding w3-blue-gray w3-myFont">    
+    <span class="w3-margin-right"><a href="index.html"><i class="fas fa-home"></i> Home</a></span>
+    <span class="w3-margin-right"><a href="tutorial.html"><i class="fas fa-book"></i> Tutorial</a></span>
+    <span class="w3-margin-right"><a href="https://github.com/FabLeo451/JLogic"><i class="fab fa-github"></i> Source code</a></span>
+    <div class="w3-right w3-margin-left"><b>JLogic</b></div>
+  </div>
+
+  
+  
+  <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:10%; margin-right:10%">    
+    <h3 class="w3-myFont">Creating programs</h3>
+
+    Let's create a classic "Hello world" program to have a look at basic commands.<br>
+    Click on "Blueprints" in the navigation bar to access the catalog where you can manage programs and blueprints.
+    <div class="w3-panel"><img src="img/nav-blueprints.png"></div>
+
+
+    Click on "New program" button to create a new program. Name it as you want (or leave "New program").
+    <div class="w3-panel"><img src="img/new-program.png"></div>
+
+    Expand the program item and you'll see there is a predefined blueprint named "Main".<br>
+    Right-click on it and select "Edit".
+    <div class="w3-panel"><img src="img/bp-menu.png"></div>
+
+    The new window is a blueprint editor.
+    A blueprint has at least two nodes: an entry point (where execution starts) and a return node (where execution ends).<br>
+    To add more nodes right-click on a blank point of the grid and a selector will appear.<br>
+    A search field helps to find a specific node.
+    Search "Print String" node and select it.
+    <div class="w3-panel"><img src="img/node-selector.png"></div>
+
+    Now that the new node is inside the editor click on the text field and type "Hello world!" in the dialog window being opened. Then click "OK".<br>
+    Blue connectors control the execution flow, while other connectors are for passing data between nodes.<br>
+    To link two connectors left-click on the first and track the edge onto the second, then release.<br>
+    Connect nodes as in the picture:
+    <div class="w3-panel"><img src="img/bp-hello.png"></div>
+
+    Compile the program by clicking the <img src="img/compile.png"> button on the toolbar.<br>
+    You will see the result in the console.
+
+    Let's test the blueprint.<br>
+    Click on the <img src="img/run.png">  button of the toolbar and then on the "OK" button of the Run dialog.<br>
+    You should see:<br>
+    <div class="w3-code notranslate">
+    Launching program...<br>
+    Connected<br>
+    Getting response...<br>
+    <span class="w3-text-green"><i class="fas fa-check"></i> Successfully executed</span><br>
+    Hello world!
+    </div>
+
+    Go back to the catalog panel and refresh.<br>
+    The status of the program is now "Compiled".
+    Right-click on the program and select "Create JAR".
+    <div class="w3-panel"><img src="img/bp-menu-jar.png"></div>
+    Wait until the popup with the spinning wheel disappears and you'll see a download button on the program's row: <img src="img/download-jar.png"><br>
+    Click on it and save the JAR file wherever you want.<br>
+    Open a Linux terminal and move into the directory where the file has been saved.<br>
+    Execute the JAR:
+    <div class="w3-code notranslate">
+    $ java -jar "New program.jar"<br>
+    Hello world!
+    </div>
+    
+    This example has shown how a program can be created with the blueprint editor and exported as an executable JAR file.<br>
+    Moreover, the JAR file has all the dependecies inside, so you can run even on different servers.
+
+  </div>
+
+</body>
+</html>
+
