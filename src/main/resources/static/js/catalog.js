@@ -163,7 +163,7 @@ function addObjects (containerElem, jtree) {
     if (!expanded.hasOwnProperty(key))
       expanded.key = false;
     
-    //console.log(JSON.stringify(jo));
+    console.log(jo);
 
     row = document.createElement('div');
     row.classList.add('w3-row');
@@ -267,7 +267,8 @@ function addObjects (containerElem, jtree) {
       col = document.createElement('div');
       col.classList.add('w3-col');
       col.classList.add('s2');
-      col.innerHTML = `<a target="Javascript:void(0);" onclick="downloadJAR ('`+key+`')" style="cursor:pointer;" title="Download JAR"><i class="icon i-download" style="color:grey;"></i></a>`;
+      if (jo.jar)
+        col.innerHTML = `<a target="Javascript:void(0);" onclick="downloadJAR ('`+key+`')" style="cursor:pointer;" title="Download JAR"><i class="icon i-download" style="color:grey;"></i></a>`;
       row.appendChild(col);
     }
 
@@ -362,8 +363,7 @@ function myCallback (xhttp) {
     }
             
     if (xhttp.status == 200) {
-      
-      
+  
       if (jresponse) {
         if (jresponse.hasOwnProperty('message')) {
           showSnacknar(BPResult.SUCCESS, message, 2000);

@@ -221,7 +221,7 @@ public class ProgramController {
 	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 	  }
 	  
-		return new ResponseEntity<>(jresponse.toString(), responseStatus);
+		return new ResponseEntity<>(catalogService.getCatalog().toString()/*jresponse.toString()*/, responseStatus);
 	}
 
 	// GET /program/{id}/java

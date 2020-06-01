@@ -59,6 +59,7 @@ public class CatalogService {
       jprogram.put("name", p.getName());
       jprogram.put("type", 1);
       jprogram.put("status", p.getStatus().name());
+      jprogram.put("jar", p.hasJAR());
       jprogram.put("updateTime", p.getUpdateTime() != null ? p.getUpdateTime().getTime()/1000 : null);
       jprogram.put("buildTime", p.getBuildTime() != null ? p.getBuildTime().getTime()/1000 : null);
       jprogram.put("children", jchildren);
