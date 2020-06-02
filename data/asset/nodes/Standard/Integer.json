@@ -6,8 +6,8 @@
     "java":"if (in{1} > in{2}) { exec{0} } else if (in{1} == in{2}) { exec{1} } else { exec{2} }",
     "input": [
       { "type": 0, "label": "" },
-      { "type": 1, "label": "Int 1" },
-      { "type": 1, "label": "Int 2" }
+      { "type": 1, "label": "A", "value": 0 },
+      { "type": 1, "label": "B", "value": 0 }
     ],
     "output": [
       { "type": 0, "label": ">" },

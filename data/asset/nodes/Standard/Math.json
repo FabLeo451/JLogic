@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Modulus",
+    "type": 5,
+    "version": 1,
+    "inner_text": "%",
+    "symbol": "%",
+    "input": [
+      { "type": 1, "label": "A", "value": 0 },
+      { "type": 1, "label": "B", "value": 1 },
+    ],
+    "output": [
+      { "type": 1, "label": "" }
+    ]
+  },
+  {
+    "name": "Division",
+    "type": 5,
+    "version": 1,
+    "inner_text": "&#8725",
+    "symbol": "/",
+    "input": [
+      { "type": 2, "label": "Dividend", "value": 0 },
+      { "type": 2, "label": "Divisor", "value": 1 },
+    ],
+    "output": [
+      { "type": 2, "label": "Result" }
+    ]
+  }
+]
