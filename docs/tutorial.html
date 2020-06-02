@@ -30,13 +30,9 @@
     <h3 class="w3-myFont">1. Creating programs</h3>
 
     Let's create a classic "Hello world" program to have a look at the basic functions.<br>
-    Click on "Blueprints" in the navigation bar to access the catalog where you can manage programs and blueprints.
-    <div class="w3-panel"><img src="img/nav-blueprints.png"></div>
+    Click on <img src="img/nav-blueprints.png"> in the navigation bar to access the catalog where you can manage programs and blueprints.<br>
 
-
-    Click on "New program" button to create a new program. Name it as you want (or leave "New program").
-    <div class="w3-panel"><img src="img/new-program.png"></div>
-
+    Click the <img src="img/new-program.png"> button to create a new program. Name it as you want (or leave "New program").<br>
     Expand the program item and you'll see there is a predefined blueprint named "Main".<br>
     Right-click on it and select "Edit".
     <div class="w3-panel"><img src="img/bp-menu.png"></div>
@@ -87,13 +83,31 @@
     <hr>
     <h3 class="w3-myFont">2. Creating REST APIs</h3>
     
+    In this exercise we will create an HTTP end point that executes a blueprint and returns a JSON response.
     Right-click on the program item and select "Add blueprint".
     <div class="w3-panel"><img src="img/bp-menu-jar.png"></div>
     
     Name it "BPLab" and click OK.<br>
-    Right-click on the new blueprint and select "Edit" to open the editor window.
+    Right-click on the new blueprint and select "Edit" to open the editor window.<br>
+    Create a JSON object and add a string item called "message".<br>
+    Then set the object as the HTTP response.<br>
+    The blueprint should be as shown in the following picture:<br>
+    <div class="w3-panel"><img src="img/bp-http.png"></div>
     
-  </div>
+    Compile the program by clicking <img src="img/compile.png"> and close the editor tab.<br>
+    Click on <img src="img/nav-apis.png"> in the navigation bar to access the API management.<br>
+    Click on <img src="img/new-api.png"> button.<br>
+    Here you create an API and bind it to a blueprint of a given program.<br>
+    Name the API "lab", select the program and the blueprint "BPLab". Then hit "OK".<br>
+    <div class="w3-panel"><img src="img/create-api.png"></div>
+    
+    Now make a GET request to <a href="https://localhost:8443/api/lab">https://localhost:8443/api/lab</a><br>
+    This will execute the blueprint that is linked to the API "lab", and the response will be returned to the client.
+    
+    
+    <!------------------------------------------------------------------------------->
+    <hr>
+    <div class="w3-center w3-margin w3-text-gray">Copyright &copy; 2020 Fabio Leone</div>  </div>
 
 </body>
 </html>
