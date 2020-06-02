@@ -1,10 +1,12 @@
 = JLogic
 ====
 
+https://fableo451.github.io/JLogic/[https://fableo451.github.io/JLogic/]
+
 == Overview
 JLogic is a tool for creating functions and programs using a graphic interface instead of writing code in a programming language (this is called "visual scripting").
 
-With JLogic you can visually edit, test and deploy functional graphs, called "blueprints", and use them as RESTful APIs or batch scripts.
+With JLogic you can visually edit, test and deploy pipelines, called "blueprints", for batch jobs and HTTP requests.
 
 image:http://hal9k.altervista.org/jlogic/bp-sample.jpg["Area of a circle"]
 
