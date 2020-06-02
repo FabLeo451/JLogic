@@ -7,8 +7,7 @@
   "input": [
     { "type": 0, "label": "" },
     { "type": 1, "label": "From", "value":0 },
-    { "type": 1, "label": "To", "value":0 },
-    { "type": 4, "label": "Break", "value": false }
+    { "type": 1, "label": "To", "value":0 }
   ],
   "output": [
     { "type": 0, "label": "Iteration" },

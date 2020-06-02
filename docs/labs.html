@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>JLogic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo">
+<link rel='stylesheet' href='css/jlogic.css'>
+</head>
+<body>
+  <!-- Header -->
+  <div class="w3-top w3-padding w3-blue-gray w3-myFont">    
+    <span class="w3-margin-right"><i class="fas fa-home"></i> <a href="index.html">Home</a></span>
+    <span class="w3-margin-right"><i class="fas fa-book"></i> <a href="tutorial.html">Tutorial</a></span>
+    <span class="w3-margin-right"><i class="fas fa-flask"></i> <a href="labs.html">Labs</a></span>
+    <span class="w3-margin-right"><i class="fab fa-github"></i> <a href="https://github.com/FabLeo451/JLogic">Source code</a></span>
+    <div class="w3-right w3-margin-left"><b>JLogic</b></div>
+  </div>
+  
+  <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:10%; margin-right:10%">    
+
+    <h2 class="w3-myFont">Labs</h2>
+    This section has two labs you can follow to experiment some key features:<br><br>
+    Lab 1: Creating a program using the blueprint editor and exporting as executable JAR.<br>
+    Lab 2: Creating a REST API that executes a blueprint.<br>
+    <hr>
+    
+    <h3 class="w3-myFont">Lab 1: Creating programs</h3>
+
+    Let's create a classic "Hello world" program to have a look at the basic functions.<br>
+    Click on <img src="img/nav-blueprints.png"> in the navigation bar to access the catalog where you can manage programs and blueprints.<br>
+
+    Click the <img src="img/new-program.png"> button to create a new program. Name it as you want (or leave "New program").<br>
+    Expand the program item and you'll see there is a predefined blueprint named "Main".<br>
+    Right-click on it and select "Edit".
+    <div class="w3-panel"><img src="img/bp-menu.png"></div>
+
+    The new window is a blueprint editor.
+    A blueprint has at least two nodes: an entry point (where execution starts) and a return node (where execution ends).<br>
+    To add more nodes right-click on a blank point of the grid and a selector will appear.<br>
+    A search field helps to find a specific node.
+    Search "Print String" node and select it.
+    <div class="w3-panel"><img src="img/node-selector.png"></div>
+
+    Now that the new node is inside the editor click on the text field and type "Hello world!" in the dialog window being opened. Then click "OK".<br>
+    Blue connectors control the execution flow, while other connectors are for passing data between nodes.<br>
+    To link two connectors left-click on the first and track the edge onto the second, then release.<br>
+    Connect nodes as in the picture:
+    <div class="w3-panel"><img src="img/bp-hello.png"></div>
+
+    Compile the program by clicking the <img src="img/compile.png"> button on the toolbar.<br>
+    You will see the result in the console.<br>
+
+    Let's test the blueprint.<br>
+    Click on the <img src="img/run.png">  button of the toolbar and then on the "OK" button of the Run dialog.<br>
+    You should see:<br>
+    <div class="w3-code notranslate">
+    Launching program...<br>
+    Connected<br>
+    Getting response...<br>
+    <span class="w3-text-green"><i class="fas fa-check"></i> Successfully executed</span><br>
+    Hello world!
+    </div>
+
+    Go back to the catalog panel and refresh.<br>
+    The status of the program is now "Compiled".
+    Right-click on the program and select "Create JAR".
+    <div class="w3-panel"><img src="img/bp-menu-jar.png"></div>
+    Wait until the popup with the spinning wheel disappears and you'll see a download button on the program's row: <img src="img/download-jar.png"><br>
+    Click on it and save the JAR file wherever you want.<br>
+    Open a Linux terminal and move into the directory where the file has been saved.<br>
+    Execute the JAR:
+    <div class="w3-code notranslate">
+    $ java -jar "New program.jar"<br>
+    Hello world!
+    </div>
+    
+    This example has shown how a program can be created using the blueprint editor and exported as an executable JAR.<br>
+    Moreover, the JAR file has all the dependecies inside, so you can run it even on a different host.
+
+    <hr>
+    <h3 class="w3-myFont">Lab 2: Creating REST APIs</h3>
+    
+    In this exercise we will create an HTTP end point that executes a blueprint and returns a JSON response.
+    Right-click on the program item and select "Add blueprint".
+    <div class="w3-panel"><img src="img/bp-menu-jar.png"></div>
+    
+    Name it "BPLab" and click OK.<br>
+    Right-click on the new blueprint and select "Edit" to open the editor window.<br>
+    Create a JSON object and add a string item called "message".<br>
+    Then set the object as the HTTP response.<br>
+    The blueprint should be as shown in the following picture:<br>
+    <div class="w3-panel"><img src="img/bp-http.png"></div>
+    
+    Compile the program by clicking <img src="img/compile.png"> and close the editor tab.<br>
+    Click on <img src="img/nav-apis.png"> in the navigation bar to access the API management.<br>
+    Click on <img src="img/new-api.png"> button.<br>
+    Here you create an API and bind it to a blueprint of a given program.<br>
+    Name the API "lab", select the program we created and the blueprint "BPLab". Then hit "OK".<br>
+    <div class="w3-panel"><img src="img/create-api.png"></div>
+    
+    Now make a GET request to <a href="https://localhost:8443/api/lab">https://localhost:8443/api/lab</a><br>
+    This will execute the blueprint that is linked to the API "lab", and the response will be returned to the client.
+    
+    
+    <!------------------------------------------------------------------------------->
+    <hr>
+    <div class="w3-center w3-margin w3-text-gray">Copyright &copy; 2020 Fabio Leone</div>  </div>
+
+</body>
+</html>
+
