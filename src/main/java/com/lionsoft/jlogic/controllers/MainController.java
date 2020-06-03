@@ -144,118 +144,91 @@ public class MainController {
 	private JSONObject getAssetJSON() {
 	  String assetDir = home.getDir()+"/../data/asset";
 	  JSONObject jAsset = new JSONObject();
-	  JSONArray jTypesArray;
-	  JSONArray jNodeTypesArray;
-	  JSONArray jNodesArray = new JSONArray();
-	  
-	  String content;
-	  
-    try {
-      // Read standard types
-      /*
-      content = new String (Files.readAllBytes(Paths.get(assetDir+"/types.json")));
-      JSONObject jTypes = new JSONObject(content);
-      jTypesArray = jTypes.getJSONArray("types");
-      */
-      jTypesArray = new JSONArray();
-      	  
-      // Read node types
+    JSONArray jNodeTypesArray;
+    JSONArray jTypesArray = new JSONArray();
+    String content;
+
+    try { 
       content = new String (Files.readAllBytes(Paths.get(assetDir+"/node_types.json")));
       JSONObject jNodeTypes = new JSONObject(content);
       jNodeTypesArray = jNodeTypes.getJSONArray("node_types");
+    } catch (IOException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+    }
+
+    jAsset.put("nodes", new JSONArray());
+    jAsset.put("types", new JSONArray());
+    jAsset.put("node_types", jNodeTypesArray);
+
+    jAsset = getAssetJSON(jAsset, assetDir);
+    jAsset = getAssetJSON(jAsset, home.getDir()+"/../plugin");
+
+    return (jAsset);
+  }
+
+	private JSONObject getAssetJSON(JSONObject jAsset , String assetDir) {
+	  JSONArray jTypesArray = jAsset.getJSONArray("types");
+	  JSONArray jNodesArray = jAsset.getJSONArray("nodes");
+	  
+	  String content;
+	  
 	    
-      try (Stream<Path> paths = Files.walk(Paths.get(assetDir))) {
-        List<String> list = paths.map(path -> path.toString()).filter(f -> f.endsWith(".json")).collect(Collectors.toList());
-        
-        for (int i = 0; i < list.size(); i++) {
-          //System.out.println(list.get(i));
-          
-          File file = Paths.get(list.get(i)).toFile();
-          File parentDir = file.getParentFile(); // to get the parent dir 
-          String parentDirName = file.getParent(); // to get the parent dir name
-          //System.setProperty("user.dir", parentDirName);
+    try (Stream<Path> paths = Files.walk(Paths.get(assetDir))) {
+      List<String> list = paths.map(path -> path.toString()).filter(f -> f.endsWith(".json")).collect(Collectors.toList());
       
-          content = new String (Files.readAllBytes(Paths.get(list.get(i))));
+      for (int i = 0; i < list.size(); i++) {
+        //System.out.println(list.get(i));
+        
+        File file = Paths.get(list.get(i)).toFile();
+        File parentDir = file.getParentFile(); // to get the parent dir 
+        String parentDirName = file.getParent(); // to get the parent dir name
+        //System.setProperty("user.dir", parentDirName);
+    
+        content = new String (Files.readAllBytes(Paths.get(list.get(i))));
+        
+        try {
+          // Array of nodes, no types
+          JSONArray ja = new JSONArray(content);
+
+          for (int j = 0; j < ja.length(); j++)
+            //jNodesArray.put(ja.get(j));
+            jNodesArray.put(processNode((JSONObject)ja.get(j), parentDirName));
+        }
+        catch (JSONException e1) {
+          // Try object with types and nodes
           
-          try {
-            // Array of nodes, no types
-            JSONArray ja = new JSONArray(content);
+          Boolean hasTypes = Boolean.FALSE;
+          Boolean hasNodes = Boolean.FALSE;
+          JSONObject jo = new JSONObject(content);
+          
+          if (jo.has("types")) {
+            JSONArray jt = jo.getJSONArray("types");
 
-            for (int j = 0; j < ja.length(); j++)
-              //jNodesArray.put(ja.get(j));
-              jNodesArray.put(processNode((JSONObject)ja.get(j), parentDirName));
+            for (int j = 0; j < jt.length(); j++)
+              jTypesArray.put(jt.get(j));
+              
+            hasTypes = Boolean.TRUE;
           }
-          catch (JSONException e1) {
-            // Try object with types and nodes
-            
-            Boolean hasTypes = Boolean.FALSE;
-            Boolean hasNodes = Boolean.FALSE;
-            JSONObject jo = new JSONObject(content);
-            
-            if (jo.has("types")) {
-              JSONArray jt = jo.getJSONArray("types");
-
-              for (int j = 0; j < jt.length(); j++)
-                jTypesArray.put(jt.get(j));
-                
-              hasTypes = Boolean.TRUE;
-            }
-            
-            if (jo.has("nodes")) {
-              JSONArray jn = jo.getJSONArray("nodes");
-              //jNodesArray.put(jn);
-              for (int j = 0; j < jn.length(); j++)
-                jNodesArray.put(processNode((JSONObject)jn.get(j), parentDirName));
-                
-              hasNodes = Boolean.TRUE;
-            }
-            /*
-            try {
-              // Types and nodes
+          
+          if (jo.has("nodes")) {
+            JSONArray jn = jo.getJSONArray("nodes");
+            for (int j = 0; j < jn.length(); j++)
+              jNodesArray.put(processNode((JSONObject)jn.get(j), parentDirName));
               
-              // Types
-              try {
-                JSONArray jt = jo.getJSONArray("types");
-                //jTypesArray.put(jt); Wrong: creates an object with the array inside
-                for (int j = 0; j < jt.length(); j++)
-                  jTypesArray.put(jt.get(j));
-                  
-                hasTypes = Boolean.TRUE;
-              }
-              catch (JSONException et) {
-              }
-              
-              // Nodes
-              JSONArray jn = jo.getJSONArray("nodes");
-              //jNodesArray.put(jn);
-              for (int j = 0; j < jn.length(); j++)
-                jNodesArray.put(jn.get(j));
-                
-              hasNodes = Boolean.TRUE;
-            }
-            catch (JSONException e2) {
-              // Single node
-            */
-              if (!hasNodes && !hasTypes && !jo.has("node_types")) {
-                //JSONObject jnode = new JSONObject(content);
-                jNodesArray.put(processNode(jo, parentDirName));
-              }
-            //}
+            hasNodes = Boolean.TRUE;
+          }
+          
+          if (!hasNodes && !hasTypes && !jo.has("node_types")) {
+            jNodesArray.put(processNode(jo, parentDirName));
           }
         }
       }
-      
-      jAsset.put("types", jTypesArray);
-      jAsset.put("node_types", jNodeTypesArray);
-      jAsset.put("nodes", jNodesArray);
-    } 
-    catch (IOException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+    } catch (IOException e) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
     }
 
 		return jAsset;
 	}
-
 	@GetMapping(value="/asset", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getAsset() throws IOException {
 	  JSONObject jAsset = getAssetJSON();
