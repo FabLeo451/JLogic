@@ -26,7 +26,7 @@ class NodeBase {
     this.jar = null;
     this.symbol = null;
     this.java = null;
-    this.options = null;
+    this.data = null;
   }
     
   getElement() {
@@ -389,8 +389,8 @@ class NodeBase {
     if (this.java)
       jo.java = this.java;
          
-    if (this.options)
-      jo.options = this.options;
+    if (this.data)
+      jo.data = this.data;
          
     if (this.import)
       jo.import = this.import;
@@ -457,7 +457,7 @@ class NodeBase {
     this.jar = j.hasOwnProperty("jar") ? j.jar : this.jar;
     this.symbol = j.hasOwnProperty("symbol") ? j.symbol : this.symbol;
     this.java = j.hasOwnProperty("java") ? j.java : this.java;
-    this.options = j.hasOwnProperty("options") ? j.options : this.options;
+    this.data = j.hasOwnProperty("data") ? j.data : this.data;
   }
 }
 

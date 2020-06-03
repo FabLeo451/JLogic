@@ -114,7 +114,10 @@ public class ProgramEntity {
 	  private String httpResponse;
     
     @Transient
-	  private String programDir = null;
+	  private String homeDir = null;
+    
+    /*@Transient
+	  private String programDir = null;*/
           
     public ProgramEntity() {
     
@@ -126,14 +129,14 @@ public class ProgramEntity {
       setId(id);
       setName(name);
       setStatus(ProgramStatus.READY);
-      
+      /*
       File f = new File(home.getDir()+"/../data/program/"+getId());
       
       try {
         programDir = f.getCanonicalPath();
       } catch (IOException e) {
         logger.error("Creating program "+name+": "+e.getMessage());
-      }
+      }*/
     }
      
     //Setters and getters
@@ -227,9 +230,24 @@ public class ProgramEntity {
       blueprints.add(b);
     }
     
+	  public String getHomeDir() {
+	    if (homeDir == null) {
+        File f = new File(home.getDir()+"/..");
+        
+        try {
+          homeDir = f.getCanonicalPath();
+        } catch (IOException e) {
+          logger.error(e.getMessage());
+        }
+      }
+      
+      return (homeDir);
+	  }
+    
 	  public String getMyDir() {
 		  //return home.getDir()+"/../data/program/"+getId();
-		  return(programDir != null ? programDir : home.getDir()+"/../data/program/"+getId());
+		  //return(programDir != null ? programDir : home.getDir()+"/../data/program/"+getId());
+		  return(getHomeDir()+"/data/program/"+getId());
 	  }
     
   public String getJavaFile() {
@@ -295,9 +313,9 @@ public class ProgramEntity {
 		  dependencies.add(item);
 	}*/
 	
-	public String getClassesDir() {
+	/*public String getClassesDir() {
 		return home.getDir()+"/../classes";
-	}
+	}*/
 			
 	public void loadDeps() {
 	  String content;
@@ -307,25 +325,18 @@ public class ProgramEntity {
     JSONArray ja;
 	  
     try {
-      // Default
-      //content = new String (Files.readAllBytes(Paths.get(getDefaultDepsFilename())));
-      //ja = new JSONArray(content);
-      
+      // Default dependencies
       ja = (JSONArray) jsonParser.parse(new FileReader(getDefaultDepsFilename()));
 
       ja.forEach (jdep -> {
-        addClassPath(getClassesDir() + "/" + jdep.toString());
-        //addDependency(jdep.toString());
+        addClassPath(getHomeDir() + "/" + jdep.toString());
       });
       
       // Others
-      //content = new String (Files.readAllBytes(Paths.get(getDepsFilename())));
-      //ja = new JSONArray(content);
       ja = (JSONArray) jsonParser.parse(new FileReader(getDepsFilename()));
 
       ja.forEach (jdep -> {
-        addClassPath(getClassesDir() + "/" + jdep.toString());
-        //addDependency(jdep.toString());
+        addClassPath(getHomeDir() + "/" + jdep.toString());
       });      
     } 
     catch (FileNotFoundException e) {
@@ -418,11 +429,11 @@ public class ProgramEntity {
 	  JSONArray ja = new JSONArray();
 	  
 	  //ja.put(""); // classes dir.
-	  ja.add("Standard.jar"); 
-	  ja.add("java-getopt-1.0.13.jar");
-	  ja.add("log4j-1.2.12.jar");
+	  ja.add("lib/Standard.jar"); 
+	  ja.add("lib/java-getopt-1.0.13.jar");
+	  ja.add("lib/log4j-1.2.12.jar");
 	  
-    try (FileWriter file = new FileWriter(getMyDir()+"/default-deps.json")) {
+    try (FileWriter file = new FileWriter(getDefaultDepsFilename())) {
         file.write(ja.toString());
         file.flush();
         file.close();          
@@ -550,7 +561,7 @@ public class ProgramEntity {
 	  clean();
 	  setStatus(ProgramStatus.ERRORS);
 	  
-	  System.setProperty("user.dir", getMyDir());
+	  //System.setProperty("user.dir", getMyDir());
 	  
 	  if (generateJava()) {
 	    String cp = ".";
@@ -564,7 +575,7 @@ public class ProgramEntity {
         cp += ":"+classPathList.get(i);
       }
       
-      //System.out.println("cp = "+cp);
+      System.out.println("cp = "+cp);
     	    
 	    // javac -cp ".:json-simple-1.1.1.jar" Program.java
       args.add("javac");
@@ -921,7 +932,7 @@ public class ProgramEntity {
 	}
 	
 	public boolean run(String methodName, String data, String logName, HttpServletRequest request) {
-	  System.setProperty("user.dir", getClassesDir());
+	  //System.setProperty("user.dir", getClassesDir());
 	  setResult(ProgramEntity.SUCCESS, "OK");
 	  
 	  //System.out.println("data = "+data);

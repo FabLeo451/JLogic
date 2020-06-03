@@ -8,7 +8,7 @@
       "name": "JSON Object New",
       "type": 4,
       "version": 1,
-      "jar": ["json-simple-1.1.1.jar"],
+      "jar": ["lib/json-simple-1.1.1.jar"],
       "import": ["org.json.simple.*"],
       "java":"out{1} = new JSONObject();",
       "input": [
@@ -23,7 +23,7 @@
       "name": "JSON Parse",
       "type": 4,
       "version": 1,
-      "jar": ["json-simple-1.1.1.jar"],
+      "jar": ["lib/json-simple-1.1.1.jar"],
       "import": ["org.json.simple.*", "org.json.simple.parser.*"],
       "java":"@Parse.java",
       "input": [
@@ -40,7 +40,7 @@
       "name": "JSON Get String",
       "type": 4,
       "version": 1,
-      "jar": ["json-simple-1.1.1.jar"],
+      "jar": ["lib/json-simple-1.1.1.jar"],
       "import": ["org.json.simple.*"],
       "java":"out{1} = (String) in{1}.get(in{2});",
       "input": [
@@ -57,7 +57,7 @@
       "name": "JSON To String",
       "type": 4,
       "version": 1,
-      "jar": ["json-simple-1.1.1.jar"],
+      "jar": ["lib/json-simple-1.1.1.jar"],
       "import": ["org.json.simple.*"],
       "java":"out{1} = in{1}.toJSONString();",
       "input": [
@@ -73,7 +73,7 @@
       "name": "JSON Put",
       "type": 4,
       "version": 1,
-      "jar": ["json-simple-1.1.1.jar"],
+      "jar": ["lib/json-simple-1.1.1.jar"],
       "import": ["org.json.simple.*"],
       "java":"in{1}.put(in{2}, in{3});",
       "input": [
@@ -91,7 +91,7 @@
       "name": "JSON Put String",
       "type": 4,
       "version": 1,
-      "jar": ["json-simple-1.1.1.jar"],
+      "jar": ["lib/json-simple-1.1.1.jar"],
       "import": ["org.json.simple.*"],
       "java":"in{1}.put(in{2}, in{3});",
       "input": [

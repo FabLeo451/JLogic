@@ -49,29 +49,29 @@ class PackageInfo {
   private String version;
   private Instant buildTime;
   
-	public PackageInfo(BuildProperties buildProperties) {
-		this.name = buildProperties.getName();
-		this.version = buildProperties.getVersion();
-		this.buildTime = buildProperties.getTime();
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public String getVersion() {
-		return version;
-	}
-	
-	public Instant getBuildTime() {
-		return buildTime;
-	}
+  public PackageInfo(BuildProperties buildProperties) {
+    this.name = buildProperties.getName();
+    this.version = buildProperties.getVersion();
+    this.buildTime = buildProperties.getTime();
+  }
+  
+  public String getName() {
+    return name;
+  }
+  
+  public String getVersion() {
+    return version;
+  }
+  
+  public Instant getBuildTime() {
+    return buildTime;
+  }
 };
 
 class SystemInfo {
   private String nodeName;
   
-	public SystemInfo() {
+  public SystemInfo() {
     try
     {
         InetAddress addr;
@@ -82,8 +82,8 @@ class SystemInfo {
     {
         System.out.println("Hostname can not be resolved");
     }
-	}
-	  
+  }
+    
   public String getNodeName () {
     return nodeName;
   }
@@ -109,16 +109,16 @@ public class MainController {
   private SessionRegistry sessionRegistry;
 */
   
-	@GetMapping(value="/", produces = MediaType.APPLICATION_JSON_VALUE)
-	public PackageInfo getPackageInfo() {
-		return new PackageInfo(buildProperties);
-	}
+  @GetMapping(value="/", produces = MediaType.APPLICATION_JSON_VALUE)
+  public PackageInfo getPackageInfo() {
+    return new PackageInfo(buildProperties);
+  }
 
-	@GetMapping(value="/catalog", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String getCatalog() {
-		return catalogService.getCatalog().toString();
-	}
-	
+  @GetMapping(value="/catalog", produces = MediaType.APPLICATION_JSON_VALUE)
+  public String getCatalog() {
+    return catalogService.getCatalog().toString();
+  }
+  
   private JSONObject processNode (JSONObject jnode, String path) {
     JSONObject jo = jnode;
     String java = jnode.optString("java");
@@ -141,15 +141,15 @@ public class MainController {
     return (jo);
   }
 
-	private JSONObject getAssetJSON() {
-	  String assetDir = home.getDir()+"/../data/asset";
-	  JSONObject jAsset = new JSONObject();
+  private JSONObject getAssetJSON() {
+    //String assetDir = home.getDir()+"/../data/asset";
+    JSONObject jAsset = new JSONObject();
     JSONArray jNodeTypesArray;
     JSONArray jTypesArray = new JSONArray();
     String content;
 
     try { 
-      content = new String (Files.readAllBytes(Paths.get(assetDir+"/node_types.json")));
+      content = new String (Files.readAllBytes(Paths.get(home.getDir()+"/../data/asset/node_types.json")));
       JSONObject jNodeTypes = new JSONObject(content);
       jNodeTypesArray = jNodeTypes.getJSONArray("node_types");
     } catch (IOException e) {
@@ -160,29 +160,57 @@ public class MainController {
     jAsset.put("types", new JSONArray());
     jAsset.put("node_types", jNodeTypesArray);
 
-    jAsset = getAssetJSON(jAsset, assetDir);
-    jAsset = getAssetJSON(jAsset, home.getDir()+"/../plugin");
+    jAsset = getAssetJSON(jAsset, "data/asset");
+    jAsset = getAssetJSON(jAsset, "plugin");
 
     return (jAsset);
   }
+  
+  private JSONObject addNodeData(JSONObject jnode, String key, Object value) {
+    JSONObject jdata;
+    
+    if (!jnode.has("data")) {
+        jdata = new JSONObject();
+        jnode.put("data", jdata);
+    } else
+        jdata = (JSONObject) jnode.get("data");
+    
+    jdata.put(key, value);
+    return(jnode);
+  }
 
-	private JSONObject getAssetJSON(JSONObject jAsset , String assetDir) {
-	  JSONArray jTypesArray = jAsset.getJSONArray("types");
-	  JSONArray jNodesArray = jAsset.getJSONArray("nodes");
-	  
-	  String content;
-	  
-	    
-    try (Stream<Path> paths = Files.walk(Paths.get(assetDir))) {
-      List<String> list = paths.map(path -> path.toString()).filter(f -> f.endsWith(".json")).collect(Collectors.toList());
+  private JSONObject getAssetJSON(JSONObject jAsset, String directory) {
+    String content, homeDir = home.getDir()+"/.."; // home.getDir() is the bin directory
+    JSONArray jTypesArray = jAsset.getJSONArray("types");
+    JSONArray jNodesArray = jAsset.getJSONArray("nodes");
+    JSONObject jnode;
+
+    File homeFile = new File(home.getDir()+"/..");
+    
+    try {
+      homeDir = homeFile.getCanonicalPath();
+    } catch (IOException e) {
+      logger.error(e.getMessage());
+    }
+    
+    String startPath = homeDir+"/"+directory;
+    
+    //System.out.println("directory = "+directory);
+    //System.out.println("startPath = "+startPath);
       
+    try (Stream<Path> paths = Files.walk(Paths.get(startPath))) {
+      List<String> list = paths.map(p -> p.toString()).filter(f -> f.endsWith(".json")).collect(Collectors.toList());
+            
       for (int i = 0; i < list.size(); i++) {
-        //System.out.println(list.get(i));
+        System.out.println(list.get(i));
         
         File file = Paths.get(list.get(i)).toFile();
-        File parentDir = file.getParentFile(); // to get the parent dir 
         String parentDirName = file.getParent(); // to get the parent dir name
-        //System.setProperty("user.dir", parentDirName);
+
+        File containerFile = file.getParentFile(); // Directory that contains this file
+        Path containerPath = Paths.get(containerFile.toString());
+        String path = directory+"/"+containerPath.getFileName();
+
     
         content = new String (Files.readAllBytes(Paths.get(list.get(i))));
         
@@ -190,9 +218,11 @@ public class MainController {
           // Array of nodes, no types
           JSONArray ja = new JSONArray(content);
 
-          for (int j = 0; j < ja.length(); j++)
-            //jNodesArray.put(ja.get(j));
-            jNodesArray.put(processNode((JSONObject)ja.get(j), parentDirName));
+          for (int j = 0; j < ja.length(); j++) {
+            //jnode = (JSONObject)ja.get(j);
+            jnode = addNodeData((JSONObject)ja.get(j), "path", path);
+            jNodesArray.put(processNode(jnode, parentDirName));
+          }
         }
         catch (JSONException e1) {
           // Try object with types and nodes
@@ -212,13 +242,19 @@ public class MainController {
           
           if (jo.has("nodes")) {
             JSONArray jn = jo.getJSONArray("nodes");
-            for (int j = 0; j < jn.length(); j++)
-              jNodesArray.put(processNode((JSONObject)jn.get(j), parentDirName));
+            
+            for (int j = 0; j < jn.length(); j++) {
+              //jnode = (JSONObject)jn.get(j);
+              jnode = addNodeData((JSONObject)jn.get(j), "path", path);
+            
+              jNodesArray.put(processNode(jnode, parentDirName));
+            }
               
             hasNodes = Boolean.TRUE;
           }
           
           if (!hasNodes && !hasTypes && !jo.has("node_types")) {
+            jo = addNodeData(jo, "path", path);
             jNodesArray.put(processNode(jo, parentDirName));
           }
         }
@@ -227,24 +263,24 @@ public class MainController {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
     }
 
-		return jAsset;
-	}
-	@GetMapping(value="/asset", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String getAsset() throws IOException {
-	  JSONObject jAsset = getAssetJSON();
-		return jAsset.toString();
-	}
+    return jAsset;
+  }
+  @GetMapping(value="/asset", produces = MediaType.APPLICATION_JSON_VALUE)
+  public String getAsset() throws IOException {
+    JSONObject jAsset = getAssetJSON();
+    return jAsset.toString();
+  }
 
-	@GetMapping(value="/jsAsset", produces = "application/x-javascript")
-	public String getJSAsset() {
-	  JSONObject jAsset = getAssetJSON();
-		return "_asset = "+jAsset.toString()+";\n";  
-	}
+  @GetMapping(value="/jsAsset", produces = "application/x-javascript")
+  public String getJSAsset() {
+    JSONObject jAsset = getAssetJSON();
+    return "_asset = "+jAsset.toString()+";\n";  
+  }
 
-	@GetMapping(value="/jsBlueprints", produces = "application/x-javascript")
-	public String getJSBlueprints() {
-	  String content = "{}";
-	  /*
+  @GetMapping(value="/jsBlueprints", produces = "application/x-javascript")
+  public String getJSBlueprints() {
+    String content = "{}";
+    /*
     Catalog c = new Catalog(Catalog.BLUEPRINT_CATALOG, Boolean.TRUE);
     try {
       c.open();
@@ -256,12 +292,12 @@ public class MainController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
     }*/
     
-		return "_blueprints = "+content+";\n";  
-	}
+    return "_blueprints = "+content+";\n";  
+  }
 /*
-	@GetMapping("/jsDynamic")
-	public String getJSDyn() {
-	  SystemInfo systemInfo = new SystemInfo();
+  @GetMapping("/jsDynamic")
+  public String getJSDyn() {
+    SystemInfo systemInfo = new SystemInfo();
     PackageInfo packageInfo = new PackageInfo(buildProperties);
 
     JSONArray jmenu = new JSONArray(
@@ -292,25 +328,25 @@ public class MainController {
     jo.put("ssl", Boolean.FALSE);
 
     return "__SERVER = "+jo.toString()+";\n";    
-	}
+  }
 */
-/*	
+/*  
   @Bean
   SessionRegistry sessionRegistry() { 
       return new SessionRegistryImpl(); 
   }*/
-  	
-	@GetMapping(value="/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Session> getSessions() {
+    
+  @GetMapping(value="/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<Session> getSessions() {
     //SessionsUtils sessionUtils = new SessionsUtils();
     List<Session> l = sessionService.getList();
     
-		return l;
-	}
-  	
-	@GetMapping(value="/stats", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Long> getStats() {
-		return sessionService.getStats(DateUtils.addMinutes(new Date(), -10), new Date());
-	}
+    return l;
+  }
+    
+  @GetMapping(value="/stats", produces = MediaType.APPLICATION_JSON_VALUE)
+  public Map<String, Long> getStats() {
+    return sessionService.getStats(DateUtils.addMinutes(new Date(), -10), new Date());
+  }
 }
 
