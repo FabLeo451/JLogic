@@ -202,7 +202,7 @@ public class MainController {
       List<String> list = paths.map(p -> p.toString()).filter(f -> f.endsWith(".json")).collect(Collectors.toList());
             
       for (int i = 0; i < list.size(); i++) {
-        System.out.println(list.get(i));
+        //System.out.println(list.get(i));
         
         File file = Paths.get(list.get(i)).toFile();
         String parentDirName = file.getParent(); // to get the parent dir name

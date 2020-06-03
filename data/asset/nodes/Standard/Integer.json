@@ -71,5 +71,18 @@
     "output": [
       { "type": 1, "label": "" }
     ]
+  },
+  {
+    "name": "Decrement by 1",
+    "type": 5,
+    "version": 1,
+    "inner_text": "&minus;1",
+    "java": "in{0} - 1",
+    "input": [
+      { "type": 1, "label": "", "value": 0 }
+    ],
+    "output": [
+      { "type": 1, "label": "" }
+    ]
   }
 ]
