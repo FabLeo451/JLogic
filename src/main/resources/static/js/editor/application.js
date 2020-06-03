@@ -648,6 +648,17 @@ function processAction (a) {
       }
 
       dialog.create('Informations');
+      
+      var content = dialog.getContentElement ();
+      
+      content.innerHTML = `
+      <center>
+        <img src="/img/logo-64.png"><br><br>
+        <b>JLogic blueprint editor</b><br><br>
+        Copyright (c) 2020 Fabio Leone
+      <center>
+      `;
+
       break;
 
     case MenuItems.FILE_OPEN:

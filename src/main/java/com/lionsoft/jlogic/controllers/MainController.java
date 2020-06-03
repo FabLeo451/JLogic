@@ -127,7 +127,7 @@ public class MainController {
       // when "java":"@my-code.java" load file and set "java" attribute
       if (java.substring(0,1).equals("@")) {
         String filename = path+"/"+java.substring(1);
-        System.out.println("Loading "+filename);
+        //System.out.println("Loading "+filename);
         
         try {
           String content = new String (Files.readAllBytes(Paths.get(filename)));
