@@ -66,7 +66,7 @@
       ]
     },
     {
-      "name": "Oracle Fetch as Json",
+      "name": "Oracle Fetch Loop",
       "icon": "<i class=\"icon i-database\"></i>",
       "type": 4,
       "version": 1,
