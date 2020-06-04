@@ -8,7 +8,7 @@
       "type": 4,
       "version": 1,
       "import": ["com.lionsoft.elasticsearch.ElasticsearchClient", "org.elasticsearch.rest.RestStatus", "java.util.*"],
-      "jar": ["ElasticsearchClient.jar"],
+      "jar": ["{path}/ElasticsearchClient.jar"],
       "java":"out{1} = new ElasticsearchClient((in{1} == 0 ? \"http\" : \"https\"), in{2}, in{3}, in{4}, in{5}, in{6}, in{7});",
       "input": [
         { "type": 0, "label": "" },
@@ -30,7 +30,7 @@
       "type": 4,
       "version": 1,
       "import": ["com.lionsoft.elasticsearch.ElasticsearchClient", "org.elasticsearch.rest.RestStatus", "java.util.*"],
-      "jar": ["ElasticsearchClient.jar"],
+      "jar": ["{path}/ElasticsearchClient.jar"],
       "java":"in{1}.close();",
       "input": [
         { "type": 0, "label": "" },
@@ -45,7 +45,7 @@
       "type": 4,
       "version": 1,
       "import": ["com.lionsoft.elasticsearch.ElasticsearchClient", "org.elasticsearch.rest.RestStatus", "java.util.*"],
-      "jar": ["ElasticsearchClient.jar"],
+      "jar": ["{path}/ElasticsearchClient.jar"],
       "java":"out{2} = in{1}.emptyIndex(in{2});",
       "input": [
         { "type": 0, "label": "" },
@@ -62,8 +62,8 @@
       "name": "Elasticsearch Put Document",
       "type": 4,
       "version": 1,
-      "import": ["com.lionsoft.elasticsearch.ElasticsearchClient", "org.elasticsearch.rest.RestStatus", "java.util.*"],
-      "jar": ["ElasticsearchClient.jar"],
+      "import": ["com.lionsoft.elasticsearch.ElasticsearchClient", "org.elasticsearch.rest.RestStatus", "java.util.*", "org.json.simple.*"],
+      "jar": ["{path}/ElasticsearchClient.jar", "lib/json-simple-1.1.1.jar"],
       "java":"if (in{1}.putDocumentJSON(in{2}, in{3}, in{4})) { exec{0} } else { out{2} = in{1}.getMessage(); exec{1} }",
       "input": [
         { "type": 0, "label": "" },
