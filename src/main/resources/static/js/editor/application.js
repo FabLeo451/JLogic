@@ -619,12 +619,12 @@ function toggleConsoleVisibility () {
   var visible = bpConsole.getVisible();
   var item = menubar.getMenuItem (MenuItems.VIEW_CONSOLE);
   var icon = item.childNodes[0];
-  
+/*  
   if (visible)
     g_bp_height = blueprint.getHeight();
   
   blueprint.setHeight(visible ? "100%" : g_bp_height+"px");
-    
+*/    
   visible = bpConsole.toggleVisibility ();
   icon.innerHTML = visible ? '<i class="icon i-check"></i>' : "";
 }

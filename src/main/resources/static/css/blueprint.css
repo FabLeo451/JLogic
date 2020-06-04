@@ -55,8 +55,9 @@ main {
 .blueprint {
   overflow: hidden;
   /*width: 100%;*/
-  height: 70%;
+  height: 100%;
   /* border: 3px solid blue; */
+  border: 1px solid lightgray;
   position: relative;
   z-index: 0;
   /*resize: vertical;*/
@@ -67,7 +68,7 @@ main {
 
 .bpconsole {
   width: 100%;
-  height: 30%;
+  /*height: 30%;*/
     /*position: absolute;
     bottom: 0;*/
   border: 1px solid rgb(210,210,210);
@@ -318,6 +319,7 @@ main {
 
 .terminal {
   background-color: white;
+  border: 1px solid lightgray;
   display: block;
   color: black;
   font-family: "Courier New", monospace;

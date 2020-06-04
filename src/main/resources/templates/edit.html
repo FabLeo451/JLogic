@@ -149,16 +149,18 @@ var _jbp = null;
     </div>
 
 
-    <div class="bpcontainer" style="padding-top:5em;">
-      <div id="a" class="split content blueprint">
-        <div id="status" style="position: absolute; top:0px"></div>
-        <div id="mouse" style="position: absolute; top:20px"></div>
-        <div id="bp-title" class="bp-title"></div>
-        <div class="bp-bg"></div>
+    <div class="bpcontainer">
+      <div id="a" class="split">
+        <div class="blueprint" style="padding-top:5em;">
+          <div id="status" style="position: absolute; top:0px"></div>
+          <div id="mouse" style="position: absolute; top:20px"></div>
+          <div id="bp-title" class="bp-title"></div>
+          <div class="bp-bg"></div>
+        </div>
       </div>
                 
         <!-- Console -->
-        <div id="myConsole" class="split content">
+        <div id="myConsole" class="split">
           <!--div id="consoleToolbar" class="bpconsoleToolbar">
             <span class="bp-console-text" title="Clear console" onclick="bpConsole.clear();"><i class="icon i-broom"></i></span>
             <span class="bp-console-text" title="Hide console" onclick="toggleConsoleVisibility();" style="float: right;"><i class="icon i-times"></i></span>
@@ -176,9 +178,11 @@ var _jbp = null;
 
 <script>
  Split(['#a', '#myConsole'], {
-        gutterSize: 5,
+        sizes: [70, 30],
+        gutterSize: 10,
         cursor: 'pointer',
         direction: 'vertical',
+        minSize: 0
     });
 
 setInputFilter(document.getElementById("bpName"), function(value) { return /^[a-zA-Z0-9_\\-\\.]+$/.test(value); });
