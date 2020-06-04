@@ -1,5 +1,5 @@
-data/*.db
-data/program/*
+data/**/repository.mv.db
+data/program/**
 target
-plugin/*.jar
-plugin/*.tar.xz
+plugin/**/*.jar
+plugin/**/*.tar.xz
