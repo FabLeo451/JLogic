@@ -1,1 +1,3 @@
-repository.mv.db
+data/repository.mv.db
+data/program/*
+target
