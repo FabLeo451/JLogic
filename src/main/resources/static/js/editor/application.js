@@ -619,14 +619,16 @@ function toggleConsoleVisibility () {
   var visible = bpConsole.getVisible();
   var item = menubar.getMenuItem (MenuItems.VIEW_CONSOLE);
   var icon = item.childNodes[0];
-  
+/*  
   if (visible)
     g_bp_height = blueprint.getHeight();
   
   blueprint.setHeight(visible ? "100%" : g_bp_height+"px");
     
   visible = bpConsole.toggleVisibility ();
-  icon.innerHTML = visible ? '<i class="icon i-check"></i>' : "";
+*/
+  paned.collapse(1);
+  //icon.innerHTML = visible ? '<i class="icon i-check"></i>' : "";
 }
 
 function processAction (a) {
@@ -949,7 +951,7 @@ function createMenu (id) {
          { "item": "Show grid", "id": MenuItems.VIEW_SHOW_GRID, "checked":true },
          { "item": "Snap to grid", "id": MenuItems.VIEW_SNAP_TO_GRID, "checked":true },
          { "separator": true },
-         { "item": "Show console", "id": MenuItems.VIEW_CONSOLE, "checked":true },
+         { "item": "Collapse console", "id": MenuItems.VIEW_CONSOLE/*, "checked":true*/ },
          { "separator": true },
          { "item": "Zoom in", "id": MenuItems.VIEW_ZOOM_IN, "icon": "<i class=\"icon i-zoom-in\"></i>", "text":"Wheel up" },
          { "item": "Zoom out", "id": MenuItems.VIEW_ZOOM_OUT, "icon": "<i class=\"icon i-zoom-out\"></i>", "text":"Wheel down" },

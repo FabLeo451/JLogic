@@ -125,7 +125,7 @@ class Blueprint {
     this.x0 = this.y0 = 0;
     this.bgElement = null;
     this.snapToGrid = true;
-    this.grid = 25;
+    this.grid = 20;
     this.blueprintList = null;
     this.callbackBeginModify = null;
     this.callbackModified = null;
@@ -838,6 +838,8 @@ class Blueprint {
             var y = this.selection[i].y - this.y0;
             y = Math.round (y / g) * g;
             y += this.y0;
+            
+            console.log('Snapping to '+x+', '+y);
 
             this.selection[i].moveTo (x, y);
           }

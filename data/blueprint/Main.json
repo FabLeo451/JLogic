@@ -46,9 +46,9 @@
          ],
          "can_delete":false,
          "name":"Entry point",
-         "x":50,
+         "x":40,
          "icon":"<i class=\"icon i-sign-in\"><\/i>",
-         "y":250,
+         "y":240,
          "id":1,
          "type":0,
          "version":1
@@ -70,9 +70,9 @@
          ],
          "can_delete":false,
          "name":"Return",
-         "x":650,
+         "x":640,
          "icon":"<i class=\"icon i-sign-out\"><\/i>",
-         "y":250,
+         "y":240,
          "id":2,
          "type":1,
          "version":1
