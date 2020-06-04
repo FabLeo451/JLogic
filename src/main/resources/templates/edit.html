@@ -16,6 +16,9 @@
 <link rel='stylesheet' href='/css/sidebar.css'>
 <link rel='stylesheet' href='/css/tree.css'>
 
+<link rel='stylesheet' href='/css/split.css'>
+<script src="/js/split.min.js"></script>
+
 <!--script src="/jsDynamic"></script-->
 <script src="/jsAsset"></script>
 <script src="/jsBlueprints"></script>
@@ -145,18 +148,15 @@ var _jbp = null;
 
 
     <div class="bpcontainer">
-      <div id="bp1" class="blueprint">
+      <div id="a" class="split content blueprint">
         <div id="status" style="position: absolute; top:0px"></div>
         <div id="mouse" style="position: absolute; top:20px"></div>
         <div id="bp-title" class="bp-title"></div>
         <div class="bp-bg"></div>
       </div>
-      
-      <!--div class="splitter-horizontal">
-      </div-->
                 
         <!-- Console -->
-        <div id="myConsole" class="bpconsole">
+        <div id="myConsole" class="split content">
           <div id="consoleToolbar" class="bpconsoleToolbar">
             <!--button title="Clear console" onclick="bpConsole.clear();"><i class="icon i-broom"></i></button>
             <button title="Hide console" onclick="toggleConsoleVisibility();" style="float: right;"><i class="icon i-times"></i></button-->
@@ -175,17 +175,22 @@ var _jbp = null;
 
 
 <script>
+ Split(['#a', '#myConsole'], {
+        gutterSize: 5,
+        cursor: 'pointer',
+        direction: 'vertical',
+    });
+
 setInputFilter(document.getElementById("bpName"), function(value) { return /^[a-zA-Z0-9_\\-\\.]+$/.test(value); });
 
 createMenu ("mb1");
 appStart ();
 
-
+/*
  $(".blueprint").resizable({
-   /*handleSelector: ".splitter-horizontal",*/
-   /*resizeWidth: false,*/
    handles: 's'
  });
+*/
 
 //bpStart(null);
 //blueprint.bpDiv.addEventListener('keydown', appKeyPressed, false);
