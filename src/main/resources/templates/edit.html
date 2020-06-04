@@ -78,13 +78,15 @@ var _jbp = null;
   </div>
     
   <!-- Menubar and toolbar -->
-  <div id="mb1" class="menubar"></div>
-  <div id="toolbar" class="toolbar"></div>
+  <div class="w3-top" style="z-index:10;">
+    <div id="mb1" class="menubar"></div>
+    <div id="toolbar" class="toolbar"></div>
+  </div>
 
   <div class="horizontal-pane">
   
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" style="padding-top:5.5em;">
     
       <!-- Program -->
       <div class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
@@ -147,7 +149,7 @@ var _jbp = null;
     </div>
 
 
-    <div class="bpcontainer">
+    <div class="bpcontainer" style="padding-top:5em;">
       <div id="a" class="split content blueprint">
         <div id="status" style="position: absolute; top:0px"></div>
         <div id="mouse" style="position: absolute; top:20px"></div>
@@ -157,12 +159,10 @@ var _jbp = null;
                 
         <!-- Console -->
         <div id="myConsole" class="split content">
-          <div id="consoleToolbar" class="bpconsoleToolbar">
-            <!--button title="Clear console" onclick="bpConsole.clear();"><i class="icon i-broom"></i></button>
-            <button title="Hide console" onclick="toggleConsoleVisibility();" style="float: right;"><i class="icon i-times"></i></button-->
+          <!--div id="consoleToolbar" class="bpconsoleToolbar">
             <span class="bp-console-text" title="Clear console" onclick="bpConsole.clear();"><i class="icon i-broom"></i></span>
             <span class="bp-console-text" title="Hide console" onclick="toggleConsoleVisibility();" style="float: right;"><i class="icon i-times"></i></span>
-          </div>
+          </div-->
           <div id="consoleText" class="terminal"></div>
         </div>
     </div>
