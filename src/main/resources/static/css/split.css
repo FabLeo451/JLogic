@@ -16,7 +16,7 @@
  }
  
  .gutter {
-     background-color: transparent;
+     background-color: rgb(241, 241, 241);
      background-repeat: no-repeat;
      background-position: 50%;
  }
