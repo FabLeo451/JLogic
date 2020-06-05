@@ -246,6 +246,7 @@ public class ProgramEntity {
 	  return getMyDir()+"/Program.java";
   }
   
+  @Transient
   public String getJARFilename() {
 	  return getMyDir()+"/"+jarName;
   }
@@ -262,6 +263,7 @@ public class ProgramEntity {
 		return getMyDir()+"/index.json";
 	}
 	
+	@Transient
 	public String getClassFilename() {
 		return getMyDir()+"/"+className;
 	}

@@ -68,10 +68,10 @@ public class BlueprintEntity {
             fetch = FetchType.EAGER,
             mappedBy = "blueprint")
     private List<APIEntity> apis;
-    
+/*    
     @Column(name="content", columnDefinition = "TEXT")
     String content;
-    
+*/   
     @ElementCollection
     @CollectionTable(name = "jar", joinColumns = @JoinColumn(name = "blieprint_id"))
     @Column(name="jar")
@@ -182,7 +182,7 @@ public class BlueprintEntity {
       JSONObject jcontent;
       JSONParser jsonParser = new JSONParser();
       
-      this.content = content;
+      //this.content = content;
       jarList = new ArrayList<String>();
       
       try {
@@ -225,11 +225,11 @@ public class BlueprintEntity {
         logger.error(e.getMessage());
       }
     }
-    
+    /*
     public String getContent() {
       return content;
     }
-    
+    */
     public List<String> getJARList() {
       return jarList;
     }

@@ -304,7 +304,7 @@ public class ProgramController {
 	  Optional<ProgramEntity> program = programService.findById(id);
 	  
 	  if (program.isPresent()) {
-	      Optional<BlueprintEntity> blueprint = blueprintService.findByName(method);
+	      Optional<BlueprintEntity> blueprint = blueprintService.findByNameAndProgram(method, program.get());
 	      
 	      if (blueprint.isPresent()) {
 	          if (program.get().run(blueprint.get().getMethod(), data)) {
