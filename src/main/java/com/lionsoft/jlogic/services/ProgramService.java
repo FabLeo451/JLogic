@@ -73,7 +73,7 @@ public class ProgramService {
     
     if (progFile.mkdir()) {
       program.createIndex();
-      program.createDefaultDependecies();
+      //program.createDefaultDependecies();
       program.createProperties();
 
       return program;

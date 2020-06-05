@@ -129,14 +129,6 @@ public class ProgramEntity {
       setId(id);
       setName(name);
       setStatus(ProgramStatus.READY);
-      /*
-      File f = new File(home.getDir()+"/../data/program/"+getId());
-      
-      try {
-        programDir = f.getCanonicalPath();
-      } catch (IOException e) {
-        logger.error("Creating program "+name+": "+e.getMessage());
-      }*/
     }
      
     //Setters and getters
@@ -257,14 +249,14 @@ public class ProgramEntity {
   public String getJARFilename() {
 	  return getMyDir()+"/"+jarName;
   }
-	
+/*	
 	public String getDefaultDepsFilename() {
 		return getMyDir()+"/default-deps.json";
 	}
 	
 	public String getDepsFilename() {
 		return getMyDir()+"/deps.json";
-	}
+	}*/
 	
 	public String getIndexFilename() {
 		return getMyDir()+"/index.json";
@@ -305,7 +297,7 @@ public class ProgramEntity {
 	
 	public void addClassPath(String cp) {
 	  if (!classPathList.contains(cp))
-		  classPathList.add(cp);
+		  classPathList.add(getHomeDir() + "/" + cp);
 	}
 	/*
 	public void addDependency(String item) {
@@ -323,21 +315,22 @@ public class ProgramEntity {
     //dependencies = new ArrayList<String>();
     JSONParser jsonParser = new JSONParser();
     JSONArray ja;
-	  
+/*	  
     try {
       // Default dependencies
+      
       ja = (JSONArray) jsonParser.parse(new FileReader(getDefaultDepsFilename()));
 
       ja.forEach (jdep -> {
         addClassPath(getHomeDir() + "/" + jdep.toString());
       });
-      
+
       // Others
       ja = (JSONArray) jsonParser.parse(new FileReader(getDepsFilename()));
 
       ja.forEach (jdep -> {
         addClassPath(getHomeDir() + "/" + jdep.toString());
-      });      
+      });
     } 
     catch (FileNotFoundException e) {
       logger.warn(e.getMessage());
@@ -347,7 +340,22 @@ public class ProgramEntity {
     }
     catch (ParseException e) {
       logger.warn(e.getMessage());
-    }
+    }*/
+    
+      // Default dependencies
+	    addClassPath("/lib/Standard.jar"); 
+	    addClassPath("/lib/java-getopt-1.0.13.jar");
+	    addClassPath("/lib/log4j-1.2.12.jar");
+      
+      // Others
+      for (BlueprintEntity b : blueprints) {
+        //System.out.println("Getting dependencies from "+b.getName());
+        
+        for (int i=0; i<b.getJARList().size(); i++) {
+          //System.out.println("  "+b.getJARList().get(i));
+          addClassPath(b.getJARList().get(i));
+        }
+      }
 	}
 	
 	public String getBlueprintIndex () {
@@ -424,7 +432,7 @@ public class ProgramEntity {
     
     return true;
 	}
-	
+	/*
 	public boolean createDefaultDependecies () {
 	  JSONArray ja = new JSONArray();
 	  
@@ -443,7 +451,7 @@ public class ProgramEntity {
     }
     
     return true;
-	}
+	}*/
 			
 	public boolean createProperties() {
     try {
@@ -482,8 +490,8 @@ public class ProgramEntity {
     args.add(getName());
     args.add("-m");
     args.add("MANIFEST.MF");
-    args.add("--deps");
-    args.add(getDepsFilename());
+    /*args.add("--deps");
+    args.add(getDepsFilename());*/
     args.add("--format");
     args.add("-O");
     args.add(getJavaFile());
@@ -809,6 +817,8 @@ public static void copyStream(InputStream input, OutputStream output)
     //System.out.println(args.toString());
     
     // Run jar
+    
+    logger.info("Creating "+getJARFilename());
 
     ProcessBuilder processBuilder = new ProcessBuilder();
     //processBuilder.inheritIO().command(args);

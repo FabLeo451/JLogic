@@ -91,6 +91,10 @@ public class BlueprintService {
       e.printStackTrace();
       return false;
     }
+    
+    // Update database
+    
+    blueprint.setContent(jo.toString());
       	
 	  // Save file
 	  

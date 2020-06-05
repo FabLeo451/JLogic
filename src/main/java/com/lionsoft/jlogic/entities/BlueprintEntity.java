@@ -11,11 +11,24 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
+import javax.persistence.Transient;
+import javax.persistence.ElementCollection;
+import javax.persistence.CollectionTable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
  
 @Entity
 @Table(name="BLUEPRINT")
@@ -23,7 +36,10 @@ public class BlueprintEntity {
 
     public static final int GENERIC = 0;
     public static final int MAIN = 1;
-  
+    
+    @Transient
+    Logger logger = LoggerFactory.getLogger(BlueprintEntity.class);
+      
     @Id
     //@GeneratedValue
     private String id;
@@ -52,6 +68,14 @@ public class BlueprintEntity {
             fetch = FetchType.EAGER,
             mappedBy = "blueprint")
     private List<APIEntity> apis;
+    
+    @Column(name="content", columnDefinition = "TEXT")
+    String content;
+    
+    @ElementCollection
+    @CollectionTable(name = "jar", joinColumns = @JoinColumn(name = "blieprint_id"))
+    @Column(name="jar")
+    List<String> jarList = Collections.emptyList();
     
     public BlueprintEntity() {
 
@@ -152,5 +176,61 @@ public class BlueprintEntity {
     @JsonIgnore
     public List<APIEntity> getAPIs() {
       return apis;
+    }
+    
+    public void setContent(String content) {
+      JSONObject jcontent;
+      JSONParser jsonParser = new JSONParser();
+      
+      this.content = content;
+      jarList = new ArrayList<String>();
+      
+      try {
+        jcontent = (JSONObject) jsonParser.parse(content);
+        
+        // Get dependencies from every node
+        
+        JSONArray jnodes = (JSONArray) jcontent.get("nodes");
+        
+        for (int i=0; i<jnodes.size(); i++) {
+          JSONObject jn = (JSONObject) jnodes.get(i);
+          
+          //System.out.println("Node: "+(String) jn.get("name"));
+          
+          if (jn.containsKey("jar")) {
+            JSONArray ja = (JSONArray) jn.get("jar");
+
+            // If path is present maybe we have "jar":"{path}/jarname.jar"
+            String path = null;
+            
+            if (jn.containsKey("data")) {
+              JSONObject jdata = (JSONObject) jn.get("data");
+              path = jdata.containsKey("path") ? (String) jdata.get("path") : null;
+            }
+                  
+            for (int j=0; ja != null && j<ja.size(); j++) {
+              String jar = (String) ja.get(j);
+              
+              if (path != null)
+                jar = jar.replace("{path}", path);
+          
+              if (!jarList.contains(jar)) {
+                //System.out.println("  "+(String) jar.get(j));
+                jarList.add(jar);
+              }
+            }
+          }
+        }
+      } catch (ParseException e) {
+        logger.error(e.getMessage());
+      }
+    }
+    
+    public String getContent() {
+      return content;
+    }
+    
+    public List<String> getJARList() {
+      return jarList;
     }
 }
