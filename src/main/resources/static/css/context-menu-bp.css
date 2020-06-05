@@ -1,5 +1,5 @@
 .menu {
-  /*width: 120px;*/
+  width: 20em;
   z-index: 100;
           box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
      -moz-box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
@@ -43,6 +43,7 @@
 }
   
 .ctxSearchEntry {
+  width: 18em;
   /*background-image: url('../img/search.png');
   \/*background-position: 10px 12px;*\/ 
   background-repeat: no-repeat;*/ 
