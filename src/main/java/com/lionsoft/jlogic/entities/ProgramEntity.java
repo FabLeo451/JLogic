@@ -673,6 +673,19 @@ public class ProgramEntity {
     }
     return directoryToBeDeleted.delete();
   }
+
+public static void copyStream(InputStream input, OutputStream output)
+     throws IOException
+{
+    // Reads up to 1M at a time. Try varying this.
+    byte[] buffer = new byte[1*1024*1024];
+    int read;
+
+    while ((read = input.read(buffer)) != -1)
+    {
+        output.write(buffer, 0, read);
+    }
+}
 	
 	public boolean unpackJAR(String jarFile, String destDir) {
 	  java.util.jar.JarFile jar;
@@ -688,7 +701,9 @@ public class ProgramEntity {
     
     while (items.hasMoreElements()) {
 	    java.util.jar.JarEntry file = (java.util.jar.JarEntry) items.nextElement();
-	    java.io.File f = new java.io.File(destDir + java.io.File.separator + file.getName());
+
+      String destFilePath = destDir + java.io.File.separator + file.getName();
+	    java.io.File f = new java.io.File(destFilePath);
 	    
 	    if (file.isDirectory()) { // if its a directory, create it
 		    f.mkdir();
@@ -696,10 +711,13 @@ public class ProgramEntity {
 	    }
 	    
 	    java.io.InputStream is = null;
-	    java.io.FileOutputStream fos = null;
+	    java.io.OutputStream os = null;
+	    //java.io.FileOutputStream fos = null;
 	    
 	    try {
 	      is = jar.getInputStream(file); // get the input stream
+        os = Files.newOutputStream(Paths.get(destFilePath));
+        /*
 	      fos = new java.io.FileOutputStream(f);
 	      
 	      while (is.available() > 0) {  // write contents of 'is' to 'fos'
@@ -707,6 +725,11 @@ public class ProgramEntity {
 	      }
 	      
 	      fos.close();
+        */
+
+        copyStream(is, os);
+
+        os.close();
 	      is.close();
 	    
       } catch (IOException e) {

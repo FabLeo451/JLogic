@@ -2,7 +2,7 @@
     "name": "Log",
     "type": 4,
     "version": 1,
-    "jar": ["log4j-1.2.12.jar"],
+    "jar": ["lib/log4j-1.2.12.jar"],
     "import": ["org.apache.log4j.Logger", "org.apache.log4j.Level"],
     "can_delete": true,
     "java":"switch (in{1}) { case 0: logger.info(in{2}); break; case 1: logger.warn(in{2}); break; case 2: logger.error(in{2}); break; case 3: logger.trace(in{2}); break; default: logger.debug(in{2}); break; }",

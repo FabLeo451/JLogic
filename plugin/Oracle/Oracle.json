@@ -9,7 +9,7 @@
       "name": "Oracle Connect",
       "type": 4,
       "version": 1,
-      "jar": ["ojdbc8.jar"],
+      "jar": ["lib/ojdbc8.jar"],
       "import": ["java.sql.Connection", "java.sql.DriverManager", "java.sql.SQLException"],
       "java":"@Connect.java",
       "input": [
@@ -34,7 +34,7 @@
       "icon": "<i class=\"icon i-database\"></i>",
       "type": 4,
       "version": 1,
-      "jar": ["ojdbc8.jar"],
+      "jar": ["lib/ojdbc8.jar"],
       "java":"try { in{1}.close(); } catch (SQLException e) { }",
       "input": [
         { "type": 0, "label": "" },
@@ -49,7 +49,7 @@
       "icon": "<i class=\"icon i-database\"></i>",
       "type": 4,
       "version": 1,
-      "jar": ["ojdbc8.jar"],
+      "jar": ["lib/ojdbc8.jar"],
       "import": ["java.sql.Connection", "java.sql.SQLException", "java.sql.ResultSet", "java.sql.ResultSetMetaData", "java.sql.PreparedStatement"],
       "java":"@Select.java",
       "input": [
@@ -70,7 +70,7 @@
       "icon": "<i class=\"icon i-database\"></i>",
       "type": 4,
       "version": 1,
-      "jar": ["ojdbc8.jar", "json-simple-1.1.1.jar"],
+      "jar": ["lib/ojdbc8.jar", "json-simple-1.1.1.jar"],
       "import": ["java.sql.Connection", "java.sql.SQLException", "java.sql.ResultSet", "java.sql.ResultSetMetaData", "java.sql.Types",
                 "java.sql.Clob", "org.json.simple.JSONObject", "org.json.simple.*"],
       "java":"@FetchAsJson.java",
@@ -89,7 +89,7 @@
       "icon": "<i class=\"icon i-database\"></i>",
       "type": 4,
       "version": 1,
-      "jar": ["ojdbc8.jar", "json-simple-1.1.1.jar"],
+      "jar": ["lib/ojdbc8.jar", "json-simple-1.1.1.jar"],
       "import": ["java.sql.Connection", "java.sql.SQLException", "java.sql.Statement", "org.json.simple.*", "java.util.Iterator"],
       "java":"@Insert.java",
       "input": [
@@ -113,7 +113,7 @@
       "icon": "<i class=\"icon i-database\"></i>",
       "type": 4,
       "version": 1,
-      "jar": ["ojdbc8.jar", "json-simple-1.1.1.jar"],
+      "jar": ["lib/ojdbc8.jar", "json-simple-1.1.1.jar"],
       "import": ["java.sql.Connection", "java.sql.SQLException", "java.sql.Statement", "org.json.simple.*", "java.util.Iterator"],
       "java":"@Update.java",
       "options": { "javaInputArray": true },
@@ -140,7 +140,7 @@
       "icon": "<i class=\"icon i-database\"></i>",
       "type": 4,
       "version": 1,
-      "jar": ["ojdbc8.jar", "json-simple-1.1.1.jar"],
+      "jar": ["lib/ojdbc8.jar", "lib/json-simple-1.1.1.jar"],
       "import": ["java.sql.Connection", "java.sql.SQLException"],
       "java":"out{2} = 0;\ntry { in{1}.commit(); } catch (SQLException e) { out{2} = e.getErrorCode(); out{3} = e.getMessage(); } if (out{2} == 0) { exec{0} } else { exec{1} }",
       "input": [
@@ -159,7 +159,7 @@
       "icon": "<i class=\"icon i-database\"></i>",
       "type": 4,
       "version": 1,
-      "jar": ["ojdbc8.jar", "json-simple-1.1.1.jar"],
+      "jar": ["lib/ojdbc8.jar", "lib/json-simple-1.1.1.jar"],
       "import": ["java.sql.Connection", "java.sql.SQLException"],
       "java":"out{2} = 0;\ntry { in{1}.rollback(); } catch (SQLException e) { out{2} = e.getErrorCode(); out{3} = e.getMessage(); } if (out{2} == 0) { exec{0} } else { exec{1} }",
       "input": [
