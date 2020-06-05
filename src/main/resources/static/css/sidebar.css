@@ -1,7 +1,7 @@
 .sidebar {
   height: 100%;
   width: 300px;
-  border-right: 1px solid lightgray;
+  /*border-right: 1px solid lightgray;*/
   font-size: 13px;
   /*position: relative;*/
   z-index: 1;

@@ -677,8 +677,8 @@ public class ProgramEntity {
 public static void copyStream(InputStream input, OutputStream output)
      throws IOException
 {
-    // Reads up to 1M at a time. Try varying this.
-    byte[] buffer = new byte[1*1024*1024];
+    // Reads up to 5M at a time. Try varying this.
+    byte[] buffer = new byte[5*1024*1024];
     int read;
 
     while ((read = input.read(buffer)) != -1)
@@ -750,7 +750,7 @@ public static void copyStream(InputStream input, OutputStream output)
 	  boolean result = true;
 	  String mf = getMyDir()+"/MANIFEST.MF";
 	  
-	  System.setProperty("user.dir", getMyDir());
+	  //System.setProperty("user.dir", getMyDir());
 	  
 	  logger.info("Creating JAR for "+getName());
 	  logger.debug("Current direcotry: "+System.getProperty("user.dir"));	  
