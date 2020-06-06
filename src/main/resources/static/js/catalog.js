@@ -509,11 +509,40 @@ function cleanProgram (programId) {
   callServer ("PUT", '/program/'+programId+'/clean', null, myCallback);
 }*/
 
+function addBlueprintCallback(xhttp) {
+
+  if (xhttp.readyState == 4) {
+    var jresponse = null;
+
+    if (dialogWorking)
+      dialogWorking.destroy();
+          
+    //console.log(xhttp.responseText);
+    
+    jresponse = JSON.parse(xhttp.responseText);
+    
+    if (xhttp.status == 200) {
+      window.open("/blueprint/"+jresponse.id+"/edit");
+      refreshCatalog();
+    }
+    else {
+        var jresponse = JSON.parse(xhttp.responseText);
+        
+        if (jresponse.hasOwnProperty('message')) {
+          dialogError (message+'\n'+output);
+        }
+        else {
+          dialogError (xhttp.responseText);
+        }
+    }
+  }
+}
+
 function addBlueprint (programId) {
   editFolderDialog ('Add blueprint', 'New blueprint', function (data) {
       var resource = "/program/"+programId+"/blueprint/"+data.name+"?tree=1";
       dialogWorking = dialogMessage ('Working', 'Adding blueprint...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("PUT", resource, null, myCallback);
+      callServer ("PUT", resource, null, addBlueprintCallback);
     }
   );
 }

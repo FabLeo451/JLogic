@@ -95,32 +95,15 @@ public class ProgramController {
 	public ResponseEntity<String> addBlueprint(@PathVariable("programId") String programId, 
 	                                           @PathVariable("name") String name,
 	                                           @RequestParam(value = "tree", defaultValue = "0") String tree) {
+	  BlueprintEntity blueprint = null;
 	  Optional<ProgramEntity> program = programService.findById(programId);
 	  
 	  if (program.isPresent()) {
-	    BlueprintEntity blueprint = blueprintService.create(program.get(), BlueprintType.GENERIC, name);
+	    blueprint = blueprintService.create(program.get(), BlueprintType.GENERIC, name);
 	    
 	    if (blueprint != null) {
 	      logger.info("Created "+blueprint.toString());
-	      
-	      //program.get().addBlueprint(blueprint);
-	      programRepository.refresh(program.get());
-	      /*
-	      while (true) {
-	        Optional<BlueprintEntity> b = blueprintService.findById(blueprint.getId());
-	        
-	        if (b.isPresent())
-	          break;
-	          
-	        logger.info("Waiting for blueprint...");
-	        
-	        try {
-	          TimeUnit.SECONDS.sleep(3);
-	        } catch (InterruptedException e) {
-	          e.printStackTrace();
-	        }
-	      }*/
-	  
+	      programRepository.refresh(program.get());	  
 	    } else {
 	      logger.error("Can't create blueprint "+name);
 	      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't create blueprint "+name);
@@ -128,10 +111,8 @@ public class ProgramController {
 	  } else {
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found: "+programId);
 	  }
-	  
 
-	  
-		return new ResponseEntity<>(tree.equals("0") ? "" : catalogService.getCatalog().toString(), HttpStatus.OK);
+		return new ResponseEntity<>("{\"id\":\""+blueprint.getId()+"\"}", HttpStatus.OK);
 	}
 	
 	// PUT /program/{id}/rename/{name}
