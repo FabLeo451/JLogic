@@ -77,6 +77,11 @@ public class BlueprintEntity {
     @Column(name="jar")
     List<String> jarList = Collections.emptyList();
     
+    @ElementCollection
+    @CollectionTable(name = "classpath", joinColumns = @JoinColumn(name = "blieprint_id"))
+    @Column(name="classpath")
+    List<String> classPathList = Collections.emptyList();
+    
     public BlueprintEntity() {
 
     }
@@ -178,12 +183,27 @@ public class BlueprintEntity {
       return apis;
     }
     
+    public void addDependency(List<String> list, JSONArray ja, String path) {
+      for (int j=0; ja != null && j<ja.size(); j++) {
+        String dep = (String) ja.get(j);
+        
+        if (path != null)
+          dep = dep.replace("{path}", path);
+    
+        if (!list.contains(dep)) {
+          //System.out.println("  "+(String) jar.get(j));
+          list.add(dep);
+        }
+      }
+    }
+    
     public void setContent(String content) {
       JSONObject jcontent;
       JSONParser jsonParser = new JSONParser();
       
       //this.content = content;
       jarList = new ArrayList<String>();
+      classPathList = new ArrayList<String>();
       
       try {
         jcontent = (JSONObject) jsonParser.parse(content);
@@ -196,17 +216,18 @@ public class BlueprintEntity {
           JSONObject jn = (JSONObject) jnodes.get(i);
           
           //System.out.println("Node: "+(String) jn.get("name"));
+
+          // If path is present maybe we have "jar":"{path}/jarname.jar"
+          String path = null;
           
+          if (jn.containsKey("data")) {
+            JSONObject jdata = (JSONObject) jn.get("data");
+            path = jdata.containsKey("path") ? (String) jdata.get("path") : null;
+          }
+          
+          /*
           if (jn.containsKey("jar")) {
             JSONArray ja = (JSONArray) jn.get("jar");
-
-            // If path is present maybe we have "jar":"{path}/jarname.jar"
-            String path = null;
-            
-            if (jn.containsKey("data")) {
-              JSONObject jdata = (JSONObject) jn.get("data");
-              path = jdata.containsKey("path") ? (String) jdata.get("path") : null;
-            }
                   
             for (int j=0; ja != null && j<ja.size(); j++) {
               String jar = (String) ja.get(j);
@@ -220,6 +241,13 @@ public class BlueprintEntity {
               }
             }
           }
+          */
+          
+          if (jn.containsKey("jar"))
+            addDependency(jarList, (JSONArray) jn.get("jar"), path);
+          
+          if (jn.containsKey("classpath"))
+            addDependency(classPathList, (JSONArray) jn.get("classpath"), path);
         }
       } catch (ParseException e) {
         logger.error(e.getMessage());
@@ -232,5 +260,9 @@ public class BlueprintEntity {
     */
     public List<String> getJARList() {
       return jarList;
+    }
+    
+    public List<String> getClassPath() {
+      return classPathList;
     }
 }

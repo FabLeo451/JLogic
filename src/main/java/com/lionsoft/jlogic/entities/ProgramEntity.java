@@ -96,6 +96,9 @@ public class ProgramEntity {
     private List<BlueprintEntity> blueprints;
     
     @Transient
+    private List<String> jarList;
+    
+    @Transient
     private List<String> classPathList;
     
     //@Transient
@@ -301,6 +304,11 @@ public class ProgramEntity {
 	  if (!classPathList.contains(cp))
 		  classPathList.add(getHomeDir() + "/" + cp);
 	}
+	
+	public void addJAR(String jar) {
+	  if (!jarList.contains(jar))
+		  jarList.add(getHomeDir() + "/" + jar);
+	}
 	/*
 	public void addDependency(String item) {
 	  if (!dependencies.contains(item))
@@ -314,50 +322,36 @@ public class ProgramEntity {
 	public void loadDeps() {
 	  String content;
     classPathList = new ArrayList<String>();
-    //dependencies = new ArrayList<String>();
+    jarList = new ArrayList<String>();
     JSONParser jsonParser = new JSONParser();
     JSONArray ja;
-/*	  
-    try {
-      // Default dependencies
-      
-      ja = (JSONArray) jsonParser.parse(new FileReader(getDefaultDepsFilename()));
+  
+    // Default dependencies
+    addClassPath("lib/Standard.jar"); 
+    addClassPath("lib/java-getopt-1.0.13.jar");
+    addClassPath("lib/log4j-1.2.12.jar");
 
-      ja.forEach (jdep -> {
-        addClassPath(getHomeDir() + "/" + jdep.toString());
-      });
-
-      // Others
-      ja = (JSONArray) jsonParser.parse(new FileReader(getDepsFilename()));
-
-      ja.forEach (jdep -> {
-        addClassPath(getHomeDir() + "/" + jdep.toString());
-      });
-    } 
-    catch (FileNotFoundException e) {
-      logger.warn(e.getMessage());
-    }
-    catch (IOException e) {
-      logger.warn(e.getMessage());
-    }
-    catch (ParseException e) {
-      logger.warn(e.getMessage());
-    }*/
+    addJAR("lib/Standard.jar"); 
+    addJAR("lib/java-getopt-1.0.13.jar");
+    addJAR("lib/log4j-1.2.12.jar");
     
-      // Default dependencies
-	    addClassPath("/lib/Standard.jar"); 
-	    addClassPath("/lib/java-getopt-1.0.13.jar");
-	    addClassPath("/lib/log4j-1.2.12.jar");
+    // Others
+    for (BlueprintEntity b : blueprints) {
+      //System.out.println("Getting dependencies from "+b.getName());
       
-      // Others
-      for (BlueprintEntity b : blueprints) {
-        //System.out.println("Getting dependencies from "+b.getName());
-        
-        for (int i=0; i<b.getJARList().size(); i++) {
-          //System.out.println("  "+b.getJARList().get(i));
-          addClassPath(b.getJARList().get(i));
-        }
+      // JARs will be added to JAR list and class path list
+      for (int i=0; i<b.getJARList().size(); i++) {
+        //System.out.println("  "+b.getJARList().get(i));
+        addJAR(b.getJARList().get(i));
+        addClassPath(b.getJARList().get(i));
       }
+      
+      // Class paths will be added to class path list only
+      for (int i=0; i<b.getClassPath().size(); i++) {
+        //System.out.println("  "+b.getJARList().get(i));
+        addClassPath(b.getClassPath().get(i));
+      }
+    }
 	}
 	
 	public String getBlueprintIndex () {
@@ -649,12 +643,12 @@ public class ProgramEntity {
 	  String manifest;
 	  
 	  manifest = "Manifest-version: 1.0" + System.lineSeparator() +
-               "Main-Class: Program" + System.lineSeparator();
-               /*"Class-path: ";
+               "Main-Class: Program" + System.lineSeparator() +
+               "Class-path: ";
                
-    for (int i = 0; i < dependencies.size(); i++) {
-      manifest += " classes/" + dependencies.get(i);
-    }*/
+    for (int i = 0; i < classPathList.size(); i++) {
+      manifest += " "+classPathList.get(i);
+    }
     
     manifest += System.lineSeparator();
                      
@@ -684,18 +678,18 @@ public class ProgramEntity {
     return directoryToBeDeleted.delete();
   }
 
-public static void copyStream(InputStream input, OutputStream output)
-     throws IOException
-{
-    // Reads up to 5M at a time. Try varying this.
-    byte[] buffer = new byte[5*1024*1024];
-    int read;
+  public static void copyStream(InputStream input, OutputStream output)
+       throws IOException
+  {
+      // Reads up to 5M at a time. Try varying this.
+      byte[] buffer = new byte[5*1024*1024];
+      int read;
 
-    while ((read = input.read(buffer)) != -1)
-    {
-        output.write(buffer, 0, read);
-    }
-}
+      while ((read = input.read(buffer)) != -1)
+      {
+          output.write(buffer, 0, read);
+      }
+  }
 	
 	public boolean unpackJAR(String jarFile, String destDir) {
 	  java.util.jar.JarFile jar;
@@ -795,10 +789,9 @@ public static void copyStream(InputStream input, OutputStream output)
     
     // Unpack dependencies in temp directory
 
-    for (int i = 0; i < classPathList.size(); i++) {
-      //args.add(classPathList.get(i));
-      logger.info("Unpacking "+classPathList.get(i)+" ...");
-      unpackJAR(classPathList.get(i), tempDir);
+    for (int i = 0; i < jarList.size(); i++) {
+      logger.info("Unpacking "+jarList.get(i)+" ...");
+      unpackJAR(jarList.get(i), tempDir);
     }
     
     // Add directories to jar command line

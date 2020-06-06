@@ -24,6 +24,7 @@ class NodeBase {
     
     this.import = null;
     this.jar = null;
+    this.classpath = null;
     this.symbol = null;
     this.java = null;
     this.data = null;
@@ -397,7 +398,10 @@ class NodeBase {
          
     if (this.jar)
       jo.jar = this.jar;
-      
+         
+    if (this.classpath)
+      jo.classpath = this.classpath;
+     
     jo.input = [];
     jo.output = [];
     
@@ -455,6 +459,7 @@ class NodeBase {
     
     this.import = j.hasOwnProperty("import") ? j.import : this.import;
     this.jar = j.hasOwnProperty("jar") ? j.jar : this.jar;
+    this.classpath = j.hasOwnProperty("classpath") ? j.classpath : this.classpath;
     this.symbol = j.hasOwnProperty("symbol") ? j.symbol : this.symbol;
     this.java = j.hasOwnProperty("java") ? j.java : this.java;
     this.data = j.hasOwnProperty("data") ? j.data : this.data;
