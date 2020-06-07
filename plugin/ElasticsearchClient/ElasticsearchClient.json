@@ -84,10 +84,10 @@
       "java":"if (in{1}.putDocumentJSON(in{2}, in{3}, in{4})) { exec{0} } else { out{2} = in{1}.getMessage(); exec{1} }",
       "input": [
         { "type": 0, "label": "" },
-        { "type": 300, "label": "Client", "must_connect":true },
+        { "type": 300, "label": "Client" },
         { "type": 3, "label": "Index", "value":"", "single_line":true },
         { "type": 3, "label": "_id", "value":"", "single_line":true },
-        { "type": 200, "label": "Document", "must_connect":true }
+        { "type": 200, "label": "Document" }
       ],
       "output": [
         { "type": 0, "label": "Success" },

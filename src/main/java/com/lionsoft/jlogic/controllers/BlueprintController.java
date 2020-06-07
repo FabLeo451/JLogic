@@ -121,7 +121,7 @@ public class BlueprintController {
         
         blueprint.get().setName((String) jo.get("name"));
         
-        logger.info("Updating blueprint "+blueprint.toString());
+        logger.info("Updating blueprint "+blueprint.get().toString());
 
         blueprintService.update(blueprint.get(), content);
       } catch (JSONException e) {
