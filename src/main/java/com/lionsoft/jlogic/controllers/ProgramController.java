@@ -155,6 +155,8 @@ public class ProgramController {
 	  Optional<ProgramEntity> program = programService.findById(id);
 	  
 	  if (program.isPresent()) {
+	      logger.info("Compiling program "+program.get().getName());
+	      
         if (programService.compile(program.get())) {
           logger.info(program.get().getMessage());
         }

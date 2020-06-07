@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+  <!--Define the storage address of the log file Do not use the relative path in the configuration of LogBack -->
+  <property name="LOG_HOME" value="./log" /> 
+  
+    <!-- Console output -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <!--PatternLayout disableAnsi="false"  pattern="%highlight{%d{HH:mm:ss.SSS} %-5level %logger{36}.%M() @%L - %msg%n}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=black, DEBUG=green bold, TRACE=blue}"/-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--Formatted output: %d means date, %thread means thread name, %-5level: level shows 5 characters width from the left %msg: log message, %n is a newline -->
+
+            <!--withJansi>true</withJansi-->
+            <pattern>%gray(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight(%-5level) %gray([%-15replace(%thread){'https-jsse-',''}]) %cyan(%-42logger{15}) : %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Generate log files every day -->
+    <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--File name of log file output -->
+            <FileNamePattern>${LOG_HOME}/jlogic.log.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--Log file retention days -->
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--Formatted output: %d means date, %thread means thread name, %-5level: level shows 5 characters width from the left %msg: log message, %n is a newline -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%-15replace(%thread){'https-jsse-',''}] %-42logger{15} : %msg%n</pattern>
+        </encoder>
+        <!--The maximum size of the log file -->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+ 
+    <!-- show parameters for hibernate sql customized for Hibernate -->
+    <!--logger name="org.hibernate.type.descriptor.sql.BasicBinder"  level="TRACE" />
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor"  level="DEBUG" />
+    <logger name="org.hibernate.SQL" level="DEBUG" />
+    <logger name="org.hibernate.engine.QueryParameters" level="DEBUG" />
+    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG" /-->
+ 
+    <!--myibatis log configure-->
+    <!--logger name="com.apache.ibatis" level="TRACE"/>
+    <logger name="java.sql.Connection" level="DEBUG"/>
+    <logger name="java.sql.Statement" level="DEBUG"/>
+    <logger name="java.sql.PreparedStatement" level="DEBUG"/-->
+ 
+    <!-- Log output level -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+        <!--appender-ref ref="info1" /-->
+        <!--appender-ref ref="debug1" /-->
+    </root>
+</configuration>

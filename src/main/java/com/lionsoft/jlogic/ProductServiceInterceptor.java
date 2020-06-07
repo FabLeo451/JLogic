@@ -22,7 +22,7 @@ public class ProductServiceInterceptor implements HandlerInterceptor {
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-    logger.info("Request: " + request.getRemoteAddr() + " " + request.getMethod() + " " + request.getRequestURI());
+    //logger.info("Request: " + request.getRemoteAddr() + " " + request.getMethod() + " " + request.getRequestURI());
     /*
     SessionsUtils sessionUtils = SessionsUtils.getInstance();
     sessionUtils.addSession(request);
@@ -44,7 +44,7 @@ public class ProductServiceInterceptor implements HandlerInterceptor {
 
   @Override
   public void afterCompletion (HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) throws Exception {      
-    logger.info("Response: " + response.getStatus() + " " + request.getMethod() + " " + request.getRemoteAddr() + " " + request.getRequestURI());
+    //logger.info("Response: " + response.getStatus() + " " + request.getMethod() + " " + request.getRemoteAddr() + " " + request.getRequestURI());
     
   }
 }

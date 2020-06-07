@@ -500,7 +500,7 @@ class Node extends NodeBase {
       //this.header.style.backgroundColor = nodeTypeColor[type];
       this.header.style.backgroundColor = blueprint.getNodeType(type).color;
       this.nodeElem.appendChild(this.header);
-    }  
+    }
 	
 	  /* Row for left and right connectors */
 	  this.row = document.createElement('div');
