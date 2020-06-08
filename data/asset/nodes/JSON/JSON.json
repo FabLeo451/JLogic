@@ -104,6 +104,22 @@
         { "type": 0, "label": "" },
         { "type": 200, "label": "Json", "java": { "references":{"input":1} } }
       ]
+    },
+    {
+      "name": "JSON Get Keys",
+      "type": 4,
+      "version": 1,
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*", "java.util.Iterator"],
+      "java":"int _{node.id}_i = 0;\nout{1} = new String[in{1}.size()]; for (Iterator _{node.id}_iter = in{1}.keySet().iterator(); _{node.id}_iter.hasNext();) { out{1}[_{node.id}_i ++] = (String) _{node.id}_iter.next(); }",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 200, "label": "Json" }
+      ],
+      "output": [
+        { "type": 0, "label": "" },
+        { "type": 3, "label": "Keys", "dimensions":1, "java": { "references":{"type":"String[]", "name":"keys"} } }
+      ]
     }
   ]
 }
