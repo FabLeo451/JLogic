@@ -17,7 +17,7 @@
     "name": "Division",
     "type": 5,
     "version": 1,
-    "inner_text": "&#8725",
+    "inner_text": "&#10135",
     "symbol": "/",
     "input": [
       { "type": 2, "label": "Dividend", "value": 0 },
