@@ -20,6 +20,21 @@
       ]
     },
     {
+      "name": "JSON Array New",
+      "type": 4,
+      "version": 1,
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"out{1} = new JSONArray();",
+      "input": [
+        { "type": 0, "label": "" }
+      ],
+      "output": [
+        { "type": 0, "label": "Success" },
+        { "type": 201, "label": "Array", "java": { "references":{"type":"JSONArray", "name":"ja"} } }
+      ]
+    },
+    {
       "name": "JSON Parse",
       "type": 4,
       "version": 1,
@@ -32,7 +47,9 @@
       ],
       "output": [
         { "type": 0, "label": "Success" },
-        { "type": 200, "label": "Json", "java": { "references":{"type":"JSONObject", "name":"jo"} } },
+        { "type": 200, "label": "JSONObject", "java": { "references":{"type":"JSONObject", "name":"jo"} } },
+        { "type": 201, "label": "JSONArray", "java": { "references":{"type":"JSONArray", "name":"ja"} } },
+        { "type": 4, "label": "Is array", "java": { "references":{"type":"Boolean", "name":"isArray"} } },
         { "type": 0, "label": "Error" }
       ]
     },

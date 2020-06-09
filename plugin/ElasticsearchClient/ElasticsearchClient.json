@@ -94,6 +94,37 @@
         { "type": 0, "label": "Error" },
         { "type": 3, "label": "Message", "java": { "references":{"type":"String", "name":"msg"} } }
       ]
+    },
+    {
+      "name": "Elasticsearch Bulk Insert",
+      "type": 4,
+      "version": 1,
+      "import": ["com.lionsoft.elasticsearch.ElasticsearchClient",
+                 "org.elasticsearch.action.bulk.BulkResponse",
+                 "org.elasticsearch.action.bulk.BulkItemResponse",
+                 "org.elasticsearch.action.DocWriteResponse",
+                 "org.elasticsearch.action.index.IndexResponse",
+                 "org.elasticsearch.rest.RestStatus", 
+                 "java.util.*", 
+                 "org.json.simple.*"],
+      "classpath": ["{path}/ElasticsearchClient.jar"],
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "java":"@BulkInsert.java",
+      "input": [
+        { "type": 0, "label": "" },
+        { "type": 300, "label": "Client" },
+        { "type": 3, "label": "Index", "value":"", "single_line":true },
+        { "type": 201, "label": "Data" }
+      ],
+      "output": [
+        { "type": 0, "label": "Success" },
+        { "type": 1, "label": "Created", "java": { "references":{"type":"Integer", "name":"created"} } },
+        { "type": 1, "label": "Updated", "java": { "references":{"type":"Integer", "name":"updated"} } },
+        { "type": 1, "label": "Errors", "java": { "references":{"type":"Integer", "name":"errors"} } },
+        { "type": 4, "label": "Has failures", "java": { "references":{"type":"Boolean", "name":"hasFailures"} } },
+        { "type": 0, "label": "Error" },
+        { "type": 3, "label": "Message", "java": { "references":{"type":"String", "name":"msg"} } }
+      ]
     }
   ]
 }

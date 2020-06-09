@@ -6,6 +6,5 @@
         { "id":2, "name":"Double", "color":"darkorange" },
         { "id":3, "name":"String", "color":"mediumpurple" },
         { "id":4, "name":"Boolean", "color":"firebrick" }
-        
       ]
 }
