@@ -220,12 +220,14 @@ class Blueprint {
     
     /* Store data types */
     var types = a["types"];
+    
     for (var i=0; i<types.length; i++) {
       var t = new BPType();
       t.id = types[i]["id"];
       t.name = types[i]["name"];
       t.color = types[i]["color"];
       t.exec = types[i]["exec"] != null ? types[i]["exec"] : false;
+      t.init = types[i].hasOwnProperty("init") ? types[i].init : null;
       //t.t_html_input_type = types[i]["html_input_type"];
       this.types.push (t);
       //console.log ("Added type "+t.name+" "+t.color + " "+t.exec);

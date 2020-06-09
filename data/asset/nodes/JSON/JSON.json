@@ -1,7 +1,7 @@
 {
   "types": [
-    { "id":200, "name":"JSONObject", "color":"lightslategray" },
-    { "id":201, "name":"JSONArray", "color":"lightslategray" }
+    { "id":200, "name":"JSONObject", "color":"lightslategray", "init":"new JSONObject()" },
+    { "id":201, "name":"JSONArray", "color":"lightslategray", "init":"new JSONArray()" }
   ],
   "nodes": [
     {
