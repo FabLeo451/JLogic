@@ -13,6 +13,32 @@
       ]
     },
     {
+      "name": "String To Upper",
+      "type": 5,
+      "version": 1,
+      "inner_text": "UPPER",
+      "java": "in{0}.toUpperCase()",
+      "input": [
+        { "type": 3, "label": "" }
+      ],
+      "output": [
+        { "type": 3, "label": "" }
+      ]
+    },
+    {
+      "name": "String To Lower",
+      "type": 5,
+      "version": 1,
+      "inner_text": "LOWER",
+      "java": "in{0}.toLowerCase()",
+      "input": [
+        { "type": 3, "label": "" }
+      ],
+      "output": [
+        { "type": 3, "label": "" }
+      ]
+    },
+    {
       "name": "String Concat",
       "type": 5,
       "version": 1,
@@ -31,7 +57,7 @@
       "name": "String Append",
       "type": 4,
       "version": 1,
-      "java": "out{1} = in{1} + in{2};",
+      "java": "in{1} += in{2};",
       "input": [
         { "type": 0, "label": "" },
         { "type": 3, "label": "", "value": "" },
@@ -39,7 +65,7 @@
       ],
       "output": [
         { "type": 0, "label": "" },
-        { "type": 3, "label": "", "java": {"references": {"type":"String", "name":"append"}} }
+        { "type": 3, "label": "", "java": {"references": {"input":1}} }
       ]
     },
     {

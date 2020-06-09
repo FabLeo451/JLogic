@@ -431,7 +431,7 @@ class Connector {
     }
     
     if (direction == BPDirection.INPUT) {
-      this.element.style.paddingRight = "15px";
+      //this.element.style.paddingRight = "15px";
       
       this.element.appendChild(this.pin);
       
