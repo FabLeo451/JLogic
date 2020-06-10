@@ -23,10 +23,10 @@
       ],
       "output": [
         { "type": 0, "label": "Success" },
-        { "type": 100, "label": "Connection", "java": { "references":{"type":"Connection", "name":"conn"} } },
+        { "type": 100, "label": "Connection", "java": { "references":{"variable":"conn"} } },
         { "type": 0, "label": "Error" },
-        { "type": 1, "label": "Code", "java": { "references":{"type":"Integer", "name":"code" } } },
-        { "type": 3, "label": "Message", "java": { "references":{"type":"String", "name":"message"} } }
+        { "type": 1, "label": "Code", "java": { "references":{"variable":"code" } } },
+        { "type": 3, "label": "Message", "java": { "references":{"variable":"message"} } }
       ]
     },
     {
@@ -59,10 +59,10 @@
       ],
       "output": [
         { "type": 0, "label": "Success" },
-        { "type": 101, "label": "Result set", "java": { "references":{"type":"ResultSet", "name":"rs"}} },
+        { "type": 101, "label": "Result set", "java": { "references":{"variable":"rs"}} },
         { "type": 0, "label": "Error" },
-        { "type": 1, "label": "Code", "java": { "references":{"type":"Integer", "name":"code" }} },
-        { "type": 3, "label": "Message", "java": { "references":{"type":"String", "name":"message"} } }
+        { "type": 1, "label": "Code", "java": { "references":{"variable":"code" }} },
+        { "type": 3, "label": "Message", "java": { "references":{"variable":"message"} } }
       ]
     },
     {
@@ -80,7 +80,7 @@
       ],
       "output": [
         { "type": 0, "label": "Fetched" },
-        { "type": 200, "label": "Record", "java": { "references":{"type":"JSONObject", "name":"jo"}} },
+        { "type": 200, "label": "Record", "java": { "references":{"variable":"jo"}} },
         { "type": 0, "label": "Completed" }
       ]
     },
@@ -102,10 +102,10 @@
       "output": [
         { "type": 0, "label": "Success" },
         { "type": 100, "label": "Connection", "java": { "references":{"input":1}} },
-        { "type": 1, "label": "Rows affected","java": { "references":{"type":"Integer", "name":"rows"}} },
+        { "type": 1, "label": "Rows affected","java": { "references":{"variable":"rows"}} },
         { "type": 0, "label": "Error" },
-        { "type": 1, "label": "Code", "java": { "references":{"type":"Integer", "name":"code" }} },
-        { "type": 3, "label": "Message", "java": { "references":{"type":"String", "name":"message"} } }
+        { "type": 1, "label": "Code", "java": { "references":{"variable":"code" }} },
+        { "type": 3, "label": "Message", "java": { "references":{"variable":"message"} } }
       ]
     },
     {
@@ -129,10 +129,10 @@
       "output": [
         { "type": 0, "label": "Success" },
         { "type": 100, "label": "Connection", "java": { "references":{"input":1}} },
-        { "type": 1, "label": "Rows affected","java": { "references":{"type":"Integer", "name":"rows"}} },
+        { "type": 1, "label": "Rows affected","java": { "references":{"variable":"rows"}} },
         { "type": 0, "label": "Error" },
-        { "type": 1, "label": "Code", "java": { "references":{"type":"Integer", "name":"code" }} },
-        { "type": 3, "label": "Message", "java": { "references":{"type":"String", "name":"message"} } }
+        { "type": 1, "label": "Code", "java": { "references":{"variable":"code" }} },
+        { "type": 3, "label": "Message", "java": { "references":{"variable":"message"} } }
       ]
     },
     {
@@ -150,8 +150,8 @@
       "output": [
         { "type": 0, "label": "Success" },
         { "type": 0, "label": "Error" },
-        { "type": 1, "label": "Code", "java": { "references":{"type":"Integer", "name":"code" }} },
-        { "type": 3, "label": "Message", "java": { "references":{"type":"String", "name":"message"} } }
+        { "type": 1, "label": "Code", "java": { "references":{"variable":"code" }} },
+        { "type": 3, "label": "Message", "java": { "references":{"variable":"message"} } }
       ]
     },
     {
@@ -169,8 +169,8 @@
       "output": [
         { "type": 0, "label": "Success" },
         { "type": 0, "label": "Error" },
-        { "type": 1, "label": "Code", "java": { "references":{"type":"Integer", "name":"code" }} },
-        { "type": 3, "label": "Message", "java": { "references":{"type":"String", "name":"message"} } }
+        { "type": 1, "label": "Code", "java": { "references":{"variable":"code" }} },
+        { "type": 3, "label": "Message", "java": { "references":{"variable":"message"} } }
       ]
     },
     {

@@ -79,8 +79,8 @@
       ],
       "output": [
         { "type": 0, "label": "" },
-        { "type": 3, "label": "Lines", "dimensions":1, "java": {"references": {"type":"String[]", "name":"lines"}} },
-        { "type": 1, "label":"Count", "java": {"references": {"type":"Integer", "name":"count"}} }
+        { "type": 3, "label": "Lines", "dimensions":1, "java": {"references": {"variable":"lines"}} },
+        { "type": 1, "label":"Count", "java": {"references": {"variable":"count"}} }
       ]
     },
     {
@@ -95,8 +95,8 @@
       ],
       "output": [
         { "type": 0, "label": "" },
-        { "type": 3, "label": "Array", "dimensions":1, "java": {"references": {"type":"String[]", "name":"lines"}} },
-        { "type": 1, "label":"Count", "java": {"references": {"type":"Integer", "name":"count"}} }
+        { "type": 3, "label": "Array", "dimensions":1, "java": {"references": {"variable":"lines"}} },
+        { "type": 1, "label":"Count", "java": {"references": {"variable":"count"}} }
       ]
     }
   ]

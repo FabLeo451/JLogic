@@ -39,7 +39,7 @@
     ],
     "output": [
       { "type": 0, "label": "" },
-      { "type": 3, "label": "Element", "java": {"references": {"type":"String", "name":"arrayStr"}} }
+      { "type": 3, "label": "Element", "java": {"references": {"variable":"arrayStr"}} }
     ]
   }
 ]

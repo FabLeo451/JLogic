@@ -9,6 +9,6 @@
     ],
     "output": [
       { "type": 0, "label": "" },
-      { "type": 1, "label": "code", "java": { "references":{"type":"Integer", "name":"code"} } }
+      { "type": 1, "label": "code", "java": { "references":{"variable":"code"} } }
     ]
   }

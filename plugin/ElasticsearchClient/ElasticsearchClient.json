@@ -22,7 +22,7 @@
       ],
       "output": [
         { "type": 0, "label": "" },
-        { "type": 300, "label": "Client", "java": { "references":{"type":"ElasticsearchClient", "name":"client"} } }
+        { "type": 300, "label": "Client", "java": { "references":{"variable":"client"} } }
       ]
     },
     {
@@ -71,7 +71,7 @@
       "output": [
         { "type": 0, "label": "Success" },
         { "type": 300, "label": "Client", "java": { "references":{"input":1 } } },
-        { "type": 1, "label": "Deleted", "java": { "references":{"type":"Long", "name":"deleted"} } }
+        { "type": 1, "label": "Deleted", "java": { "references":{"variable":"deleted"} } }
       ]
     },
     {
@@ -92,7 +92,7 @@
       "output": [
         { "type": 0, "label": "Success" },
         { "type": 0, "label": "Error" },
-        { "type": 3, "label": "Message", "java": { "references":{"type":"String", "name":"msg"} } }
+        { "type": 3, "label": "Message", "java": { "references":{"variable":"msg"} } }
       ]
     },
     {
@@ -118,12 +118,12 @@
       ],
       "output": [
         { "type": 0, "label": "Success" },
-        { "type": 1, "label": "Created", "java": { "references":{"type":"Integer", "name":"created"} } },
-        { "type": 1, "label": "Updated", "java": { "references":{"type":"Integer", "name":"updated"} } },
-        { "type": 1, "label": "Errors", "java": { "references":{"type":"Integer", "name":"errors"} } },
-        { "type": 4, "label": "Has failures", "java": { "references":{"type":"Boolean", "name":"hasFailures"} } },
+        { "type": 1, "label": "Created", "java": { "references":{"variable":"created"} } },
+        { "type": 1, "label": "Updated", "java": { "references":{"variable":"updated"} } },
+        { "type": 1, "label": "Errors", "java": { "references":{"variable":"errors"} } },
+        { "type": 4, "label": "Has failures", "java": { "references":{"variable":"hasFailures"} } },
         { "type": 0, "label": "Error" },
-        { "type": 3, "label": "Message", "java": { "references":{"type":"String", "name":"msg"} } }
+        { "type": 3, "label": "Message", "java": { "references":{"variable":"msg"} } }
       ]
     }
   ]

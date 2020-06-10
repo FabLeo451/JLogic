@@ -16,7 +16,7 @@
       ],
       "output": [
         { "type": 0, "label": "Success" },
-        { "type": 200, "label": "Json", "java": { "references":{"type":"JSONObject", "name":"jo"} } }
+        { "type": 200, "label": "Json", "java": { "references":{"variable":"jo"} } }
       ]
     },
     {
@@ -31,7 +31,7 @@
       ],
       "output": [
         { "type": 0, "label": "Success" },
-        { "type": 201, "label": "Array", "java": { "references":{"type":"JSONArray", "name":"ja"} } }
+        { "type": 201, "label": "Array", "java": { "references":{"variable":"ja"} } }
       ]
     },
     {
@@ -47,9 +47,9 @@
       ],
       "output": [
         { "type": 0, "label": "Success" },
-        { "type": 200, "label": "JSONObject", "java": { "references":{"type":"JSONObject", "name":"jo"} } },
-        { "type": 201, "label": "JSONArray", "java": { "references":{"type":"JSONArray", "name":"ja"} } },
-        { "type": 4, "label": "Is array", "java": { "references":{"type":"Boolean", "name":"isArray"} } },
+        { "type": 200, "label": "JSONObject", "java": { "references":{"variable":"jo"} } },
+        { "type": 201, "label": "JSONArray", "java": { "references":{"variable":"ja"} } },
+        { "type": 4, "label": "Is array", "java": { "references":{"variable":"isArray"} } },
         { "type": 0, "label": "Error" }
       ]
     },
@@ -67,7 +67,7 @@
       ],
       "output": [
         { "type": 0, "label": "" },
-        { "type": 3, "label": "Value", "java": { "references":{"type":"String", "name":"s"} } }
+        { "type": 3, "label": "Value", "java": { "references":{"variable":"s"} } }
       ]
     },
     {
@@ -83,7 +83,7 @@
       ],
       "output": [
         { "type": 0, "label": "" },
-        { "type": 3, "label": "String", "java": { "references":{"type":"String", "name":"s"} } }
+        { "type": 3, "label": "String", "java": { "references":{"variable":"s"} } }
       ]
     },
     {
@@ -135,7 +135,7 @@
       ],
       "output": [
         { "type": 0, "label": "" },
-        { "type": 3, "label": "Keys", "dimensions":1, "java": { "references":{"type":"String[]", "name":"keys"} } }
+        { "type": 3, "label": "Keys", "dimensions":1, "java": { "references":{"variable":"keys"} } }
       ]
     }
   ]

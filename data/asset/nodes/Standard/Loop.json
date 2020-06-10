@@ -12,7 +12,7 @@
     ],
     "output": [
       { "type": 0, "label": "Iteration" },
-      { "type": 1, "label": "Index", "java":{ "references": {"type":"Integer", "name":"index"}} },
+      { "type": 1, "label": "Index", "java":{ "references": {"variable":"index"}} },
       { "type": 0, "label": "Completed" }
     ]
   },

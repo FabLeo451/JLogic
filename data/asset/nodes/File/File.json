@@ -12,9 +12,9 @@
       ],
       "output": [
         { "type": 0, "label": "Success" },
-        { "type": 3, "label": "Content", "java": {"references": {"type":"String", "name":"content"}} },
+        { "type": 3, "label": "Content", "java": {"references": {"variable":"content"}} },
         { "type": 0, "label": "Error" },
-        { "type": 3, "label": "Message", "java": {"references": {"type":"String", "name":"msg"}} }
+        { "type": 3, "label": "Message", "java": {"references": {"variable":"msg"}} }
       ]
     },
     {
@@ -31,7 +31,7 @@
       "output": [
         { "type": 0, "label": "Success" },
         { "type": 0, "label": "Error" },
-        { "type": 3, "label": "Message", "java": {"references": {"type":"String", "name":"msg"}} }
+        { "type": 3, "label": "Message", "java": {"references": {"variable":"msg"}} }
       ]
     }
   ]

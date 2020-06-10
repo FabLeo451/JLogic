@@ -11,7 +11,7 @@
       ],
       "output": [
         { "type": 0, "label": "" },
-        { "type": 3, "label": "Value", "java": {"references": { "type":"String", "name":"param"}}}
+        { "type": 3, "label": "Value", "java": {"references": { "variable":"param"}}}
       ]
     },
     {
