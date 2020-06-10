@@ -117,6 +117,9 @@ public class ProgramEntity {
 	  private String httpResponse;
     
     @Transient
+	  private int httpStatus;
+    
+    @Transient
 	  private String homeDir = null;
     
     /*@Transient
@@ -157,11 +160,20 @@ public class ProgramEntity {
       this.name = name;
     }
     
+    public int getHTTPStatus() {
+      return (httpStatus);
+    }
+    
     public String getHTTPResponse() {
       return (httpResponse);
     }
     
     public void setHTTPResponse(String httpResponse) {
+      this.httpResponse = httpResponse;
+    }
+    
+    public void setHTTPResponse(int status, String httpResponse) {
+      this.httpStatus = status;
       this.httpResponse = httpResponse;
     }
     
@@ -1011,6 +1023,7 @@ public class ProgramEntity {
         // Get context methods
         //Method setRequest = BPContext.getDeclaredMethod("setRequest", HttpServletRequest.class);
         Method setParameters = BPContext.getDeclaredMethod("setParameters", Map.class);
+        Method getStatus = BPContext.getDeclaredMethod("getStatus");
         Method getResponse = BPContext.getDeclaredMethod("getResponse");
         Method setLogPath = BPContext.getMethod("setLogPath", String.class);
         Method setLogName = BPContext.getMethod("setLogName", String.class);
@@ -1101,7 +1114,7 @@ public class ProgramEntity {
             else
               method.invoke(programInstance);
               
-            setHTTPResponse((String) getResponse.invoke(context));
+            setHTTPResponse((int) getStatus.invoke(context), (String) getResponse.invoke(context));
             
           } catch (InvocationTargetException e) {
             Throwable cause = e.getCause();

@@ -130,6 +130,7 @@ public class ApiController {
     ProgramEntity program = api.get().getBlueprint().getProgram();
     String method = api.get().getBlueprint().getMethod();
 	  String outData = "";
+	  HttpStatus status = HttpStatus.OK;
 	  
 	  // Get parameters
 	  
@@ -139,23 +140,24 @@ public class ApiController {
 	  	    
     // Execute
     
-	      if (program.run(method, null, name, request))
-	        outData = program.getHTTPResponse();
-	      else {
-	        outData = program.getOutput();
-	        
-	        switch (program.getResult()) {
-	          case ProgramEntity.METHOD_NOT_FOUND:
-	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Method not found: "+method);
-	            //break;
-	            
-	          default:
-	            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, outData);
-	            //break;
-	        }
-	      }
-	   
-		return new ResponseEntity<>(outData, HttpStatus.OK);
+    if (!program.run(method, null, name, request)) {
+      outData = program.getOutput();
+      
+      switch (program.getResult()) {
+        case ProgramEntity.METHOD_NOT_FOUND:
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Method not found: "+method);
+          //break;
+          
+        default:
+          throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, outData);
+          //break;
+      }
+    }
+	      
+    outData = program.getHTTPResponse();
+    status = HttpStatus.valueOf(program.getHTTPStatus());
+	        	   
+		return new ResponseEntity<>(outData, status);
 	}
 	
 	@PutMapping(value = "/api/{id}/enable", produces = MediaType.APPLICATION_JSON_VALUE)
