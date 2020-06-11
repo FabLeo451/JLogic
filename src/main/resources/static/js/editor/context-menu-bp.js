@@ -60,10 +60,29 @@ function ContextMenu () {
   };
 
   this.show = function(x, y) {
-    console.log("Showing context menu in ("+x+", "+y+") searchEnabled = "+this.searchEnabled);
   
-    setPosition(this.menu, x, y);
+    console.log("window.innerWidth = "+window.innerWidth);
+    console.log("clientWidth = "+this.menu.parentNode.clientWidth);
+  
+    //setPosition(this.menu, x, y);
     setVisibility(this.menu, true);
+    
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    const mw = this.menu.offsetWidth;
+    const mh = this.menu.offsetHeight;
+    
+    console.log("menu.offsetWidth = "+this.menu.offsetWidth);
+
+    if (x + mw > w) { x = x - mw; }
+    if (y + mh > h) { y = y - mh; }
+
+    this.menu.style.left = x + 'px';
+    this.menu.style.top = y + 'px';
+    
+    console.log("Showing context menu in ("+this.menu.style.left+", "+this.menu.style.top+") searchEnabled = "+this.searchEnabled);
+    
     this.x = x;
     this.y = y;
     
@@ -126,14 +145,21 @@ function ContextMenu () {
       item = j["items"][i];
       
       if (item["item"] == "separator") {
-        this.ul.appendChild (document.createElement('hr'));
+        const hr = document.createElement('hr');
+        hr.style.margin = "5px 0 5px 0";
+        hr.style.backgroundColor = "gray";
+        this.ul.appendChild (hr);
       }
       else {
         li = document.createElement('li');
         li.className = "menu-option";
-        li.innerHTML = item["item"];
+        li.innerHTML = (item.hasOwnProperty("icon") ? item.icon+' ' : '')+item.item;
         //li.setAttribute("onclick", item["callback"]);
-        li.setAttribute("onclick", "activate_ctx_item_cb("+item["id"]+", '"+item["data"]+"')");
+        
+        if (item.hasOwnProperty("action"))
+          li.addEventListener('click', item.action);
+        else
+          li.setAttribute("onclick", "activate_ctx_item_cb("+item["id"]+", '"+item["data"]+"')");
         
         this.ul.appendChild (li);
       }
@@ -146,52 +172,12 @@ function ContextMenu () {
     //console.log ("createFromJson()");
   };
   
-
+  this.setMinWidth = function (w) {
+    this.menu.style.minWidth=w+"px";
+  };
+  
+  this.setWidthAuto = function () {
+    this.menu.style.width="auto";
+  };
 }
-
-/*
-function showContextMenu (e)
-{
-  e.preventDefault();
-  
-  //const menu = document.querySelector(".menu");
-  
-  contextMenu.remove();
-  contextMenu.createFromJson({ "items": [{ "item": "First", "callback": "first_cb" }, 
-                                         { "item": "separator" },
-                                         { "item": "Second", "callback": "second_cb"}, 
-                                         { "item": "Third", "callback": "third_cb"}] }
-                     );
-                       
-  contextMenu.show(e.pageX, e.pageY);
-  
-  return false;
-}
-*/
-
-/*
-function enableContextMenu() {
-  if (document.addEventListener) { // IE >= 9; other browsers
-      document.addEventListener('contextmenu', showContextMenu, false);
-	  
-	  contextMenu = new ContextMenu();
-	  contextMenu.init();
-	  
-  } else { // IE < 9
-      document.attachEvent('oncontextmenu', function() {
-          alert("You're using IE < 9");
-          window.event.returnValue = false;
-      });
-  }
-}
-
-// -------------------------------------------------
-
-window.addEventListener("click", e => {
-  //menu = document.querySelector(".menu");
-  
-  //if (getVisibility(menu)) setVisibility(menu, false);
-  contextMenu.remove();
-});
-*/
 

@@ -70,6 +70,8 @@ class ContextMenu {
         this.menu.style.left = x + 'px';
         this.menu.style.top = y + 'px';
         this.menu.classList.add(`show-context-menu-${this.theme}`);
+        
+        //console.log(x+" "+y+" "+`show-context-menu-${this.theme}`);
     }
 
     hide() {

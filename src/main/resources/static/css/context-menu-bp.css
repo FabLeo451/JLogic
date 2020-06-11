@@ -31,7 +31,7 @@
 .menu-option {
   z-index: 1;
   font-size: 13px;
-  color: white;
+  color: #ddd;
   padding: 3px 5px 3px 5px;
   /*border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);*/
   cursor: pointer;

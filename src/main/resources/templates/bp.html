@@ -11,15 +11,19 @@
 <link rel='stylesheet' href='/css/table.css'>
 <link rel='stylesheet' href='/css/sidebar.css'>
 <link rel='stylesheet' href='/css/modal.css'>
-<link rel='stylesheet' href='/css/context-menu.css'>
+
 <link rel='stylesheet' href='/css/catalog.css'>
 
 <!--script src="/jsDynamic"></script-->
 
-<script src="/js/context-menu.js"></script>
 <script src="/js/utils.js"></script>
 <script src="/js/dialog.js"></script>
 <script src="/js/catalog.js"></script>
+
+<!--link rel='stylesheet' href='/css/context-menu.css'>
+<script src="/js/context-menu.js"></script-->
+<link rel='stylesheet' href='/css/context-menu-bp.css'>
+<script src="/js/editor/context-menu-bp.js"></script>
 
 </head>
 
@@ -53,7 +57,7 @@
     <button class="btnApp" onclick="createProgram ();"><i class="icon i-cog"></i> New Program</button>
     <!--button class="btnApp" onclick="createFolder (null);"><i class="icon i-folder"></i> Create folder</button-->
     <button class="btnApp w3-right" onclick="refreshCatalog ();"><i class="icon i-refresh"></i> Refresh</button>
-    <div id="catalog-container" class="w3-container w3-stretch">
+    <!--div id="catalog-container" class="w3-container w3-stretch">
       <div class="w3-row catalog-row catalog-header">
         <div class="w3-col s2"><b>Name</b></div>
         <div class="w3-col s2"><b>Status</b></div>
@@ -62,7 +66,9 @@
         <div class="w3-col s4"></div>
       </div>
       <div id="catalog"></div>
-    </div>
+    </div-->
+
+    <div id="catalog"></div>
     
     <!--div id="catalog-table" class="w3-container w3-stretch">
 

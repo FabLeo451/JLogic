@@ -1,4 +1,13 @@
 
+.program {
+    background-color: #fafafa;
+/*    
+    -webkit-box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15);
+            box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15);
+*/
+
+/* -- DEPRECATED -- */
+
 .catalog-row {
   padding: 2px 0 2px 2px;
   vertical-align: middle;

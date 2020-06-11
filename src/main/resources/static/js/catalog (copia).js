@@ -1,12 +1,10 @@
-'use strict';
 
 var jsonResponse;  
 var header = ['Name'];
 var expanded = {};
 var contextMenu = null;
 var level = 0;
-//var menu = null;
-var contextMenu = null;
+var menu = null;
 var dialogWorking = null;
 
 const ItemFlags = {
@@ -74,30 +72,64 @@ function expandItem(id) {
 */
 }
 
-/*
-function createProgramMenu(event) {
+function createContextMenu(event) {
   event.preventDefault();
   var t = event.currentTarget;
   //var t = event.target;
   var id = t.getAttribute('id');
-  //var type = parseInt(t.getAttribute('type'));
+  var type = parseInt(t.getAttribute('type'));
   var name = t.getAttribute('name');
   
-  console.log(id+" "+name);
-    
-  var jmenu =
-    {
-      'theme': 'default',
-        'items': [
-          {'icon': 'i-project-diagram', 'name': 'Add blueprint',  action: () => addBlueprint(id) },
-          {'icon': 'i-archive', 'name': 'Create JAR',  action: () => createJAR(id) },
-          {'icon': 'i-sliders-h', 'name': 'Edit properties',  action: () => window.location = '/program/'+id+'/edit-properties' },
-          {'icon': 'i-edit',   'name': 'Rename',  action: () => renameProgram(id, name) },
-          //{'icon': 'i-broom',   'name': 'Clean',  action: () => cleanProgram(id) },
-          {'name': 'separator' },
-          {'icon': 'i-trash-alt',  'name': 'Delete',  action: () => deleteProgram(id, name) }
-        ]
-    };
+  console.log(type);
+  
+  switch (type) {
+    case ItemType.FOLDER:
+      jmenu =
+        {
+          'theme': 'default',
+            'items': [
+              {'icon': 'i-folder', 'name': 'Add folder',  action: () => createFolder(id) },
+              {'icon': 'i-edit',   'name': 'Rename',  action: () => renameFolder(id, name) },
+              {'icon': 'i-arrow-up',  'name': 'Unparent',  action: () => moveFolder(id, "_root") },
+              {'name': 'separator' },
+              {'icon': 'i-trash-alt',  'name': 'Delete',  action: () => deleteFolder(id, name) }
+            ]
+        }
+      break;
+      
+    case ItemType.PROGRAM:
+      jmenu =
+        {
+          'theme': 'default',
+            'items': [
+              {'icon': 'i-project-diagram', 'name': 'Add blueprint',  action: () => addBlueprint(id) },
+              {'icon': 'i-archive', 'name': 'Create JAR',  action: () => createJAR(id) },
+              {'icon': 'i-sliders-h', 'name': 'Edit properties',  action: () => window.location = '/program/'+id+'/edit-properties' },
+              {'icon': 'i-edit',   'name': 'Rename',  action: () => renameProgram(id, name) },
+              //{'icon': 'i-broom',   'name': 'Clean',  action: () => cleanProgram(id) },
+              {'name': 'separator' },
+              /*{'icon': 'i-arrow-up',  'name': 'Unparent',  action: () => moveFolder(id, "_root") },
+              {'name': 'separator' },*/
+              {'icon': 'i-trash-alt',  'name': 'Delete',  action: () => deleteProgram(id, name) }
+            ]
+        }
+      break;
+      
+    case ItemType.BLUEPRINT:
+      jmenu =
+        {
+          'theme': 'default',
+            'items': [
+              {'icon': 'i-edit',   'name': 'Edit',  action: () => window.open("/blueprint/"+id+"/edit") },
+              {'name': 'separator' },
+              {'icon': 'i-trash-alt',  'name': 'Delete',  action: () => deleteBlueprint(id, name) }
+            ]
+        }
+      break;
+      
+    default:
+      break;
+  }
   
   if (menu) {
     menu.destroy();
@@ -106,100 +138,75 @@ function createProgramMenu(event) {
   
   menu = new ContextMenu(jmenu);
   const time = menu.isOpen() ? 100 : 0;
-  
-  console.log(menu);
-  
-  if (!menu)
-    console.error("Can't create menu");
 
   //menu.destroy();
-  //setTimeout(() => { menu.show(event.pageX, event.pageY) }, time);
+  setTimeout(() => { menu.show(event.pageX, event.pageY) }, time);
   document.addEventListener('click', hideContextMenu, false);
-}*/
-
-function createProgramMenu(event) {
-  event.preventDefault();
-  var t = event.currentTarget;
-  var id = t.getAttribute('id');
-  var name = t.getAttribute('name');
-  
-  console.log(id+" "+name);
-    
-  var jmenu =
-    {
-        'items': [
-          {'icon': '<i class="icon i-project-diagram"></i>', 'item':'Add blueprint',  action: () => addBlueprint(id) },
-          {'icon': '<i class="icon i-archive"></i>', 'item': 'Create JAR',  action: () => createJAR(id) },
-          {'icon': '<i class="icon i-sliders-h"></i>', 'item': 'Edit properties',  action: () => window.location = '/program/'+id+'/edit-properties' },
-          {'icon': '<i class="icon i-edit"></i>',   'item': 'Rename',  action: () => renameProgram(id, name) },
-          {'item': 'separator' },
-          {'icon': '<i class="icon i-trash-alt"></i>',  'item': 'Delete',  action: () => deleteProgram(id, name) }
-        ]
-    };
-  
-  if (contextMenu) {
-    contextMenu.destroy();
-   }
-   
-  contextMenu = new ContextMenu();
- 
-  contextMenu.enableSearch (false);
-  contextMenu.createFromJson(jmenu);
-  contextMenu.setWidthAuto();
-  //contextMenu.setCallback(bpGetSet);
-  //contextMenu.show(event.x, event.y);
-  contextMenu.show(event.pageX, event.pageY);
-  setTimeout(function() { document.addEventListener('click', hideContextMenu, false) }, 500);
 }
 
 function hideContextMenu(evt){
-    contextMenu.remove();
-    contextMenu = null;
+    menu.destroy();
+    menu = null;
     document.removeEventListener('click', hideContextMenu);
 }
 
-function addBlueprints (containerElem, jblueprints) {
-  var jo;
-  
-  for (var i=0; i<jblueprints.length; i++) {
-    jo = jblueprints[i];
-    
-    var bpElem = document.createElement('div');
-    bpElem.classList.add('w3-padding-small');
-    bpElem.innerHTML = '<i class="icon i-project-diagram w3-text-blue-gray"></i> <a href="/blueprint/'+jo.id+'/edit" target="_blank">'+jo.name+'</a';
-    containerElem.appendChild(bpElem);
-  }
-}
-
 function addObjects (containerElem, jtree) {
-  var tr, progElem, row, col, caret, icon, padding = 0;
+  var tr, row, col, caret, icon, jmenu, padding = 0;
   var status = '&nbsp;';
   
-  for (var i=0; i<jtree.length; i++) {
-
-    var jo = jtree[i];
-    var key = jo.id;
+  for (key in jtree) {
+    if (key == "_index")
+      continue;
+      
+    jo = jtree[key];
     
     if (!expanded.hasOwnProperty(key))
       expanded.key = false;
     
     //console.log(jo);
-    // class="program w3-panel w3-round w3-border w3-margin w3-padding"
-    progElem = document.createElement('div');
-    progElem.classList.add('program');
-    progElem.classList.add('w3-panel');
-    progElem.classList.add('w3-round');
-    progElem.classList.add('w3-border');
-    //progElem.classList.add('w3-margin');
-    progElem.classList.add('w3-padding');
 
     row = document.createElement('div');
     row.classList.add('w3-row');
+    row.classList.add('catalog-row');
 
     col = document.createElement('div');
     col.classList.add('w3-col');
-    col.classList.add('s3');
+    col.classList.add('s2');
+    //col.classList.add('w3-hover-text-blue');
+    /*
+    col.setAttribute('id', key);
+    col.setAttribute('type', jo.type);
+    col.setAttribute('name', jo.name);
+    
+    col.ondragover = function(e) {
+      e.preventDefault();
+      this.classList.add('tr1-selected');
+    }
       
+    col.ondragleave = function(e) {
+      e.preventDefault();
+      this.classList.remove('tr1-selected');
+    }
+
+    col.ondrop = function(e) {
+      //e.preventDefault();
+      var folderId = e.dataTransfer.getData("id");
+      var parentId = this.getAttribute('id');
+      
+      moveFolder (folderId, parentId);
+    }
+    
+    col.ondragstart = dragFolder;
+    col.draggable = true;
+    */
+      
+    switch (jo.type) {
+      case ItemType.FOLDER:
+        caret = '<span id="caret_'+key+'" onclick="expandItem(\''+key+'\')">' + (expanded[key] ? '<i class="icon i-caret-down"></i>' : '<i class="icon i-caret-right"></i>') + '</span>';
+        icon = "i-folder w3-text-orange";
+        break;
+        
+      case ItemType.PROGRAM:
         caret = '<span id="caret_'+key+'" onclick="expandItem(\''+key+'\')">' + (expanded[key] ? '<i class="icon i-caret-down"></i>' : '<i class="icon i-caret-right"></i>') + '</span>';
         icon = "i-cog w3-text-blue-gray";
 
@@ -220,67 +227,67 @@ function addObjects (containerElem, jtree) {
             status = '<i class="icon i-question w3-text-orange"></i> Unknown';
             break;
         }
+        break;
+        
+      case ItemType.BLUEPRINT:
+        caret = ' ';
+        icon = "i-project-diagram w3-text-indigo";
+        padding = 1;
+        break;
+        
+      default:
+        break;
+    }
 
-    //col.innerHTML = caret+' <i class="icon '+icon+' "></i> '+jo.name;
-    col.innerHTML = caret+' <b onclick="expandItem(\''+key+'\')">'+jo.name+'</b>';
+    col.innerHTML = caret+' <i class="icon '+icon+' "></i> '+jo.name;
+    //col.innerHTML = '<div style="left:'+leftMargin+'"> '+caret+' <i class="icon '+icon+' "></i>'+jo.name+'</div>';
     col.style.cursor = 'pointer';
     col.style.paddingLeft = (level+padding)+'em';
     
     //col.oncontextmenu = createContextMenu;
     
-    progElem.appendChild(col);
+    row.appendChild(col);
     
     // Status
     col = document.createElement('div');
     col.classList.add('w3-col');
-    col.classList.add('s3');
+    col.classList.add('s2');
     col.innerHTML = status;
-    progElem.appendChild(col);
+    row.appendChild(col);
     
     // Modified
     col = document.createElement('div');
     col.classList.add('w3-col');
-    col.classList.add('s3');
-    col.innerHTML = secondsToString(Date.parse(jo.updateTime) / 1000);
-    progElem.appendChild(col);
+    col.classList.add('s2');
+    col.innerHTML = secondsToString(jo.updateTime);
+    row.appendChild(col);
     
     // Actions
     if (jo.type == ItemType.PROGRAM) {
       col = document.createElement('div');
       col.classList.add('w3-col');
-      col.classList.add('s3');
+      col.classList.add('s2');
       if (jo.jar)
         col.innerHTML = `<a target="Javascript:void(0);" onclick="downloadJAR ('`+key+`')" style="cursor:pointer;" title="Download JAR"><i class="icon i-download" style="color:grey;"></i></a>`;
-      progElem.appendChild(col);
+      row.appendChild(col);
     }
 
-    // Program menu button
-    col = document.createElement('div');
-    col.classList.add('w3-col');
-    col.classList.add('s3');
-    col.innerHTML = `<div id="`+key+`" name="`+jo.name+`" class="w3-right" onclick="createProgramMenu(event);" style="cursor:pointer;"><i class="icon ellipsis-h" style="color:grey;"></i></div>`;
-    progElem.appendChild(col);
- 
-    progElem.appendChild(row);
-/*
-    progElem.setAttribute('id', key);
-    //progElem.setAttribute('tag', jo.tag);
-    progElem.setAttribute('name', jo.name);  
-    //progElem.oncontextmenu = createProgramMenu;
-    progElem.onclick = createProgramMenu;
-*/    
-    /*
-    progElem.ondragover = function(e) {
+    row.setAttribute('id', key);
+    row.setAttribute('type', jo.type);
+    row.setAttribute('name', jo.name);    
+    row.oncontextmenu = createContextMenu;
+    
+    row.ondragover = function(e) {
       e.preventDefault();
       this.classList.add('catalog-selected');
     }
       
-    progElem.ondragleave = function(e) {
+    row.ondragleave = function(e) {
       e.preventDefault();
       this.classList.remove('catalog-selected');
     }
 
-    progElem.ondrop = function(e) {
+    row.ondrop = function(e) {
       //e.preventDefault();
       var folderId = e.dataTransfer.getData("id");
       var parentId = this.getAttribute('id');
@@ -288,26 +295,22 @@ function addObjects (containerElem, jtree) {
       moveFolder (folderId, parentId);
     }
     
-    progElem.ondragstart = dragFolder;
-    progElem.draggable = true;
-    */  
-    
-    containerElem.appendChild(progElem);
+    row.ondragstart = dragFolder;
+    row.draggable = true;
+     
+    containerElem.appendChild(row);
 
     // Container element for children
     
-    var childrenContainer = document.createElement('div');
-    //childrenContainer.classList.add('w3-panel');
-    childrenContainer.classList.add('w3-border-top');
+    childrenContainer = document.createElement('div');
     childrenContainer.setAttribute('id', 'container_'+key);
     childrenContainer.style.display = expanded[key] ? 'block' : 'none';
-    progElem.appendChild(childrenContainer);
-/*
+    containerElem.appendChild(childrenContainer);
+
     level ++;
-    addObjects (childrenContainer, jo.blueprints);
+    addObjects (childrenContainer, jo.children);
     level --;
-*/
-    addBlueprints(childrenContainer, jo.blueprints);
+    
   }
 }
 
@@ -317,19 +320,17 @@ function refreshTable () {
 }
 
 function refreshCatalog () {
-  //callServer ("GET", "/catalog", null, function (xhttp) {
-  callServer ("GET", "/programs", null, function (xhttp) {
+  callServer ("GET", "/catalog", null, function (xhttp) {
       if (xhttp.readyState == 4) {
         if (xhttp.status == 200) {
           jsonResponse = JSON.parse(xhttp.responseText);
-          //console.log(jsonResponse);
           refreshTable ();
         }
         else {
           document.getElementById('catalog').innerHTML = xhttp.statusText;
         }
       }
-      else if (xhttp.readyState == 3) { // Processing request 
+      else if (this.readyState == 3) { // Processing request 
         document.getElementById('catalog').innerHTML = "Getting blueprints...";
       }
       else {
