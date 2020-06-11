@@ -258,10 +258,13 @@ public class BlueprintEntity {
       return content;
     }
     */
+
+    @JsonIgnore
     public List<String> getJARList() {
       return jarList;
     }
     
+    @JsonIgnore
     public List<String> getClassPath() {
       return classPathList;
     }

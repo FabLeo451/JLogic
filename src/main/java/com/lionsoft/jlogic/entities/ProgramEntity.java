@@ -43,6 +43,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.http.HttpServletRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
  
 @Entity
@@ -55,7 +56,10 @@ public class ProgramEntity {
     public static final int BAD_INPUT = -2;  
     public static final int EXCEPTION = -99;
     
+    @JsonIgnore
     public final String jarName = "Program.jar";
+
+    @JsonIgnore
     public final String className = "Program.class";
     
     @Transient
@@ -87,6 +91,7 @@ public class ProgramEntity {
     @Column(name="owner")
     private String owner;
     
+    @JsonIgnore
     @Column(name="parent_id")
     private String parentId;
  
@@ -95,30 +100,38 @@ public class ProgramEntity {
             mappedBy = "program")
     private List<BlueprintEntity> blueprints;
     
+    @JsonIgnore
     @Transient
     private List<String> jarList;
     
+    @JsonIgnore
     @Transient
     private List<String> classPathList;
     
     //@Transient
     //private List<String> dependencies;
 
+    @JsonIgnore
     @Transient
 	  private int result;
     
+    @JsonIgnore
     @Transient
 	  private String message;
     
+    @JsonIgnore
     @Transient
 	  private String output;
     
+    @JsonIgnore
     @Transient
 	  private String httpResponse;
     
+    @JsonIgnore
     @Transient
 	  private int httpStatus;
     
+    @JsonIgnore
     @Transient
 	  private String homeDir = null;
     
@@ -160,10 +173,12 @@ public class ProgramEntity {
       this.name = name;
     }
     
+    @JsonIgnore
     public int getHTTPStatus() {
       return (httpStatus);
     }
     
+    @JsonIgnore
     public String getHTTPResponse() {
       return (httpResponse);
     }
@@ -237,6 +252,7 @@ public class ProgramEntity {
       blueprints.add(b);
     }
     
+    @JsonIgnore
 	  public String getHomeDir() {
 	    if (homeDir == null) {
         File f = new File(home.getDir()+"/..");
@@ -251,16 +267,19 @@ public class ProgramEntity {
       return (homeDir);
 	  }
     
+    @JsonIgnore
 	  public String getMyDir() {
 		  //return home.getDir()+"/../data/program/"+getId();
 		  //return(programDir != null ? programDir : home.getDir()+"/../data/program/"+getId());
 		  return(getHomeDir()+"/data/program/"+getId());
 	  }
     
+  @JsonIgnore
   public String getJavaFile() {
 	  return getMyDir()+"/Program.java";
   }
   
+  @JsonIgnore
   @Transient
   public String getJARFilename() {
 	  return getMyDir()+"/"+jarName;
@@ -274,15 +293,18 @@ public class ProgramEntity {
 		return getMyDir()+"/deps.json";
 	}*/
 	
+  @JsonIgnore
 	public String getIndexFilename() {
 		return getMyDir()+"/index.json";
 	}
 	
+  @JsonIgnore
 	@Transient
 	public String getClassFilename() {
 		return getMyDir()+"/"+className;
 	}
 	
+  @JsonIgnore
 	public String getLogDir() {
 		return home.getDir()+"/../log";
 	}
@@ -291,6 +313,7 @@ public class ProgramEntity {
 		this.output = s;
 	}
 
+  @JsonIgnore
 	public String getOutput() {
 		return output;
 	}
@@ -299,6 +322,7 @@ public class ProgramEntity {
 		this.message = m;
 	}
 
+  @JsonIgnore
 	public String getMessage() {
 		return message;
 	}
@@ -308,6 +332,7 @@ public class ProgramEntity {
 		this.message = m;
 	}
 	
+  @JsonIgnore
 	public int getResult() {
 		return result;
 	}
@@ -366,6 +391,7 @@ public class ProgramEntity {
     }
 	}
 	
+  @JsonIgnore
 	public String getBlueprintIndex () {
 	  String index = null;
 	  
@@ -475,11 +501,13 @@ public class ProgramEntity {
     return true;
 	}
 	
+  @JsonIgnore
 	public Properties getProperties() {
     PropertiesManager pm = new PropertiesManager(getMyDir()+"/Program.properties");
     return (pm.getProperties());
 	}
 	
+  @JsonIgnore
 	public PropertiesManager getPropertiesManager() {
     PropertiesManager pm = new PropertiesManager(getMyDir()+"/Program.properties");
     return (pm);
@@ -869,6 +897,7 @@ public class ProgramEntity {
 	  return result;
 	}
 	
+  @JsonIgnore
 	public String getJava() {
 	  String javaCode = null;
 

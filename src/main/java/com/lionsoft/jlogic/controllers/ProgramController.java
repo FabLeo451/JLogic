@@ -55,6 +55,17 @@ public class ProgramController {
   
   @Autowired
   CatalogService catalogService;
+
+	// GET /program/{id}
+	@GetMapping(value = "/program/{id}")
+	public ProgramEntity get(@PathVariable("id") String id) {
+	  Optional<ProgramEntity> program = programService.findById(id);
+	  
+	  if (!program.isPresent()) 
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+	  	   
+		return program.get();
+	}
   
   private String createProgram(String parentId, String name) {
   
