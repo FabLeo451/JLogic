@@ -33,6 +33,7 @@ import java.util.Collections;
 @Entity
 @Table(name="BLUEPRINT")
 public class BlueprintEntity {
+    public final String tag = "BLUEPRINT";
 
     public static final int GENERIC = 0;
     public static final int MAIN = 1;
@@ -98,6 +99,10 @@ public class BlueprintEntity {
     @Override
     public String toString() {
         return "BlueprintEntity [id=" + id + ", name=" + name + ", type=" + type + "]";
+    }
+    
+    public String getTag() {
+      return (tag);
     }
     
     public String getId() {

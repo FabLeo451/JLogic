@@ -36,6 +36,10 @@ public class CatalogService {
 
 	}
 
+  public List<ProgramEntity> getPrograms() {
+    return (programRepository.findAll());
+  }
+
   public JSONObject getCatalog() {
     JSONObject jo = new JSONObject();
     JSONObject jindex = new JSONObject();

@@ -50,6 +50,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name="PROGRAM")
 public class ProgramEntity {
 
+    public final String tag = "PROGRAM";
+
     // Run result
     public static final int SUCCESS = 0;  
     public static final int METHOD_NOT_FOUND = -1;  
@@ -155,6 +157,10 @@ public class ProgramEntity {
     @Override
     public String toString() {
         return "ProgramEntity [id=" + id + ", name=" + name + ", status=" + status + "]";
+    }
+    
+    public String getTag() {
+      return (tag);
     }
     
     public String getId() {

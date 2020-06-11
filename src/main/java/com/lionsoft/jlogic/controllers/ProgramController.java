@@ -56,6 +56,12 @@ public class ProgramController {
   @Autowired
   CatalogService catalogService;
 
+	// GET /programs
+	@GetMapping(value = "/programs")
+	public List<ProgramEntity> getPrograms() {
+		return catalogService.getPrograms();
+	}
+
 	// GET /program/{id}
 	@GetMapping(value = "/program/{id}")
 	public ProgramEntity get(@PathVariable("id") String id) {
