@@ -149,7 +149,7 @@ function createProgramMenu(event) {
   //contextMenu.setCallback(bpGetSet);
   //contextMenu.show(event.x, event.y);
   contextMenu.show(event.pageX, event.pageY);
-  setTimeout(function() { document.addEventListener('click', hideContextMenu, false) }, 500);
+  setTimeout(function() { document.addEventListener('click', hideContextMenu, false) }, 100);
 }
 
 function hideContextMenu(evt){
@@ -160,48 +160,34 @@ function hideContextMenu(evt){
 
 function addBlueprints (containerElem, jblueprints) {
   var jo;
+
+  var listElem =  document.createElement('div');
+  listElem.classList.add('w3-panel');
+  containerElem.appendChild(listElem);
   
   for (var i=0; i<jblueprints.length; i++) {
     jo = jblueprints[i];
     
     var bpElem = document.createElement('div');
-    bpElem.classList.add('w3-padding-small');
+    bpElem.classList.add('w3-container');
     bpElem.innerHTML = '<i class="icon i-project-diagram w3-text-blue-gray"></i> <a href="/blueprint/'+jo.id+'/edit" target="_blank">'+jo.name+'</a';
-    containerElem.appendChild(bpElem);
+    listElem.appendChild(bpElem);
   }
 }
 
-function addObjects (containerElem, jtree) {
-  var tr, progElem, row, col, caret, icon, padding = 0;
-  var status = '&nbsp;';
-  
-  for (var i=0; i<jtree.length; i++) {
+function createProgramHeader(jo) {
+  var status;
 
-    var jo = jtree[i];
-    var key = jo.id;
-    
-    if (!expanded.hasOwnProperty(key))
-      expanded.key = false;
-    
-    //console.log(jo);
-    // class="program w3-panel w3-round w3-border w3-margin w3-padding"
-    progElem = document.createElement('div');
-    progElem.classList.add('program');
-    progElem.classList.add('w3-panel');
-    progElem.classList.add('w3-round');
-    progElem.classList.add('w3-border');
-    //progElem.classList.add('w3-margin');
-    progElem.classList.add('w3-padding');
+    var headerElem= document.createElement('div');
+    headerElem.classList.add('w3-row');
+    headerElem.classList.add('w3-margin');
 
-    row = document.createElement('div');
-    row.classList.add('w3-row');
-
-    col = document.createElement('div');
+    var col = document.createElement('div');
     col.classList.add('w3-col');
     col.classList.add('s3');
       
-        caret = '<span id="caret_'+key+'" onclick="expandItem(\''+key+'\')">' + (expanded[key] ? '<i class="icon i-caret-down"></i>' : '<i class="icon i-caret-right"></i>') + '</span>';
-        icon = "i-cog w3-text-blue-gray";
+        var caret = '<span id="caret_'+jo.id+'" onclick="expandItem(\''+jo.id+'\')">' + (expanded[jo.id] ? '<i class="icon i-caret-down"></i>' : '<i class="icon i-caret-right"></i>') + '</span>';
+        //icon = "i-cog w3-text-blue-gray";
 
         switch (jo.status) {
           case 'READY':
@@ -222,27 +208,27 @@ function addObjects (containerElem, jtree) {
         }
 
     //col.innerHTML = caret+' <i class="icon '+icon+' "></i> '+jo.name;
-    col.innerHTML = caret+' <b onclick="expandItem(\''+key+'\')">'+jo.name+'</b>';
+    col.innerHTML = caret+' <b onclick="expandItem(\''+jo.id+'\')">'+jo.name+'</b>';
     col.style.cursor = 'pointer';
-    col.style.paddingLeft = (level+padding)+'em';
+    //col.style.paddingLeft = (level+padding)+'em';
     
     //col.oncontextmenu = createContextMenu;
     
-    progElem.appendChild(col);
+    headerElem.appendChild(col);
     
     // Status
     col = document.createElement('div');
     col.classList.add('w3-col');
     col.classList.add('s3');
     col.innerHTML = status;
-    progElem.appendChild(col);
+    headerElem.appendChild(col);
     
     // Modified
     col = document.createElement('div');
     col.classList.add('w3-col');
     col.classList.add('s3');
     col.innerHTML = secondsToString(Date.parse(jo.updateTime) / 1000);
-    progElem.appendChild(col);
+    headerElem.appendChild(col);
     
     // Actions
     if (jo.type == ItemType.PROGRAM) {
@@ -250,25 +236,50 @@ function addObjects (containerElem, jtree) {
       col.classList.add('w3-col');
       col.classList.add('s3');
       if (jo.jar)
-        col.innerHTML = `<a target="Javascript:void(0);" onclick="downloadJAR ('`+key+`')" style="cursor:pointer;" title="Download JAR"><i class="icon i-download" style="color:grey;"></i></a>`;
-      progElem.appendChild(col);
+        col.innerHTML = `<a target="Javascript:void(0);" onclick="downloadJAR ('`+jo.id+`')" style="cursor:pointer;" title="Download JAR"><i class="icon i-download" style="color:grey;"></i></a>`;
+      headerElem.appendChild(col);
     }
 
     // Program menu button
     col = document.createElement('div');
     col.classList.add('w3-col');
     col.classList.add('s3');
-    col.innerHTML = `<div id="`+key+`" name="`+jo.name+`" class="w3-right" onclick="createProgramMenu(event);" style="cursor:pointer;"><i class="icon ellipsis-h" style="color:grey;"></i></div>`;
-    progElem.appendChild(col);
- 
-    progElem.appendChild(row);
+    col.innerHTML = `<div id="`+jo.id+`" name="`+jo.name+`" class="w3-right" onclick="createProgramMenu(event);" style="cursor:pointer;"><i class="icon ellipsis-h" style="color:grey;"></i></div>`;
+    headerElem.appendChild(col);
+
+    return(headerElem);
+}
+
+function addObjects (containerElem, jtree) {
+  var tr, progElem, row, col, caret, icon, padding = 0;
+  var status = '&nbsp;';
+  
+  for (var i=0; i<jtree.length; i++) {
+
+    var jo = jtree[i];
+    var key = jo.id;
+    
+    if (!expanded.hasOwnProperty(key))
+      expanded.key = false;
+    
+    //console.log(jo);
+    // class="program w3-panel w3-round w3-border w3-margin w3-padding"
+    progElem = document.createElement('div');
+    progElem.classList.add('program');
+    progElem.classList.add('w3-container');
+    progElem.classList.add('w3-round');
+    progElem.classList.add('w3-border');
+    //progElem.classList.add('w3-margin');
+    //progElem.classList.add('w3-padding');
 /*
     progElem.setAttribute('id', key);
     //progElem.setAttribute('tag', jo.tag);
     progElem.setAttribute('name', jo.name);  
     //progElem.oncontextmenu = createProgramMenu;
     progElem.onclick = createProgramMenu;
-*/    
+*/   
+    progElem.appendChild(createProgramHeader(jo));
+
     /*
     progElem.ondragover = function(e) {
       e.preventDefault();
@@ -297,16 +308,13 @@ function addObjects (containerElem, jtree) {
     // Container element for children
     
     var childrenContainer = document.createElement('div');
-    //childrenContainer.classList.add('w3-panel');
+    childrenContainer.classList.add('w3-container');
+    childrenContainer.classList.add('w3-stretch');
     childrenContainer.classList.add('w3-border-top');
     childrenContainer.setAttribute('id', 'container_'+key);
     childrenContainer.style.display = expanded[key] ? 'block' : 'none';
     progElem.appendChild(childrenContainer);
-/*
-    level ++;
-    addObjects (childrenContainer, jo.blueprints);
-    level --;
-*/
+
     addBlueprints(childrenContainer, jo.blueprints);
   }
 }
