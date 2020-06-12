@@ -791,7 +791,7 @@ public class ProgramEntity {
     return true;
 	}
 	
-	public boolean hasJAR() {
+	public boolean getJar() {
     File f = new File(getJARFilename()); 
     return(f.exists());
 	}

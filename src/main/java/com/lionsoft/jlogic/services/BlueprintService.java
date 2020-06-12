@@ -152,6 +152,8 @@ public class BlueprintService {
       e1.printStackTrace();
       return null;
     }
+
+    logger.info("Created "+blueprint);
     
 	  return blueprint;
 	}

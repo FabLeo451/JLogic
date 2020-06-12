@@ -146,8 +146,7 @@ function ContextMenu () {
       
       if (item["item"] == "separator") {
         const hr = document.createElement('hr');
-        hr.style.margin = "5px 0 5px 0";
-        hr.style.backgroundColor = "gray";
+        hr.className = "menu";
         this.ul.appendChild (hr);
       }
       else {

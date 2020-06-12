@@ -41,6 +41,11 @@
 .menu-option:hover {
   background: rgba(0, 0, 0, 1.0);
 }
+
+hr.menu {
+  margin: 5px 0 5px 0;
+  border-top: 1px solid darkgray;
+}
   
 .ctxSearchEntry {
   width: 18em;

@@ -72,7 +72,7 @@ public class ProgramController {
 	  	   
 		return program.get();
 	}
-  
+/*  
   private String createProgram(String parentId, String name) {
   
     logger.info("Creating program "+name);
@@ -87,11 +87,11 @@ public class ProgramController {
 	  }
 	      
     return (catalogService.getCatalog().toString());
-  }
+  }*/
 
 	// PUT /program
 	@PutMapping(value = "/program", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> put(@RequestBody String data) {
+	public List<ProgramEntity> put(@RequestBody String data) {
 	  String response;
 	  JSONObject jo;
 
@@ -102,9 +102,12 @@ public class ProgramController {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
     }
     
-    response = createProgram(null, jo.optString("name"));
+    //response = createProgram(null, jo.optString("name"));
+    logger.info("Creating program "+jo.optString("name"));
+	  
+	  ProgramEntity program = programService.create(jo.optString("name"));
     
-		return new ResponseEntity<>(response, HttpStatus.OK);
+		return (catalogService.getPrograms());
 	}
 
 	// PUT /program/{id}/blueprint
@@ -194,14 +197,16 @@ public class ProgramController {
 
 	// POST /program/{id}/jar
 	@PostMapping(value = "/program/{id}/jar")
-	public ResponseEntity<String> createJAR(@PathVariable("id") String id) {
+	public List<ProgramEntity> createJAR(@PathVariable("id") String id) {
 
 	  HttpStatus responseStatus = HttpStatus.OK;
 	  JSONObject jresponse = new JSONObject();
 
 	  Optional<ProgramEntity> program = programService.findById(id);
 	  
-	  if (program.isPresent()) {
+	  if (!program.isPresent())
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found");
+
 	      
 	      if (program.get().getStatus() != ProgramStatus.COMPILED)
 	        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Program not compiled");
@@ -210,18 +215,15 @@ public class ProgramController {
           logger.info(program.get().getMessage());
         }
         else {
-          responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
           logger.error(program.get().getMessage());
+          throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, program.get().getMessage());
         }
         
         jresponse.put("status", program.get().getStatus());
         jresponse.put("message", program.get().getMessage());
         jresponse.put("output", program.get().getOutput());
-	  } else {
-	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
-	  }
 	  
-		return new ResponseEntity<>(catalogService.getCatalog().toString()/*jresponse.toString()*/, responseStatus);
+		return (catalogService.getPrograms());
 	}
 
 	// GET /program/{id}/java

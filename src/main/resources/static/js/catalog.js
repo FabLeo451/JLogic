@@ -138,8 +138,8 @@ function createProgramMenu(event) {
     };
   
   if (contextMenu) {
-    contextMenu.destroy();
-   }
+    hideContextMenu(event);
+  }
    
   contextMenu = new ContextMenu();
  
@@ -152,9 +152,12 @@ function createProgramMenu(event) {
   setTimeout(function() { document.addEventListener('click', hideContextMenu, false) }, 100);
 }
 
-function hideContextMenu(evt){
-    contextMenu.remove();
-    contextMenu = null;
+function hideContextMenu(evt) {
+    if (contextMenu) {
+      contextMenu.remove();
+      contextMenu = null;
+    }
+
     document.removeEventListener('click', hideContextMenu);
 }
 
@@ -170,7 +173,7 @@ function addBlueprints (containerElem, jblueprints) {
     
     var bpElem = document.createElement('div');
     bpElem.classList.add('w3-container');
-    bpElem.innerHTML = '<i class="icon i-project-diagram w3-text-blue-gray"></i> <a href="/blueprint/'+jo.id+'/edit" target="_blank">'+jo.name+'</a';
+    bpElem.innerHTML = '<i class="icon i-project-diagram w3-text-blue-gray"></i> <a href="/blueprint/'+jo.id+'/edit" target="_blank" title="Open in editor">'+jo.name+'</a';
     listElem.appendChild(bpElem);
   }
 }
@@ -231,19 +234,19 @@ function createProgramHeader(jo) {
     headerElem.appendChild(col);
     
     // Actions
-    if (jo.type == ItemType.PROGRAM) {
       col = document.createElement('div');
       col.classList.add('w3-col');
-      col.classList.add('s3');
+      col.classList.add('s2');
       if (jo.jar)
         col.innerHTML = `<a target="Javascript:void(0);" onclick="downloadJAR ('`+jo.id+`')" style="cursor:pointer;" title="Download JAR"><i class="icon i-download" style="color:grey;"></i></a>`;
+      else
+        col.innerHTML = "&nbsp;";
       headerElem.appendChild(col);
-    }
 
     // Program menu button
     col = document.createElement('div');
     col.classList.add('w3-col');
-    col.classList.add('s3');
+    col.classList.add('s1');
     col.innerHTML = `<div id="`+jo.id+`" name="`+jo.name+`" class="w3-right" onclick="createProgramMenu(event);" style="cursor:pointer;"><i class="icon ellipsis-h" style="color:grey;"></i></div>`;
     headerElem.appendChild(col);
 

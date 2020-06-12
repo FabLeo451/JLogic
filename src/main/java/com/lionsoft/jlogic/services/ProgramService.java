@@ -65,7 +65,9 @@ public class ProgramService {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	  
     program.setOwner(((User) auth.getPrincipal()).getUsername());
-    program = repository.saveAndFlush(program);
+    program = repository.save(program); 
+
+    logger.info("Created "+program.toString());   
     
     String progDir = getProgramBaseDirectory()+"/"+program.getId();
 
@@ -75,6 +77,13 @@ public class ProgramService {
       program.createIndex();
       //program.createDefaultDependecies();
       program.createProperties();
+
+      // Create blueprints
+	    BlueprintEntity blueprint = blueprintService.create(program, BlueprintType.MAIN, "Main");
+
+	    repository.refresh(program);
+
+	    
 
       return program;
     }

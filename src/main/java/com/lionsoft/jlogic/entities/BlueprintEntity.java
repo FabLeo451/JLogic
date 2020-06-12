@@ -90,8 +90,8 @@ public class BlueprintEntity {
     public BlueprintEntity(String id, String name, BlueprintType type) {
       setUpdateTime(new Date());
       setId(id);
-      setName(name);
       setType(type);
+      setName(name);
     }
      
     //Setters and getters
