@@ -173,7 +173,23 @@ function addBlueprints (containerElem, jblueprints) {
     
     var bpElem = document.createElement('div');
     bpElem.classList.add('w3-container');
-    bpElem.innerHTML = '<i class="icon i-project-diagram w3-text-blue-gray"></i> <a href="/blueprint/'+jo.id+'/edit" target="_blank" title="Open in editor">'+jo.name+'</a';
+    bpElem.setAttribute('id', jo.id);
+
+    bpElem.innerHTML = `<i class="icon i-project-diagram w3-text-blue-gray"></i> <a href="/blueprint/`+jo.id+`/edit" target="_blank" title="Open in editor">`+jo.name+`</a> <i id="del_`+jo.id+`" class="icon i-trash-alt w3-text-gray" style="margin-left:2em; cursor:pointer; visibility:hidden" onclick="deleteBlueprint('`+jo.id+`', '`+jo.name+`')"></i>`;
+
+    bpElem.onmouseenter = function(ev) {
+      var t = ev.currentTarget;
+      var id = t.getAttribute('id');
+      document.getElementById('del_'+id).style.visibility="visible";
+    }
+
+    bpElem.onmouseleave = function(ev) {
+      var t = ev.currentTarget;
+      var id = t.getAttribute('id');
+      document.getElementById('del_'+id).style.visibility="hidden";
+    }
+
+
     listElem.appendChild(bpElem);
   }
 }
@@ -238,9 +254,9 @@ function createProgramHeader(jo) {
       col.classList.add('w3-col');
       col.classList.add('s2');
       if (jo.jar)
-        col.innerHTML = `<a target="Javascript:void(0);" onclick="downloadJAR ('`+jo.id+`')" style="cursor:pointer;" title="Download JAR"><i class="icon i-download" style="color:grey;"></i></a>`;
+        col.innerHTML = `<a target="Javascript:void(0);" onclick="downloadJAR ('`+jo.id+`')" style="cursor:pointer;" title="Download JAR"><i class="icon i-download" style="color:gray;"></i></a>`;
       else
-        col.innerHTML = "&nbsp;";
+        col.innerHTML = '<i class="icon i-download" style="color:lightgray;"></i>';
       headerElem.appendChild(col);
 
     // Program menu button
