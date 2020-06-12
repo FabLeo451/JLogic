@@ -59,63 +59,7 @@ function expandItem(id) {
   expanded[id] = !expanded[id];
   document.getElementById('caret_'+id).innerHTML = expanded[id] ? '<i class="icon i-caret-down"></i>' : '<i class="icon i-caret-right"></i>';
   document.getElementById('container_'+id).style.display = expanded[id] ? 'block' : 'none';
-/*
-  var i;
-  
-  expanded[id] = !expanded[id];
-  
-  for (i = 0; i < x.length; i++) {
-    var pkg_id = x[i].getAttribute('parent_id');
-    if (pkg_id == id)
-      x[i].style.display = expanded[id] ? 'table-row' : 'none';
-  }
-  
-  document.getElementById('caret_'+id).innerHTML = expanded[id] ? '<i class="icon i-caret-down"></i>' : '<i class="icon i-caret-right"></i>';
-*/
 }
-
-/*
-function createProgramMenu(event) {
-  event.preventDefault();
-  var t = event.currentTarget;
-  //var t = event.target;
-  var id = t.getAttribute('id');
-  //var type = parseInt(t.getAttribute('type'));
-  var name = t.getAttribute('name');
-  
-  console.log(id+" "+name);
-    
-  var jmenu =
-    {
-      'theme': 'default',
-        'items': [
-          {'icon': 'i-project-diagram', 'name': 'Add blueprint',  action: () => addBlueprint(id) },
-          {'icon': 'i-archive', 'name': 'Create JAR',  action: () => createJAR(id) },
-          {'icon': 'i-sliders-h', 'name': 'Edit properties',  action: () => window.location = '/program/'+id+'/edit-properties' },
-          {'icon': 'i-edit',   'name': 'Rename',  action: () => renameProgram(id, name) },
-          //{'icon': 'i-broom',   'name': 'Clean',  action: () => cleanProgram(id) },
-          {'name': 'separator' },
-          {'icon': 'i-trash-alt',  'name': 'Delete',  action: () => deleteProgram(id, name) }
-        ]
-    };
-  
-  if (menu) {
-    menu.destroy();
-    menu = null;
-  }
-  
-  menu = new ContextMenu(jmenu);
-  const time = menu.isOpen() ? 100 : 0;
-  
-  console.log(menu);
-  
-  if (!menu)
-    console.error("Can't create menu");
-
-  //menu.destroy();
-  //setTimeout(() => { menu.show(event.pageX, event.pageY) }, time);
-  document.addEventListener('click', hideContextMenu, false);
-}*/
 
 function createProgramMenu(event) {
   event.preventDefault();
@@ -175,7 +119,7 @@ function addBlueprints (containerElem, jblueprints) {
     bpElem.classList.add('w3-container');
     bpElem.setAttribute('id', jo.id);
 
-    bpElem.innerHTML = `<i class="icon i-project-diagram w3-text-blue-gray"></i> <a href="/blueprint/`+jo.id+`/edit" target="_blank" title="Open in editor">`+jo.name+`</a> <i id="del_`+jo.id+`" class="icon i-trash-alt w3-text-gray" style="margin-left:2em; cursor:pointer; visibility:hidden" onclick="deleteBlueprint('`+jo.id+`', '`+jo.name+`')"></i>`;
+    bpElem.innerHTML = `<i class="icon i-project-diagram w3-text-blue-gray"></i> <a href="/blueprint/`+jo.id+`/edit" target="_blank" title="Open in editor">`+jo.name+`</a> <i id="del_`+jo.id+`" class="icon i-trash-alt w3-text-gray" style="margin-left:2em; cursor:pointer; visibility:hidden" onclick="deleteBlueprint('`+jo.id+`', '`+jo.name+`')" title="Delete blueprint"></i>`;
 
     bpElem.onmouseenter = function(ev) {
       var t = ev.currentTarget;
@@ -199,7 +143,7 @@ function createProgramHeader(jo) {
 
     var headerElem= document.createElement('div');
     headerElem.classList.add('w3-row');
-    headerElem.classList.add('w3-margin');
+    headerElem.classList.add('w3-padding-small');
 
     var col = document.createElement('div');
     col.classList.add('w3-col');
@@ -210,7 +154,7 @@ function createProgramHeader(jo) {
 
         switch (jo.status) {
           case 'READY':
-            status = '<i class="icon i-check w3-text-green"></i> Ready';
+            status = '<i class="icon i-clock w3-text-green"></i> Ready';
             break;
             
           case 'COMPILED':

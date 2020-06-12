@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -88,7 +89,7 @@ public class BlueprintController {
 
   // DELETE /blueprint/{id}
 	@DeleteMapping(value = "/blueprint/{blueprintId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> delete(@PathVariable("blueprintId") String blueprintId,
+	public List<ProgramEntity> delete(@PathVariable("blueprintId") String blueprintId,
 	                                     @RequestParam(value = "tree", defaultValue = "0") String tree) {
 	  Optional<BlueprintEntity> blueprint = blueprintService.findById(blueprintId);
 	  
@@ -102,7 +103,7 @@ public class BlueprintController {
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 	  }  
     
-    return (new ResponseEntity<>(tree.equals("0") ? "" : catalogService.getCatalog().toString(), HttpStatus.OK));
+    return (tree.equals("0") ? null : catalogService.getPrograms());
 	}
 	
 	// PUT /blueprint/{blueprintId}

@@ -137,32 +137,30 @@ public class ProgramController {
 	
 	// PUT /program/{id}/rename/{name}
 	@PutMapping(value = "/program/{id}/rename/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> rename(@PathVariable("id") String id, 
+	public List<ProgramEntity> rename(@PathVariable("id") String id, 
 	                                     @PathVariable("name") String name,
 	                                     @RequestParam(value = "tree", defaultValue = "0") String tree) {
 	  Optional<ProgramEntity> program = programService.findById(id);
 	  
-	  if (program.isPresent()) {
-	    programService.rename(program.get(), name);
-	  } else {
-	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
-	  }
-	  
-		return new ResponseEntity<>(tree.equals("0") ? "" : catalogService.getCatalog().toString(), HttpStatus.OK);
+	  if (!program.isPresent()) 
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+	    
+	  programService.rename(program.get(), name);
+
+		return (tree.equals("0") ? null : catalogService.getPrograms());
 	}
 
 	// DELETE /program/{id}
 	@DeleteMapping(value = "/program/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> delete(@PathVariable("id") String id) {
+	public List<ProgramEntity> delete(@PathVariable("id") String id) {
 	  Optional<ProgramEntity> program = programService.findById(id);
 	  
-	  if (program.isPresent()) {
-	    programService.delete(program.get());
-	  } else {
-	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
-	  }
+	  if (!program.isPresent()) 
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 	  
-		return new ResponseEntity<>(catalogService.getCatalog().toString(), HttpStatus.OK);
+	  programService.delete(program.get());
+	  
+		return catalogService.getPrograms();
 	}
 
 	// POST /program/{id}/compile
@@ -206,22 +204,21 @@ public class ProgramController {
 	  
 	  if (!program.isPresent())
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found");
-
 	      
-	      if (program.get().getStatus() != ProgramStatus.COMPILED)
-	        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Program not compiled");
-	      
-        if (program.get().createJAR()) {
-          logger.info(program.get().getMessage());
-        }
-        else {
-          logger.error(program.get().getMessage());
-          throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, program.get().getMessage());
-        }
-        
-        jresponse.put("status", program.get().getStatus());
-        jresponse.put("message", program.get().getMessage());
-        jresponse.put("output", program.get().getOutput());
+    if (program.get().getStatus() != ProgramStatus.COMPILED)
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Program not compiled");
+    
+    if (program.get().createJAR()) {
+      logger.info(program.get().getMessage());
+    }
+    else {
+      logger.error(program.get().getMessage());
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, program.get().getMessage());
+    }
+    
+    jresponse.put("status", program.get().getStatus());
+    jresponse.put("message", program.get().getMessage());
+    jresponse.put("output", program.get().getOutput());
 	  
 		return (catalogService.getPrograms());
 	}

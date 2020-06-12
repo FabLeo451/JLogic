@@ -146,7 +146,7 @@ function ContextMenu () {
       
       if (item["item"] == "separator") {
         const hr = document.createElement('hr');
-        hr.className = "menu";
+        hr.className = "menu-option";
         this.ul.appendChild (hr);
       }
       else {
