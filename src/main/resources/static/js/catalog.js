@@ -263,14 +263,13 @@ function addObjects (containerElem, jtree) {
       expanded.key = false;
     
     //console.log(jo);
-    // class="program w3-panel w3-round w3-border w3-margin w3-padding"
+
     progElem = document.createElement('div');
     progElem.classList.add('program');
     progElem.classList.add('w3-container');
     progElem.classList.add('w3-round');
     progElem.classList.add('w3-border');
-    //progElem.classList.add('w3-margin');
-    //progElem.classList.add('w3-padding');
+    progElem.classList.add('w3-margin-top');
 /*
     progElem.setAttribute('id', key);
     //progElem.setAttribute('tag', jo.tag);
