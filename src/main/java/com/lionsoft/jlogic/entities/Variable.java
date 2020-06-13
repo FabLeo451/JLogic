@@ -3,6 +3,7 @@ package com.lionsoft.jlogic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 class Variable {
@@ -14,10 +15,10 @@ class Variable {
   @Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(
-		name = "id",
+		name = "UUID",
 		strategy = "org.hibernate.id.UUIDGenerator"
 	)
-  private Long id;
+  private UUID id;
    
   private String name;
 

@@ -105,10 +105,10 @@ body {
              box-shadow: 0 1px 0 rgba(9,30,66,.25);
 }
 .edit-box-header {
-  border-top-left-radius:.25em;
-  border-top-right-radius:.25em;
-  background-color:darkgrey;
-  /*padding:0.5em .5em .5em .5em;*/
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  border-bottom: 1px dotted gray;
 }
 
 /*

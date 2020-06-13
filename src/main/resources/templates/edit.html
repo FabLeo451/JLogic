@@ -136,7 +136,11 @@ var _jbp = null;
       </div>
       
       <div class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
-          <div class="w3-margin-bottom" style="border-bottom: 1px dotted grey"><i class="icon i-square" style="color:lightslategray"></i> <b>Variables</b></div>
+          <div class="edit-box-header w3-margin-bottom">
+            <div><i class="icon i-square" style="color:lightslategray"></i> <b>Variables</b></div>
+            <button class="btnApp w3-right" onclick="addVariableCallback();" ><i class="icon i-add"></i> Add</button>
+          </div>
+          
        
           <!--legend>Variables</legend-->
 
@@ -144,7 +148,6 @@ var _jbp = null;
             </table>
             <div id="vars"></div>
 
-          <button class="btnApp" onclick="addVariableCallback();" ><i class="icon i-add"></i> Add variable</button>
       </div>
     </div>
 
