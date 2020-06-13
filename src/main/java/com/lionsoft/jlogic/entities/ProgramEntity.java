@@ -105,14 +105,9 @@ public class ProgramEntity {
             fetch = FetchType.EAGER,
             mappedBy = "program")
     private List<BlueprintEntity> blueprints;
-    
-    // Global variables
-    /*@ElementCollection
-    @CollectionTable(name = "variable", joinColumns = @JoinColumn(name = "program_id"))
-    @Column(name="variable")*/
-    /*@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "program_id")*/
-    //private List<Variable> variables = Collections.emptyList();
+      
+    @OneToMany(mappedBy="program", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Variable> variables = Collections.emptyList();
     
     @JsonIgnore
     @Transient
@@ -166,8 +161,6 @@ public class ProgramEntity {
      
     //Setters and getters
     
-    @OneToMany(mappedBy="program", cascade = CascadeType.ALL)
-    private List<Variable> variables = Collections.emptyList();
     public void setVariables(List<Variable> vars) {
         this.variables = vars;
     }
@@ -365,9 +358,30 @@ public class ProgramEntity {
 		return result;
 	}
 	
-	public void addVariable(Variable v) {
+	public Variable getVariable(String name) {
+	  for (Variable v: variables)
+	    if (v.getName().equals(name))
+	      return v;
+	      
+	  return null;
+	}
+	
+	public boolean hasVariable(String name) {
+	  return (getVariable(name) != null);
+	}
+	
+	public boolean addVariable(Variable v) {
+	  if (!v.isValid())
+	    return false;
+	    
 	  v.setProgram(this);
 	  variables.add(v);
+	  return true;
+	}
+	
+	public boolean deleteVariable(String name) {
+	  Variable v = getVariable(name);
+	  return (variables.remove(v));
 	}
 	
 	public void addClassPath(String cp) {

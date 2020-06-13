@@ -417,13 +417,70 @@ public class ProgramController {
 	
 	// PUT /program/variable
 	@PutMapping(value = "/program/{id}/variable", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> putVariable(@PathVariable("id") String id, @RequestBody Variable v) {
+	public ResponseEntity<String> createVariable(@PathVariable("id") String id, @RequestBody Variable v) {
+	  Optional<ProgramEntity> program = programService.findById(id);
+
+	  if (!program.isPresent()) 
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
+	  
+	  logger.info("Creating variable "+v.getName()+" for program "+program.get().getName());
+	    
+	  if (!programService.addVariable(program.get(), v))
+	    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't create variable.");
+	    
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
+	// POST /program/variable
+	@PostMapping(value = "/program/{id}/variable", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> modifyVariable(@PathVariable("id") String id, @RequestBody Variable v) {
 	  Optional<ProgramEntity> program = programService.findById(id);
 	  
 	  if (!program.isPresent()) 
-	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
+	  
+	  logger.info("Updating variable "+v.getName()+" for program "+program.get().getName());
+	  
+	  if (!program.get().hasVariable(v.getName())) 
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable not found.");
 	    
-	  programService.addVariable(program.get(), v);
+	  if (!programService.updateVariable(program.get(), v))
+	    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot update variable.");
+
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
+	// POST /program/variable/rename
+	@PostMapping(value = "/program/{id}/variable/{oldName}/rename/{newName}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> modifyVariable(@PathVariable("id") String id, @PathVariable("oldName") String oldName, @PathVariable("newName") String newName) {
+	  Optional<ProgramEntity> program = programService.findById(id);
+	  
+	  if (!program.isPresent()) 
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
+	  
+	  logger.info("Renaming variable "+oldName+" to "+newName+" for program "+program.get().getName());
+	  
+	  if (!program.get().hasVariable(oldName)) 
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable not found.");
+	    
+	  if (!programService.renameVariable(program.get(), oldName, newName))
+	    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot rename variable.");
+
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
+	// DELETE /program/variable
+	@DeleteMapping(value = "/program/{id}/variable/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> deleteVariable(@PathVariable("id") String id, @PathVariable("name") String name) {
+	  Optional<ProgramEntity> program = programService.findById(id);
+	  
+	  if (!program.isPresent()) 
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
+	  
+	  logger.info("Deleting variable "+name+" from program "+program.get().getName());
+	    
+	  if (!programService.deleteVariable(program.get(), name))
+	    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't delete variable.");
 
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}

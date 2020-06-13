@@ -137,10 +137,46 @@ public class ProgramService {
 	}
 	
 	public boolean addVariable (ProgramEntity program, Variable v) {
-	  program.addVariable(v);
-	  //entityManager.persist(program);
-	  repository.saveAndFlush(program);
-	  //repository.refresh(program);
-	  return (true);
+	  if (!v.isValid() || program.hasVariable(v.getName()))
+	    return false;
+
+    program.addVariable(v);
+    repository.save(program);
+
+	  return true;
+	}
+	
+	public boolean updateVariable (ProgramEntity program, Variable v) {
+	  Variable pv = program.getVariable(v.getName());
+	  
+	  if (pv != null && v.isValid()) {
+	    pv.set(v);
+	    repository.save(program);
+	    return (true);
+	  }
+	  
+	  return false;
+	}
+	
+	public boolean deleteVariable (ProgramEntity program, String name) {
+	  if (program.deleteVariable(name)) {
+	    repository.save(program);
+	    //System.out.println(program.getVariables());
+	    return (true);
+	  }
+	  
+	  return false;
+	}
+	
+	public boolean renameVariable (ProgramEntity program, String oldName, String newName) {
+	  Variable pv = program.getVariable(oldName);
+	  
+	  if (pv != null) {
+	    pv.setName(newName);
+	    repository.save(program);
+	    return (true);
+	  }
+	  
+	  return false;
 	}
 }
