@@ -135,5 +135,12 @@ public class ProgramService {
 	  repository.refresh(program);
 	  return (result);
 	}
-
+	
+	public boolean addVariable (ProgramEntity program, Variable v) {
+	  program.addVariable(v);
+	  //entityManager.persist(program);
+	  repository.saveAndFlush(program);
+	  //repository.refresh(program);
+	  return (true);
+	}
 }

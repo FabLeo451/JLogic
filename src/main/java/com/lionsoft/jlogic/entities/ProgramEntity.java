@@ -14,6 +14,10 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import javax.persistence.JoinColumn;
+import javax.persistence.ElementCollection;
+import javax.persistence.CollectionTable;
+
 import java.io.*;
 import java.util.*;
 import java.util.Date;
@@ -102,6 +106,14 @@ public class ProgramEntity {
             mappedBy = "program")
     private List<BlueprintEntity> blueprints;
     
+    // Global variables
+    /*@ElementCollection
+    @CollectionTable(name = "variable", joinColumns = @JoinColumn(name = "program_id"))
+    @Column(name="variable")*/
+    /*@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "program_id")*/
+    //private List<Variable> variables = Collections.emptyList();
+    
     @JsonIgnore
     @Transient
     private List<String> jarList;
@@ -153,6 +165,16 @@ public class ProgramEntity {
     }
      
     //Setters and getters
+    
+    @OneToMany(mappedBy="program", cascade = CascadeType.ALL)
+    private List<Variable> variables = Collections.emptyList();
+    public void setVariables(List<Variable> vars) {
+        this.variables = vars;
+    }
+
+    public List<Variable> getVariables() {
+      return variables;
+    }
  
     @Override
     public String toString() {
@@ -341,6 +363,11 @@ public class ProgramEntity {
   @JsonIgnore
 	public int getResult() {
 		return result;
+	}
+	
+	public void addVariable(Variable v) {
+	  v.setProgram(this);
+	  variables.add(v);
 	}
 	
 	public void addClassPath(String cp) {

@@ -74,12 +74,12 @@ public class BlueprintEntity {
     String content;
 */   
     @ElementCollection
-    @CollectionTable(name = "jar", joinColumns = @JoinColumn(name = "blieprint_id"))
+    @CollectionTable(name = "jar", joinColumns = @JoinColumn(name = "blueprint_id"))
     @Column(name="jar")
     List<String> jarList = Collections.emptyList();
     
     @ElementCollection
-    @CollectionTable(name = "classpath", joinColumns = @JoinColumn(name = "blieprint_id"))
+    @CollectionTable(name = "classpath", joinColumns = @JoinColumn(name = "blueprint_id"))
     @Column(name="classpath")
     List<String> classPathList = Collections.emptyList();
     

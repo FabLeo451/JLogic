@@ -414,6 +414,19 @@ public class ProgramController {
     
 		return new ResponseEntity<>(pm.getProperties(), HttpStatus.OK);
 	}
+	
+	// PUT /program/variable
+	@PutMapping(value = "/program/{id}/variable", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> putVariable(@PathVariable("id") String id, @RequestBody Variable v) {
+	  Optional<ProgramEntity> program = programService.findById(id);
+	  
+	  if (!program.isPresent()) 
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+	    
+	  programService.addVariable(program.get(), v);
+
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
 
 }
 
