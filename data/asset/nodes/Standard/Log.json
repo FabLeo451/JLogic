@@ -7,11 +7,11 @@
     "can_delete": true,
     "java":"switch (in{1}) { case 0: logger.info(in{2}); break; case 1: logger.warn(in{2}); break; case 2: logger.error(in{2}); break; case 3: logger.trace(in{2}); break; default: logger.debug(in{2}); break; }",
     "input": [
-      { "type": 0, "label": "" },
-      { "type": 1, "label": "Level", "value": 0, "enum": [ "INFO", "WARN", "ERROR", "TRACE", "DEBUG" ] },
-      { "type": 3, "label": "Text", "value": "" }
+      { "type": "Exec", "label": "" },
+      { "type": "Integer", "label": "Level", "value": 0, "enum": [ "INFO", "WARN", "ERROR", "TRACE", "DEBUG" ] },
+      { "type": "String", "label": "Text", "value": "" }
     ],
     "output": [
-      { "type": 0, "label": "" }
+      { "type": "Exec", "label": "" }
     ]
   }

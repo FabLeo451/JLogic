@@ -413,7 +413,7 @@ class Connector {
     this.dimensions = dimensions;
     //console.log ('[connector.create] '+name+' isArray = '+isArray);
     
-    if (pinType == BPTypeID.ANY || pinType == "ANY")
+    if (pinType == BPTypeID.ANY || pinType == "Any")
       this.any = true;
  
     this.label = document.createElement('div');

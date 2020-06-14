@@ -6,12 +6,12 @@
   "can_delete": true,
   "java": "_exit(in{1}, in{2});",
   "input": [
-    { "type": 0, "label": "" },
-    { "type": 1, "label": "Code", "value": 0, "enum": [ 
+    { "type": "Exec", "label": "" },
+    { "type": "Integer", "label": "Code", "value": 0, "enum": [ 
                                                         "Success",
                                                         "Failure"
     ] },
-    { "type": 3, "label": "Message", "value": "" }
+    { "type": "String", "label": "Message", "value": "" }
   ],
   "output": [
   ]

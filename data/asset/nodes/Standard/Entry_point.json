@@ -7,6 +7,6 @@
   "can_delete": false,
   "inventory": false,
   "output": [
-    { "type": 0, "label": "Start" }
+    { "type": "Exec", "label": "Start" }
   ]
 }

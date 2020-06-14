@@ -7,11 +7,11 @@
       "can_delete": true,
       "java":"System.out.println(in{1});",
       "input": [
-        { "type": 0, "label": "" },
+        { "type": "Exec", "label": "" },
         { "type": -1, "label": "Object" }
       ],
       "output": [
-        { "type": 0, "label": "" }
+        { "type": "Exec", "label": "" }
       ]
     },
     {
@@ -21,13 +21,12 @@
       "can_delete": true,
       "java":"System.out.println(in{1});",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "Text", "value": "" }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Text", "value": "" }
       ],
       "output": [
-        { "type": 0, "label": "" }
+        { "type": "Exec", "label": "" }
       ]
     }
   ]
 }
-

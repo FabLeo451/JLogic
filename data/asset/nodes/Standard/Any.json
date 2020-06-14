@@ -6,10 +6,10 @@
       "version": 1,
       "java": "in{0}.length()",
       "input": [
-        { "type": -1, "label": "Object" }
+        { "type": "Any", "label": "Object" }
       ],
       "output": [
-        { "type": 1, "label": "Length"}
+        { "type": "Integer", "label": "Length"}
       ]
     }
   ]

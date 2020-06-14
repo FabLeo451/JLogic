@@ -6,11 +6,11 @@
     "inner_text": "%",
     "symbol": "%",
     "input": [
-      { "type": 1, "label": "A", "value": 0 },
-      { "type": 1, "label": "B", "value": 1 },
+      { "type": "Integer", "label": "A", "value": 0 },
+      { "type": "Integer", "label": "B", "value": 1 },
     ],
     "output": [
-      { "type": 1, "label": "" }
+      { "type": "Integer", "label": "" }
     ]
   },
   {
@@ -20,11 +20,11 @@
     "inner_text": "&#10135",
     "symbol": "/",
     "input": [
-      { "type": 2, "label": "Dividend", "value": 0 },
-      { "type": 2, "label": "Divisor", "value": 1 },
+      { "type": "Double", "label": "Dividend", "value": 0 },
+      { "type": "Double", "label": "Divisor", "value": 1 },
     ],
     "output": [
-      { "type": 2, "label": "Result" }
+      { "type": "Double", "label": "Result" }
     ]
   }
 ]

@@ -12,11 +12,11 @@
       "import": ["org.json.simple.*"],
       "java":"out{1} = new JSONObject();",
       "input": [
-        { "type": 0, "label": "" }
+        { "type": "Exec", "label": "" }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 200, "label": "Json", "java": { "references":{"variable":"jo"} } }
+        { "type": "Exec", "label": "Success" },
+        { "type": "JSONObject", "label": "Json", "java": { "references":{"variable":"jo"} } }
       ]
     },
     {
@@ -27,11 +27,11 @@
       "import": ["org.json.simple.*"],
       "java":"out{1} = new JSONArray();",
       "input": [
-        { "type": 0, "label": "" }
+        { "type": "Exec", "label": "" }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 201, "label": "Array", "java": { "references":{"variable":"ja"} } }
+        { "type": "Exec", "label": "Success" },
+        { "type": "JSONArray", "label": "Array", "java": { "references":{"variable":"ja"} } }
       ]
     },
     {
@@ -42,15 +42,15 @@
       "import": ["org.json.simple.*", "org.json.simple.parser.*"],
       "java":"@Parse.java",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "String", "value": "" }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "String", "value": "" }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 200, "label": "JSONObject", "java": { "references":{"variable":"jo"} } },
-        { "type": 201, "label": "JSONArray", "java": { "references":{"variable":"ja"} } },
-        { "type": 4, "label": "Is array", "java": { "references":{"variable":"isArray"} } },
-        { "type": 0, "label": "Error" }
+        { "type": "Exec", "label": "Success" },
+        { "type": "JSONObject", "label": "JSONObject", "java": { "references":{"variable":"jo"} } },
+        { "type": "JSONArray", "label": "JSONArray", "java": { "references":{"variable":"ja"} } },
+        { "type": "Boolean", "label": "Is array", "java": { "references":{"variable":"isArray"} } },
+        { "type": "Exec", "label": "Error" }
       ]
     },
     {
@@ -61,13 +61,13 @@
       "import": ["org.json.simple.*"],
       "java":"out{1} = (String) in{1}.get(in{2});",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 200, "label": "Json" },
-        { "type": 3, "label": "Key", "value": "", "single_line":true }
+        { "type": "Exec", "label": "" },
+        { "type": "JSONObject", "label": "Json" },
+        { "type": "String", "label": "Key", "value": "", "single_line":true }
       ],
       "output": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "Value", "java": { "references":{"variable":"s"} } }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Value", "java": { "references":{"variable":"s"} } }
       ]
     },
     {
@@ -78,12 +78,12 @@
       "import": ["org.json.simple.*"],
       "java":"out{1} = in{1}.toJSONString();",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 200, "label": "Json" }
+        { "type": "Exec", "label": "" },
+        { "type": "JSONObject", "label": "Json" }
       ],
       "output": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "String", "java": { "references":{"variable":"s"} } }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "String", "java": { "references":{"variable":"s"} } }
       ]
     },
     {
@@ -94,14 +94,14 @@
       "import": ["org.json.simple.*"],
       "java":"in{1}.put(in{2}, in{3});",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 200, "label": "Json" },
-        { "type": 3, "label": "Key", "value":"", "single_line":true },
-        { "type": -1, "label": "Object" }
+        { "type": "Exec", "label": "" },
+        { "type": "JSONObject", "label": "Json" },
+        { "type": "String", "label": "Key", "value":"", "single_line":true },
+        { "type": "Any", "label": "Object" }
       ],
       "output": [
-        { "type": 0, "label": "" },
-        { "type": 200, "label": "Json", "java": { "references":{"input":1} } }
+        { "type": "Exec", "label": "" },
+        { "type": "JSONObject", "label": "Json", "java": { "references":{"input":1} } }
       ]
     },
     {
@@ -112,14 +112,14 @@
       "import": ["org.json.simple.*"],
       "java":"in{1}.put(in{2}, in{3});",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 200, "label": "Json" },
-        { "type": 3, "label": "Key", "value":"", "single_line":true },
-        { "type": 3, "label": "String", "value":"" }
+        { "type": "Exec", "label": "" },
+        { "type": "JSONObject", "label": "Json" },
+        { "type": "String", "label": "Key", "value":"", "single_line":true },
+        { "type": "String", "label": "String", "value":"" }
       ],
       "output": [
-        { "type": 0, "label": "" },
-        { "type": 200, "label": "Json", "java": { "references":{"input":1} } }
+        { "type": "Exec", "label": "" },
+        { "type": "JSONObject", "label": "Json", "java": { "references":{"input":1} } }
       ]
     },
     {
@@ -130,12 +130,12 @@
       "import": ["org.json.simple.*", "java.util.Iterator"],
       "java":"int _{node.id}_i = 0;\nout{1} = new String[in{1}.size()]; for (Iterator _{node.id}_iter = in{1}.keySet().iterator(); _{node.id}_iter.hasNext();) { out{1}[_{node.id}_i ++] = (String) _{node.id}_iter.next(); }",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 200, "label": "Json" }
+        { "type": "Exec", "label": "" },
+        { "type": "JSONObject", "label": "Json" }
       ],
       "output": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "Keys", "dimensions":1, "java": { "references":{"variable":"keys"} } }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Keys", "dimensions":1, "java": { "references":{"variable":"keys"} } }
       ]
     }
   ]

@@ -9,7 +9,7 @@
       "input": [
       ],
       "output": [
-        { "type": 3, "label": "" }
+        { "type": "String", "label": "" }
       ]
     },
     {
@@ -19,10 +19,10 @@
       "inner_text": "UPPER",
       "java": "in{0}.toUpperCase()",
       "input": [
-        { "type": 3, "label": "" }
+        { "type": "String", "label": "" }
       ],
       "output": [
-        { "type": 3, "label": "" }
+        { "type": "String", "label": "" }
       ]
     },
     {
@@ -32,10 +32,10 @@
       "inner_text": "LOWER",
       "java": "in{0}.toLowerCase()",
       "input": [
-        { "type": 3, "label": "" }
+        { "type": "String", "label": "" }
       ],
       "output": [
-        { "type": 3, "label": "" }
+        { "type": "String", "label": "" }
       ]
     },
     {
@@ -44,13 +44,13 @@
       "version": 1,
       "inner_text": "+",
       "symbol": "+",
-      "addInput": { "type": 3, "label": "", "value": "" },
+      "addInput": { "type": "String", "label": "", "value": "" },
       "input": [
-        { "type": 3, "label": "", "value": "" },
-        { "type": 3, "label": "", "value": "" },
+        { "type": "String", "label": "", "value": "" },
+        { "type": "String", "label": "", "value": "" },
       ],
       "output": [
-        { "type": 3, "label": "" }
+        { "type": "String", "label": "" }
       ]
     },
     {
@@ -59,13 +59,13 @@
       "version": 1,
       "java": "in{1} += in{2};",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "", "value": "" },
-        { "type": 3, "label": "", "value": "" },
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "", "value": "" },
+        { "type": "String", "label": "", "value": "" },
       ],
       "output": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "", "java": {"references": {"input":1}} }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "", "java": {"references": {"input":1}} }
       ]
     },
     {
@@ -74,13 +74,13 @@
       "version": 1,
       "java": "out{1} = in{1}.split(\"\\\\r?\\\\n\"); out{2} = out{1}.length; ",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "String" }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "String" }
       ],
       "output": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "Lines", "dimensions":1, "java": {"references": {"variable":"lines"}} },
-        { "type": 1, "label":"Count", "java": {"references": {"variable":"count"}} }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Lines", "dimensions":1, "java": {"references": {"variable":"lines"}} },
+        { "type": "Integer", "label":"Count", "java": {"references": {"variable":"count"}} }
       ]
     },
     {
@@ -89,14 +89,14 @@
       "version": 1,
       "java": "out{1} = in{1}.split(in{2}, -1); out{2} = out{1}.length; ",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "String", "value":"" },
-        { "type": 3, "label": "Regex", "value":"", "single_line":true }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "String", "value":"" },
+        { "type": "String", "label": "Regex", "value":"", "single_line":true }
       ],
       "output": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "Array", "dimensions":1, "java": {"references": {"variable":"lines"}} },
-        { "type": 1, "label":"Count", "java": {"references": {"variable":"count"}} }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Array", "dimensions":1, "java": {"references": {"variable":"lines"}} },
+        { "type": "Integer", "label":"Count", "java": {"references": {"variable":"count"}} }
       ]
     }
   ]

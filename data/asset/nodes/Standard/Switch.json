@@ -4,8 +4,8 @@
   "type": 12,
   "version": 1,
   "input": [
-    { "type": 0, "label": "" },
-    { "type": 1, "label": "", "value":0 }
+    { "type": "Exec", "label": "" },
+    { "type": "Integer", "label": "", "value":0 }
   ],
   "output": [
     { "pinType": 0, "dataType": 1, "label": "Default" }

@@ -7,6 +7,6 @@
   "can_delete": false,
   "inventory": false,
   "input": [
-    { "type": 0, "label": "" }
+    { "type": "Exec", "label": "" }
   ]
 }

@@ -11,18 +11,18 @@
       "classpath": ["{path}/ElasticsearchClient.jar"],
       "java":"out{1} = new ElasticsearchClient((in{1} == 0 ? \"http\" : \"https\"), in{2}, in{3}, in{4}, in{5}, in{6}, in{7});",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 1, "label": "Protocol", "value": 0, "enum": [ "HTTP", "HTTPS" ] },
-        { "type": 3, "label": "Hostname", "value": "localhost" },
-        { "type": 1, "label": "Port", "value": 9200 },
-        { "type": 3, "label": "Username", "value": "" },
-        { "type": 3, "label": "Password", "value": "", "password":true },
-        { "type": 4, "label": "Check certificate", "value": false },
-        { "type": 3, "label": "Certificate", "value": "", "single_line":true },
+        { "type": "Exec", "label": "" },
+        { "type": "Integer", "label": "Protocol", "value": 0, "enum": [ "HTTP", "HTTPS" ] },
+        { "type": "String", "label": "Hostname", "value": "localhost" },
+        { "type": "Integer", "label": "Port", "value": 9200 },
+        { "type": "String", "label": "Username", "value": "" },
+        { "type": "String", "label": "Password", "value": "", "password":true },
+        { "type": "Boolean", "label": "Check certificate", "value": false },
+        { "type": "String", "label": "Certificate", "value": "", "single_line":true },
       ],
       "output": [
-        { "type": 0, "label": "" },
-        { "type": 300, "label": "Client", "java": { "references":{"variable":"client"} } }
+        { "type": "Exec", "label": "" },
+        { "type": "ElasticsearchClient", "label": "Client", "java": { "references":{"variable":"client"} } }
       ]
     },
     {
@@ -33,11 +33,11 @@
       "classpath": ["{path}/ElasticsearchClient.jar"],
       "java":"in{1}.close();",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 300, "label": "Client" }
+        { "type": "Exec", "label": "" },
+        { "type": "ElasticsearchClient", "label": "Client" }
       ],
       "output": [
-        { "type": 0, "label": "" }
+        { "type": "Exec", "label": "" }
       ]
     },
     {
@@ -48,12 +48,12 @@
       "classpath": ["{path}/ElasticsearchClient.jar"],
       "java":"if (in{1}.ping()) { exec{0} } else { exec{1} }",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 300, "label": "Client" }
+        { "type": "Exec", "label": "" },
+        { "type": "ElasticsearchClient", "label": "Client" }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 0, "label": "Failure" }
+        { "type": "Exec", "label": "Success" },
+        { "type": "Exec", "label": "Failure" }
       ]
     },
     {
@@ -64,14 +64,14 @@
       "classpath": ["{path}/ElasticsearchClient.jar"],
       "java":"out{2} = in{1}.emptyIndex(in{2});",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 300, "label": "Client" },
-        { "type": 3, "label": "Index", "value": "", "single_line":true }
+        { "type": "Exec", "label": "" },
+        { "type": "ElasticsearchClient", "label": "Client" },
+        { "type": "String", "label": "Index", "value": "", "single_line":true }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 300, "label": "Client", "java": { "references":{"input":1 } } },
-        { "type": 1, "label": "Deleted", "java": { "references":{"variable":"deleted"} } }
+        { "type": "Exec", "label": "Success" },
+        { "type": "ElasticsearchClient", "label": "Client", "java": { "references":{"input":1 } } },
+        { "type": "Integer", "label": "Deleted", "java": { "references":{"variable":"deleted"} } }
       ]
     },
     {
@@ -83,16 +83,16 @@
       "jar": ["lib/json-simple-1.1.1.jar"],
       "java":"if (in{1}.putDocumentJSON(in{2}, in{3}, in{4})) { exec{0} } else { out{2} = in{1}.getMessage(); exec{1} }",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 300, "label": "Client" },
-        { "type": 3, "label": "Index", "value":"", "single_line":true },
-        { "type": 3, "label": "_id", "value":"", "single_line":true },
-        { "type": 200, "label": "Document" }
+        { "type": "Exec", "label": "" },
+        { "type": "ElasticsearchClient", "label": "Client" },
+        { "type": "String", "label": "Index", "value":"", "single_line":true },
+        { "type": "String", "label": "_id", "value":"", "single_line":true },
+        { "type": "JSONObject", "label": "Document" }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 0, "label": "Error" },
-        { "type": 3, "label": "Message", "java": { "references":{"variable":"msg"} } }
+        { "type": "Exec", "label": "Success" },
+        { "type": "Exec", "label": "Error" },
+        { "type": "String", "label": "Message", "java": { "references":{"variable":"msg"} } }
       ]
     },
     {
@@ -111,19 +111,19 @@
       "jar": ["lib/json-simple-1.1.1.jar"],
       "java":"@BulkInsert.java",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 300, "label": "Client" },
-        { "type": 3, "label": "Index", "value":"", "single_line":true },
-        { "type": 201, "label": "Data" }
+        { "type": "Exec", "label": "" },
+        { "type": "ElasticsearchClient", "label": "Client" },
+        { "type": "String", "label": "Index", "value":"", "single_line":true },
+        { "type": "JSONArray", "label": "Data" }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 1, "label": "Created", "java": { "references":{"variable":"created"} } },
-        { "type": 1, "label": "Updated", "java": { "references":{"variable":"updated"} } },
-        { "type": 1, "label": "Errors", "java": { "references":{"variable":"errors"} } },
-        { "type": 4, "label": "Has failures", "java": { "references":{"variable":"hasFailures"} } },
-        { "type": 0, "label": "Error" },
-        { "type": 3, "label": "Message", "java": { "references":{"variable":"msg"} } }
+        { "type": "Exec", "label": "Success" },
+        { "type": "Integer", "label": "Created", "java": { "references":{"variable":"created"} } },
+        { "type": "Integer", "label": "Updated", "java": { "references":{"variable":"updated"} } },
+        { "type": "Integer", "label": "Errors", "java": { "references":{"variable":"errors"} } },
+        { "type": "Boolean", "label": "Has failures", "java": { "references":{"variable":"hasFailures"} } },
+        { "type": "Exec", "label": "Error" },
+        { "type": "String", "label": "Message", "java": { "references":{"variable":"msg"} } }
       ]
     }
   ]

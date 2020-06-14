@@ -6,14 +6,14 @@
     "version": 1,
     "java":"@ForLoop.java",
     "input": [
-      { "type": 0, "label": "" },
-      { "type": 1, "label": "From", "value":0 },
-      { "type": 1, "label": "To", "value":0 }
+      { "type": "Exec", "label": "" },
+      { "type": "Integer", "label": "From", "value":0 },
+      { "type": "Integer", "label": "To", "value":0 }
     ],
     "output": [
-      { "type": 0, "label": "Iteration" },
-      { "type": 1, "label": "Index", "java":{ "references": {"variable":"index"}} },
-      { "type": 0, "label": "Completed" }
+      { "type": "Exec", "label": "Iteration" },
+      { "type": "Integer", "label": "Index", "java":{ "references": {"variable":"index"}} },
+      { "type": "Exec", "label": "Completed" }
     ]
   },
   {
@@ -22,12 +22,12 @@
     "type": 13,
     "version": 1,
     "input": [
-      { "type": 0, "label": "" },
-      { "type": 4, "label": "Condition" }
+      { "type": "Exec", "label": "" },
+      { "type": "Boolean", "label": "Condition" }
     ],
     "output": [
-      { "type": 0, "label": "Iteration" },
-      { "type": 0, "label": "Completed" }
+      { "type": "Exec", "label": "Iteration" },
+      { "type": "Exec", "label": "Completed" }
     ]
   },
   {
@@ -36,7 +36,7 @@
     "version": 1,
     "java": "break;",
     "input": [
-      { "type": 0, "label": "" }
+      { "type": "Exec", "label": "" }
     ],
     "output": [
     ]
@@ -47,7 +47,7 @@
     "version": 1,
     "java": "continue;",
     "input": [
-      { "type": 0, "label": "" }
+      { "type": "Exec", "label": "" }
     ],
     "output": [
     ]

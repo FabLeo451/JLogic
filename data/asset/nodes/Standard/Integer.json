@@ -5,14 +5,14 @@
     "version": 1,
     "java":"if (in{1} > in{2}) { exec{0} } else if (in{1} == in{2}) { exec{1} } else { exec{2} }",
     "input": [
-      { "type": 0, "label": "" },
-      { "type": 1, "label": "A", "value": 0 },
-      { "type": 1, "label": "B", "value": 0 }
+      { "type": "Exec", "label": "" },
+      { "type": "Integer", "label": "A", "value": 0 },
+      { "type": "Integer", "label": "B", "value": 0 }
     ],
     "output": [
-      { "type": 0, "label": ">" },
-      { "type": 0, "label": "==" },
-      { "type": 0, "label": "<" }
+      { "type": "Exec", "label": ">" },
+      { "type": "Exec", "label": "==" },
+      { "type": "Exec", "label": "<" }
     ]
   },
   {
@@ -22,11 +22,11 @@
     "inner_text": "<",
     "symbol": "<",
     "input": [
-      { "type": 1, "label": "", "value": 0 },
-      { "type": 1, "label": "", "value": 0 },
+      { "type": "Integer", "label": "", "value": 0 },
+      { "type": "Integer", "label": "", "value": 0 },
     ],
     "output": [
-      { "type": 4, "label": "" }
+      { "type": "Boolean", "label": "" }
     ]
   },
   {
@@ -36,11 +36,11 @@
     "inner_text": ">",
     "symbol": ">",
     "input": [
-      { "type": 1, "label": "", "value": 0 },
-      { "type": 1, "label": "", "value": 0 },
+      { "type": "Integer", "label": "", "value": 0 },
+      { "type": "Integer", "label": "", "value": 0 },
     ],
     "output": [
-      { "type": 4, "label": "" }
+      { "type": "Boolean", "label": "" }
     ]
   },
   {
@@ -49,13 +49,13 @@
     "version": 1,
     "inner_text": "+",
     "symbol": "+",
-    "addInput": { "type": 1, "label": "", "value": 0 },
+    "addInput": { "type": "Integer", "label": "", "value": 0 },
     "input": [
-      { "type": 1, "label": "", "value": 0 },
-      { "type": 1, "label": "", "value": 0 },
+      { "type": "Integer", "label": "", "value": 0 },
+      { "type": "Integer", "label": "", "value": 0 },
     ],
     "output": [
-      { "type": 1, "label": "" }
+      { "type": "Integer", "label": "" }
     ]
   },
   {
@@ -65,11 +65,11 @@
     "inner_text": "<i class=\"icon i-minus\"></i>",
     "symbol": "-",
     "input": [
-      { "type": 1, "label": "", "value": 0 },
-      { "type": 1, "label": "", "value": 0 },
+      { "type": "Integer", "label": "", "value": 0 },
+      { "type": "Integer", "label": "", "value": 0 },
     ],
     "output": [
-      { "type": 1, "label": "" }
+      { "type": "Integer", "label": "" }
     ]
   },
   {
@@ -79,10 +79,10 @@
     "inner_text": "&minus;1",
     "java": "in{0} - 1",
     "input": [
-      { "type": 1, "label": "", "value": 0 }
+      { "type": "Integer", "label": "", "value": 0 }
     ],
     "output": [
-      { "type": 1, "label": "" }
+      { "type": "Integer", "label": "" }
     ]
   }
 ]

@@ -13,20 +13,20 @@
       "import": ["java.sql.Connection", "java.sql.DriverManager", "java.sql.SQLException"],
       "java":"@Connect.java",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 1, "label": "Mode", "value": 0, "enum": [ "USER", "SYSOPER", "SYS" ] },
-        { "type": 3, "label": "IP", "value": "localhost", "single_line": true, "not_null":true },
-        { "type": 1, "label": "Port", "value": 1521, "single_line": true, "not_null":true },
-        { "type": 3, "label": "SID", "value": "", "single_line": true, "not_null":true },
-        { "type": 3, "label": "User", "value": "", "single_line": true, "not_null":true },
-        { "type": 3, "label": "Password", "value": "", "password": true, "not_null":true }
+        { "type": "Exec", "label": "" },
+        { "type": "Integer", "label": "Mode", "value": 0, "enum": [ "USER", "SYSOPER", "SYS" ] },
+        { "type": "String", "label": "IP", "value": "localhost", "single_line": true, "not_null":true },
+        { "type": "Integer", "label": "Port", "value": 1521, "single_line": true, "not_null":true },
+        { "type": "String", "label": "SID", "value": "", "single_line": true, "not_null":true },
+        { "type": "String", "label": "User", "value": "", "single_line": true, "not_null":true },
+        { "type": "String", "label": "Password", "value": "", "password": true, "not_null":true }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 100, "label": "Connection", "java": { "references":{"variable":"conn"} } },
-        { "type": 0, "label": "Error" },
-        { "type": 1, "label": "Code", "java": { "references":{"variable":"code" } } },
-        { "type": 3, "label": "Message", "java": { "references":{"variable":"message"} } }
+        { "type": "Exec", "label": "Success" },
+        { "type": "Connection", "label": "Connection", "java": { "references":{"variable":"conn"} } },
+        { "type": "Exec", "label": "Error" },
+        { "type": "Integer", "label": "Code", "java": { "references":{"variable":"code" } } },
+        { "type": "String", "label": "Message", "java": { "references":{"variable":"message"} } }
       ]
     },
     {
@@ -37,11 +37,11 @@
       "classpath": ["lib/ojdbc8.jar"],
       "java":"try { in{1}.close(); } catch (SQLException e) { }",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 100, "label": "Connection", "must_connect":true }
+        { "type": "Exec", "label": "" },
+        { "type": "Connection", "label": "Connection", "must_connect":true }
       ],
       "output": [
-        { "type": 0, "label": "" }
+        { "type": "Exec", "label": "" }
       ]
     },
     {
@@ -53,16 +53,16 @@
       "import": ["java.sql.Connection", "java.sql.SQLException", "java.sql.ResultSet", "java.sql.ResultSetMetaData", "java.sql.PreparedStatement"],
       "java":"@Select.java",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 100, "label": "Connection", "must_connect":true },
-        { "type": 3, "label": "Query", "value": "" }
+        { "type": "Exec", "label": "" },
+        { "type": "Connection", "label": "Connection", "must_connect":true },
+        { "type": "String", "label": "Query", "value": "" }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 101, "label": "Result set", "java": { "references":{"variable":"rs"}} },
-        { "type": 0, "label": "Error" },
-        { "type": 1, "label": "Code", "java": { "references":{"variable":"code" }} },
-        { "type": 3, "label": "Message", "java": { "references":{"variable":"message"} } }
+        { "type": "Exec", "label": "Success" },
+        { "type": "ResultSet", "label": "Result set", "java": { "references":{"variable":"rs"}} },
+        { "type": "Exec", "label": "Error" },
+        { "type": "Integer", "label": "Code", "java": { "references":{"variable":"code" }} },
+        { "type": "String", "label": "Message", "java": { "references":{"variable":"message"} } }
       ]
     },
     {
@@ -76,13 +76,13 @@
                 "java.sql.Clob", "org.json.simple.JSONObject", "org.json.simple.*"],
       "java":"@FetchAsJson.java",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 101, "label": "Result set" }
+        { "type": "Exec", "label": "" },
+        { "type": "ResultSet", "label": "Result set" }
       ],
       "output": [
-        { "type": 0, "label": "Fetched" },
-        { "type": 200, "label": "Record", "java": { "references":{"variable":"jo"}} },
-        { "type": 0, "label": "Completed" }
+        { "type": "Exec", "label": "Fetched" },
+        { "type": "JSONObject", "label": "Record", "java": { "references":{"variable":"jo"}} },
+        { "type": "Exec", "label": "Completed" }
       ]
     },
     {
@@ -95,19 +95,19 @@
       "import": ["java.sql.Connection", "java.sql.SQLException", "java.sql.Statement", "org.json.simple.*", "java.util.Iterator"],
       "java":"@Insert.java",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 100, "label": "Connection", "must_connect":true },
-        { "type": 3, "label": "Table", "value": "", "single_line": true },
-        { "type": 200, "label": "Record" },
-        { "type": 4, "label": "Commit", "value": false }
+        { "type": "Exec", "label": "" },
+        { "type": "Connection", "label": "Connection", "must_connect":true },
+        { "type": "String", "label": "Table", "value": "", "single_line": true },
+        { "type": "JSONObject", "label": "Record" },
+        { "type": "Boolean", "label": "Commit", "value": false }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 100, "label": "Connection", "java": { "references":{"input":1}} },
-        { "type": 1, "label": "Rows affected","java": { "references":{"variable":"rows"}} },
-        { "type": 0, "label": "Error" },
-        { "type": 1, "label": "Code", "java": { "references":{"variable":"code" }} },
-        { "type": 3, "label": "Message", "java": { "references":{"variable":"message"} } }
+        { "type": "Exec", "label": "Success" },
+        { "type": "Connection", "label": "Connection", "java": { "references":{"input":1}} },
+        { "type": "Integer", "label": "Rows affected","java": { "references":{"variable":"rows"}} },
+        { "type": "Exec", "label": "Error" },
+        { "type": "Integer", "label": "Code", "java": { "references":{"variable":"code" }} },
+        { "type": "String", "label": "Message", "java": { "references":{"variable":"message"} } }
       ]
     },
     {
@@ -121,21 +121,21 @@
       "java":"@Update.java",
       "options": { "javaInputArray": true },
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 100, "label": "Connection", "must_connect":true },
-        { "type": 3, "label": "Table", "value": "", "single_line": true },
-        { "type": 200, "label": "Record" },
-        { "type": 4, "label": "Commit", "value": false },
-        { "type": 3, "label": "Key", "value": "", "single_line": true }
+        { "type": "Exec", "label": "" },
+        { "type": "Connection", "label": "Connection", "must_connect":true },
+        { "type": "String", "label": "Table", "value": "", "single_line": true },
+        { "type": "JSONObject", "label": "Record" },
+        { "type": "Boolean", "label": "Commit", "value": false },
+        { "type": "String", "label": "Key", "value": "", "single_line": true }
       ],
-      "addInput": { "type": 3, "label": "Key", "value": "", "single_line": true },
+      "addInput": { "type": "String", "label": "Key", "value": "", "single_line": true },
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 100, "label": "Connection", "java": { "references":{"input":1}} },
-        { "type": 1, "label": "Rows affected","java": { "references":{"variable":"rows"}} },
-        { "type": 0, "label": "Error" },
-        { "type": 1, "label": "Code", "java": { "references":{"variable":"code" }} },
-        { "type": 3, "label": "Message", "java": { "references":{"variable":"message"} } }
+        { "type": "Exec", "label": "Success" },
+        { "type": "Connection", "label": "Connection", "java": { "references":{"input":1}} },
+        { "type": "Integer", "label": "Rows affected","java": { "references":{"variable":"rows"}} },
+        { "type": "Exec", "label": "Error" },
+        { "type": "Integer", "label": "Code", "java": { "references":{"variable":"code" }} },
+        { "type": "String", "label": "Message", "java": { "references":{"variable":"message"} } }
       ]
     },
     {
@@ -148,14 +148,14 @@
       "import": ["java.sql.Connection", "java.sql.SQLException"],
       "java":"out{2} = 0;\ntry { in{1}.commit(); } catch (SQLException e) { out{2} = e.getErrorCode(); out{3} = e.getMessage(); } if (out{2} == 0) { exec{0} } else { exec{1} }",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 100, "label": "Connection", "must_connect":true }
+        { "type": "Exec", "label": "" },
+        { "type": "Connection", "label": "Connection", "must_connect":true }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 0, "label": "Error" },
-        { "type": 1, "label": "Code", "java": { "references":{"variable":"code" }} },
-        { "type": 3, "label": "Message", "java": { "references":{"variable":"message"} } }
+        { "type": "Exec", "label": "Success" },
+        { "type": "Exec", "label": "Error" },
+        { "type": "Integer", "label": "Code", "java": { "references":{"variable":"code" }} },
+        { "type": "String", "label": "Message", "java": { "references":{"variable":"message"} } }
       ]
     },
     {
@@ -168,14 +168,14 @@
       "import": ["java.sql.Connection", "java.sql.SQLException"],
       "java":"out{2} = 0;\ntry { in{1}.rollback(); } catch (SQLException e) { out{2} = e.getErrorCode(); out{3} = e.getMessage(); } if (out{2} == 0) { exec{0} } else { exec{1} }",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 100, "label": "Connection", "must_connect":true }
+        { "type": "Exec", "label": "" },
+        { "type": "Connection", "label": "Connection", "must_connect":true }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 0, "label": "Error" },
-        { "type": 1, "label": "Code", "java": { "references":{"variable":"code" }} },
-        { "type": 3, "label": "Message", "java": { "references":{"variable":"message"} } }
+        { "type": "Exec", "label": "Success" },
+        { "type": "Exec", "label": "Error" },
+        { "type": "Integer", "label": "Code", "java": { "references":{"variable":"code" }} },
+        { "type": "String", "label": "Message", "java": { "references":{"variable":"message"} } }
       ]
     },
     {
@@ -184,11 +184,11 @@
       "type": 12,
       "version": 1,
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 1, "label": "Code", "must_connect":true }
+        { "type": "Exec", "label": "" },
+        { "type": "Integer", "label": "Code", "must_connect":true }
       ],
       "output": [
-        { "type": 0, "label": "Others" },
+        { "type": "Exec", "label": "Others" },
         { "pinType": 0, "dataType": 1, "label": "", "value": 0, "enum": [ 
                                                                                   { "label": "ACCESS_INTO_NULL", "value": 6530 },
                                                                                   { "label": "CASE_NOT_FOUND", "value": 6592 },

@@ -7,14 +7,14 @@
       "import": ["java.io.FileReader", "java.nio.file.Files", "java.nio.file.Paths", "java.io.IOException", "java.nio.file.NoSuchFileException"],
       "java": "@Load.java",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "File name", "value": "", "single_line":true }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "File name", "value": "", "single_line":true }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 3, "label": "Content", "java": {"references": {"variable":"content"}} },
-        { "type": 0, "label": "Error" },
-        { "type": 3, "label": "Message", "java": {"references": {"variable":"msg"}} }
+        { "type": "Exec", "label": "Success" },
+        { "type": "String", "label": "Content", "java": {"references": {"variable":"content"}} },
+        { "type": "Exec", "label": "Error" },
+        { "type": "String", "label": "Message", "java": {"references": {"variable":"msg"}} }
       ]
     },
     {
@@ -24,14 +24,14 @@
       "import": ["java.io.FileWriter", "java.nio.file.Files", "java.nio.file.Paths", "java.io.IOException", "java.nio.file.NoSuchFileException"],
       "java": "@Save.java",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "File name", "value": "", "single_line":true },
-        { "type": -1, "label": "Buffer" }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "File name", "value": "", "single_line":true },
+        { "type": "Any", "label": "Buffer" }
       ],
       "output": [
-        { "type": 0, "label": "Success" },
-        { "type": 0, "label": "Error" },
-        { "type": 3, "label": "Message", "java": {"references": {"variable":"msg"}} }
+        { "type": "Exec", "label": "Success" },
+        { "type": "Exec", "label": "Error" },
+        { "type": "String", "label": "Message", "java": {"references": {"variable":"msg"}} }
       ]
     }
   ]

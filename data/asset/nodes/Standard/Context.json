@@ -6,12 +6,12 @@
       "version": 1,
       "java": "if (context.getParameters() != null) { out{1} = context.getParameters().size() > 0 ? (context.getParameters().containsKey(in{1}) ? context.getParameters().get(in{1})[0] : \"\") : \"\"; } else out{1} = \"\";",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "Name", "value":"", "single_line":true }
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Name", "value":"", "single_line":true }
       ],
       "output": [
-        { "type": 0, "label": "" },
-        { "type": 3, "label": "Value", "java": {"references": { "variable":"param"}}}
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Value", "java": {"references": { "variable":"param"}}}
       ]
     },
     {
@@ -20,8 +20,8 @@
       "version": 1,
       "java": "context.setResponse(in{1}, in{2});",
       "input": [
-        { "type": 0, "label": "" },
-        { "type": 1, "label": "Status", "value":200, 
+        { "type": "Exec", "label": "" },
+        { "type": "Integer", "label": "Status", "value":200, 
           "enum": [
             { "value":100, "label":"100 Continue"},
             { "value":101, "label":"101 Switching Protocols"},
@@ -88,10 +88,10 @@
             { "value":599, "label":"599 Network Connect Timeout Error"}
           ]
         },
-        { "type": 3, "label": "Response", "value":"" }
+        { "type": "String", "label": "Response", "value":"" }
       ],
       "output": [
-        { "type": 0, "label": "" }
+        { "type": "Exec", "label": "" }
       ]
     }
   ]
