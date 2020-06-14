@@ -25,7 +25,7 @@ function editText (ev) {
   
   dialog.callbackCancel = function (dialog) { dialog.destroy(); endEdit(); };
   beginEdit();
-  dialog.create(DataType.STRING, conn.getLabel(), conn.getValue(), DataFlags.EDIT_ONLY_VALUE);
+  dialog.create('String', conn.getLabel(), conn.getValue(), DataFlags.EDIT_ONLY_VALUE);
 }
 
 class Connector {
@@ -137,8 +137,8 @@ class Connector {
     this.value = v;
 
     // https://stackoverflow.com/questions/469357/html-text-input-allow-only-numeric-input
-    switch (this.dataType.id) {
-      case BPTypeID.INTEGER:
+    switch (this.dataType.name) {
+      case 'Integer':
         if (this.enumLabels) {
 
           var combo = '<select class="select-css" onchange="blueprint.onModified ();">';
@@ -160,12 +160,12 @@ class Connector {
         }
         break;
        
-      case BPTypeID.FLOAT:
+      case 'Double':
         this.valueElem.innerHTML = '<input class="inputConnector" value="'+v+'" onfocus="beginEdit();" onblur="endEdit();" onchange="blueprint.onModified ();">';
         setInputFilter(this.valueElem.childNodes[0], function(value) { return /^-?\d*[.,]?\d*$/.test(value); });
         break;
         
-      case BPTypeID.STRING:
+      case 'String':
         var multi_line_flags = this.single_line ? '' : 'onclick="editText(event);" readonly';
         var single_line_flags = this.single_line ? 'onfocus="beginEdit();" onblur="endEdit();"' : '';
         var multi_line = this.single_line ? '' : 'onclick="editText(event);" readonly';
@@ -175,7 +175,7 @@ class Connector {
         checkFieldNull (this.valueElem.childNodes[0]);
         break;
         
-      case BPTypeID.BOOLEAN:
+      case 'Boolean':
         var checked = v ? "checked" : "";
         this.valueElem.innerHTML = '<input class="w3-check" type="checkbox" style="top:3px;width:18px;height:18px;" onchange="blueprint.onModified ();" '+checked+'>';
         break;
@@ -199,18 +199,18 @@ class Connector {
     if (!inputElem)
       return (null);
     
-    switch (this.dataType.id) {
-      case BPTypeID.BOOLEAN:
+    switch (this.dataType.name) {
+      case 'Boolean':
         //console.log ("Boolean = "+inputElem.checked);
         return (inputElem.checked);
         break;
-      case BPTypeID.INTEGER:
+      case 'Integer':
         return (inputElem.value ? parseInt(inputElem.value) : 0);
         break;
-      case BPTypeID.FLOAT:
+      case 'Double':
         return (inputElem.value ? parseFloat(inputElem.value) : 0);
         break;
-      case BPTypeID.STRING:
+      case 'String':
         return (this.single_line ? inputElem.value : this.value);
       default:
         return (null);
@@ -316,12 +316,12 @@ class Connector {
   getDefaultValue () {
     var value = null;
     
-    switch (this.dataType.id) {
-      case BPTypeID.INTEGER:
-      case BPTypeID.FLOAT:
+    switch (this.dataType.name) {
+      case 'Integer':
+      case 'Double':
         value = 0;
         break;
-      case BPTypeID.STRING:
+      case 'String':
         value = "";
         break;
       case BPTypeID.BLOOLEAN:
@@ -338,7 +338,7 @@ class Connector {
     if (!this.hasValue)
       return;
       
-    this.setValue (getDefaultValue ());
+    this.setValue (this.getDefaultValue ());
   }
   
   setDataType (typeId) {

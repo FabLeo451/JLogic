@@ -244,7 +244,7 @@ class DialogData extends Dialog {
 
     var valueHTML, valueLabel;
     
-    //console.log ('type = '+type);
+    console.log ('type = '+type);
     
     this.type = type;
     this.key = key;

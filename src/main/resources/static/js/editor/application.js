@@ -120,7 +120,7 @@ function appLoadBlueprint (j) {
   connectors = blueprint.entryPointNode.connectors;
   
   for (var i=0; i<connectors.length; i++) {
-    if (connectors[i].pinType.id != BPTypeID.EXEC)
+    if (connectors[i].pinType.name != 'Exec')
       appAddInOut (AppParameterType.INPUT, connectors[i]);
   }
   
@@ -130,7 +130,7 @@ function appLoadBlueprint (j) {
   connectors = blueprint.returnNode.connectors;
   
   for (var i=0; i<connectors.length; i++) {
-    if (connectors[i].pinType.id != BPTypeID.EXEC)
+    if (connectors[i].pinType.name != 'Exec')
       appAddInOut (AppParameterType.OUTPUT, connectors[i]);
   }
   
@@ -768,13 +768,14 @@ function processAction (a) {
       
       var content = dialog.getContentElement ();
       console.log(blueprint.getInputArrayAsString());
-      var jinput = JSON.parse(blueprint.getInputArrayAsString());
+      //var jinput = JSON.parse(blueprint.getInputArrayAsString());
+      var jinput = blueprint.getInputArray();
       var k = 0, input = '{\n';
 
       
       for (var i=0; i<jinput.length; i++) {
         //console.log('type = '+jinput[i].type);
-        if (jinput[i].type === BPTypeID.EXEC)
+        if (jinput[i].type === 'Exec')
           continue;
          
         if (k > 0)
@@ -1012,6 +1013,8 @@ function connectorTypeChanged(ev) {
   //var v = blueprint.getVariable (id);
   var connector = blueprint.getConnector (id);
   
+  console.log("Connector type changed to "+ev.target.value);
+  
   connector.disconnectAll ();
   connector.setType (ev.target.value);
   connector.setDefaultValue ();
@@ -1141,7 +1144,7 @@ function appAddInOut(paramType, target)
       tabId = paramType == AppParameterType.INPUT ? 'tab_input' : 'tab_output';
       targetId = target.id;
       targetName = target.getLabel();
-      targetType = target.dataType.id;
+      targetType = target.dataType.name;
       rowPrefix = paramType == AppParameterType.INPUT ? '_in_' : '_out_';
       cbBeginRename = 'beginRename';
       cbEndRename = 'endRenameConnector';
@@ -1167,13 +1170,13 @@ function appAddInOut(paramType, target)
       //var selected = types[i].id == targetType ? ' selected="selected"' : '';
       var selected = '';
       
-      if (types[i].id == targetType) {
+      if (types[i].name == targetType) {
         selected = ' selected="selected"';
         color = types[i].color;
-        type_id = types[i].id;
+        type_id = types[i].name;
       }
       
-      combo += '<option value="'+types[i].id+'" '+selected+'>'+types[i].name+'</option>';
+      combo += '<option value="'+types[i].name+'" '+selected+'>'+types[i].name+'</option>';
       
     }
   }
@@ -1284,14 +1287,14 @@ function appAddVariable(v)
 /* addInputCallback() - Triggered by button */
 function addInputCallback() 
 {
-  var connector = blueprint.addInput (BPTypeID.INTEGER, 'Input', null);
+  var connector = blueprint.addInput ('Integer', 'Input', null);
   appAddInOut(AppParameterType.INPUT, connector);
 }
 
 /* addOutputCallback() - Triggered by button */
 function addOutputCallback() 
 {
-  var connector = blueprint.addOutput (BPTypeID.INTEGER, 'Output', 0);
+  var connector = blueprint.addOutput ('Integer', 'Output', 0);
   appAddInOut(AppParameterType.OUTPUT, connector);
 }
 

@@ -488,14 +488,14 @@ class Blueprint {
   addSetNode (v) {
     var node = this.createNodeInstance (BPNodeTypeID.SET);
     node.create(BPNodeTypeID.SET, "Set");
-    var conn = node.addConnector (BPDirection.INPUT, BPTypeID.EXEC, BPTypeID.EXEC, '', null, v.enum, Dimensions.SCALAR);
+    var conn = node.addConnector (BPDirection.INPUT, 'Exec', 'Exec', '', null, v.enum, Dimensions.SCALAR);
     var connVar = node.addConnector (BPDirection.INPUT, v.type, v.type, v.name, '', v.enum, v.dimensions);
     
     connVar.references = v;
     v.ref ();
 
     node.moveTo (this.mouse.x, this.mouse.y);
-    var conn = node.addConnector (BPDirection.OUTPUT, BPTypeID.EXEC, BPTypeID.EXEC, '', null, v.enum, Dimensions.SCALAR);
+    var conn = node.addConnector (BPDirection.OUTPUT, 'Exec', 'Exec', '', null, v.enum, Dimensions.SCALAR);
     conn = node.addConnector (BPDirection.OUTPUT, v.type, v.type, '', null, v.enum, v.dimensions);
     this.addNode (node);
     
@@ -1247,28 +1247,28 @@ class Blueprint {
   getInputArray () {
     var input = [];
     
-    input[0] = { "type": BPTypeID.EXEC,  "label": "" };
+    input[0] = { "type": 'Exec',  "label": "" };
     
     for (var i=1; i<this.entryPointNode.connectors.length; i++) {
       if (!this.entryPointNode.connectors[i].exec) {
           
-        input[i] = {"label":this.entryPointNode.connectors[i].getLabel(), "type":this.entryPointNode.connectors[i].dataType.id, "dimensions":this.entryPointNode.connectors[i].dimensions};
+        input[i] = {"label":this.entryPointNode.connectors[i].getLabel(), "type":this.entryPointNode.connectors[i].dataType.name, "dimensions":this.entryPointNode.connectors[i].dimensions};
 
         if (this.entryPointNode.connectors[i].dimensions == 0) {
-          switch (this.entryPointNode.connectors[i].dataType.id) {
-            case BPTypeID.INTEGER:
+          switch (this.entryPointNode.connectors[i].dataType.name) {
+            case 'Integer':
               input[i].value = 0;
               break;
-            case BPTypeID.FLOAT:
+            case 'Double':
               input[i].value = 0.0;
               break;
-            case BPTypeID.BOOLEAN:
+            case 'Boolean':
               input[i].value = true;
               break;
-            case BPTypeID.STRING:
+            case 'String':
               input[i].value = "";
               break;
-            case BPTypeID.JSON:
+            case 'JSONObject':
               input[i].value = { };
               break;
             default:
@@ -1299,8 +1299,6 @@ class Blueprint {
     /* Variables and types */
     jo.variables = [];   
     jo.types = [];
-    
-    console.log(this.variables);
 
     for (var i=0; i<this.variables.length; i++) {
       var jv = this.variables[i].toJSON();
@@ -1319,7 +1317,7 @@ class Blueprint {
     
     // Check if returns a value
     //if (!this.returns())
-      jo.input.push({ "type": BPTypeID.EXEC,  "label": "" });
+      jo.input.push({ "type": "Exec",  "label": "" });
     
     for (var i=0; i<this.entryPointNode.connectors.length; i++) {
       if (!this.entryPointNode.connectors[i].exec) {
@@ -1338,7 +1336,7 @@ class Blueprint {
     jo.output = [];
     
     if (true/*!this.returns()*/) {
-      var jexec = { "type": BPTypeID.EXEC, "label": ""};
+      var jexec = { "type": "Exec", "label": ""};
       jo.output.push(jexec);
     }
     
@@ -1351,7 +1349,7 @@ class Blueprint {
         if (jconn.hasOwnProperty('value'))
           delete jconn.value;
           
-        console.log (jconn);
+        //console.log (jconn);
  
         jo.output.push(jconn);
       }
