@@ -128,17 +128,43 @@ const Dimensions = {
 };
 
 class Variable {
-  constructor (name, type, dimensions) {
+  constructor () {
     this.id = 0;
-    this.name = name;
-    this.type = type;
-    this.dimensions = dimensions;
+    this.name = 'varName';
+    this.type = 1;
+    this.dimensions = 0;
     this.value = null;
     this.global = false;
     
     this.referenced = 0;
     
     this.element = null;
+  }
+  
+  create (name, type, dimensions) {
+    this.name = name;
+    this.type = type;
+    this.dimensions = dimensions;
+  }
+  
+  setGlobal(g) {
+    this.global = g;
+  }
+  
+  getGlobal() {
+    return this.global;
+  }
+  
+  fromJSON(jo) {
+    this.id = jo.id;
+    this.name = jo.name;
+    this.type = jo.type;
+    this.dimensions = jo.dimensions;
+    this.value = jo.hasOwnProperty("value") ? jo.value : null;
+    this.global = jo.hasOwnProperty("global") ? jo.global : false;
+    this.referenced = jo.hasOwnProperty("referenced") ? jo.referenced : 0;
+
+    this.element = null;  
   }
   
   reset () {

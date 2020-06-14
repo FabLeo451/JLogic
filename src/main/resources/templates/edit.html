@@ -111,46 +111,47 @@ var _jbp = null;
         </table>
       </div>
       
+      <!-- Input -->
       <div id="input-panel" class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
           <div class="edit-box-header w3-margin-bottom">
             <div><i class="icon i-sign-in" style="color:lightslategray"></i> <b>Input</b></div>
             <button class="btnApp w3-right" onclick="addInputCallback();" ><i class="icon i-add"></i> Add</button>
           </div> 
-          <!--legend>Input</legend-->
-          
-            <table id="tab_input" class="tabVars">
-              <!--tr><th class="thVars">Name</th><th class="thVars">Type</th><th class="thVars"></th></tr-->
-            </table>
-
+          <table id="tab_input" class="tabVars">
+          </table>
       </div>
 
+      <!-- Output -->
       <div id="output-panel" class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
           <div class="edit-box-header w3-margin-bottom">
             <div><i class="icon i-sign-out" style="color:lightslategray"></i> <b>Output</b></div>
             <button id="btn_add_output" class="btnApp w3-right" onclick="addOutputCallback();" ><i class="icon i-add"></i> Add</button>
           </div>       
-          <!--legend>Output</legend-->
-
-            <table id="tab_output" class="tabVars">
-              <!--tr><th class="thVars">Name</th><th class="thVars">Type</th><th class="thVars"></th></tr-->
-            </table>
-
+          <table id="tab_output" class="tabVars">
+          </table>
       </div>
       
+      <!-- Global variables -->
       <div class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
           <div class="edit-box-header w3-margin-bottom">
-            <div><i class="icon i-square" style="color:lightslategray"></i> <b>Variables</b></div>
+            <div><i class="icon i-square" style="color:lightslategray"></i> <b>Global Variables</b></div>
+          </div>
+          <table id="tab_global_variables" class="tabVars">
+          </table>
+          <div id="global_vars"></div>
+      </div>
+      
+      <!-- Local variables -->
+      <div class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
+          <div class="edit-box-header w3-margin-bottom">
+            <div><i class="icon i-square" style="color:lightslategray"></i> <b>Local Variables</b></div>
             <button class="btnApp w3-right" onclick="addVariableCallback();" ><i class="icon i-add"></i> Add</button>
           </div>
-          
-       
-          <!--legend>Variables</legend-->
-
-            <table id="tab_variables" class="tabVars">
-            </table>
-            <div id="vars"></div>
-
+          <table id="tab_variables" class="tabVars">
+          </table>
+          <div id="vars"></div>
       </div>
+      
     </div>
 
 

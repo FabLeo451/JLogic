@@ -99,24 +99,12 @@ function appLoadBlueprint (j) {
   console.log ("Adding variables...");
 
   for (var i=0; i<j["variables"].length; i++) {
-    var v = new Variable(j["variables"][i].name, 
-                         j["variables"][i].type, 
-                         j["variables"][i].dimensions/*isArray*/);
-    v.id = j["variables"][i].id;
-    /*v.name = j["variables"][i].name;
-    v.type = j["variables"][i].type;*/
-    v.referenced = j["variables"][i].referenced;
-    
-    /* Check value */
-    if (j["variables"][i].hasOwnProperty('value')) {
-      v.set(j["variables"][i].value);
-    }
-    
-    //console.log("[readFile] Creating "+v.toString());
-    
+    var v = new Variable();
+    v.fromJSON(j.variables[i]);
+
     /* Add to sidebar */
     console.log ("Adding "+v.name+" to sidebar...");
-    appAddVariable (AppParameterType.VARIABLE, v);
+    appAddVariable (v);
     
     /* Add to blueprint */
     console.log ("Adding "+v.name+" to blueprint...");
@@ -133,7 +121,7 @@ function appLoadBlueprint (j) {
   
   for (var i=0; i<connectors.length; i++) {
     if (connectors[i].pinType.id != BPTypeID.EXEC)
-      appAddVariable (AppParameterType.INPUT, connectors[i]);
+      appAddInOut (AppParameterType.INPUT, connectors[i]);
   }
   
   console.log ("[application] [appLoadBlueprint] Adding output");
@@ -143,7 +131,7 @@ function appLoadBlueprint (j) {
   
   for (var i=0; i<connectors.length; i++) {
     if (connectors[i].pinType.id != BPTypeID.EXEC)
-      appAddVariable (AppParameterType.OUTPUT, connectors[i]);
+      appAddInOut (AppParameterType.OUTPUT, connectors[i]);
   }
   
   var bpName = document.getElementById('bpName');
@@ -319,21 +307,6 @@ function appStart () {
     }
   }
   );
-/*    
-  appLoadBlueprint (_jbp);
-  setStatus (BPEditStatus.SUBMITTED);
-  showSnacknar(BPResult.SUCCESS, 'Blueprint '+_jbp["name"]+' loaded', 2000);
-  
-  console.log ('[application] [appStart] Setting callbacks');
-  blueprint.setCallbackBeginModify(cbBeginModify);
-  blueprint.setCallbackModified(cbModified);
-  setStatus (BPEditStatus.SUBMITTED);
-
-  undo.end();
-  undo.setCurrent (blueprint.toJson());
-  undo.dump();
-*/ 
-
 
   if (document.addEventListener) { // IE >= 9; other browsers
      document.addEventListener('keydown', appKeyPressed, false);
@@ -1173,9 +1146,9 @@ function setInitialValue(id) {
   }
 }
 
-function appAddVariable(paramType, target) 
+function appAddInOut(paramType, target) 
 {
-  var targetId, targetName, targetType, tabId, /*prefix,*/ rowPrefix;
+  var targetId, targetName, targetType, tabId, rowPrefix;
   var table, cbBeginRename, cbEndRename, cbDelete, cbTypeChanged, initialize='';
   var types = blueprint.getTypes();
   var draggable = false;
@@ -1201,21 +1174,6 @@ function appAddVariable(paramType, target)
       break;
       
     default:
-      tabId = 'tab_variables';
-      targetId = target.id;
-      targetName = target.name;
-      targetType = target.type;
-      //tr.ondragstart = dragVariable;
-      //tr.draggable = true;
-      //target.element = tr;
-      draggable = true;
-      //prefix = 'var_';
-      rowPrefix = 'row_';
-      cbBeginRename = 'beginRename';
-      cbEndRename = 'endRenameVariable';
-      cbDelete = 'deleteVariableCallback';
-      cbTypeChanged = 'variableTypeChanged';
-      initialize = '<br><button class="btnApp" onclick="setInitialValue('+targetId+');" style="background-color:seagreen;">Initialize</button>';
       break;
   }
   
@@ -1262,16 +1220,82 @@ function appAddVariable(paramType, target)
     
     var inElem = document.getElementById('input_'+targetId);
     setInputFilter(inElem, function(value) { return /^[a-zA-Z0-9_-]*$/.test(value); });
+    
+    setStatus (BPEditStatus.MODIFIED);
+    cbModified ();
+}
+
+function appAddVariable(v) 
+{
+  var tabId, /*prefix,*/ rowPrefix;
+  var table, cbBeginRename, cbEndRename, cbDelete, cbTypeChanged, initialize='';
+  var types = blueprint.getTypes();
+
+  var tr = document.createElement('tr');
+
+  tabId = v.getGlobal() ? "tab_global_variables" : 'tab_variables';
+  rowPrefix = 'row_';
+  cbBeginRename = 'beginRename';
+  cbEndRename = 'endRenameVariable';
+  cbDelete = 'deleteVariableCallback';
+  cbTypeChanged = 'variableTypeChanged';
+  initialize = v.getGlobal() ? '' : '<br><button class="btnApp" onclick="setInitialValue('+v.id+');" style="background-color:seagreen;">Initialize</button>';
+  var deleteButton = v.getGlobal() ? '' : `<i class="icon i-times w3-text-gray w3-hover-text-red" onclick="`+cbDelete+`('`+v.id+`');" style="cursor:pointer;" title="Delete"></i>`;
+
+  table = document.getElementById(tabId);
+  tr.setAttribute('id', rowPrefix+v.id);
+    
+  var color, type_id;
+  var combo = '';
+  
+  if (!v.getGlobal()) {
+    combo = '<select _varid='+v.id+' onchange="'+cbTypeChanged+'(event);" class="select-css">';
+    for (var i=0; i<types.length; i++) {
+      if (!types[i].exec) {
+        var selected = '';
+        
+        if (types[i].id == v.type) {
+          selected = ' selected="selected"';
+          color = types[i].color;
+          type_id = types[i].id;
+        }
+        
+        combo += '<option value="'+types[i].id+'" '+selected+'>'+types[i].name+'</option>';
+        
+      }
+    }
+    combo += '</select>';
+  }
+  
+    var htmlRow = `
+       <td class="tdVars" valign="top">
+          <i id="i_`+v.id+`" class="icon `+getTypeIcon(type_id)+`" style="color:`+color+`; padding-right:4px"></i>
+       </td>
+       <td class="tdVars">
+          <input id="input_`+v.id+`" class="inputConnector" _varid=`+v.id+` style="width:12em; margin-bottom:3px;" value="`+v.name+`" name="varName" onfocus="`+cbBeginRename+`(event)" onblur="`+cbEndRename+`(event);"  ondragstart="return false;" ondrop="return false;">
+        
+        <br>
+        `+combo+`
+        `+initialize+`
+       </td>
+       <td class="tdVars" valign="top">
+         `+deleteButton+`
+       </td>
+     `;
+     
+    tr.innerHTML = htmlRow;
+    table.appendChild(tr);
+    
+    var inElem = document.getElementById('input_'+v.id);
+    setInputFilter(inElem, function(value) { return /^[a-zA-Z0-9_-]*$/.test(value); });
    
     /* Variables can be dragged to into blueprint */
-    if (draggable) {
       tr.classList.add ('trVars');
       tr.title = 'Drag into blueprint';
       //var v = document.getElementById('i_'+targetId);
       tr.ondragstart = dragVariable;
       tr.draggable = true;
-      target.element = tr;
-    }
+      v.element = tr;
     
     setStatus (BPEditStatus.MODIFIED);
     cbModified ();
@@ -1281,21 +1305,21 @@ function appAddVariable(paramType, target)
 function addInputCallback() 
 {
   var connector = blueprint.addInput (BPTypeID.INTEGER, 'Input', null);
-  appAddVariable(AppParameterType.INPUT, connector);
+  appAddInOut(AppParameterType.INPUT, connector);
 }
 
 /* addOutputCallback() - Triggered by button */
 function addOutputCallback() 
 {
   var connector = blueprint.addOutput (BPTypeID.INTEGER, 'Output', 0);
-  appAddVariable(AppParameterType.OUTPUT, connector);
+  appAddInOut(AppParameterType.OUTPUT, connector);
 }
 
 /* addVariableCallback() - Triggered by button */
 function addVariableCallback() 
 {
   var v = blueprint.addNewVariable ();
-  appAddVariable (AppParameterType.VARIABLE, v);
+  appAddVariable (v);
 }
 
 /* deleteVariableCallback() - Triggered by button */

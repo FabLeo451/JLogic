@@ -524,7 +524,7 @@ class Blueprint {
       this.connectByID (edges[i]["from"], edges[i]["to"]);
       
     /* Create entry point and return if missing */
-
+/*
     if (!this.entryPointNode) {
       console.log ('[blueprint] [fromJson] Creating entry point node ' + JSON.stringify(blueprint.jsonEntryPoint));
       blueprint.addNodeFromJson (blueprint.jsonEntryPoint);
@@ -534,7 +534,7 @@ class Blueprint {
       console.log ('[blueprint] [fromJson] Creating return node');
       blueprint.addNodeFromJson (blueprint.jsonReturn);
     }
-      
+*/      
     /*blueprint.x0 = j.x0;
     blueprint.y0 = j.y0;
     
@@ -932,7 +932,8 @@ class Blueprint {
   }
   
   addNewVariable () {
-    var v = new Variable (blueprint.getAvailableVariableName (), BPTypeID.INTEGER, Dimensions.SCALAR);
+    var v = new Variable ();
+    v.create (blueprint.getAvailableVariableName (), BPTypeID.INTEGER, Dimensions.SCALAR);
     v.id = this.getVarNewId ();
     v.reset();
     this.addVariable (v);
