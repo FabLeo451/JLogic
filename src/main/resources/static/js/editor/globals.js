@@ -128,14 +128,13 @@ const Dimensions = {
 };
 
 class Variable {
-  constructor (name, type, /*isArray*/dimensions) {
+  constructor (name, type, dimensions) {
     this.id = 0;
     this.name = name;
     this.type = type;
-    //this.isArray = isArray;
     this.dimensions = dimensions;
-    //this.value = isArray;
     this.value = null;
+    this.global = false;
     
     this.referenced = 0;
     
@@ -193,6 +192,9 @@ class Variable {
   toJSON () {
     var jo = { "id":this.id, "name":this.name, "type":this.type, "dimensions":this.dimensions, "referenced":this.referenced };
     
+    if (this.global)
+      jo.global = true;
+    
     if (this.value != null) {
        
       switch (this.type) {
@@ -218,6 +220,11 @@ class Variable {
     return (jo);
   }
   
+  toString () {
+    return (JSON.stringify(this.toJSON()));
+  }
+  
+  /*
   toString () {
     var s, actual;
     //s = '{ "id":'+this.id+', "name":"'+this.name+'", "type":'+this.type+', "isArray":'+this.isArray+', "referenced":'+this.referenced+' ';
@@ -251,5 +258,5 @@ class Variable {
     
     s += ' }';
     return (s);
-  }
+  }*/
 }

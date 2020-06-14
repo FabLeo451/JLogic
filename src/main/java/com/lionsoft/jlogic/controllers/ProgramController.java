@@ -341,7 +341,7 @@ public class ProgramController {
 	  Optional<ProgramEntity> program = programService.findById(id);
 	  
 	  if (program.isPresent()) {
-	    outData = "{\"status\":"+program.get().getStatus().ordinal() + "}";
+	    outData = "{\"status\":\""+program.get().getStatus()/*.ordinal()*/ + "\"}";
 	  } else {
 	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 	  }

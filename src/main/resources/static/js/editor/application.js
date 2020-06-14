@@ -41,7 +41,8 @@ const AppParameterType = {
 
 var bpConsole, g_filename = null;
 var dialogWorking;
-var programIndex = null;
+//var programIndex = null;
+var program = null;
 
 function appKeyPressed(e) {
   if (!actionsEnabled)
@@ -259,14 +260,16 @@ function appStart () {
        
         // Get program index
         
-        console.log ('Getting program index...');
-        
-        callServer ("GET", "/program/"+ _jbp.programId+"/index", null, function (xhttp) {
+        console.log ('Getting program ...');
+
+        callServer ("GET", "/program/"+ _jbp.programId, null, function (xhttp) {
             if (xhttp.readyState == 4) {
               if (xhttp.status == 200) {
-                console.log ('Program index OK');
+                console.log ('Program OK');
                 
-                programIndex = JSON.parse(xhttp.responseText);
+                program = JSON.parse(xhttp.responseText);
+                
+                // Program info taken. Go on setting stuff
                 
                 appLoadBlueprint (_jbp);
                 setStatus (BPEditStatus.SUBMITTED);
@@ -277,7 +280,7 @@ function appStart () {
                 blueprint.setCallbackModified(cbModified);
                 setStatus (BPEditStatus.SUBMITTED);
                 
-                document.getElementById('programName').innerHTML = _jbp.programName;
+                document.getElementById('programName').innerHTML = program.name;
                 document.getElementById('bp-title').innerHTML = _jbp.name;
                 
                 // Check if it's a main blueprint
@@ -288,21 +291,9 @@ function appStart () {
                   document.getElementById('output-panel').style.display = 'none';
                 }
       
-                // Get program status
+                // Set program status
                 
-                console.log ('Getting program status...');
-                
-                callServer ("GET", "/program/"+ _jbp.programId+"/status", null, function (xhttp) {
-                    if (xhttp.readyState == 4) {
-                      if (xhttp.status == 200) {
-                        var jo = JSON.parse(xhttp.responseText);
-                        setProgramStatus(jo.status);
-                      }
-                      else
-                        console.log(xhttp.responseText);
-                    }
-                  }
-                );
+                setProgramStatus(program.status);
 
                 undo.end();
                 undo.setCurrent (blueprint.toJson());
@@ -315,7 +306,6 @@ function appStart () {
             }
           }
         );
-
       }
       else {
         dialog.destroy();
@@ -457,9 +447,9 @@ function run (dialog) {
 }
 
 const ProgramStatus = {
-  READY:    0,
-  COMPILED: 1,
-  ERRORS:   2
+  READY:    'READY',
+  COMPILED: 'COMPILED',
+  ERRORS:   'ERRORS'
 }
 
 const BPEditStatus = {
@@ -1251,22 +1241,6 @@ function appAddVariable(paramType, target)
   }
   combo += '</select>';
   
-  /*
-  if (paramType == 8228\/*AppParameterType.INPUT || paramType == AppParameterType.OUTPUT*/ /*|| paramType == AppParameterType.VARIABLE*\/) {
-    tr.innerHTML = `<td class="tdVars"><i id=i_`+targetId+` class="icon i-square" style="color:`+color+`; padding-right:6px"></i> </td>
-                    <td class="tdVars">`+
-                    `<input class="inputConnector" _varid=`+targetId+` type="text" value="`+targetName+`" name="varName" onfocus="`+cbBeginRename+`(event)" onblur="`+cbEndRename+`(event);"></td>`+
-                    //`<div contenteditable="true" class="var-label single-line" _varid=`+targetId+` onfocus="`+cbBeginRename+`(event)" onblur="`+cbEndRename+`(event);">`+targetName+`</div>`+
-                    `<td class="tdVars">`+combo+`</td>
-                    <!--td>
-                      <a target="Javascript:void(0);" onclick="setInitialValue('`+targetId+`');" style="cursor:pointer;"><i class="icon i-edit w3-text-gray w3-hover-text-green"></i></a>
-                    </td-->
-                    <td><a target="Javascript:void(0);" onclick="`+cbDelete+`('`+targetId+`');" style="cursor:pointer;"><i class="icon i-trash-alt w3-text-gray w3-hover-text-red"></i></a></td>
-                  `;
-    
-    table.appendChild(tr);
-  }
-*/
     var htmlRow = `
        <td class="tdVars" valign="top">
           <i id="i_`+targetId+`" class="icon `+getTypeIcon(type_id)+`" style="color:`+color+`; padding-right:4px"></i>
