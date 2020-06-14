@@ -73,7 +73,7 @@ function bpAddNode (id, data) {
 function bpGetSet (id, data) {
   var node;
   
-  //console.log ("[bpGetSet] "+id+" "+data);
+  console.log ("[bpGetSet] id="+id+" data="+data);
   
   var v = blueprint.getVariable (data);
   
@@ -266,10 +266,11 @@ class Blueprint {
     return (this.asset);
   }
   
-  //getType (id) { return (this.types[id]); }
-  getType (id) {
+  getType (key) {
     for (var i=0; i<this.types.length; i++) {
-      if (this.types[i].id == id)
+      var found = (typeof key == "string") ? this.types[i].name == key: this.types[i].id == key;
+      
+      if (found)
         return (this.types[i]);
     }
     
@@ -470,7 +471,7 @@ class Blueprint {
     //node.create(BPNodeTypeID.GET, "Get");
     node.create("Get");
     
-    console.log ('Creating Get for '+v.name+' '+v.dimensions);
+    console.log ('Creating Get for '+v.name+' '+v.type+' '+v.dimensions);
 
     // Add an output connector
     var conn = node.addConnector (BPDirection.OUTPUT, v.type, v.type, v.name, null, v.enum, v.dimensions);
@@ -925,7 +926,7 @@ class Blueprint {
   }
   
   addVariable (v) {
-    //console.log ("Adding "+v.id+" "+v.name+ "("+this.variables.length+" vars)");
+    console.log ("Adding "+v.toString());
     this.variables.push(v);
     
     return (v);
@@ -933,7 +934,7 @@ class Blueprint {
   
   addNewVariable () {
     var v = new Variable ();
-    v.create (blueprint.getAvailableVariableName (), BPTypeID.INTEGER, Dimensions.SCALAR);
+    v.create (blueprint.getAvailableVariableName (), 'Integer', Dimensions.SCALAR);
     v.id = this.getVarNewId ();
     v.reset();
     this.addVariable (v);
@@ -969,7 +970,7 @@ class Blueprint {
   }
   
   setVariableType (v, newType) {
-    v.type = Number(newType);
+    v.type = newType;
     return (v);
   }
   
@@ -1298,6 +1299,8 @@ class Blueprint {
     /* Variables and types */
     jo.variables = [];   
     jo.types = [];
+    
+    console.log(this.variables);
 
     for (var i=0; i<this.variables.length; i++) {
       var jv = this.variables[i].toJSON();
@@ -1373,149 +1376,7 @@ class Blueprint {
 
   toString () {
     return(JSON.stringify(this.toJson()));
-    
-    /*
-    var s, delim;
-    s = '{  ';
-    
-    \/*if (this.id)
-      s += '"id": '+this.id+', ';*\/
-      
-    s += '"x0":'+this.x0+', "y0":'+this.y0+', ';
-      
-    s += '"name":"'+this.name+'", ';
-    s += '"type":'+this.type+', ';
-
-    // If method is not set, assign name
-    s += '"method":"'+(this.method ? this.method : this.name)+'", ';  
-    
-    \/* Variables *\/
-    var usedTypes = [];
-    
-    s += '"variables": [ ';
-
-    for (var i=0; i<this.variables.length; i++) {
-      delim = i > 0 ? "," : "";
-      var jv = this.variables[i].toJSON();
-      
-      var t = this.getType (jv.type);
-      jv.typeName = t.name;
-      usedTypes.push(t);
-      
-      //console.log('Variable '+jv.name+' '+jv.typeName)
-      //console.log(jv)
-      //s += (delim + this.variables[i].toString());
-      s += JSON.stringify(jv);
-    }
-    
-    s += '], ';
-    
-    \/* Types *\/
-    if (usedTypes.length > 0)
-      s += '"types": '+JSON.stringify(usedTypes)+', ';
-    
-    \/* Input *\/
-    var input = '"input": [', \/*k = 0,*\/ value;
-    
-    // Check if returns a value
-    //if (!this.returns())
-      input += '{ "type": '+BPTypeID.EXEC+',  "label": "" },';
-    
-    for (var i=0; i<this.entryPointNode.connectors.length; i++) {
-      if (!this.entryPointNode.connectors[i].exec) {
-          input += (this.returns() ? '' : ', ');
-
-        //input += this.entryPointNode.connectors[i].toString();
-        var jconn = this.entryPointNode.connectors[i].toJSON();
-        jconn.value = this.entryPointNode.connectors[i].getDefaultValue();
-             
-        input += JSON.stringify(jconn);
-        //k ++;
-      }
-    }
-    
-    input += '] ';
-    
-    //console.log (input);
-    
-    s += input + ', ';
-    
-    \/* Output *\/
-    var joutput = [];
-    
-    if (true\/*!this.returns()*\/) {
-      var jexec = { "type": BPTypeID.EXEC, "label": ""};
-      joutput.push(jexec);
-    }
-    
-    for (var i=0; i<this.returnNode.connectors.length; i++) {
-      if (!this.returnNode.connectors[i].exec) {
-        var jconn = this.returnNode.connectors[i].toJSON();
-        
-        jconn.java = { "references": {"type": this.returnNode.connectors[i].getDataType().name, "name":"out_"+i }};
-        
-        if (jconn.hasOwnProperty('value'))
-          delete jconn.value;
-          
-        console.log (jconn);
- 
-        joutput.push(jconn);
-      }
-    }    
-    
-    s += '"output": '+JSON.stringify(joutput) + ', ';
-    //console.log ('"output": '+JSON.stringify(joutput) + ', ');
-    
-    \/* Nodes *\/
-    s += '"nodes": [ ';
-
-    for (var i=0; i<this.nodes.length; i++) {
-      delim = i > 0 ? "," : "";
-      
-      var content;
-      
-      switch (this.nodes[i].type) {
-        \/*case BPNodeTypeID.BLUEPRINT:
-          var bp = (NodeBlueprint(this.nodes[i]);
-          content = bp.toString();
-          break;*\/
-      
-        default:
-          content = this.nodes[i].toString();
-          break;
-      }
-      
-      s += (delim + content);
-    }
-    
-    s += '], ';
-    
-    \/* Edges *\/
-    s += '"edges": [ ';
-    for (var i=0; i<this.edges.length; i++) {
-      delim = i > 0 ? "," : "";
-      s += (delim + this.edges[i].toString());
-    }    
-    s += '] ';
-    
-    s += ' }';
-    
-    return (s);
-    */
   }
-  
-  /*
-  toJson () {
-    //console.log (this.toString());
-    try {
-      return (JSON.parse (this.toString()));
-    }
-    catch (err) {
-      console.error ('[toJson] '+err.message);
-      console.log (this.toString());
-      return null;
-    }
-  }*/
 }
 
 
@@ -1545,51 +1406,6 @@ function bpLoadCallback (xhttp) {
   }
 }
 
-/*
-function bpGetBlueprints () {
-  callServer ("GET", "/catalog", null, function (xhttp) {
-    if (xhttp.readyState == 4) {
-      if (xhttp.status == 200) {
-        console.log ('Blueprints OK');
-        
-        _blueprints = JSON.parse(xhttp.responseText);
-        
-        blueprint.blueprintList = { "items": [] };
-        var key;
-        for (key in _blueprints) {
-          blueprint.blueprintList["items"].push (_blueprints[key]);
-        }
-      }
-      else {
-        console.log(xhttp.responseText);
-      }
-    }
-    else {
-    }
-  }
-  );
-}
-
-function bpGetAsset () {
-  callServer ("GET", "/asset", null, function (xhttp) {
-    if (xhttp.readyState == 4) {
-      if (xhttp.status == 200) {
-        console.log ('Asset OK');
-        blueprint.setAsset (JSON.parse(xhttp.responseText));
-        
-        console.log ('Getting blueprints...');
-        bpGetBlueprints ();
-      }
-      else {
-        console.log(xhttp.responseText);
-      }
-    }
-    else {
-    }
-  }
-  );
-}
-*/
 
 function bpStart(id)
 {
@@ -1600,30 +1416,5 @@ function bpStart(id)
   var args = window.location.pathname.split("/");
   blueprint_id = args[2];
   console.log ('blueprint_id = '+blueprint_id);
-  
-  //console.log ('Getting asset...');
-  //bpGetAsset ();
-
-  //blueprint.setAsset (_asset);
-  
-  /*console.log ('[bpStart] Getting blueprint list...');
-  callServer ("GET", "catalog", null, bpLoadBPListCallback);*/
-
-
-  //blueprint_id = __SERVER['args'][1];
-  
-  /*
-  if (blueprint_id) {
-    //console.log ('Load blueprint '+id);
-    modalShow('<div class="loader" style="display:inline-block"></div> Loading...');
-    callServer ("GET", "/blueprint/"+blueprint_id, null, bpLoadCallback);
-  }
-  else {
-    //console.log ('Creating a new blueprint');
-    blueprint.setName ("New blueprint");
-    blueprint.addNodeFromJson (blueprint.jsonEntryPoint);
-    blueprint.addNodeFromJson (blueprint.jsonReturn);
-  }
-  */
 }
 

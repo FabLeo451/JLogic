@@ -1083,28 +1083,14 @@ function setInitialValue(id) {
   var type = null;
   var v = blueprint.getVariable (id);
   
-  //console.log ('var type = "'+v.getType()+'" '+typeof v.getType());
-  //console.log ('BPTypeID.FLOAT = "'+BPTypeID.FLOAT+'" '+typeof BPTypeID.FLOAT);
+  console.log ('var type = '+v.getType());
   
   switch (v.getType()) {
-    case BPTypeID.BOOLEAN:
-      type = DataType.BOOLEAN;
-      break;
-      
-    case BPTypeID.INTEGER:
-      type = DataType.INTEGER;
-      break;
-      
-    case BPTypeID.FLOAT:
-      type = DataType.NUMBER;
-      break;
-      
-    case BPTypeID.STRING:
-      type = DataType.STRING;
-      break;
-      
-    case BPTypeID.JSON:
-      type = DataType.JSON;
+    case "Boolean":
+    case "Integer":
+    case "Double":
+    case "String":
+      type = v.getType();
       break;
       
     default:
@@ -1115,13 +1101,7 @@ function setInitialValue(id) {
   
   if (type) {
     beginEdit();
-    
-    /*dialogEditData (type, v.getName(), v.get(), 0, function (dialog) {
-        //console.log ('Seting value '+document.getElementById("dataValue").value);
-        v.set(document.getElementById("dataValue").value);
-        dialog.destroy();
-      }
-    );*/
+
     var dialog = new DialogData ();
     
     dialog.callbackOK = function (dialog) {
@@ -1254,13 +1234,13 @@ function appAddVariable(v)
       if (!types[i].exec) {
         var selected = '';
         
-        if (types[i].id == v.type) {
+        if (types[i].name == v.type) {
           selected = ' selected="selected"';
           color = types[i].color;
-          type_id = types[i].id;
+          type_id = types[i].name;
         }
         
-        combo += '<option value="'+types[i].id+'" '+selected+'>'+types[i].name+'</option>';
+        combo += '<option value="'+types[i].name+'" '+selected+'>'+types[i].name+'</option>';
         
       }
     }

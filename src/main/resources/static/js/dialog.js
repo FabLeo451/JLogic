@@ -230,7 +230,7 @@ class DialogData extends Dialog {
   constructor() {
     super();
     
-    this.type = DataType.INTEGER;
+    this.type = 'Integer';
     this.key = 'i';
     this.value = 0;
     this.flags = DataFlags.DEFAULT;
@@ -255,7 +255,7 @@ class DialogData extends Dialog {
     /* Prepare value HTML */
     
     switch (type) {
-      case DataType.INTEGER:
+      case 'Integer':
         if (this.is_timestamp) {
           valueLabel = 'Date and time';
           
@@ -280,14 +280,14 @@ class DialogData extends Dialog {
         }
         break;
 
-      case DataType.NUMBER:
-        valueLabel = 'Float value';
+      case 'Double':
+        valueLabel = 'Double value';
         valueHTML = `
           <input id="dataValue" class="w3-input w3-border" value="`+(value != null ? value : 0)+`" style="width: 10em;">
         `;
         break;
         
-      case DataType.BOOLEAN:
+      case 'Boolean':
         var checked = value ? "checked" : "";
         valueLabel = 'Boolean value';
         valueHTML = `
@@ -295,20 +295,20 @@ class DialogData extends Dialog {
         `;
         break;
         
-      case DataType.STRING:
+      case 'String':
         valueLabel = 'String value';
         valueHTML = `
           <textarea class="w3-border data" id="dataValue" rows="10" cols="30" style="font-size:12px;">`+(value != null ? value : "")+`</textarea>
         `;
         break;
-
+/*
       case DataType.JSON:
         valueLabel = 'Json';
         valueHTML = `
           <textarea class="w3-border data" id="dataValue" rows="10" cols="30" style="font-size:12px;">`+(value != null ? JSON.stringify(value, null, 2) : "{ }")+`</textarea>
         `;
         break;
-        
+*/       
       default:
         break;
     }
@@ -344,11 +344,11 @@ class DialogData extends Dialog {
     setInputFilter(dataKey, function(value) { return /^[a-zA-Z0-9_.\- ]*$/.test(value); });
 
     switch (type) {
-      case DataType.INTEGER:
+      case 'Integer':
         if (!this.is_timestamp)
            setInputFilter(valueElem, function(value) { return /^-?\d*$/.test(value); });
         break;
-      case DataType.NUMBER:
+      case 'Double':
         setInputFilter(valueElem, function(value) { return /^-?\d*[.,]?\d*$/.test(value); });
         break;
         
@@ -359,7 +359,7 @@ class DialogData extends Dialog {
   
   getData () {
     switch (this.type) {
-      case DataType.INTEGER:
+      case 'Integer':
         if (this.is_timestamp) {
           var d = document.getElementById("date").value;
           var t = document.getElementById("time").value;
@@ -371,21 +371,21 @@ class DialogData extends Dialog {
           return (Number(document.getElementById("dataValue").value));
         break;
         
-      case DataType.NUMBER:
+      case 'Double':
         return (Number(document.getElementById("dataValue").value));
         break;
         
-      case DataType.STRING:
+      case 'String':
         return(document.getElementById("dataValue").value);
         break;
         
-      case DataType.BOOLEAN:
+      case 'Boolean':
         return(Boolean(document.getElementById("dataValue").checked));
         break;
-        
+/*        
       case DataType.JSON:
         return(JSON.parse(document.getElementById("dataValue").value));
-      
+*/      
       default:
         return (null);
         break;

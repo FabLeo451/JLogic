@@ -92,24 +92,24 @@ class BPType {
 function getTypeIcon (type) {
   var i;
   
-  switch (Number(type)) {
-    case BPTypeID.INTEGER:
+  switch (type) {
+    case "Integer":
       i = 'i-hashtag';
       break;
       
-    case BPTypeID.FLOAT:
+    case "Double":
       i = 'i-calculator';
       break;
       
-    case BPTypeID.JSON:
+    case "JSONObject":
       i = 'i-code';
       break;
 
-    case BPTypeID.BOOLEAN:
+    case "Boolean":
       i = 'i-check-square';
       break;
 
-    case BPTypeID.STRING:
+    case "String":
       i = 'i-align-left';
       break;
       
@@ -169,27 +169,29 @@ class Variable {
   
   reset () {
     switch (this.type) {
-      case BPTypeID.BOOLEAN:
+      case 'Booelan':
         this.value = true;
         break;
         
-      case BPTypeID.INTEGER:
-      case BPTypeID.FLOAT:
+      case 'Integer':
+      case 'Double':
         this.value = 0;
         break;
         
-      case BPTypeID.STRING:
+      case 'String':
         this.value = "";
         break;
-        
-      case BPTypeID.JSON:
+/*        
+      case 'JSONObject:
         this.value = { };
         break;
-        
+*/        
       default:
         this.value = null;
         break;
     }
+    
+    console.log(this);
   }
   
   set (value) {
@@ -205,7 +207,7 @@ class Variable {
   }
   
   getType () {
-    return (Number(this.type));
+    return (this.type);
   }
   
   ref () { this.referenced ++; }
@@ -224,18 +226,18 @@ class Variable {
     if (this.value != null) {
        
       switch (this.type) {
-        case BPTypeID.BOOLEAN:
-        case BPTypeID.INTEGER:
-        case BPTypeID.FLOAT:
+        case 'Booelan':
+        case 'Integer':
+        case 'Double':
           jo.value = this.value;
           break;
-        case BPTypeID.STRING:
+        case 'String':
           //actual = ', "value": "'+this.value.replace (/"/g,'\\"')+'"';
           jo.value = this.value;
           break;
-        case BPTypeID.JSON:
+        /*case BPTypeID.JSON:
           jo.value = this.value;
-          break;
+          break;*/
         default:
           //console.log ("Type without value: "+this.type);
           //actual = '';
@@ -246,43 +248,11 @@ class Variable {
     return (jo);
   }
   
-  toString () {
+  stringDump () {
     return (JSON.stringify(this.toJSON()));
   }
   
-  /*
   toString () {
-    var s, actual;
-    //s = '{ "id":'+this.id+', "name":"'+this.name+'", "type":'+this.type+', "isArray":'+this.isArray+', "referenced":'+this.referenced+' ';
-    s = '{ "id":'+this.id+', "name":"'+this.name+'", "type":'+this.type+', "dimensions":'+this.dimensions+', "referenced":'+this.referenced+' ';
-    
-    //console.log ("Saving variable "+this.name+" = "+this.value);
-    
-    if (this.value != null) {
-       
-      switch (this.type) {
-        case BPTypeID.BOOLEAN:
-        case BPTypeID.INTEGER:
-        case BPTypeID.FLOAT:
-          actual = ', "value": '+this.value;
-          break;
-        case BPTypeID.STRING:
-          //actual = ', "value": "'+this.value.replace (/"/g,'\\"')+'"';
-          actual = ', "value": "'+stringForJson (this.value)+'"';
-          break;
-        case BPTypeID.JSON:
-          actual = ', "value": '+JSON.stringify(this.value);
-          break;
-        default:
-          //console.log ("Type without value: "+this.type);
-          actual = '';
-          break;
-      }
-      
-      s += actual;
-    }
-    
-    s += ' }';
-    return (s);
-  }*/
+    return ("Variable [id="+this.id+" name="+this.name+" type="+this.type+" dimensions="+this.dimensions+" referenced="+this.referenced+"]");
+  }
 }

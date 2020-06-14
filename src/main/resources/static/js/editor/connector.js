@@ -301,8 +301,10 @@ class Connector {
   canConnectTo (c) {
     if ((this.owner == c.owner) || (this.direction == c.direction) || (this.dimensions != c.dimensions))
       return (false);
-    console.log("this.pinType = "+this.pinType.id+" c.pinType = "+c.pinType.id+" ("+BPTypeID.ANY+")");
-    if (this.pinType.id == BPTypeID.ANY ^ c.pinType.id == BPTypeID.ANY)
+    //console.log("this.pinType = "+this.pinType.id+" c.pinType = "+c.pinType.id+" ("+BPTypeID.ANY+")");
+    //if (this.pinType.id == BPTypeID.ANY ^ c.pinType.id == BPTypeID.ANY)
+    console.log(this.getLabel()+".any = "+this.any+" "+c.getLabel()+".any = "+c.any);
+    if (this.any ^ c.any)
       return (true);
     
     if (this.pinType != c.pinType)
@@ -411,7 +413,7 @@ class Connector {
     this.dimensions = dimensions;
     //console.log ('[connector.create] '+name+' isArray = '+isArray);
     
-    if (pinType == BPTypeID.ANY)
+    if (pinType == BPTypeID.ANY || pinType == "ANY")
       this.any = true;
  
     this.label = document.createElement('div');
@@ -652,10 +654,15 @@ class Connector {
     var jo = {};
     
     jo.id = this.id;
+    /*
     jo.dataType = this.dataType.id;
     jo.dataTypeName = this.dataType.name;
     jo.pinType = this.pinType.id;
     jo.pinTypeName = this.pinType.name;
+    */
+    jo.dataType = this.dataType.name;
+    jo.pinType = this.pinType.name;
+    
     jo.label = this.getLabel();
     jo.exec = this.exec;
     jo.dimensions = this.dimensions;
