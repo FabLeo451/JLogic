@@ -8,7 +8,7 @@
       "java":"System.out.println(in{1});",
       "input": [
         { "type": "Exec", "label": "" },
-        { "type": -1, "label": "Object" }
+        { "type": "Any", "label": "Object" }
       ],
       "output": [
         { "type": "Exec", "label": "" }
