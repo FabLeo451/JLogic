@@ -1211,14 +1211,14 @@ function appAddVariable(v)
 
   var tr = document.createElement('tr');
 
-  tabId = v.getGlobal() ? "tab_global_variables" : 'tab_variables';
+  tabId = v.isGlobal() ? "tab_global_variables" : 'tab_variables';
   rowPrefix = 'row_';
   cbBeginRename = 'beginRename';
   cbEndRename = 'endRenameVariable';
   cbDelete = 'deleteVariableCallback';
-  cbTypeChanged = v.getGlobal() ? 'globalVariableTypeChanged' : 'variableTypeChanged';
-  initialize = v.getGlobal() ? '' : `<br><button class="btnApp" onclick="setInitialValue('`+v.id+`');" style="background-color:seagreen;">Initialize</button>`;
-  var deleteButton = v.getGlobal() ? '' : `<i class="icon i-times w3-text-gray w3-hover-text-red" onclick="`+cbDelete+`('`+v.id+`');" style="cursor:pointer;" title="Delete"></i>`;
+  cbTypeChanged = v.isGlobal() ? 'globalVariableTypeChanged' : 'variableTypeChanged';
+  initialize = v.isGlobal() ? '' : `<br><button class="btnApp" onclick="setInitialValue('`+v.id+`');" style="background-color:seagreen;">Initialize</button>`;
+  var deleteButton = v.isGlobal() ? '' : `<i class="icon i-times w3-text-gray w3-hover-text-red" onclick="`+cbDelete+`('`+v.id+`');" style="cursor:pointer;" title="Delete"></i>`;
 
   table = document.getElementById(tabId);
   tr.setAttribute('id', rowPrefix+v.id);
@@ -1226,7 +1226,7 @@ function appAddVariable(v)
   var color, type_id;
   var combo = '';
   
-  //if (!v.getGlobal()) {
+  //if (!v.isGlobal()) {
     combo = '<select _varid='+v.id+' _global='+v.global+' onchange="'+cbTypeChanged+'(event);" class="select-css">';
     for (var i=0; i<types.length; i++) {
       if (!types[i].exec) {
@@ -1293,16 +1293,16 @@ function addOutputCallback()
   appAddInOut(AppParameterType.OUTPUT, connector);
 }
 
-/* addNewVariable() - Triggered by button */
-function addNewVariable() 
-{
-  var v = blueprint.addNewVariable ();
-  appAddVariable (v);
-}
-
 function addVariable(v) 
 {
   blueprint.addVariable (v);
+  appAddVariable (v);
+}
+
+/* addNewVariable() - Triggered by button */
+function addLocalVariable() 
+{
+  var v = blueprint.addNewVariable ();
   appAddVariable (v);
 }
 
@@ -1313,7 +1313,7 @@ function addGlobalVariable() {
           var v = new Variable();
           v.fromJSON(JSON.parse(xhttp.responseText));
           addVariable(v);
-          setStatus (BPEditStatus.MODIFIED);
+          cbModified();
 
           bpConsole.append ("Created global variable "+v.getName());
         }
