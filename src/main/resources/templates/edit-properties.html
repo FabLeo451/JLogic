@@ -187,40 +187,40 @@
     var dialog = new DialogData ();
     dialog.callbackOK = callbackSaveData;
     dialog.callbackCancel = function (dialog) { dialog.destroy(); };
-    dialog.create(DataType.INTEGER, '', 0, DataFlags.DEFAULT);
+    dialog.create('Integer', '', 0, DataFlags.DEFAULT);
   }
   
   function addTimestamp () {
     var dialog = new DialogData ();
     dialog.callbackOK = callbackSaveData;
     dialog.callbackCancel = function (dialog) { dialog.destroy(); };
-    dialog.create(DataType.INTEGER, '', 0, DataFlags.DEFAULT | DataFlags.TIMESTAMP);
+    dialog.create('Integer', '', 0, DataFlags.DEFAULT | DataFlags.TIMESTAMP);
   }
   
   function addNumber () {
-    //dialogEditData (DataType.NUMBER, '', DataFlags.DEFAULT, callbackSaveData);
+    //dialogEditData ('Double', '', DataFlags.DEFAULT, callbackSaveData);
     var dialog = new DialogData ();
     dialog.callbackOK = callbackSaveData;
     dialog.callbackCancel = function (dialog) { dialog.destroy(); };
-    dialog.create(DataType.NUMBER, '', 0, DataFlags.DEFAULT);
+    dialog.create('Double', '', 0, DataFlags.DEFAULT);
   }
   
   function addBoolean () {
-    //dialogEditData (DataType.BOOLEAN, '', true, DataFlags.DEFAULT, callbackSaveData);
+    //dialogEditData ('Boolean', '', true, DataFlags.DEFAULT, callbackSaveData);
     var dialog = new DialogData ();
     dialog.callbackOK = callbackSaveData;
     dialog.callbackCancel = function (dialog) { dialog.destroy(); };
-    dialog.create(DataType.BOOLEAN, '', true, DataFlags.DEFAULT);
+    dialog.create('Boolean', '', true, DataFlags.DEFAULT);
   }
   
   function addString () {
-    //dialogEditData (DataType.STRING, '', '', DataFlags.DEFAULT, callbackSaveData);
+    //dialogEditData ('String', '', '', DataFlags.DEFAULT, callbackSaveData);
     var dialog = new DialogData ();
     dialog.callbackOK = callbackSaveData;
     dialog.callbackCancel = function (dialog) { dialog.destroy(); };
-    dialog.create(DataType.STRING, '', '', DataFlags.DEFAULT);
+    dialog.create('String', '', '', DataFlags.DEFAULT);
   }
-  
+/* 
   function addJson () {
     //dialogEditData (DataType.JSON, '', { }, DataFlags.DEFAULT, callbackSaveData);
     var dialog = new DialogData ();
@@ -228,7 +228,7 @@
     dialog.callbackCancel = function (dialog) { dialog.destroy(); };
     dialog.create(DataType.JSON, '', { }, DataFlags.DEFAULT);
   }
-
+*/
 </script>
 
 </body>

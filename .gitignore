@@ -1,4 +1,5 @@
 data/**/repository.*
+data/*.properties
 data/program/**
 target
 plugin/**/*.jar

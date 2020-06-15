@@ -34,13 +34,13 @@ function callbackSaveData(dialog) {
     var value_str, ts;
     
     switch (type) {
-      case DataType.INTEGER:
-      case DataType.NUMBER:
-      case DataType.BOOLEAN:
+      case 'Integer':
+      case 'Double':
+      case 'Boolean':
         value_str = dialog.getData();
         break;
 
-      case DataType.STRING:
+      case 'String':
         value_str = "'"+dialog.getData().replace (/"/g,'\\"')+"'";
         break;
         
@@ -268,19 +268,19 @@ function refreshDataCallback (xhttp) {
             //for (var i = 0; i < fields.length; i++) {
               /*
               switch (type) {
-                case DataType.INTEGER:
+                case 'Integer':
                   type_str = jsonResponse[key].is_timestamp ? 'Timestamp' : 'Integer';
                   break;
                   
-                case DataType.NUMBER:
+                case 'Double':
                   type_str = 'Float';
                   break;
 
-                case DataType.BOOLEAN:
+                case 'Boolean':
                   type_str = 'Boolean';
                   break;
 
-                case DataType.STRING:
+                case 'String':
                   type_str = 'String';
                   break;
                   
