@@ -103,39 +103,35 @@ function appLoadBlueprint (j) {
     var v = new Variable();
     v.fromJSON(j.variables[i]);
 
-    /*
-    \/* Add to sidebar *\/
-    console.log ("Adding "+v.name+" to sidebar...");
-    appAddVariable (v);
-    
-    \/* Add to blueprint *\/
-    console.log ("Adding "+v.name+" to blueprint...");
-    blueprint.addVariable (v);
-    */
+    // Add vaiable to blueprint and application
     addVariable(v);
   }
   
   /* Build blueprint */
   blueprint.fromJson (j);
   
-  console.log ("Adding input");
+  //console.log ("Adding input");
   
   /* Input */
-  connectors = blueprint.entryPointNode.connectors;
-  
-  for (var i=0; i<connectors.length; i++) {
-    if (connectors[i].pinType.name != 'Exec')
-      appAddInOut (AppParameterType.INPUT, connectors[i]);
+  if (blueprint.entryPointNode) {
+    connectors = blueprint.entryPointNode.connectors;
+    
+    for (var i=0; i<connectors.length; i++) {
+      if (connectors[i].pinType.name != 'Exec')
+        appAddInOut (AppParameterType.INPUT, connectors[i]);
+    }
   }
   
-  console.log ("[application] [appLoadBlueprint] Adding output");
+  //console.log ("[application] [appLoadBlueprint] Adding output");
   
   /* Output */
-  connectors = blueprint.returnNode.connectors;
-  
-  for (var i=0; i<connectors.length; i++) {
-    if (connectors[i].pinType.name != 'Exec')
-      appAddInOut (AppParameterType.OUTPUT, connectors[i]);
+  if (blueprint.returnNode) {
+    connectors = blueprint.returnNode.connectors;
+    
+    for (var i=0; i<connectors.length; i++) {
+      if (connectors[i].pinType.name != 'Exec')
+        appAddInOut (AppParameterType.OUTPUT, connectors[i]);
+    }
   }
   
   var bpName = document.getElementById('bpName');
@@ -261,19 +257,12 @@ function appStart () {
                 
                 program = JSON.parse(xhttp.responseText);
                 
-                // Program info taken. Add global variables to blueprint
+                // Add global variables to blueprint json
                 
-                /*for (var i=0; i<program.variables.length; i++) {
-                  var v = new Variable();
-                  v.fromJSON(program.variables[i]);
-                  console.log("Adding global "+v.toString());
-                  addVariable (v);
-                }
-                */
                 _jbp.variables = _jbp.variables.concat(program.variables);
                 
                 appLoadBlueprint (_jbp);
-                setStatus (BPEditStatus.SUBMITTED);
+                //setStatus (BPEditStatus.SUBMITTED);
                 showSnacknar(BPResult.SUCCESS, 'Blueprint '+_jbp["name"]+' loaded', 2000);
                 
                 console.log ('[application] [appStart] Setting callbacks');
@@ -1323,8 +1312,10 @@ function addGlobalVariable() {
         if (xhttp.status == 200) {
           var v = new Variable();
           v.fromJSON(JSON.parse(xhttp.responseText));
+          addVariable(v);
+          setStatus (BPEditStatus.MODIFIED);
 
-          bpConsole.append ("Created global variable "+v.getName(), BPConsoleTextType.SUCCESS);
+          bpConsole.append ("Created global variable "+v.getName());
         }
         else {
           if (xhttp.status == 404)

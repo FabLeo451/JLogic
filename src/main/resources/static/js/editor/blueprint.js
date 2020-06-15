@@ -1251,6 +1251,7 @@ class Blueprint {
   
   toJson () {
     var jo = {
+      "tag":"BLUEPRINT",
       "x0":this.x0, "y0":this.y0,
       "name":this.name,
       "type":this.type,
@@ -1264,7 +1265,7 @@ class Blueprint {
     //console.log (this.variables);
 
     for (var i=0; i<this.variables.length; i++) {
-      if (this.variables[i].getGlobal())
+      if (this.variables[i].isGlobal())
         continue;
         
       var jv = this.variables[i].toJSON();

@@ -151,7 +151,7 @@ class Variable {
     this.global = g;
   }
   
-  getGlobal() {
+  isGlobal() {
     return this.global;
   }
   
