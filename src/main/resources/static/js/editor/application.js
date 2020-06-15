@@ -4,6 +4,7 @@ const MenuItems = {
  BP:             9,
  BP_HOME:      901,
  BP_HELP:      902,
+ BP_DEBUG:     903,
  
  FILE:             1,
  FILE_OPEN:      101,
@@ -102,13 +103,16 @@ function appLoadBlueprint (j) {
     var v = new Variable();
     v.fromJSON(j.variables[i]);
 
-    /* Add to sidebar */
+    /*
+    \/* Add to sidebar *\/
     console.log ("Adding "+v.name+" to sidebar...");
     appAddVariable (v);
     
-    /* Add to blueprint */
+    \/* Add to blueprint *\/
     console.log ("Adding "+v.name+" to blueprint...");
     blueprint.addVariable (v);
+    */
+    addVariable(v);
   }
   
   /* Build blueprint */
@@ -246,7 +250,7 @@ function appStart () {
 
         _jbp = JSON.parse(xhttp.responseText);
        
-        // Get program index
+        // Get program
         
         console.log ('Getting program ...');
 
@@ -257,7 +261,16 @@ function appStart () {
                 
                 program = JSON.parse(xhttp.responseText);
                 
-                // Program info taken. Go on setting stuff
+                // Program info taken. Add global variables to blueprint
+                
+                /*for (var i=0; i<program.variables.length; i++) {
+                  var v = new Variable();
+                  v.fromJSON(program.variables[i]);
+                  console.log("Adding global "+v.toString());
+                  addVariable (v);
+                }
+                */
+                _jbp.variables = _jbp.variables.concat(program.variables);
                 
                 appLoadBlueprint (_jbp);
                 setStatus (BPEditStatus.SUBMITTED);
@@ -626,6 +639,10 @@ function processAction (a) {
 
       break;
 
+    case MenuItems.BP_DEBUG:
+      debugOnConsole();
+      break;
+
     case MenuItems.FILE_OPEN:
       var input = document.getElementById('file-dialog');
       //console.log ("[processAction] "+input.name);
@@ -789,27 +806,7 @@ function processAction (a) {
       
       content.innerHTML = '<textarea class="w3-border" id="inputTextArea" rows="15" cols="30">'+input+'</textarea><!--<input id="_trace" class="w3-check" type="checkbox"> Trace -->';
       break;
-    /* 
-    case MenuItems.BLUEPRINT_COMMAND_LINE:
-      callServer ("POST", "/blueprint/"+blueprint_id+"/exec?command_line=1", null,  function (xhttp) {
-          if (xhttp.readyState == 4) {
-            if (xhttp.status == 200) {
-              //showSnacknar(BPResult.SUCCESS, "Blueprint is valid", 3000);
-              bpConsole.append (xhttp.responseText);
-            }
-            else {
-              if (xhttp.status == 404)
-                bpConsole.append ("Resource not found", BPConsoleTextType.ERROR);
-              else if (xhttp.status == 0)
-                bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
-              else
-                bpConsole.append ("Can't get command line: "+xhttp.responseText+"\n", BPConsoleTextType.ERROR);
-            }
-          }
-        }
-      );
-      break;*/
-      
+
     case MenuItems.BLUEPRINT_COMPILE:
       compileStart();
       break;
@@ -857,6 +854,7 @@ function createMenu (id) {
    "actions": [
      { "id": MenuItems.BP_HOME },
      { "id": MenuItems.BP_HELP },
+     { "id": MenuItems.BP_DEBUG },
      
      { "id": MenuItems.FILE_OPEN, "ctrl": true, "key": "O" },
      { "id": MenuItems.FILE_SAVE_AS, "ctrl": true, "key": "S" },
@@ -887,7 +885,8 @@ function createMenu (id) {
        "items": [
          { "item": "Home", "id": MenuItems.BP_HOME, "icon": "<i class=\"icon i-home\"></i>" },
          { "separator": true },
-         { "item": "Help", "id": MenuItems.BP_HELP, "icon": "<i class=\"icon i-info\"></i>" }
+         { "item": "Help", "id": MenuItems.BP_HELP, "icon": "<i class=\"icon i-info\"></i>" },
+         { "item": "Debug", "id": MenuItems.BP_DEBUG }
        ]
      },
      {
@@ -1082,6 +1081,13 @@ function variableTypeChanged(ev) {
   updateVariableColor ('i_'+id, ev.target.value);
 }
 
+function globalVariableTypeChanged(ev) {
+  var id = ev.target.getAttribute('_varid');
+  var v = blueprint.getVariable (id);
+
+  console.log('Changing type of variable '+v.getName())
+}
+
 function setInitialValue(id) {
   var type = null;
   var v = blueprint.getVariable (id);
@@ -1221,7 +1227,7 @@ function appAddVariable(v)
   cbBeginRename = 'beginRename';
   cbEndRename = 'endRenameVariable';
   cbDelete = 'deleteVariableCallback';
-  cbTypeChanged = 'variableTypeChanged';
+  cbTypeChanged = v.getGlobal() ? 'globalVariableTypeChanged' : 'variableTypeChanged';
   initialize = v.getGlobal() ? '' : `<br><button class="btnApp" onclick="setInitialValue('`+v.id+`');" style="background-color:seagreen;">Initialize</button>`;
   var deleteButton = v.getGlobal() ? '' : `<i class="icon i-times w3-text-gray w3-hover-text-red" onclick="`+cbDelete+`('`+v.id+`');" style="cursor:pointer;" title="Delete"></i>`;
 
@@ -1231,8 +1237,8 @@ function appAddVariable(v)
   var color, type_id;
   var combo = '';
   
-  if (!v.getGlobal()) {
-    combo = '<select _varid='+v.id+' onchange="'+cbTypeChanged+'(event);" class="select-css">';
+  //if (!v.getGlobal()) {
+    combo = '<select _varid='+v.id+' _global='+v.global+' onchange="'+cbTypeChanged+'(event);" class="select-css">';
     for (var i=0; i<types.length; i++) {
       if (!types[i].exec) {
         var selected = '';
@@ -1248,7 +1254,7 @@ function appAddVariable(v)
       }
     }
     combo += '</select>';
-  }
+  //}
   
     var htmlRow = `
        <td class="tdVars" valign="top">
@@ -1298,11 +1304,47 @@ function addOutputCallback()
   appAddInOut(AppParameterType.OUTPUT, connector);
 }
 
-/* addVariableCallback() - Triggered by button */
-function addVariableCallback() 
+/* addNewVariable() - Triggered by button */
+function addNewVariable() 
 {
   var v = blueprint.addNewVariable ();
   appAddVariable (v);
+}
+
+function addVariable(v) 
+{
+  blueprint.addVariable (v);
+  appAddVariable (v);
+}
+
+function addGlobalVariable() {
+  callServer ("PUT", "/program/"+_jbp.programId+"/variable", '{}', function (xhttp) {
+      if (xhttp.readyState == 4) {
+        if (xhttp.status == 200) {
+          var v = new Variable();
+          v.fromJSON(JSON.parse(xhttp.responseText));
+
+          bpConsole.append ("Created global variable "+v.getName(), BPConsoleTextType.SUCCESS);
+        }
+        else {
+          if (xhttp.status == 404)
+            bpConsole.append ("Program not found", BPConsoleTextType.ERROR);
+          else if (xhttp.status == 0)
+            bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
+          else {
+            try {
+              var jerr = JSON.parse (xhttp.responseText);
+              bpConsole.append (jerr.message, BPConsoleTextType.ERROR);
+            }
+            catch (err) {
+              bpConsole.append ("Error "+xhttp.status+": "+xhttp.responseText, BPConsoleTextType.ERROR);
+            }
+            
+          }
+        }
+      }
+    }
+  );
 }
 
 /* deleteVariableCallback() - Triggered by button */
@@ -1333,4 +1375,8 @@ function appClearVariables ()
   table.innerHTML = "";
 }
 
+function debugOnConsole() {
+  for (var i=0; i<blueprint.variables.length; i++)
+    bpConsole.append (blueprint.variables[i].toString());
+}
 

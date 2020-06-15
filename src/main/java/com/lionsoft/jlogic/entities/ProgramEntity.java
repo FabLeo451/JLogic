@@ -370,13 +370,13 @@ public class ProgramEntity {
 	  return (getVariable(name) != null);
 	}
 	
-	public boolean addVariable(Variable v) {
+	public Variable addVariable(Variable v) {
 	  if (!v.isValid())
-	    return false;
+	    return null;
 	    
 	  v.setProgram(this);
 	  variables.add(v);
-	  return true;
+	  return v;
 	}
 	
 	public boolean deleteVariable(String name) {

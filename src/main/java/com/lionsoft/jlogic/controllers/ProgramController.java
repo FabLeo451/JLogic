@@ -417,18 +417,20 @@ public class ProgramController {
 	
 	// PUT /program/variable
 	@PutMapping(value = "/program/{id}/variable", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> createVariable(@PathVariable("id") String id, @RequestBody Variable v) {
+	public Variable createVariable(@PathVariable("id") String id, @RequestBody Variable v) {
 	  Optional<ProgramEntity> program = programService.findById(id);
 
 	  if (!program.isPresent()) 
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
 	  
 	  logger.info("Creating variable "+v.getName()+" for program "+program.get().getName());
-	    
-	  if (!programService.addVariable(program.get(), v))
+	  
+	  Variable newVar = programService.addVariable(program.get(), v);
+	  
+	  if (newVar == null)
 	    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't create variable.");
 	    
-		return new ResponseEntity<>(null, HttpStatus.OK);
+		return newVar;
 	}
 	
 	// POST /program/variable

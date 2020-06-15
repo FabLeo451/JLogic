@@ -28,6 +28,8 @@ class Variable {
   
   private int dimensions;
   
+  boolean global;
+  
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="program_id")
   private ProgramEntity program;
@@ -35,7 +37,8 @@ class Variable {
   public Variable() {
     //value = null;
     dimensions = SCALAR;
-    name = "unnamed";
+    name = null;
+    global = true;
   }
  
   public Variable(String type, int dimensions, String name) {
@@ -61,6 +64,7 @@ class Variable {
     this.name = v.getName();
   }
   
+  @JsonIgnore
   public boolean isValid() {
     return (name != null && type != null &&
             !name.isEmpty() && !type.isEmpty() &&
@@ -78,6 +82,10 @@ class Variable {
       return (this.program);
   }
   
+  public UUID getId() {
+    return id;
+  }
+  
   public void setName(String name) {
       this.name = name;
   }
@@ -90,8 +98,16 @@ class Variable {
     return (type);
   }
   
+  public void setType(String t) {
+      this.type = t;
+  }
+  
   public int getDimensions() {
     return (dimensions);
+  }
+  
+  public boolean isGlobal() {
+    return (global);
   }
 
 };

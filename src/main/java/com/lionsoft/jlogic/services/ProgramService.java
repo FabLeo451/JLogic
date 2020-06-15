@@ -136,14 +136,36 @@ public class ProgramService {
 	  return (result);
 	}
 	
-	public boolean addVariable (ProgramEntity program, Variable v) {
-	  if (!v.isValid() || program.hasVariable(v.getName()))
-	    return false;
+	public Variable addVariable (ProgramEntity program, Variable v) {
+	  if (program.hasVariable(v.getName()))
+	    return null;
 
-    program.addVariable(v);
+	  if (!v.isValid()) {
+	    // Check name
+	    if (v.getName() == null) {
+	      int i=1;
+	      String name;
+	      
+	      while (true) {
+	        name ="Variable_"+i;
+	        
+	        if (!program.hasVariable(name)) {
+	          v.setName(name);
+	          break;
+	        }
+	        
+	        i ++;
+	      }
+	    }
+	    
+	    if (v.getType() == null)
+	      v.setType("Integer");
+	  }
+
+    Variable newVar = program.addVariable(v);
     repository.save(program);
 
-	  return true;
+	  return newVar;
 	}
 	
 	public boolean updateVariable (ProgramEntity program, Variable v) {

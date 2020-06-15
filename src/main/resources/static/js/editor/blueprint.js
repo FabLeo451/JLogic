@@ -571,49 +571,7 @@ class Blueprint {
       this.deleteNodeForce (node);
     }
   }
-/*
-  showContextMenu (x, y) {
-    this.contextMenu.remove();
-    \/*
-    this.contextMenu.createFromJson({ 
-                                      "items": [
-                                         { "id": 0, "item": "Add" }, 
-                                         { "id": 1, "item": "Branch" }, 
-                                         {          "item": "separator" },
-                                         { "id": 2, "item": "Third" }
-                                      ] 
-                                    });
-    *\/
-    
-    var menu = { "items": [ ] };
-    var itemStr;
-    
-    for (var i = 0; i < this.asset["nodes"].length; i++) {
-      var node = this.asset["nodes"][i];
-      var inventory = node["inventory"] != null ? node["inventory"] : true;
-      //var id = node["id"] != null ? node["id"] : i;
-      
-      if (!inventory)
-        continue;
-        
-      itemStr = '{ "id": '+i+', "item": "'+node["name"]+'" }';
-      //console.log(itemStr);
-      menu["items"].push (JSON.parse(itemStr));
-    }
-    
-    menu["items"].push ({ "id": MenuID.BLUEPRINT, "item": "Blueprint..." });
-    
-    //console.log(JSON.stringify(menu));
-    
-    this.contextMenu.createFromJson(menu);
-    
-    this.contextMenu.setCallback(bpAddNode);
-    this.contextMenu.show(x, y);
-    contextMenu = this.contextMenu; \/* Global object *\/
-    this.x = x;
-    this.y = y;
-  }
-*/
+
   selectNode (nodeSet, callback, includeBP) {
     this.contextMenu.remove();
 
@@ -1042,7 +1000,8 @@ class Blueprint {
       /*console.log ("[bpDiv.ondrop] "+e.dataTransfer.getData("text"));
 
       var varId = e.dataTransfer.getData("text").replace ('var_', '');*/
-      var v = blueprintSelf.getVariable (e.dataTransfer.getData("text"));
+      var varId = e.dataTransfer.getData("text");
+      var v = blueprintSelf.getVariable (varId);
       
       if (v) {
         //console.log ("[bpDiv.ondrop] Dropped variable "+v.id+ " "+v.name);
@@ -1065,6 +1024,8 @@ class Blueprint {
         beginEdit();
         blueprintSelf.contextMenu.show(e.x, e.y);
       }
+      else
+        console.error("Variable "+varId+" not found");
 
     }
     
@@ -1299,8 +1260,13 @@ class Blueprint {
     /* Variables and types */
     jo.variables = [];   
     jo.types = [];
+    
+    //console.log (this.variables);
 
     for (var i=0; i<this.variables.length; i++) {
+      if (this.variables[i].getGlobal())
+        continue;
+        
       var jv = this.variables[i].toJSON();
       
       var t = this.getType (jv.type);
