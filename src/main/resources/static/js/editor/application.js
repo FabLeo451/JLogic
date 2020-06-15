@@ -1222,7 +1222,7 @@ function appAddVariable(v)
   cbEndRename = 'endRenameVariable';
   cbDelete = 'deleteVariableCallback';
   cbTypeChanged = 'variableTypeChanged';
-  initialize = v.getGlobal() ? '' : '<br><button class="btnApp" onclick="setInitialValue('+v.id+');" style="background-color:seagreen;">Initialize</button>';
+  initialize = v.getGlobal() ? '' : `<br><button class="btnApp" onclick="setInitialValue('`+v.id+`');" style="background-color:seagreen;">Initialize</button>`;
   var deleteButton = v.getGlobal() ? '' : `<i class="icon i-times w3-text-gray w3-hover-text-red" onclick="`+cbDelete+`('`+v.id+`');" style="cursor:pointer;" title="Delete"></i>`;
 
   table = document.getElementById(tabId);

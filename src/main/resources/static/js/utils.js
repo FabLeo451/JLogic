@@ -29,75 +29,13 @@ function getAttachPoint(element){
     y: offset.top + rect.height / 2
   };
 };
-/*
-function logoff () {
-  // Opera 8.0+
-  var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 
-  // Firefox 1.0+
-  var isFirefox = typeof InstallTrigger !== 'undefined';
-
-  // Safari 3.0+ "[object HTMLElementConstructor]" 
-  var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
-
-  // Internet Explorer 6-11
-  var isIE = \/*@cc_on!@*\/false || !!document.documentMode;
-
-  // Edge 20+
-  var isEdge = !isIE && !!window.StyleMedia;
-
-  // Chrome 1 - 71
-  var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-
-  // Blink engine detection
-  var isBlink = (isChrome || isOpera) && !!window.CSS;
-
-  //window.location = window.location.protocol + '//logout:logout@' + window.location.host + '/home';
-
-  // To invalidate a basic auth login:
-  // 
-  // 	1. Call this logout function.
-  //	2. It makes a GET request to an URL with false Basic Auth credentials
-  //	3. The URL returns a 401 Unauthorized
-  // 	4. Forward to some "you-are-logged-out"-page
-  // 	5. Done, the Basic Auth header is invalid now
-
-  var xhttp = new XMLHttpRequest();
-
-  xhttp.onreadystatechange = function() {
-    console.log ('readyState = '+this.readyState);
-
-    if (this.readyState == 4) {
-      console.log ('status = '+this.status);
-
-      if (this.status == 200) {
-        //window.location = window.location.protocol + '//logout:logout@' + window.location.host + '/home';
-      }
-      else {
-        console.log ('logged out');
-        console.log ('isChrome  = '+isChrome);
-        console.log ('isFirefox = '+isFirefox);
-        console.log ('isSafari  = '+isSafari);
-
-        if (isFirefox)
-          window.location = window.location.protocol + '//logout:logout@' + window.location.host + '/logout';
-        else if (isSafari)
-          window.location = window.location.protocol + '//logout@' + window.location.host + '/logout';
-        else
-          window.location = '/logout';
-      }
-    }
-  };
-
-  if (isEdge || isIE)
-    document.execCommand('ClearAuthenticationCache');
-
-  // Request with wrong credential, we'll get a 401
-  xhttp.open('GET', '/401', true);
-  //xhttp.setRequestHeader ("Authorization", "Basic bG9nb3V0OmxvZ291dA==");
-  xhttp.send();
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
 }
-*/
 
 function includeHTML() {
   var z, i, elmnt, file, xhttp;

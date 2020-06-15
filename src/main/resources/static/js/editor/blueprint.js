@@ -935,7 +935,7 @@ class Blueprint {
   addNewVariable () {
     var v = new Variable ();
     v.create (blueprint.getAvailableVariableName (), 'Integer', Dimensions.SCALAR);
-    v.id = this.getVarNewId ();
+    v.id = uuidv4(); //this.getVarNewId ();
     v.reset();
     this.addVariable (v);
     

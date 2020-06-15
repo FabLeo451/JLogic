@@ -52,7 +52,7 @@ class Variable {
   }
  
   public String toString() {
-    return "Variable [id=" + id + ", name=" + name + ", type=" + type + "]";
+    return "Variable [id=" + id.toString() + ", name=" + name + ", type=" + type + "]";
   }
  
   public void set(Variable v) {
