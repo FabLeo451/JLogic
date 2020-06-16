@@ -20,8 +20,11 @@ class UndoRedo {
   }
   
   dump () {
+    var s;
+    
     for (var i=0; i<this.history.length; i++) {
-      console.log ('history['+i+'] '+ (i == this.current ? '<-' : ''));
+      s = this.history[i].tag+" "+(i == this.current ? '<-' : '');
+      console.log ('history['+i+'] '+s);
     }
   }
 
@@ -55,7 +58,7 @@ class UndoRedo {
       
     this.current = this.history.length - 1;
 
-    console.log ('[undo] [setCurrent] length = '+this.history.length+' current = '+this.current);
+    //console.log ('[undo] [setCurrent] length = '+this.history.length+' current = '+this.current);
   }
   
   begin () {

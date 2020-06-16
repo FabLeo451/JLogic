@@ -181,6 +181,8 @@ public class ProgramService {
 	  if (pv != null && v.isValid()) {
 	    pv.set(v);
 	    repository.save(program);
+	    repository.refresh(program);
+	    logger.info("Updated "+v.toString());
 	    return (true);
 	  }
 	  

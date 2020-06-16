@@ -190,8 +190,6 @@ class Variable {
         this.value = null;
         break;
     }
-    
-    console.log(this);
   }
   
   set (value) {

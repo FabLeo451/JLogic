@@ -18,17 +18,13 @@ class Variable {
 		name = "UUID",
 		strategy = "org.hibernate.id.UUIDGenerator"
 	)*/
-  private UUID id;
-   
+  private UUID id;   
   private String name;
-
   private String type;
-  
   //private Object value;
-  
   private int dimensions;
-  
-  boolean global;
+  private boolean global;
+  //private int referenced;
   
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="program_id")
@@ -39,6 +35,7 @@ class Variable {
     dimensions = SCALAR;
     name = null;
     global = true;
+    //referenced = 0;
   }
  
   public Variable(String type, int dimensions, String name) {
@@ -107,6 +104,10 @@ class Variable {
   
   public void setType(String t) {
       this.type = t;
+  }
+  
+  public void setDimensions(int d) {
+      this.dimensions = d;
   }
   
   public int getDimensions() {

@@ -1068,80 +1068,6 @@ function endRenameVariable(ev) {
   //console.log ("[endRenameVariable] Changing var "+v.name);
 }
 
-function variableTypeChanged(ev) {
-  var id = ev.target.getAttribute('_varid');
-  var v = blueprint.getVariable (id);
-
-  if (v.referenced) {
-    //alert("You cannot change the type of a referenced variable.");
-    dialogMessage ("Blueprint", "You cannot change the type of a referenced variable.", DialogButtons.OK, DialogIcon.WARNING, function (dialog) {
-        dialog.destroy();
-      }
-    );
-    
-    ev.target.value = v.type;
-    return;
-  }
-  
-  v = blueprint.setVariableType (v, ev.target.value);
-  v.reset();
-  updateVariableColor ('i_'+id, ev.target.value);
-}
-
-function globalVariableTypeChanged(ev) {
-  var id = ev.target.getAttribute('_varid');
-  var v = blueprint.getVariable (id);
-
-  console.log('Changing type of variable '+v.getName())
-}
-
-function setInitialValue(id) {
-  var type = null;
-  var v = blueprint.getVariable (id);
-  
-  console.log ('var type = '+v.getType());
-  
-  switch (v.getType()) {
-    case "Boolean":
-    case "Integer":
-    case "Double":
-    case "String":
-      type = v.getType();
-      break;
-      
-    default:
-      //console.error ('Unknown variable type: '+v.getType());
-      break;
-  }
-
-  
-  if (type) {
-    beginEdit();
-
-    var dialog = new DialogData ();
-    
-    dialog.callbackOK = function (dialog) {
-      if (dialog.checkData()) {
-        //console.log ('Seting value '+dialog.getData());
-        v.set(dialog.getData());
-        //console.log (v.toString());
-        dialog.destroy();
-        endEdit();
-        //console.log ('New value '+v.get());
-        
-        setStatus (BPEditStatus.MODIFIED);
-        cbModified ();
-      }
-      else
-        dialog.showError('Invalid data');
-    }
-    
-    dialog.callbackCancel = function (dialog) { dialog.destroy(); endEdit(); };
-    dialog.create(type, v.getName(), v.get(), 0);
-    
-  }
-}
-
 function appAddInOut(paramType, target) 
 {
   var targetId, targetName, targetType, tabId, rowPrefix;
@@ -1234,7 +1160,8 @@ function appAddVariable(v)
   cbBeginRename = 'beginRename';
   cbEndRename = 'endRenameVariable';
   cbDelete = v.isGlobal() ? 'deleteGlobalVariable' : 'deleteVariableCallback';
-  cbTypeChanged = v.isGlobal() ? 'globalVariableTypeChanged' : 'variableTypeChanged';
+  //cbTypeChanged = v.isGlobal() ? 'globalVariableTypeChanged' : 'variableTypeChanged';
+  cbTypeChanged = 'variableTypeChanged';
   initialize = v.isGlobal() ? '' : `<br><button class="btnApp" onclick="setInitialValue('`+v.id+`');" style="background-color:seagreen;">Initialize</button>`;
   var deleteButton = `<i class="icon i-times w3-text-gray w3-hover-text-red" onclick="`+cbDelete+`('`+v.id+`');" style="cursor:pointer;" title="Delete"></i>`;
 
@@ -1419,6 +1346,103 @@ function deleteVariableCallback(id)
   cbModified();
 }
 
+/** 
+ * Change type of variable
+ */
+function variableTypeChanged(ev) {
+  var id = ev.target.getAttribute('_varid');
+  var v = blueprint.getVariable (id);
+
+  if (v.referenced) {
+    dialogMessage ("Blueprint", "You cannot change the type of a referenced variable.", DialogButtons.OK, DialogIcon.WARNING, function (dialog) {
+        dialog.destroy();
+      }
+    );
+    
+    // Restore value
+    ev.target.value = v.type;
+    return;
+  }
+
+  if (v.isGlobal()) {
+    var jo = v.toJSON();
+    jo.type = ev.target.value;
+    callServer ("POST", "/program/"+_jbp.programId+"/variable", JSON.stringify(jo), function (xhttp) {
+        if (xhttp.readyState == 4) {
+          if (xhttp.status == 200) {
+            setVariableType(v, ev.target.value);
+            bpConsole.append (v.getName() + " successfully updated");
+          }
+          else {
+            if (xhttp.status == 0)
+              bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
+            else {
+                var jerr = JSON.parse (xhttp.responseText);
+                bpConsole.append (jerr.message, BPConsoleTextType.ERROR);            
+            }
+          }
+        }
+      }
+    );
+  }
+  else
+    setVariableType(v, ev.target.value);
+}
+
+function setVariableType(v, type) {
+  var updVar = blueprint.setVariableType (v, type);
+  console.log (updVar.getName()+" updated to "+updVar.getType());
+  updVar.reset();
+  updateVariableColor ('i_'+v.id, type);
+}
+
+function setInitialValue(id) {
+  var type = null;
+  var v = blueprint.getVariable (id);
+  
+  console.log ('var type = '+v.getType());
+  
+  switch (v.getType()) {
+    case "Boolean":
+    case "Integer":
+    case "Double":
+    case "String":
+      type = v.getType();
+      break;
+      
+    default:
+      //console.error ('Unknown variable type: '+v.getType());
+      break;
+  }
+
+  
+  if (type) {
+    beginEdit();
+
+    var dialog = new DialogData ();
+    
+    dialog.callbackOK = function (dialog) {
+      if (dialog.checkData()) {
+        //console.log ('Seting value '+dialog.getData());
+        v.set(dialog.getData());
+        //console.log (v.toString());
+        dialog.destroy();
+        endEdit();
+        //console.log ('New value '+v.get());
+        
+        setStatus (BPEditStatus.MODIFIED);
+        cbModified ();
+      }
+      else
+        dialog.showError('Invalid data');
+    }
+    
+    dialog.callbackCancel = function (dialog) { dialog.destroy(); endEdit(); };
+    dialog.create(type, v.getName(), v.get(), 0);
+    
+  }
+}
+
 function appClearVariables ()
 {
   var table = document.getElementById("tab_input");
@@ -1432,6 +1456,8 @@ function appClearVariables ()
 }
 
 function debugOnConsole() {
+  undo.dump();
+  
   for (var i=0; i<blueprint.variables.length; i++)
     bpConsole.append (blueprint.variables[i].toString());
 }
