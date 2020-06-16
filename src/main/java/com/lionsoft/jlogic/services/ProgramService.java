@@ -141,6 +141,10 @@ public class ProgramService {
 	    return null;
 
 	  if (!v.isValid()) {
+			// Check id
+      if (v.getId() == null)
+        v.setId(UUID.randomUUID());
+
 	    // Check name
 	    if (v.getName() == null) {
 	      int i=1;
@@ -164,6 +168,9 @@ public class ProgramService {
 
     Variable newVar = program.addVariable(v);
     repository.save(program);
+    repository.refresh(program);
+
+    logger.info("Created "+v.toString());
 
 	  return newVar;
 	}

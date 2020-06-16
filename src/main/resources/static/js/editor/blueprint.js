@@ -1265,8 +1265,8 @@ class Blueprint {
     //console.log (this.variables);
 
     for (var i=0; i<this.variables.length; i++) {
-      if (this.variables[i].isGlobal())
-        continue;
+      /*if (this.variables[i].isGlobal())
+        continue;*/
         
       var jv = this.variables[i].toJSON();
       

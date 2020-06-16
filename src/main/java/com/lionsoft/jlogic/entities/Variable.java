@@ -13,11 +13,11 @@ class Variable {
   public final static int MATRIX = 2;
 
   @Id
-	@GeneratedValue(generator = "UUID")
+	/*@GeneratedValue(generator = "UUID")
 	@GenericGenerator(
 		name = "UUID",
 		strategy = "org.hibernate.id.UUIDGenerator"
-	)
+	)*/
   private UUID id;
    
   private String name;
@@ -59,14 +59,17 @@ class Variable {
   }
  
   public void set(Variable v) {
+    this.id = v.getId();
     this.type = v.getType();
     this.dimensions = v.getDimensions();
     this.name = v.getName();
+    this.global = v.isGlobal();
   }
   
   @JsonIgnore
   public boolean isValid() {
-    return (name != null && type != null &&
+    return (id != null &&
+            name != null && type != null &&
             !name.isEmpty() && !type.isEmpty() &&
             dimensions >= 0 &&
             dimensions <= 2
@@ -82,6 +85,10 @@ class Variable {
       return (this.program);
   }
   
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
   public UUID getId() {
     return id;
   }

@@ -257,9 +257,8 @@ function appStart () {
                 
                 program = JSON.parse(xhttp.responseText);
                 
-                // Add global variables to blueprint json
-                
-                _jbp.variables = _jbp.variables.concat(program.variables);
+                // TODO: Add global variables to blueprint json                
+                // _jbp.variables = _jbp.variables.concat(program.variables);
                 
                 appLoadBlueprint (_jbp);
                 //setStatus (BPEditStatus.SUBMITTED);
@@ -1302,8 +1301,11 @@ function addVariable(v)
 /* addNewVariable() - Triggered by button */
 function addLocalVariable() 
 {
+  undo.begin();
   var v = blueprint.addNewVariable ();
   appAddVariable (v);
+  cbModified();
+  undo.end();
 }
 
 function addGlobalVariable() {
@@ -1311,8 +1313,12 @@ function addGlobalVariable() {
       if (xhttp.readyState == 4) {
         if (xhttp.status == 200) {
           var v = new Variable();
+          console.log(xhttp.responseText);
           v.fromJSON(JSON.parse(xhttp.responseText));
+
+          undo.begin();
           addVariable(v);
+          undo.end();
           cbModified();
 
           bpConsole.append ("Created global variable "+v.getName());
@@ -1341,7 +1347,7 @@ function addGlobalVariable() {
 /* deleteVariableCallback() - Triggered by button */
 function deleteVariableCallback(id) 
 {
-  var vElem = document.getElementById('row_'+id);
+  //var vElem = document.getElementById('row_'+id);
   var v = blueprint.getVariable (id);
 
   if (v.referenced) {
@@ -1349,9 +1355,11 @@ function deleteVariableCallback(id)
     return;
   }
   
+  v.element.parentElement.removeChild(v.element);
   blueprint.deleteVariable (v);
-  vElem.parentElement.removeChild(vElem);
-  setStatus (BPEditStatus.MODIFIED);
+  //vElem.parentElement.removeChild(vElem);
+  //setStatus (BPEditStatus.MODIFIED);
+  cbModified();
 }
 
 function appClearVariables ()
