@@ -257,8 +257,27 @@ function appStart () {
                 
                 program = JSON.parse(xhttp.responseText);
                 
-                // TODO: Add global variables to blueprint json                
+                // Add new global variables not present in the blueprint yet           
                 // _jbp.variables = _jbp.variables.concat(program.variables);
+
+                for (var i=0; i<program.variables.length; i++) {
+									var v = program.variables[i];
+
+                  console.log("Found program variable:");
+                  console.log(v);
+
+								  var found = false;
+                  for (var k=0; k<_jbp.variables.length; k++)
+                    if (_jbp.variables[k].id == v.id) {
+                      found = true;
+                      break;
+                    }
+
+									if (!found) {
+                    console.log('Not in blueprint. Adding...');
+                    _jbp.variables.push(v);
+                  }
+                }
                 
                 appLoadBlueprint (_jbp);
                 //setStatus (BPEditStatus.SUBMITTED);
