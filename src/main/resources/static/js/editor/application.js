@@ -1045,7 +1045,7 @@ function deleteConnectorCallback(id) {
   blueprint.redrawEdges();
   setStatus (BPEditStatus.MODIFIED);
 }
-
+/*
 function endRenameVariable(ev) {
   
   var id = ev.target.getAttribute('_varid');
@@ -1067,7 +1067,7 @@ function endRenameVariable(ev) {
   actionsEnabled = true;
   //console.log ("[endRenameVariable] Changing var "+v.name);
 }
-
+*/
 function appAddInOut(paramType, target) 
 {
   var targetId, targetName, targetType, tabId, rowPrefix;
@@ -1247,6 +1247,46 @@ function addVariable(v)
   appAddVariable (v);
 }
 
+function endRenameVariable(ev) {
+  var id = ev.target.getAttribute('_varid');
+  var newName = ev.target.value;
+
+  var v = blueprint.getVariable (id);
+  var oldName = v.getName();
+  
+  if (v.isGlobal()) {
+    var newVar = new Variable();
+    newVar.fromJSON(v.toJSON());
+    newVar.setName(newName);
+
+    callServer ("POST", "/program/"+_jbp.programId+"/variable/"+oldName+"/rename/"+newName, JSON.stringify(v.toJSON()), function (xhttp) {
+        if (xhttp.readyState == 4) {
+          if (xhttp.status == 200) {
+            bpConsole.append (v.getName() + " successfully updated");
+            v = blueprint.setVariableName (v, newName);
+            ev.target.innerHTML = v.name;
+          }
+          else {
+            if (xhttp.status == 0)
+              bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
+            else {
+                var jerr = JSON.parse (xhttp.responseText);
+                bpConsole.append (jerr.message, BPConsoleTextType.ERROR);            
+            }
+            
+            ev.target.value = oldName;
+          }
+        }
+      }
+    );
+  } else {
+    v = blueprint.setVariableName (v, newName);
+    ev.target.innerHTML = v.name;
+  }
+  
+  actionsEnabled = true;
+}
+
 /** 
  * Create a local variable (triggered by button) 
  */
@@ -1347,6 +1387,31 @@ function deleteVariableCallback(id)
 }
 
 /** 
+ * Update global variable
+ */
+function updateGlobalVariable(v, fSuccess, fError) {
+    callServer ("POST", "/program/"+_jbp.programId+"/variable", JSON.stringify(v.toJSON()), function (xhttp) {
+        if (xhttp.readyState == 4) {
+          if (xhttp.status == 200) {
+            bpConsole.append (v.getName() + " successfully updated");
+            f();
+          }
+          else {
+            if (xhttp.status == 0)
+              bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
+            else {
+                var jerr = JSON.parse (xhttp.responseText);
+                bpConsole.append (jerr.message, BPConsoleTextType.ERROR);            
+            }
+            
+            fError();
+          }
+        }
+      }
+    );
+}
+
+/** 
  * Change type of variable
  */
 function variableTypeChanged(ev) {
@@ -1365,23 +1430,17 @@ function variableTypeChanged(ev) {
   }
 
   if (v.isGlobal()) {
-    var jo = v.toJSON();
-    jo.type = ev.target.value;
-    callServer ("POST", "/program/"+_jbp.programId+"/variable", JSON.stringify(jo), function (xhttp) {
-        if (xhttp.readyState == 4) {
-          if (xhttp.status == 200) {
-            setVariableType(v, ev.target.value);
-            bpConsole.append (v.getName() + " successfully updated");
-          }
-          else {
-            if (xhttp.status == 0)
-              bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
-            else {
-                var jerr = JSON.parse (xhttp.responseText);
-                bpConsole.append (jerr.message, BPConsoleTextType.ERROR);            
-            }
-          }
-        }
+    var newVar = new Variable();
+    newVar.fromJSON(v.toJSON());
+    newVar.setType(ev.target.value);
+
+    updateGlobalVariable(newVar, 
+      function() {
+        setVariableType(v, ev.target.value);
+      },
+      function () {
+        // Restore value
+        ev.target.value = v.type;
       }
     );
   }

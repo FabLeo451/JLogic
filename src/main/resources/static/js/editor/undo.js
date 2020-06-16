@@ -23,7 +23,7 @@ class UndoRedo {
     var s;
     
     for (var i=0; i<this.history.length; i++) {
-      s = this.history[i].tag+" "+(i == this.current ? '<-' : '');
+      s = this.history[i].tag+" "+this.history[i].name+(i == this.current ? ' <-' : '');
       console.log ('history['+i+'] '+s);
     }
   }

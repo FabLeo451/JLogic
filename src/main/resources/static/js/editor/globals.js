@@ -200,8 +200,16 @@ class Variable {
     return (this.value);
   }
   
+  setName (n) {
+    this.name = n;
+  }
+  
   getName () {
     return (this.name);
+  }
+  
+  setType (t) {
+    this.type = t;
   }
   
   getType () {

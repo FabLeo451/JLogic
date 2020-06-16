@@ -202,7 +202,7 @@ public class ProgramService {
 	public boolean renameVariable (ProgramEntity program, String oldName, String newName) {
 	  Variable pv = program.getVariable(oldName);
 	  
-	  if (pv != null) {
+	  if (pv != null && program.getVariable(newName) == null) {
 	    pv.setName(newName);
 	    repository.save(program);
 	    return (true);
