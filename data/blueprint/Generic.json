@@ -2,13 +2,13 @@
    "output":[
       {
          "label":"",
-         "type":0
+         "type":"Exec"
       }
    ],
    "input":[
       {
          "label":"",
-         "type":0
+         "type":"Exec"
       }
    ],
    "variables":[
@@ -18,8 +18,8 @@
       {
          "output":[
             {
-               "pinType":0,
-               "dataType":0,
+               "pinType":"Exec",
+               "dataType":"Exec",
                "id":1,
                "label":"Start",
                "exec":true,
@@ -46,8 +46,8 @@
          "inner_text":" ",
          "input":[
             {
-               "pinType":0,
-               "dataType":0,
+               "pinType":"Exec",
+               "dataType":"Exec",
                "id":2,
                "label":"",
                "exec":true,

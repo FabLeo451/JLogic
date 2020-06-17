@@ -106,6 +106,8 @@ function appLoadBlueprint (j) {
     // Add vaiable to blueprint and application
     addVariable(v);
   }
+
+  // TODO: update variable names in Get and Set nodes
   
   /* Build blueprint */
   blueprint.fromJson (j);
@@ -270,6 +272,8 @@ function appStart () {
                   for (var k=0; k<_jbp.variables.length; k++)
                     if (_jbp.variables[k].id == v.id) {
                       found = true;
+                      // Name could be changed by others blueprints
+                      _jbp.variables[k].name = v.name;
                       break;
                     }
 
