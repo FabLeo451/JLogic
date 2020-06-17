@@ -418,7 +418,8 @@ class NodeBase {
   }
   
   toString() {
-    return (JSON.stringify(this.toJSON()));
+    //return (JSON.stringify(this.toJSON()));
+    return ("Node [id="+this.id+", name="+this.name+", type="+this.type+"]");
   }
 
   createMainElement (name) {
@@ -709,6 +710,12 @@ class NodeGet extends NodeBase {
       }
     }
   }
+  
+  // Overrides
+  toString() {
+    return ("Node [id="+this.id+", name="+this.name+", type="+this.type+", references="+this.connectors[0].references.getName()+"]");
+  }
+
 }
 
 

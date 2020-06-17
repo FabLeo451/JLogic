@@ -83,6 +83,7 @@ function bpGetSet (id, data) {
     node = blueprint.addSetNode (v);
   
   node.moveTo (blueprint.mouse.x, blueprint.mouse.y);
+  blueprint.onModified();
 }
  
 function edgeMouseEnter (e) {
@@ -906,6 +907,14 @@ class Blueprint {
 
   }
   
+  refreshNodes() {
+    for (var i=0; i<this.nodes.length; i++) {
+      this.nodes[i].refresh();
+    }
+    
+    blueprint.redrawEdges();
+  }
+  
   setVariableName (v, newNameIn) {
     var newName = newNameIn.trim();
     
@@ -917,12 +926,8 @@ class Blueprint {
     //console.log ("[setVariableName] "+v.name);
     
     if (v.referenced) {
-      for (var i=0; i<this.nodes.length; i++) {
-        this.nodes[i].refresh();
-      }
+      this.refreshNodes()
     }
-    
-    blueprint.redrawEdges();
 
     return (v);
   }
@@ -1275,6 +1280,8 @@ class Blueprint {
       jo.types.push(t);
 
       jo.variables.push(jv);
+      
+      //console.log (jo.variables);
     }
 
     /* Input */
@@ -1326,6 +1333,7 @@ class Blueprint {
     jo.nodes = [];
 
     for (var i=0; i<this.nodes.length; i++) {
+      console.log ('Saving '+this.nodes[i].toString());
       jo.nodes.push(this.nodes[i].toJSON());
     }
     

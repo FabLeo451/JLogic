@@ -106,8 +106,6 @@ function appLoadBlueprint (j) {
     // Add vaiable to blueprint and application
     addVariable(v);
   }
-
-  // TODO: update variable names in Get and Set nodes
   
   /* Build blueprint */
   blueprint.fromJson (j);
@@ -135,6 +133,8 @@ function appLoadBlueprint (j) {
         appAddInOut (AppParameterType.OUTPUT, connectors[i]);
     }
   }
+  
+  blueprint.refreshNodes();
   
   var bpName = document.getElementById('bpName');
   bpName.value = blueprint.getName();
@@ -1523,5 +1523,8 @@ function debugOnConsole() {
   
   for (var i=0; i<blueprint.variables.length; i++)
     bpConsole.append (blueprint.variables[i].toString());
+  
+  for (var i=0; i<blueprint.nodes.length; i++)
+    bpConsole.append (blueprint.nodes[i].toString());
 }
 
