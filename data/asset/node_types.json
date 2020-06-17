@@ -13,6 +13,7 @@
         { "id":10, "name":"Exit", "color":"orange" },
         { "id":11, "name":"Junction", "color":"SteelBlue" },
         { "id":12, "name":"Switch Integer", "color":"slategray" },
-        { "id":13, "name":"While Loop", "color":"slategray" }  
+        { "id":13, "name":"While Loop", "color":"slategray" },
+        { "id":14, "name":"Event", "color":"red" }  
       ]
 }

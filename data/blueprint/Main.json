@@ -82,7 +82,7 @@
    "x0":0,
    "name":"Main",
    "method":"_main",
-   "type":1,
+   "type":"MAIN",
    "edges":[
 
    ]

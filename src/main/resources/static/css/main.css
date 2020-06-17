@@ -214,6 +214,7 @@ legend {
 .i-wifi:before { content: "\f1eb" }
 .i-sign-in:before { content: "\f2f6" }
 .i-sign-out:before { content: "\f2f5" }
+.i-bolt:before { content: "\f0e7" }
 .i-list-ol:before { content: "\f0cb" }
 .i-edit:before { content: "\f044" }
 .i-retweet:before { content: "\f079" }

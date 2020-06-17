@@ -87,7 +87,7 @@ public class BlueprintService {
     try {
       jo = new JSONObject(content);
       jo.put("id", blueprint.getId());
-      jo.put("type", blueprint.getType().ordinal());
+      jo.put("type", blueprint.getType()/*.ordinal()*/);
       jo.put("name", blueprint.getName());
       jo.put("method", blueprint.getMethod());
     }

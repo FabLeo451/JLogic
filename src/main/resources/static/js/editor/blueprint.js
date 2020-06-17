@@ -1,8 +1,9 @@
 'use strict';
 
 const BlueprintType = {
-  GENERIC : 0,
-  MAIN    : 1
+  GENERIC : "GENERIC",
+  MAIN    : "MAIN",
+  EVENTS  : "EVENTS"
 }
 
 /*

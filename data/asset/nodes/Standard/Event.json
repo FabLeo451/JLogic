@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Event Begin",
+    "icon": "<i class=\"icon i-bolt\"></i>",
+    "type": 14,
+    "event":"BEGIN",
+    "x": 50, "y": 40,
+    "version": 1,
+    "can_delete": false,
+    "inventory": true,
+    "output": [
+      { "type": "Exec", "label": "" }
+    ]
+  },
+  {
+    "name": "Event Exception",
+    "icon": "<i class=\"icon i-bolt\"></i>",
+    "type": 14,
+    "event":"EXCEPTION",
+    "x": 50, "y": 40,
+    "version": 1,
+    "can_delete": false,
+    "inventory": true,
+    "output": [
+      { "type": "Exec", "label": "" },
+      { "type": "String", "label": "Exception" }
+    ]
+  },
+  {
+    "name": "Event End",
+    "icon": "<i class=\"icon i-bolt\"></i>",
+    "type": 14,
+    "event":"END",
+    "x": 50, "y": 40,
+    "version": 1,
+    "can_delete": false,
+    "inventory": true,
+    "output": [
+      { "type": "Exec", "label": "" }
+    ]
+  }
+]

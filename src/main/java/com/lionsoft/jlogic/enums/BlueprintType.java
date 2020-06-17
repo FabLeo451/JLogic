@@ -2,6 +2,7 @@ package com.lionsoft.jlogic;
 
 public enum BlueprintType {
     GENERIC,
-    MAIN
+    MAIN,
+    EVENTS
 }
 
