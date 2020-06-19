@@ -776,5 +776,10 @@ class NodeEvent extends Node {
     jo.event = this.event;
     return (jo);
   }
+  
+  // Overrides
+  toString() {
+    return ("Node [id="+this.id+", name="+this.name+", type="+this.type+", event="+this.event+"]");
+  }
 }
 

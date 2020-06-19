@@ -87,7 +87,8 @@
                "id":7,
                "label":"",
                "exec":true,
-               "dimensions":0
+               "dimensions":0,
+               "java": {"references": {"object":"message"}}
             }
          ],
          "inner_text":" ",

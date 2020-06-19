@@ -7,7 +7,7 @@
     "x": 50, "y": 40,
     "version": 1,
     "can_delete": false,
-    "inventory": true,
+    "inventory": false,
     "output": [
       { "type": "Exec", "label": "" }
     ]
@@ -20,10 +20,10 @@
     "x": 50, "y": 40,
     "version": 1,
     "can_delete": false,
-    "inventory": true,
+    "inventory": false,
     "output": [
       { "type": "Exec", "label": "" },
-      { "type": "String", "label": "Exception" }
+      { "type": "String", "label": "Exception", "java": {"references": {"object":"message"}} }
     ]
   },
   {
@@ -34,7 +34,7 @@
     "x": 50, "y": 40,
     "version": 1,
     "can_delete": false,
-    "inventory": true,
+    "inventory": false,
     "output": [
       { "type": "Exec", "label": "" }
     ]

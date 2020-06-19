@@ -46,7 +46,7 @@ const BPNodeTypeID = {
   JUNCTION: 11,
   SWITCH_INTEGER: 12,
   WHILE_LOOP: 13,
-  EVENTS: 14
+  EVENT: 14
 };
 
 class BPNodeType {

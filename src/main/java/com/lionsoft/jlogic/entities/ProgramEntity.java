@@ -45,6 +45,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 
 import javax.servlet.http.HttpServletRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -1043,6 +1044,18 @@ public class ProgramEntity {
 	  return args;
 	}
 	
+/*
+  private static <E extends Enum> E[] getEnumValues(Class<E> enumClass)
+          throws NoSuchFieldException, IllegalAccessException {
+      Field f = enumClass.getDeclaredField("$VALUES");
+      //System.out.println(f);
+      //System.out.println(Modifier.toString(f.getModifiers()));
+      f.setAccessible(true);
+      Object o = f.get(null);
+      return (E[]) o;
+  }
+*/
+    	
 	public boolean run(String methodName, String data) {
 	  return (run(methodName, data, getName(), null));
 	}
@@ -1090,9 +1103,8 @@ public class ProgramEntity {
 
         // Load in the class; MyClass.class should be located in
         // the directory file:/c:/myclasses/com/mycompany
-        Class BPContext = cl.loadClass("com.lionsoft.standard.BPContext");
-        //System.out.println("Loaded class : " + BPContext.getName());
-        
+        Class BPContext = cl.loadClass("com.lionsoft.jlogic.standard.BPContext");
+	            
         Constructor c1 = BPContext.getConstructor();
         Object context = c1.newInstance();
       
@@ -1105,7 +1117,7 @@ public class ProgramEntity {
         Method setLogName = BPContext.getMethod("setLogName", String.class);
         Method setGlobalProperties = BPContext.getMethod("setGlobalProperties", Properties.class);
         Method setProgramProperties = BPContext.getMethod("setProgramProperties", String.class, Properties.class);
-        
+         
         // Set
         //setRequest.invoke(context, request);
         setParameters.invoke(context, request != null ? request.getParameterMap() : null);
@@ -1127,6 +1139,20 @@ public class ProgramEntity {
         // Create a new instance from the loaded class
         Constructor constructor = cls.getConstructor(BPContext);
         Object programInstance = constructor.newInstance(context);
+
+        Class EventType = cl.loadClass("com.lionsoft.jlogic.standard.EventType");
+
+        Field f = EventType.getDeclaredField("BEGIN");
+        f.setAccessible(true);
+        Object eventBegin = f.get(null);
+
+        f = EventType.getDeclaredField("EXCEPTION");
+        f.setAccessible(true);
+        Object eventException = f.get(null);
+
+        f = EventType.getDeclaredField("END");
+        f.setAccessible(true);
+        Object eventEnd = f.get(null);
         
         // Search method
         Method method = null;
@@ -1162,6 +1188,7 @@ public class ProgramEntity {
           Method _getCode = cls.getMethod("_getCode");
           Method _log = cls.getMethod("_log", String.class);
           Method _error = cls.getMethod("_error", String.class);
+          Method _event = cls.getMethod("_event", EventType, String.class);
 
           _log.invoke(programInstance, "Start thread id "+Thread.currentThread().getId());
 
@@ -1185,6 +1212,8 @@ public class ProgramEntity {
           Object code = null;
           
           try {
+            _event.invoke(programInstance, eventBegin, null);
+            
             if (params != null)
               method.invoke(programInstance, params);
             else
@@ -1195,14 +1224,21 @@ public class ProgramEntity {
           } catch (InvocationTargetException e) {
             Throwable cause = e.getCause();
             logger.error("InvocationTargetException: " +cause.getMessage());
+            System.err.println("InvocationTargetException");
+            
+            _event.invoke(programInstance, eventException, cause.getMessage());
             
             code = _getCode.invoke(programInstance);
             code = ((int)code) != 0 ? code : EXCEPTION;
             _error.invoke(programInstance, cause.getMessage());
             setResult((int)code, cause.getMessage());
           }
+          finally {
+            _event.invoke(programInstance, eventEnd, null);
+          }
 
           System.out.flush();
+          System.err.flush();
           System.setErr(oldErr);
           System.setOut(oldOut);
           

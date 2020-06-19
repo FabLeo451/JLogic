@@ -332,7 +332,7 @@ class Blueprint {
         data += ', ';
         
       if (this.selection[i].type != BPNodeTypeID.ENTRY_POINT && this.selection[i].type != BPNodeTypeID.RETURN) {
-        data += this.selection[i].toString();
+        data += JSON.stringify(this.selection[i].toJSON());
         k ++;
       }
     }
@@ -467,6 +467,8 @@ class Blueprint {
       this.returnNode = node;
      
     this.onModified ();
+    
+    console.log("Created "+node.toString())
      
     return (node);
   }

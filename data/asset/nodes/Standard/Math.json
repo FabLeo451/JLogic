@@ -14,7 +14,21 @@
     ]
   },
   {
-    "name": "Division",
+    "name": "Integer division",
+    "type": 5,
+    "version": 1,
+    "inner_text": "&#10135",
+    "symbol": "/",
+    "input": [
+      { "type": "Integer", "label": "Dividend", "value": 0 },
+      { "type": "Integer", "label": "Divisor", "value": 1 },
+    ],
+    "output": [
+      { "type": "Integer", "label": "Result" }
+    ]
+  },
+  {
+    "name": "Double division",
     "type": 5,
     "version": 1,
     "inner_text": "&#10135",
