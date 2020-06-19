@@ -297,7 +297,7 @@ function appStart () {
                 
                 // Check if it's a main blueprint
                 
-                if (_jbp.type == BlueprintType.MAIN) {
+                if (_jbp.type == BlueprintType.MAIN || _jbp.type == BlueprintType.EVENTS) {
                   document.getElementById("bpName").readOnly = true;
                   document.getElementById('input-panel').style.display = 'none';
                   document.getElementById('output-panel').style.display = 'none';

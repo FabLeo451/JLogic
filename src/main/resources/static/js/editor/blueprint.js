@@ -1294,6 +1294,7 @@ class Blueprint {
     //if (!this.returns())
       jo.input.push({ "type": "Exec",  "label": "" });
     
+    if (this.entryPointNode) {
     for (var i=0; i<this.entryPointNode.connectors.length; i++) {
       if (!this.entryPointNode.connectors[i].exec) {
           //input += (this.returns() ? '' : ', ');
@@ -1306,10 +1307,12 @@ class Blueprint {
         //k ++;
       }
     }
+    }
     
     /* Output */
     jo.output = [];
     
+    if (this.returnNode) {
     if (true/*!this.returns()*/) {
       var jexec = { "type": "Exec", "label": ""};
       jo.output.push(jexec);
@@ -1328,6 +1331,7 @@ class Blueprint {
  
         jo.output.push(jconn);
       }
+    }
     }
     
     /* Nodes */
