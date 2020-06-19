@@ -419,6 +419,10 @@ class Blueprint {
         node = new NodeBlueprint();
         break;
         
+      case BPNodeTypeID.EVENT:
+        node = new NodeEvent();
+        break;
+        
       default:
         node = new Node();
     }

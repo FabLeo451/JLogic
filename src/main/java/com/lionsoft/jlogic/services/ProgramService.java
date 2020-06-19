@@ -79,11 +79,10 @@ public class ProgramService {
       program.createProperties();
 
       // Create blueprints
-	    BlueprintEntity blueprint = blueprintService.create(program, BlueprintType.MAIN, "Main");
+	    BlueprintEntity main = blueprintService.create(program, BlueprintType.MAIN, "Main");
+	    BlueprintEntity events = blueprintService.create(program, BlueprintType.EVENTS, "Events");
 
 	    repository.refresh(program);
-
-	    
 
       return program;
     }

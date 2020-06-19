@@ -1,0 +1,116 @@
+{
+   "variables":[
+
+   ],
+   "types":[
+
+   ],
+   "method":"_event",
+   "edges":[
+
+   ],
+   "type":"EVENTS",
+   "output":[
+   ],
+   "input":[
+   ],
+   "nodes":[
+      {
+         "output":[
+            {
+               "pinType":"Exec",
+               "dataType":"Exec",
+               "id":4,
+               "label":"",
+               "exec":true,
+               "dimensions":0
+            }
+         ],
+         "inner_text":" ",
+         "input":[
+
+         ],
+         "data":{
+            "path":"data/asset/Standard"
+         },
+         "can_delete":false,
+         "name":"Event Begin",
+         "event":"BEGIN",
+         "x":20,
+         "icon":"<i class=\"icon i-bolt\"><\/i>",
+         "y":160,
+         "id":3,
+         "type":14,
+         "version":1
+      },
+      {
+         "output":[
+            {
+               "pinType":"Exec",
+               "dataType":"Exec",
+               "id":5,
+               "label":"",
+               "exec":true,
+               "dimensions":0
+            },
+            {
+               "pinType":"String",
+               "dataType":"String",
+               "id":6,
+               "label":"Exception",
+               "exec":false,
+               "dimensions":0
+            }
+         ],
+         "inner_text":" ",
+         "input":[
+
+         ],
+         "data":{
+            "path":"data/asset/Standard"
+         },
+         "can_delete":false,
+         "name":"Event Exception",
+         "event":"EXCEPTION",
+         "x":20,
+         "icon":"<i class=\"icon i-bolt\"><\/i>",
+         "y":260,
+         "id":4,
+         "type":14,
+         "version":1
+      },
+      {
+         "output":[
+            {
+               "pinType":"Exec",
+               "dataType":"Exec",
+               "id":7,
+               "label":"",
+               "exec":true,
+               "dimensions":0
+            }
+         ],
+         "inner_text":" ",
+         "input":[
+
+         ],
+         "data":{
+            "path":"data/asset/Standard"
+         },
+         "can_delete":false,
+         "name":"Event End",
+         "event":"END",
+         "x":20,
+         "icon":"<i class=\"icon i-bolt\"><\/i>",
+         "y":380,
+         "id":5,
+         "type":14,
+         "version":1
+      }
+   ],
+   "y0":0,
+   "x0":0,
+   "name":"Events",
+   "tag":"BLUEPRINT",
+   "id":"9c567c2b-e84e-42da-bfb4-ab60fd6231da"
+}

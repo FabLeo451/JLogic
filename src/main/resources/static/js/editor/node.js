@@ -718,7 +718,6 @@ class NodeGet extends NodeBase {
 
 }
 
-
 class NodeBlueprint extends Node {
 
   constructor() {
@@ -757,4 +756,25 @@ class NodeBlueprint extends Node {
   }
 }
 
+class NodeEvent extends Node {
+
+  constructor() {
+    super();
+    this.type = BPNodeTypeID.EVENT;
+    this.event = null;
+  }
+
+  createFromJson (j, preserveId = true) {
+    this.event = j.event ;     
+    super.createFromJson (j, preserveId);
+  
+    console.log ("Creating event node "+this.name+" "+this.event);
+  }
+  
+  toJSON() {
+    var jo = super.toJSON();
+    jo.event = this.event;
+    return (jo);
+  }
+}
 

@@ -132,6 +132,10 @@ public class BlueprintService {
 	      templateFilename = getTemplateDirectory()+"/Main.json";
 	      break;
 	      
+	    case EVENTS:
+	      templateFilename = getTemplateDirectory()+"/Events.json";
+	      break;
+	      
 	    default:
 	      templateFilename = getTemplateDirectory()+"/Generic.json";
 	      break;

@@ -120,6 +120,17 @@ public class BlueprintEntity {
     public void setName(String name) {
       this.name = name;
       setMethod(type == BlueprintType.MAIN ? "_main" : "method_"+name.replace(" ", "_"));
+      switch (type) {
+        case MAIN:
+          setMethod("_main");
+          break;
+        case EVENTS:
+          setMethod("_event");
+          break;
+        default:
+          setMethod("method_"+name.replace(" ", "_"));
+          break;
+      }
     }
     
     public String getMethod() {
