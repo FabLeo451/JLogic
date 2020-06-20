@@ -72,7 +72,7 @@ function createProgramMenu(event) {
   var jmenu =
     {
         'items': [
-          {'icon': '<i class="icon i-project-diagram"></i>', 'item':'Add blueprint',  action: () => addBlueprint(id) },
+          //{'icon': '<i class="icon i-project-diagram"></i>', 'item':'Add blueprint',  action: () => addBlueprint(id) },
           {'icon': '<i class="icon i-archive"></i>', 'item': 'Create JAR',  action: () => createJAR(id) },
           {'icon': '<i class="icon i-sliders-h"></i>', 'item': 'Edit properties',  action: () => window.location = '/program/'+id+'/edit-properties' },
           {'icon': '<i class="icon i-edit"></i>',   'item': 'Rename',  action: () => renameProgram(id, name) },
@@ -105,7 +105,7 @@ function hideContextMenu(evt) {
     document.removeEventListener('click', hideContextMenu);
 }
 
-function addBlueprints (containerElem, jblueprints) {
+function addBlueprints (programId, containerElem, jblueprints) {
   var jo;
 
   var listElem =  document.createElement('div');
@@ -118,8 +118,10 @@ function addBlueprints (containerElem, jblueprints) {
     var bpElem = document.createElement('div');
     bpElem.classList.add('w3-container');
     bpElem.setAttribute('id', jo.id);
+    
+    var delButton = jo.type == 'GENERIC' ? `<i id="del_`+jo.id+`" class="icon i-trash-alt w3-text-gray" style="margin-left:2em; cursor:pointer; visibility:hidden" onclick="deleteBlueprint('`+jo.id+`', '`+jo.name+`')" title="Delete blueprint"></i>` : '<div id="del_'+jo.id+'"></div>';
 
-    bpElem.innerHTML = `<i class="icon i-project-diagram w3-text-blue-gray"></i> <a href="/blueprint/`+jo.id+`/edit" target="_blank" title="Open in editor">`+jo.name+`</a> <i id="del_`+jo.id+`" class="icon i-trash-alt w3-text-gray" style="margin-left:2em; cursor:pointer; visibility:hidden" onclick="deleteBlueprint('`+jo.id+`', '`+jo.name+`')" title="Delete blueprint"></i>`;
+    bpElem.innerHTML = `<i class="icon i-project-diagram w3-text-blue-gray" style="width:1.5em;"></i> <a href="/blueprint/`+jo.id+`/edit" target="_blank" title="Open in editor">`+jo.name+`</a> `+delButton;
 
     bpElem.onmouseenter = function(ev) {
       var t = ev.currentTarget;
@@ -136,6 +138,11 @@ function addBlueprints (containerElem, jblueprints) {
 
     listElem.appendChild(bpElem);
   }
+  
+  var addElem = document.createElement('div');
+  addElem.classList.add('w3-container');
+  addElem.innerHTML = `<button class="btnApp" onclick="addBlueprint('`+programId+`');" style="margin-left:1.5em;"><i class="icon i-add"></i> New Blueprint</button>`;
+  listElem.appendChild(addElem);
 }
 
 function createProgramHeader(jo) {
@@ -277,7 +284,7 @@ function addObjects (containerElem, jtree) {
     childrenContainer.style.display = expanded[key] ? 'block' : 'none';
     progElem.appendChild(childrenContainer);
 
-    addBlueprints(childrenContainer, jo.blueprints);
+    addBlueprints(key, childrenContainer, jo.blueprints);
   }
 }
 

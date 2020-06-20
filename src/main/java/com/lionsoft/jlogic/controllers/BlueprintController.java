@@ -94,8 +94,8 @@ public class BlueprintController {
 	  Optional<BlueprintEntity> blueprint = blueprintService.findById(blueprintId);
 	  
 	  if (blueprint.isPresent()) {
-	    if (blueprint.get().isMain())
-	      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Can't delete Main blueprint");
+	    if (blueprint.get().getType() == BlueprintType.MAIN || blueprint.get().getType() == BlueprintType.EVENTS)
+	      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Can't delete this blueprint");
 	    
       blueprintService.delete(blueprint.get());
       
