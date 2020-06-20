@@ -480,7 +480,7 @@ public class ProgramEntity {
       JSONObject jitem = new JSONObject();
       jitem.put("id", blueprint.getId());
       jitem.put("name", blueprint.getName());
-      jitem.put("type", blueprint.getType().ordinal());
+      jitem.put("type", blueprint.getType().name());
       jitem.put("input", jbp.get("input"));
       jitem.put("output", jbp.get("output"));
       

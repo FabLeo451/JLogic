@@ -35,7 +35,7 @@
       "type": 4,
       "version": 1,
       "classpath": ["lib/ojdbc8.jar"],
-      "java":"try { in{1}.close(); } catch (SQLException e) { }",
+      "java":"if (in{1} != null) { try { in{1}.close(); } catch (SQLException e) { } }",
       "input": [
         { "type": "Exec", "label": "" },
         { "type": "Connection", "label": "Connection", "must_connect":true }

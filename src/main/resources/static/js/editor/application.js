@@ -788,6 +788,11 @@ function processAction (a) {
       break;*/
       
     case MenuItems.BLUEPRINT_RUN:
+      if (blueprint.type == 'EVENTS') {
+        dialogInfo ("Events blueprint can't be executed.");
+        break;
+      }
+      
       beginEdit ();
       var dialog = new Dialog ();
       dialog.setCallbackOK (run);

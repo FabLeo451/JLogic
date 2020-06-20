@@ -223,7 +223,10 @@ function programChanged(event) {
           var programOptions = "";//"<option disabled selected value>Select program</option>";
           
           for (var i in jprogindex) {
-            programOptions += '<option value="'+jprogindex[i].id+'">'+jprogindex[i].name+'</option>';
+              if (jprogindex[i].type == 'EVENTS')
+                continue;
+                
+              programOptions += '<option value="'+jprogindex[i].id+'">'+jprogindex[i].name+'</option>';
           }
           
           document.getElementById("blueprint").innerHTML = programOptions;
@@ -301,6 +304,9 @@ function editAPIDialog (title, api, cbFun) {
             var blueprintOptions = "";//"<option disabled selected value>Select program</option>";
             
             for (var i in jprogindex) {
+              if (jprogindex[i].type == 'EVENTS')
+                continue;
+                
               blueprintOptions += '<option value="'+jprogindex[i].id+'">'+jprogindex[i].name+'</option>';
             }
             

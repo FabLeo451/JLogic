@@ -57,7 +57,7 @@
                "pinType":"String",
                "dataType":"String",
                "id":6,
-               "label":"Exception",
+               "label":"Message",
                "exec":false,
                "dimensions":0
             }
@@ -74,7 +74,7 @@
          "event":"EXCEPTION",
          "x":20,
          "icon":"<i class=\"icon i-bolt\"><\/i>",
-         "y":260,
+         "y":320,
          "id":4,
          "type":14,
          "version":1
@@ -103,7 +103,7 @@
          "event":"END",
          "x":20,
          "icon":"<i class=\"icon i-bolt\"><\/i>",
-         "y":380,
+         "y":520,
          "id":5,
          "type":14,
          "version":1

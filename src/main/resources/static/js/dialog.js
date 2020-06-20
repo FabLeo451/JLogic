@@ -202,6 +202,13 @@ function dialogMessage (title, message, buttons, icon, callbackOK) {
   return (dialog);
 }
 
+function dialogInfo (message) {
+  dialogMessage ("Info", message, DialogButtons.OK, DialogIcon.INFO, function (dialog) {
+      dialog.destroy();
+    }
+  );
+}
+
 function dialogError (message) {
   dialogMessage ("Error", message, DialogButtons.OK, DialogIcon.ERROR, function (dialog) {
       dialog.destroy();
