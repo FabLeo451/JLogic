@@ -13,7 +13,7 @@
       "input": [
         { "type": "Exec", "label": "" },
         { "type": "Integer", "label": "Protocol", "value": 0, "enum": [ "HTTP", "HTTPS" ] },
-        { "type": "String", "label": "Hostname", "value": "localhost" },
+        { "type": "String", "label": "Hostname", "value": "localhost", "single_line":true },
         { "type": "Integer", "label": "Port", "value": 9200 },
         { "type": "String", "label": "Username", "value": "" },
         { "type": "String", "label": "Password", "value": "", "password":true },
