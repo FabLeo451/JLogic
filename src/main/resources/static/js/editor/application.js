@@ -266,7 +266,7 @@ function appStart () {
                     found = false;
 
                     for (var p=0; p<program.variables.length; p++) {
-                      if (_jbp.variables[b].id == program.variables[p]) {
+                      if (_jbp.variables[b].id == program.variables[p].id) {
                         found = true;
                         break;
                       }
@@ -1421,7 +1421,7 @@ function updateGlobalVariable(v, fSuccess, fError) {
         if (xhttp.readyState == 4) {
           if (xhttp.status == 200) {
             bpConsole.append (v.getName() + " successfully updated");
-            f();
+            fSuccess();
           }
           else {
             if (xhttp.status == 0)
