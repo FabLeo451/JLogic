@@ -1,4 +1,8 @@
+
 {
+  "types": [
+    { "id":5, "name":"Date", "color":"orange", "init":"new Date()" }
+  ],
   "nodes": [
     {
       "name": "Now",
@@ -10,6 +14,21 @@
       ],
       "output": [
         { "type": "Date", "label": "Now"}
+      ]
+    },
+    {
+      "name": "Date to String",
+      "type": 4,
+      "version": 1,
+      "import": ["java.util.Date"],
+      "java": "out{1} = in{1}.toString();",
+      "input": [
+        { "type": "Exec", "label": ""},
+        { "type": "Date", "label": "Date"}
+      ],
+      "output": [
+        { "type": "Exec", "label": ""},
+        { "type": "String", "label": "", "java":{"references":{"variable":"date_str"}}}
       ]
     }
   ]

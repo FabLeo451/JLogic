@@ -5,7 +5,6 @@
         { "id":1, "name":"Integer", "color":"green" },
         { "id":2, "name":"Double", "color":"darkorange" },
         { "id":3, "name":"String", "color":"mediumpurple" },
-        { "id":4, "name":"Boolean", "color":"firebrick" },
-        { "id":5, "name":"Date", "color":"orange", "init":"new Date()" }
+        { "id":4, "name":"Boolean", "color":"firebrick" }
       ]
 }
