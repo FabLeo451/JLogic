@@ -30,6 +30,22 @@
         { "type": "Exec", "label": ""},
         { "type": "String", "label": "", "java":{"references":{"variable":"date_str"}}}
       ]
+    },
+    {
+      "name": "Date Parse",
+      "type": 4,
+      "version": 1,
+      "import": ["java.util.Date", "java.text.DateFormat", "java.text.ParseException"],
+      "java": "boolean _{node.id}_parse_ok = false; try { DateFormat df = DateFormat.getDateInstance(); out{1} = df.parse(in{1}); _{node.id}_parse_ok = true; } catch (ParseException e) { _{node.id}_parse_ok = false; } if (_{node.id}_parse_ok) { exec{0} } else { exec{2}}",
+      "input": [
+        { "type": "Exec", "label": ""},
+        { "type": "String", "label": "String", "value":"", "single_line":true }
+      ],
+      "output": [
+        { "type": "Exec", "label": "Success"},
+        { "type": "Date", "label": "Date", "java":{"references":{"variable":"date"}}},
+        { "type": "Exec", "label": "Error"}
+      ]
     }
   ]
 }
