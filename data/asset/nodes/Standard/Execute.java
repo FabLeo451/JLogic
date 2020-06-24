@@ -1,7 +1,11 @@
 boolean _{node.id}_exeOK = false;
 
 List<String> _{node.id}_args = new ArrayList<String>();
-_{node.id}_args.add(in{2});
+
+// Add command and arguments (from out{2} on...)
+for (int _{node.id}_i = 3; _{node.id}_i < {count.in}; _{node.id}_i++) {
+  _{node.id}_args.add((String) _{node.id}_in [_{node.id}_i]);
+}
 
 ProcessBuilder _{node.id}_processBuilder = new ProcessBuilder();
 
@@ -13,11 +17,19 @@ if (!in{1}.isEmpty())
 try {
   Process _{node.id}_process = _{node.id}_processBuilder.start();
 
-  StringBuilder _{node.id}_output = new StringBuilder();
+  // stdin
+  if (!in{2}.isEmpty()) {
+    BufferedWriter _{node.id}_writer = new BufferedWriter(new OutputStreamWriter(_{node.id}_process.getOutputStream()));
+    _{node.id}_writer.write(in{2});
+    _{node.id}_writer.flush();
+    _{node.id}_writer.close();
+  }
 
+  // stdout and stderr
   BufferedReader _{node.id}_outReader = new BufferedReader(new InputStreamReader(_{node.id}_process.getInputStream()));
   BufferedReader _{node.id}_errReader = new BufferedReader(new InputStreamReader(_{node.id}_process.getErrorStream()));
 
+  StringBuilder _{node.id}_output = new StringBuilder();
   String _{node.id}_line;
 
   while ((_{node.id}_line = _{node.id}_outReader.readLine()) != null)
@@ -29,7 +41,7 @@ try {
   out{1} = _{node.id}_output.toString();
   out{3} = _{node.id}_process.waitFor();
 
-  _{node.id}_exeOK = out{3} == 0 : true : false;
+  _{node.id}_exeOK = out{3} == 0 ? true : false;
 }
 catch (IOException e) {
   out{1} = e.getMessage();

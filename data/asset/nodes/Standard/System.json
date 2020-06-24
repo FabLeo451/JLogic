@@ -7,10 +7,11 @@
       "import": ["java.lang.ProcessBuilder", "java.io.*", "java.lang.StringBuilder", "java.util.List", "java.util.ArrayList"],
       "java":"@Execute.java",
       "options": { "javaInputArray": true },
-      "addInput": { "type": "String", "label": "Param", "value": "" },
+      "addInput": { "type": "String", "label": "Param", "value": "", "single_line":true },
       "input": [
         { "type": "Exec", "label": "" },
         { "type": "String", "label": "Directory", "value": "", "single_line":true },
+        { "type": "String", "label": "Input", "value": "" },
         { "type": "String", "label": "Command", "value": "", "single_line":true }
       ],
       "output": [
