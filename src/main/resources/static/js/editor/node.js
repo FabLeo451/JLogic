@@ -633,6 +633,8 @@ class Node extends NodeBase {
       this.addInputButton.onclick = function (ev) {
         var conn = nodeSelf.addConnector (BPDirection.INPUT, pinType, dataType, j["addInput"]["label"], j["addInput"]["value"], null, Dimensions.SCALAR);
         conn.canDelete = true;
+        conn.single_line = nodeSelf.addInputJson.hasOwnProperty("single_line") ? nodeSelf.addInputJson.single_line : false;
+        conn.setValue(j.addInput.value);
       }
 
       this.nodeElem.appendChild(this.addInputButton);
