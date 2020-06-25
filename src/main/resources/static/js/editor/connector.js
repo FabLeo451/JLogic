@@ -301,6 +301,10 @@ class Connector {
   canConnectTo (c) {
     if ((this.owner == c.owner) || (this.direction == c.direction) || (this.dimensions != c.dimensions))
       return (false);
+
+    if ((this.exec && !c.exec) || (!this.exec && c.exec))
+      return (false);
+      
     //console.log("this.pinType = "+this.pinType.id+" c.pinType = "+c.pinType.id+" ("+BPTypeID.ANY+")");
     //if (this.pinType.id == BPTypeID.ANY ^ c.pinType.id == BPTypeID.ANY)
     console.log(this.getLabel()+".any = "+this.any+" "+c.getLabel()+".any = "+c.any);

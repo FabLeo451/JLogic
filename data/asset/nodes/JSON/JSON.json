@@ -72,6 +72,40 @@
       ]
     },
     {
+      "name": "JSON Load",
+      "type": 4,
+      "version": 1,
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*", "org.json.simple.parser.*", "java.io.FileReader", "java.nio.file.Files", "java.nio.file.Paths", "java.io.IOException", "java.nio.file.NoSuchFileException"],
+      "java":"@Load.java",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Filename", "value": "", "single_line": true }
+      ],
+      "output": [
+        { "type": "Exec", "label": "Success" },
+        { "type": "JSONObject", "label": "Json", "java": {"references": {"variable":"jo"}} },
+        { "type": "Exec", "label": "Error" },
+        { "type": "String", "label": "Message", "java": {"references": {"variable":"msg"}} }
+      ]
+    },
+    {
+      "name": "JSON Contains Key",
+      "type": 5,
+      "version": 1,
+      "inner_text":"{&nbsp;}",
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"in{0}.containsKey(in{1})",
+      "input": [
+        { "type": "JSONObject", "label": "Json" },
+        { "type": "String", "label": "Key", "value": "", "single_line": true }
+      ],
+      "output": [
+        { "type": "Boolean", "label": "Is Present" },
+      ]
+    },
+    {
       "name": "JSON Get String",
       "type": 4,
       "version": 1,
