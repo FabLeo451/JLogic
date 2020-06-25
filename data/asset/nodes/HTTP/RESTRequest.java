@@ -2,10 +2,13 @@
 boolean _{node.id}_restOK = false;
 
 try {
-  URL _{node.id}_url = new URL(in{2});
-  HttpURLConnection _{node.id}_con = (HttpURLConnection) _{node.id}_url.openConnection();
+  /*URL _{node.id}_url = new URL(in{2});
+  HttpURLConnection _{node.id}_con = (HttpURLConnection) _{node.id}_url.openConnection();*/
 
+  HttpURLConnection _{node.id}_con = in{2};
   String method = "";
+
+  //System.out.println("Protocol: "+_{node.id}_con.getURL().getProtocol());
 
   switch (in{1}) {
     case 0:

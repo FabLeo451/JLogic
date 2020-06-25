@@ -17,7 +17,7 @@
         "javax.net.ssl.TrustManager",
         "javax.net.ssl.X509TrustManager"
       ],
-      "options": { "javaInputArray": true, "include":["DefaultTrustManager.java"] },
+      "options": { "javaInputArray": true },
       "java":"@Connect.java",
       "input": [
         { "type": "Exec", "label": "" },
