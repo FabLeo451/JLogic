@@ -1,0 +1,16 @@
+{
+  "nodes": [
+    {
+      "name": "null",
+      "type": 5,
+      "version": 1,
+      "inner_text": "null",
+      "java": "null",
+      "input": [
+      ],
+      "output": [
+        { "type": "Any", "label": "" }
+      ]
+    }
+  ]
+}

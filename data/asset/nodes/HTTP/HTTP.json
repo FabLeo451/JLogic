@@ -1,0 +1,26 @@
+{
+  "nodes": [
+  {
+    "name": "REST Client",
+    "type": 4,
+    "version": 1,
+    "import": ["java.io.BufferedReader","java.io.IOException","java.io.InputStream", "java.io.InputStreamReader",
+               "java.io.OutputStream","java.net.HttpURLConnection","java.net.URL","org.json.simple.JSONObject"],
+    "options": { "javaInputArray": true },
+    "java":"@RESTClient.java",
+    "input": [
+      { "type": "Exec", "label": "" },
+      { "type": "Integer", "label": "Method", "value": 0, "enum": [ "GET", "PUT", "POST", "DELETE" ] },
+      { "type": "String", "label": "URL", "value": "http://localhost:8080", "single_line":true },
+      { "type": "JSONObject", "label": "Data" }
+    ],
+    "output": [
+      { "type": "Exec", "label": "Success" },
+      { "type": "Integer", "label": "Status", "java":{"references":{"variable":"status"}} },
+      { "type": "String", "label": "Response", "java":{"references":{"variable":"response"}} },
+      { "type": "Exec", "label": "Error" },
+      { "type": "String", "label": "Message", "java":{"references":{"variable":"msg"}} }
+    ]
+  }
+  ]
+}
