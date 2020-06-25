@@ -54,6 +54,24 @@
       ]
     },
     {
+      "name": "JSON Save",
+      "type": 4,
+      "version": 1,
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*", "java.io.FileWriter", "java.nio.file.Files", "java.nio.file.Paths", "java.io.IOException"],
+      "java":"@Save.java",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Filename", "value": "", "single_line": true },
+        { "type": "JSONObject", "label": "Json" }
+      ],
+      "output": [
+        { "type": "Exec", "label": "Success" },
+        { "type": "Exec", "label": "Error" },
+        { "type": "String", "label": "Message", "java":{"references":{"variable":"msg"}} }
+      ]
+    },
+    {
       "name": "JSON Get String",
       "type": 4,
       "version": 1,
