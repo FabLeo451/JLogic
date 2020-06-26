@@ -189,6 +189,11 @@ public class ProgramService {
 	}
 
 	public boolean deleteVariable (ProgramEntity program, String name) {
+    Variable pv = program.getVariable(name);
+
+    if (pv != null && program.variableIsReferenced(pv))
+      return false;
+
 	  if (program.deleteVariable(name)) {
 	    repository.save(program);
 	    //System.out.println(program.getVariables());

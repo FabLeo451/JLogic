@@ -385,8 +385,14 @@ public class ProgramEntity {
 	  return (variables.remove(v));
 	}
 
-  // TODO: check if variable is referenced
 	public boolean variableIsReferenced(Variable v) {
+    List<BlueprintEntity> bl = getBlueprints();
+
+    for (BlueprintEntity b: bl) {
+      if (b.referencesVariable(v))
+        return true;
+    }
+
 	  return (false);
 	}
 

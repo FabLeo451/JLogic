@@ -203,6 +203,75 @@ function onNameChanged() {
   blueprint.onModified ();
 }
 
+function checkGlobals() {
+  var updated = false;
+
+  // Check global variables in blueprint
+  var del = [];
+  var found;
+  for (var b=0; b<_jbp.variables.length; b++) {
+    if (_jbp.variables[b].global) {
+      found = false;
+
+      for (var p=0; p<program.variables.length; p++) {
+        if (_jbp.variables[b].id == program.variables[p].id) {
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        bpConsole.append ("Blueprint global variable '"+_jbp.variables[b].name+"' not in program.", BPConsoleTextType.ERROR);
+        del.push(b);
+      }
+    }
+  }
+
+  // Delete global variables presento only in blueprint
+  for (var i=0; i<del.length; i++) {
+    var v = _jbp.variables[del[i]];
+
+    if (!v.referenced) {
+      bpConsole.append ("Removing "+v.name);
+      _jbp.variables.splice(del[i], 1);
+      updated = true;
+    }
+    else {
+      bpConsole.append ("Variable '"+v.name+"' should be removed but is used in blueprint", BPConsoleTextType.WARNING);
+    }
+  }
+
+  // Add program variables not present in the blueprint yet and update exsising
+  for (var i=0; i<program.variables.length; i++) {
+		var v = program.variables[i];
+
+    //console.log("Found program variable:");
+    //console.log(v);
+
+	  found = false;
+    for (var k=0; k<_jbp.variables.length; k++)
+      if (_jbp.variables[k].id == v.id) {
+        found = true;
+        // Name could be changed by others blueprints
+        //_jbp.variables[k].name = v.name;
+
+        // Update blueprint variable
+        var ref = _jbp.variables[k].referenced;
+        _jbp.variables[k] = v;
+        _jbp.variables[k].referenced = ref;
+        break;
+      }
+
+		if (!found) {
+      console.log('Global variable '+v.name+' not in blueprint. Adding...');
+      _jbp.variables.push(v);
+      updated = true;
+    }
+  }
+
+  return updated;
+}
+
 function appStart () {
 
   console.log ('Initializing console...');
@@ -233,6 +302,7 @@ function appStart () {
   blueprint = new Blueprint ();
   blueprint.init ();
   blueprint.setAsset (_asset);
+  setStatus (BPEditStatus.SUBMITTED);
 
   // Get blueprint id
   var args = window.location.pathname.split("/");
@@ -259,60 +329,17 @@ function appStart () {
 
                 program = JSON.parse(xhttp.responseText);
 
-                // Check global variables in blueprint
-                var found;
-                for (var b=0; b<_jbp.variables.length; b++) {
-                  if (_jbp.variables[b].global) {
-                    found = false;
-
-                    for (var p=0; p<program.variables.length; p++) {
-                      if (_jbp.variables[b].id == program.variables[p].id) {
-                        found = true;
-                        break;
-                      }
-                    }
-
-                    if (!found)
-                      bpConsole.append ("Blueprint global variable '"+_jbp.variables[b].name+"' not in program.", BPConsoleTextType.ERROR);
-                  }
-                }
-
-                // Add program variables not present in the blueprint yet and update exsising
-
-                for (var i=0; i<program.variables.length; i++) {
-									var v = program.variables[i];
-
-                  //console.log("Found program variable:");
-                  //console.log(v);
-
-								  found = false;
-                  for (var k=0; k<_jbp.variables.length; k++)
-                    if (_jbp.variables[k].id == v.id) {
-                      found = true;
-                      // Name could be changed by others blueprints
-                      //_jbp.variables[k].name = v.name;
-
-                      // Update blueprint variable
-                      var ref = _jbp.variables[k].referenced;
-                      _jbp.variables[k] = v;
-                      _jbp.variables[k].referenced = ref;
-                      break;
-                    }
-
-									if (!found) {
-                    console.log('Global variable '+v.name+' not in blueprint. Adding...');
-                    _jbp.variables.push(v);
-                  }
-                }
+                // Copmare blueprint global variables with program global variables
+                var updated = checkGlobals();
 
                 appLoadBlueprint (_jbp);
-                //setStatus (BPEditStatus.SUBMITTED);
+                setStatus (updated ? BPEditStatus.MODIFIED : BPEditStatus.SUBMITTED);
                 showSnacknar(BPResult.SUCCESS, 'Blueprint '+_jbp["name"]+' loaded', 2000);
 
                 console.log ('[application] [appStart] Setting callbacks');
                 blueprint.setCallbackBeginModify(cbBeginModify);
                 blueprint.setCallbackModified(cbModified);
-                setStatus (BPEditStatus.SUBMITTED);
+                //setStatus (BPEditStatus.SUBMITTED);
 
                 document.getElementById('programName').innerHTML = program.name;
                 document.getElementById('bp-title').innerHTML = _jbp.name;
