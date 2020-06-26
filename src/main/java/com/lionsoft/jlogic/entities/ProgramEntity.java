@@ -1189,9 +1189,12 @@ public class ProgramEntity {
             JSONObject jdata;
 
             try {
-              //jdata = new JSONObject(data);
+              logger.info("Parsing data");
               jdata = (JSONObject) jsonParser.parse(data);
+
+              logger.info("Getting input parameters");
               params = getParams(method, jdata);
+
             } catch (ParseException e) {
               setResult(ProgramEntity.BAD_INPUT, e.getMessage());
               return false;
@@ -1221,6 +1224,8 @@ public class ProgramEntity {
           /*final Object[] args = new Object[1];
           args[0] = new String[] { "1", "2"};
           method.invoke(null, args);*/
+
+          logger.info("Starting execution");
 
           Object code = null;
 

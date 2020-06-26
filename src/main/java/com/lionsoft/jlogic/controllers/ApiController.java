@@ -33,10 +33,10 @@ public class ApiController {
 
   @Autowired
   APIRepository repository;
-  
+
   @Autowired
   APIService APIService;
-  
+
   @Autowired
   BlueprintService blueprintService;
 
@@ -45,69 +45,69 @@ public class ApiController {
 	@GetMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> get() {
 	  List<APIEntity> list = APIService.findAll();
-	  
+
 	  for (APIEntity a: list)
 	    System.out.println(a);
-	    
+
 		return (APIService.findAll());
 	}
-	
+
 	@PostMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> create(@RequestBody APIEntity api) {
 	  logger.info("Creating API "+api.getName());
 
     Optional<APIEntity> apiCheck = repository.findByName(api.getName());
-    
+
     if (apiCheck.isPresent())
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Existing API");
 
     Optional<BlueprintEntity> blueprint = blueprintService.findById(api.getBlueprint().getId());
-    
+
     if (!blueprint.isPresent())
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Blueprint not found: "+api.getBlueprint().getId());
-  
+
     //api.setBlueprint(blueprint.get());
-    
+
     APIService.create(api);
 
 		return (repository.findAll());
 	}
-	
+
 	@PutMapping(value = "/api/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> edit(@PathVariable("id") String id, @RequestBody APIEntity api) {
     logger.info("Updating API "+api.getName());
-	  
+
     Optional<APIEntity> apiCheck = repository.findById(id);
-    
+
     if (!apiCheck.isPresent())
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
 
     apiCheck = repository.findByName(api.getName());
-    
+
     if (apiCheck.isPresent() && (!apiCheck.get().getId().equals(id)))
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Existing API with same name");
 
     Optional<BlueprintEntity> blueprint = blueprintService.findById(api.getBlueprint().getId());
-    
+
     if (!blueprint.isPresent())
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Blueprint not found: "+api.getBlueprint().getId());
-  
+
     //api.setBlueprint(blueprint.get());
-    
+
     APIService.update(api);
 
 		return (repository.findAll());
 	}
-	
+
 	@DeleteMapping(value = "/api/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> delete(@PathVariable("id") String id) {
 	  logger.info("Deleting API "+id);
-	  
+
     Optional<APIEntity> api = repository.findById(id);
-    
+
     if (!api.isPresent())
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
-    
+
     APIService.delete(api.get());
 
 		return (repository.findAll());
@@ -118,12 +118,12 @@ public class ApiController {
 	  logger.info("Executing API "+name);
 
     Optional<APIEntity> api = repository.findByName(name);
-    
+
     if (!api.isPresent())
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "API not found: "+name);
-      
+
     // Check if enabled
-    
+
     if (!api.get().getEnabled())
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "API is disabled");
 
@@ -131,60 +131,80 @@ public class ApiController {
     String method = api.get().getBlueprint().getMethod();
 	  String outData = "";
 	  HttpStatus status = HttpStatus.OK;
-	  
+
 	  // Get parameters
-	  
+
     //Map<String, String[]> params = request.getParameterMap();
-    
+
     logger.info("Executing "+program.getName()+"."+method);
-	  	    
+
     // Execute
-    
+
     if (!program.run(method, null, name, request)) {
       outData = program.getOutput();
-      
+
       switch (program.getResult()) {
         case ProgramEntity.METHOD_NOT_FOUND:
           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Method not found: "+method);
           //break;
-          
+
         default:
           throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, outData);
           //break;
       }
     }
-	      
+
     outData = program.getHTTPResponse();
     status = HttpStatus.valueOf(program.getHTTPStatus());
-	        	   
+
 		return new ResponseEntity<>(outData, status);
 	}
-	
-	@PutMapping(value = "/api/{id}/enable", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<APIEntity> enableAPI(@PathVariable("id") String id) {
-	  
-    Optional<APIEntity> api = repository.findById(id);
-    
+
+  // POST /api/{name}
+  @PostMapping(value = "/api/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> executePOST(HttpServletRequest request,
+                                            @PathVariable("name") String name,
+                                            @RequestBody String data) {
+	  logger.info("Executing API "+name);
+
+    Optional<APIEntity> api = repository.findByName(name);
+
     if (!api.isPresent())
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
-    
+
+	  APIResult result = APIService.execute(api.get(), data, request);
+
+    if (result.getCode() != 0)
+      throw new ResponseStatusException(result.getStatus(), result.getMessage());
+
+		return new ResponseEntity<>(result.getResponse(), result.getStatus());
+	}
+
+	@PutMapping(value = "/api/{id}/enable", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<APIEntity> enableAPI(@PathVariable("id") String id) {
+
+    Optional<APIEntity> api = repository.findById(id);
+
+    if (!api.isPresent())
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
+
 	  logger.info("Enabling API "+api.get().getName());
-	  
+
     APIService.setEnabled(api.get(), true);
 
 		return (repository.findAll());
 	}
-	
+
 	@PutMapping(value = "/api/{id}/disable", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> disableAPI(@PathVariable("id") String id) {
-	  
+
     Optional<APIEntity> api = repository.findById(id);
-    
+
     if (!api.isPresent())
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
-    
+
 	  logger.info("Disabling API "+api.get().getName());
-	  
+
     APIService.setEnabled(api.get(), false);
 
 		return (repository.findAll());
