@@ -23,6 +23,15 @@ try {
   else
     out{1} = (HttpURLConnection) _{node.id}_url.openConnection();
 
+  if (!in{2}.isEmpty() && !in{3}.isEmpty()) {
+    String _{node.id}_auth = in{2} + ":" + in{3};
+    byte[] _{node.id}_encodedAuth = Base64.getEncoder().encode(_{node.id}_auth.getBytes(StandardCharsets.UTF_8));
+
+    String _{node.id}_authHeaderValue = "Basic " + new String(_{node.id}_encodedAuth);
+
+    out{1}.setRequestProperty("Authorization", _{node.id}_authHeaderValue);
+  }
+
   _{node.id}_restOK = true;
 
 } catch (IOException e) {

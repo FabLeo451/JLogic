@@ -17,13 +17,17 @@
         "javax.net.ssl.TrustManager",
         "javax.net.ssl.X509TrustManager",
         "java.security.NoSuchAlgorithmException",
-        "java.security.KeyManagementException"
+        "java.security.KeyManagementException",
+        "java.util.Base64",
+        "java.nio.charset.StandardCharsets"
       ],
       "options": { "javaInputArray": true, "include":["{path}/DefaultTrustManager.java"] },
       "java":"@Connect.java",
       "input": [
         { "type": "Exec", "label": "" },
-        { "type": "String", "label": "URL", "value": "http://localhost:8080", "single_line":true }
+        { "type": "String", "label": "URL", "value": "http://localhost:8080", "single_line":true },
+        { "type": "String", "label": "Username", "value": "", "single_line":true },
+        { "type": "String", "label": "Password", "value": "", "single_line":true, "password":true }
       ],
       "output": [
         { "type": "Exec", "label": "Success" },
