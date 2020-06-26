@@ -221,7 +221,7 @@ function checkGlobals() {
       }
 
       if (!found) {
-        bpConsole.append ("Blueprint global variable '"+_jbp.variables[b].name+"' not in program.", BPConsoleTextType.ERROR);
+        bpConsole.append ("Blueprint global variable '"+_jbp.variables[b].name+"' not in program.", BPConsoleTextType.WARNING);
         del.push(b);
       }
     }
@@ -232,7 +232,7 @@ function checkGlobals() {
     var v = _jbp.variables[del[i]];
 
     if (!v.referenced) {
-      bpConsole.append ("Removing "+v.name);
+      bpConsole.append ("Removing "+v.name, BPConsoleTextType.WARNING);
       _jbp.variables.splice(del[i], 1);
       updated = true;
     }
@@ -329,7 +329,7 @@ function appStart () {
 
                 program = JSON.parse(xhttp.responseText);
 
-                // Copmare blueprint global variables with program global variables
+                // Compmare blueprint global variables with program global variables
                 var updated = checkGlobals();
 
                 appLoadBlueprint (_jbp);
@@ -1580,4 +1580,15 @@ function debugOnConsole() {
 
   for (var i=0; i<blueprint.nodes.length; i++)
     bpConsole.append (blueprint.nodes[i].toString());
+}
+
+function onUnload(event) {
+  e.preventDefault();
+  event.returnValue = '';
+  if (getStatus() != BPEditStatus.SUBMITTED) {
+
+  }
+  else {
+
+  }
 }
