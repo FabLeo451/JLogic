@@ -196,24 +196,24 @@ public class MainController {
     String startPath = homeDir+"/"+directory;
 
     //System.out.println("directory = "+directory);
-    System.out.println("homeDir = "+homeDir);
-    System.out.println("startPath = "+startPath);
+    //System.out.println("homeDir = "+homeDir);
+    //System.out.println("startPath = "+startPath);
 
     try (Stream<Path> paths = Files.walk(Paths.get(startPath))) {
       List<String> list = paths.map(p -> p.toString()).filter(f -> f.endsWith(".json")).collect(Collectors.toList());
 
       for (int i = 0; i < list.size(); i++) {
-        System.out.println(list.get(i));
+        //System.out.println(list.get(i));
 
         File file = Paths.get(list.get(i)).toFile();
         String parentDirName = file.getParent(); // to get the parent dir name
-        System.out.println("parentDirName = "+parentDirName);
+        //System.out.println("parentDirName = "+parentDirName);
 
         File containerFile = file.getParentFile(); // Directory that contains this file
         Path containerPath = Paths.get(containerFile.toString());
         //String path = directory+"/"+containerPath.getFileName();
         String path = parentDirName.replace(homeDir+"/", "");
-        System.out.println("path = "+path);
+        //System.out.println("path = "+path);
 
         content = new String (Files.readAllBytes(Paths.get(list.get(i))));
 

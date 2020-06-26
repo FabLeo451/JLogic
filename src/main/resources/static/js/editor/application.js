@@ -277,26 +277,30 @@ function appStart () {
                   }
                 }
 
-                // Add program variables not present in the blueprint yet
-                // _jbp.variables = _jbp.variables.concat(program.variables);
+                // Add program variables not present in the blueprint yet and update exsising
 
                 for (var i=0; i<program.variables.length; i++) {
 									var v = program.variables[i];
 
-                  console.log("Found program variable:");
-                  console.log(v);
+                  //console.log("Found program variable:");
+                  //console.log(v);
 
 								  found = false;
                   for (var k=0; k<_jbp.variables.length; k++)
                     if (_jbp.variables[k].id == v.id) {
                       found = true;
                       // Name could be changed by others blueprints
-                      _jbp.variables[k].name = v.name;
+                      //_jbp.variables[k].name = v.name;
+
+                      // Update blueprint variable
+                      var ref = _jbp.variables[k].referenced;
+                      _jbp.variables[k] = v;
+                      _jbp.variables[k].referenced = ref;
                       break;
                     }
 
 									if (!found) {
-                    console.log('Not in blueprint. Adding...');
+                    console.log('Global variable '+v.name+' not in blueprint. Adding...');
                     _jbp.variables.push(v);
                   }
                 }

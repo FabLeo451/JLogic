@@ -385,6 +385,11 @@ public class ProgramEntity {
 	  return (variables.remove(v));
 	}
 
+  // TODO: check if variable is referenced
+	public boolean variableIsReferenced(Variable v) {
+	  return (false);
+	}
+
 	public void addClassPath(String cp) {
 	  if (!classPathList.contains(cp))
 		  classPathList.add(getHomeDir() + "/" + cp);
