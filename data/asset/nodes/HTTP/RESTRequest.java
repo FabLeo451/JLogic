@@ -59,7 +59,9 @@ try {
     _{node.id}_response.append(_{node.id}_responseSingle);
   }
 
-  out{2} = _{node.id}_response.toString();
+  //out{2} = _{node.id}_response.toString();
+  JSONParser _{node.id}_jsonParser = new JSONParser();
+  out{2} = (JSONObject) _{node.id}_jsonParser.parse(_{node.id}_response.toString());
   _{node.id}_restOK = true;
 
 } catch (Exception e) {

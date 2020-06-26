@@ -55,7 +55,7 @@
       "type": 4,
       "version": 1,
       "import": ["java.io.BufferedReader","java.io.IOException","java.io.InputStream", "java.io.InputStreamReader",
-                 "java.io.OutputStream","java.net.HttpURLConnection","java.net.URL","org.json.simple.JSONObject"],
+                 "java.io.OutputStream","java.net.HttpURLConnection","java.net.URL","org.json.simple.JSONObject", "org.json.simple.parser.*"],
       "jar": ["lib/json-simple-1.1.1.jar"],
       "options": { "javaInputArray": true },
       "java":"@RESTRequest.java",
@@ -63,12 +63,12 @@
         { "type": "Exec", "label": "" },
         { "type": "Integer", "label": "Method", "value": 0, "enum": [ "GET", "PUT", "POST", "DELETE" ] },
         { "type": "HttpURLConnection", "label": "Connection" },
-        { "type": "JSONObject", "label": "Data" }
+        { "type": "JSONObject", "label": "Data", "nullable":true }
       ],
       "output": [
         { "type": "Exec", "label": "Success" },
         { "type": "Integer", "label": "Status", "java":{"references":{"variable":"status"}} },
-        { "type": "String", "label": "Response", "java":{"references":{"variable":"response"}} },
+        { "type": "JSONObject", "label": "Response", "java":{"references":{"variable":"response"}} },
         { "type": "Exec", "label": "Error" },
         { "type": "String", "label": "Message", "java":{"references":{"variable":"msg"}} }
       ]

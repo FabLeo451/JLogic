@@ -48,7 +48,7 @@ class Connector {
     this.single_line = false;
     this.password = false;
     this.hasValue = false;
-    this.mustConnect = false;
+    this.nullable = false;
     this.notNull = false;
 
     this.dimensions = Dimensions.SCALAR;
@@ -304,7 +304,7 @@ class Connector {
 
     if ((this.exec && !c.exec) || (!this.exec && c.exec))
       return (false);
-      
+
     //console.log("this.pinType = "+this.pinType.id+" c.pinType = "+c.pinType.id+" ("+BPTypeID.ANY+")");
     //if (this.pinType.id == BPTypeID.ANY ^ c.pinType.id == BPTypeID.ANY)
     console.log(this.getLabel()+".any = "+this.any+" "+c.getLabel()+".any = "+c.any);
@@ -710,8 +710,8 @@ class Connector {
     if (this.references)
       jo.references = this.references.id;
 
-    if (this.mustConnect)
-      jo.must_connect = true;
+    if (this.nullable)
+      jo.nullable = true;
 
     if (this.notNull)
       jo.not_null = true;

@@ -570,11 +570,12 @@ class Node extends NodeBase {
           conn.references = v;
         }
 
-        if (c.hasOwnProperty('must_connect')) {
-          conn.mustConnect = c.must_connect;
-          console.log ('conn.mustConnect = '+conn.mustConnect);
+        /*if (c.hasOwnProperty('nullable')) {
+          conn.nullable = c.nullable;
+          console.log ('conn.nullable = '+conn.nullable);
           console.log (conn.toString());
-        }
+        }*/
+        conn.nullable = c.hasOwnProperty('nullable') ? c.nullable : false
 
         if (c.hasOwnProperty('not_null'))
           conn.notNull = c.not_null;
