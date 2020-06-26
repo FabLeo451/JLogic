@@ -48,21 +48,21 @@ class PackageInfo {
   private String name;
   private String version;
   private Instant buildTime;
-  
+
   public PackageInfo(BuildProperties buildProperties) {
     this.name = buildProperties.getName();
     this.version = buildProperties.getVersion();
     this.buildTime = buildProperties.getTime();
   }
-  
+
   public String getName() {
     return name;
   }
-  
+
   public String getVersion() {
     return version;
   }
-  
+
   public Instant getBuildTime() {
     return buildTime;
   }
@@ -70,7 +70,7 @@ class PackageInfo {
 
 class SystemInfo {
   private String nodeName;
-  
+
   public SystemInfo() {
     try
     {
@@ -83,7 +83,7 @@ class SystemInfo {
         System.out.println("Hostname can not be resolved");
     }
   }
-    
+
   public String getNodeName () {
     return nodeName;
   }
@@ -97,18 +97,18 @@ public class MainController {
 
   @Autowired
   BuildProperties buildProperties;
-  
+
   @Autowired
   CatalogService catalogService;
-  
+
   @Autowired
   SessionService sessionService;
-  
-/*  
+
+/*
   @Autowired
   private SessionRegistry sessionRegistry;
 */
-  
+
   @GetMapping(value="/", produces = MediaType.APPLICATION_JSON_VALUE)
   public PackageInfo getPackageInfo() {
     return new PackageInfo(buildProperties);
@@ -118,17 +118,17 @@ public class MainController {
   public String getCatalog() {
     return catalogService.getCatalog().toString();
   }
-  
+
   private JSONObject processNode (JSONObject jnode, String path) {
     JSONObject jo = jnode;
     String java = jnode.optString("java");
-    
+
     if (java.length() > 0) {
       // when "java":"@my-code.java" load file and set "java" attribute
       if (java.substring(0,1).equals("@")) {
         String filename = path+"/"+java.substring(1);
         //System.out.println("Loading "+filename);
-        
+
         try {
           String content = new String (Files.readAllBytes(Paths.get(filename)));
           jo.put("java", content);
@@ -137,7 +137,7 @@ public class MainController {
         }
       }
     }
-    
+
     return (jo);
   }
 
@@ -148,7 +148,7 @@ public class MainController {
     JSONArray jTypesArray = new JSONArray();
     String content;
 
-    try { 
+    try {
       content = new String (Files.readAllBytes(Paths.get(home.getDir()+"/../data/asset/node_types.json")));
       JSONObject jNodeTypes = new JSONObject(content);
       jNodeTypesArray = jNodeTypes.getJSONArray("node_types");
@@ -165,16 +165,16 @@ public class MainController {
 
     return (jAsset);
   }
-  
+
   private JSONObject addNodeData(JSONObject jnode, String key, Object value) {
     JSONObject jdata;
-    
+
     if (!jnode.has("data")) {
         jdata = new JSONObject();
         jnode.put("data", jdata);
     } else
         jdata = (JSONObject) jnode.get("data");
-    
+
     jdata.put(key, value);
     return(jnode);
   }
@@ -186,34 +186,37 @@ public class MainController {
     JSONObject jnode;
 
     File homeFile = new File(home.getDir()+"/..");
-    
+
     try {
       homeDir = homeFile.getCanonicalPath();
     } catch (IOException e) {
       logger.error(e.getMessage());
     }
-    
+
     String startPath = homeDir+"/"+directory;
-    
+
     //System.out.println("directory = "+directory);
-    //System.out.println("startPath = "+startPath);
-      
+    System.out.println("homeDir = "+homeDir);
+    System.out.println("startPath = "+startPath);
+
     try (Stream<Path> paths = Files.walk(Paths.get(startPath))) {
       List<String> list = paths.map(p -> p.toString()).filter(f -> f.endsWith(".json")).collect(Collectors.toList());
-            
+
       for (int i = 0; i < list.size(); i++) {
-        //System.out.println(list.get(i));
-        
+        System.out.println(list.get(i));
+
         File file = Paths.get(list.get(i)).toFile();
         String parentDirName = file.getParent(); // to get the parent dir name
+        System.out.println("parentDirName = "+parentDirName);
 
         File containerFile = file.getParentFile(); // Directory that contains this file
         Path containerPath = Paths.get(containerFile.toString());
-        String path = directory+"/"+containerPath.getFileName();
+        //String path = directory+"/"+containerPath.getFileName();
+        String path = parentDirName.replace(homeDir+"/", "");
+        System.out.println("path = "+path);
 
-    
         content = new String (Files.readAllBytes(Paths.get(list.get(i))));
-        
+
         try {
           // Array of nodes, no types
           JSONArray ja = new JSONArray(content);
@@ -226,33 +229,33 @@ public class MainController {
         }
         catch (JSONException e1) {
           // Try object with types and nodes
-          
+
           Boolean hasTypes = Boolean.FALSE;
           Boolean hasNodes = Boolean.FALSE;
           JSONObject jo = new JSONObject(content);
-          
+
           if (jo.has("types")) {
             JSONArray jt = jo.getJSONArray("types");
 
             for (int j = 0; j < jt.length(); j++)
               jTypesArray.put(jt.get(j));
-              
+
             hasTypes = Boolean.TRUE;
           }
-          
+
           if (jo.has("nodes")) {
             JSONArray jn = jo.getJSONArray("nodes");
-            
+
             for (int j = 0; j < jn.length(); j++) {
               //jnode = (JSONObject)jn.get(j);
               jnode = addNodeData((JSONObject)jn.get(j), "path", path);
-            
+
               jNodesArray.put(processNode(jnode, parentDirName));
             }
-              
+
             hasNodes = Boolean.TRUE;
           }
-          
+
           if (!hasNodes && !hasTypes && !jo.has("node_types")) {
             jo = addNodeData(jo, "path", path);
             jNodesArray.put(processNode(jo, parentDirName));
@@ -274,7 +277,7 @@ public class MainController {
   @GetMapping(value="/jsAsset", produces = "application/x-javascript")
   public String getJSAsset() {
     JSONObject jAsset = getAssetJSON();
-    return "_asset = "+jAsset.toString()+";\n";  
+    return "_asset = "+jAsset.toString()+";\n";
   }
 
   @GetMapping(value="/jsBlueprints", produces = "application/x-javascript")
@@ -291,8 +294,8 @@ public class MainController {
       //logger.error(e.getMessage());
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
     }*/
-    
-    return "_blueprints = "+content+";\n";  
+
+    return "_blueprints = "+content+";\n";
   }
 /*
   @GetMapping("/jsDynamic")
@@ -310,43 +313,42 @@ public class MainController {
       "{ \"href\":\"/stats\", \"icon\":\"i-chart-bar\", \"label\":\"Analytics\" },"+
       "{ \"href\":\"/users\", \"icon\":\"i-users\", \"label\":\"Users\" }"+
       "]");
-    
+
     JSONObject jo = new JSONObject();
-    
+
     JSONObject jsystem = new JSONObject();
     jsystem.put("nodename", systemInfo.getNodeName());
-    
+
     JSONObject jpackage = new JSONObject();
     jpackage.put("application_name", packageInfo.getName());
     jpackage.put("package", packageInfo.getName());
     jpackage.put("version", packageInfo.getVersion());
-    
+
     jo.put("system", jsystem);
     jo.put("package", jpackage);
     jo.put("menu", jmenu);
     jo.put("auth", new JSONObject("{\"enabled\":false, \"username\": \"Anonymous\"}"));
     jo.put("ssl", Boolean.FALSE);
 
-    return "__SERVER = "+jo.toString()+";\n";    
+    return "__SERVER = "+jo.toString()+";\n";
   }
 */
-/*  
+/*
   @Bean
-  SessionRegistry sessionRegistry() { 
-      return new SessionRegistryImpl(); 
+  SessionRegistry sessionRegistry() {
+      return new SessionRegistryImpl();
   }*/
-    
+
   @GetMapping(value="/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<Session> getSessions() {
     //SessionsUtils sessionUtils = new SessionsUtils();
     List<Session> l = sessionService.getList();
-    
+
     return l;
   }
-    
+
   @GetMapping(value="/stats", produces = MediaType.APPLICATION_JSON_VALUE)
   public Map<String, Long> getStats() {
     return sessionService.getStats(DateUtils.addMinutes(new Date(), -10), new Date());
   }
 }
-

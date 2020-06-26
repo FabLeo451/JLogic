@@ -15,9 +15,11 @@
         "javax.net.ssl.SSLContext",
         "javax.net.ssl.SSLSession",
         "javax.net.ssl.TrustManager",
-        "javax.net.ssl.X509TrustManager"
+        "javax.net.ssl.X509TrustManager",
+        "java.security.NoSuchAlgorithmException",
+        "java.security.KeyManagementException"
       ],
-      "options": { "javaInputArray": true, "include":["DefaultTrustManager.java"] },
+      "options": { "javaInputArray": true, "include":["{path}/DefaultTrustManager.java"] },
       "java":"@Connect.java",
       "input": [
         { "type": "Exec", "label": "" },
