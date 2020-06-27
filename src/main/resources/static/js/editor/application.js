@@ -1103,29 +1103,7 @@ function deleteConnectorCallback(id) {
   blueprint.redrawEdges();
   setStatus (BPEditStatus.MODIFIED);
 }
-/*
-function endRenameVariable(ev) {
 
-  var id = ev.target.getAttribute('_varid');
-  //var newName = ev.target.innerHTML;
-  var newName = ev.target.value;
-
-  //console.log ("[endRenameVariable] id = "+id+" new name = "+newName);
-
-  var v = blueprint.getVariable (id);
-
-  if (v) {
-    v = blueprint.setVariableName (v, newName);
-    //blueprint.redrawEdges();
-  }
-  else
-    console.error ("[endRenameVariable] Error: variable not found: "+id);
-
-  ev.target.innerHTML = v.name;
-  actionsEnabled = true;
-  //console.log ("[endRenameVariable] Changing var "+v.name);
-}
-*/
 function appAddInOut(paramType, target)
 {
   var targetId, targetName, targetType, tabId, rowPrefix;
@@ -1323,6 +1301,7 @@ function endRenameVariable(ev) {
             bpConsole.append (v.getName() + " successfully updated");
             v = blueprint.setVariableName (v, newName);
             ev.target.innerHTML = v.name;
+            cbModified();
           }
           else {
             if (xhttp.status == 0)
@@ -1340,6 +1319,7 @@ function endRenameVariable(ev) {
   } else {
     v = blueprint.setVariableName (v, newName);
     ev.target.innerHTML = v.name;
+    cbModified();
   }
 
   actionsEnabled = true;
@@ -1495,6 +1475,7 @@ function variableTypeChanged(ev) {
     updateGlobalVariable(newVar,
       function() {
         setVariableType(v, ev.target.value);
+        cbModified();
       },
       function () {
         // Restore value
@@ -1502,8 +1483,10 @@ function variableTypeChanged(ev) {
       }
     );
   }
-  else
+  else {
     setVariableType(v, ev.target.value);
+    cbModified();
+  }
 }
 
 function setVariableType(v, type) {
@@ -1547,7 +1530,7 @@ function setInitialValue(id) {
         endEdit();
         //console.log ('New value '+v.get());
 
-        setStatus (BPEditStatus.MODIFIED);
+        //setStatus (BPEditStatus.MODIFIED);
         cbModified ();
       }
       else

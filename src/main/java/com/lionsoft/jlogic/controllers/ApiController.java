@@ -113,54 +113,29 @@ public class ApiController {
 		return (repository.findAll());
 	}
 
+  /**
+   * Execute an API on GET /api/{name}
+   */
 	@GetMapping(value = "/api/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> execute(HttpServletRequest request, @PathVariable("name") String name) {
-	  logger.info("Executing API "+name);
+    logger.info("Executing API "+name);
 
     Optional<APIEntity> api = repository.findByName(name);
 
     if (!api.isPresent())
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "API not found: "+name);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
 
-    // Check if enabled
+	  APIResult result = APIService.execute(api.get(), null, request);
 
-    if (!api.get().getEnabled())
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "API is disabled");
+    if (result.getCode() != 0)
+      throw new ResponseStatusException(result.getStatus(), result.getMessage());
 
-    ProgramEntity program = api.get().getBlueprint().getProgram();
-    String method = api.get().getBlueprint().getMethod();
-	  String outData = "";
-	  HttpStatus status = HttpStatus.OK;
-
-	  // Get parameters
-
-    //Map<String, String[]> params = request.getParameterMap();
-
-    logger.info("Executing "+program.getName()+"."+method);
-
-    // Execute
-
-    if (!program.run(method, null, name, request)) {
-      outData = program.getOutput();
-
-      switch (program.getResult()) {
-        case ProgramEntity.METHOD_NOT_FOUND:
-          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Method not found: "+method);
-          //break;
-
-        default:
-          throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, outData);
-          //break;
-      }
-    }
-
-    outData = program.getHTTPResponse();
-    status = HttpStatus.valueOf(program.getHTTPStatus());
-
-		return new ResponseEntity<>(outData, status);
+		return new ResponseEntity<>(result.getResponse(), result.getStatus());
 	}
 
-  // POST /api/{name}
+  /**
+   * Execute an API on POST /api/{name}     
+   */
   @PostMapping(value = "/api/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> executePOST(HttpServletRequest request,
                                             @PathVariable("name") String name,
