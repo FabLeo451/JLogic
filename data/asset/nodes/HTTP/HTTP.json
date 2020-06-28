@@ -51,6 +51,35 @@
       ]
     },
     {
+      "name": "HTTP Open Connection",
+      "type": 4,
+      "version": 1,
+      "import": ["java.net.HttpURLConnection","java.net.URL", "java.io.IOException"],
+      "java":"try { in{1}.getURL().openConnection(); } catch (IOException e) { logger.error(\"HTTP Open exception: \"+e.getMessage()); }",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "HttpURLConnection", "label": "Connection" }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "HttpURLConnection", "label": "Connection", "java":{"references":{"input":1}} }
+      ]
+    },
+    {
+      "name": "HTTP Close",
+      "type": 4,
+      "version": 1,
+      "import": ["java.net.HttpURLConnection","java.net.URL", "java.io.IOException"],
+      "java":"try { int ret = 0; while ((ret = in{1}.getInputStream().read()) > 0) { System.out.println(\"ret = \"+ret); } in{1}.getInputStream().close(); } catch (IOException e) { logger.error(\"HTTP Close exception: \"+e.getMessage()); }",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "HttpURLConnection", "label": "Connection" }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" }
+      ]
+    },
+    {
       "name": "REST Request",
       "type": 4,
       "version": 1,

@@ -65,7 +65,7 @@ try {
   _{node.id}_restOK = true;
 
 } catch (Exception e) {
-    out{4} = e.getMessage();
+    out{4} = "REST Request exception: "+e.getMessage();
 }
 
 if (_{node.id}_restOK) {

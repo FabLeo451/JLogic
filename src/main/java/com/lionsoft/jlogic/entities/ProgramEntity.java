@@ -1225,8 +1225,6 @@ public class ProgramEntity {
           args[0] = new String[] { "1", "2"};
           method.invoke(null, args);*/
 
-          logger.info("Starting execution");
-
           Object code = null;
 
           try {
