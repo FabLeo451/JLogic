@@ -895,8 +895,13 @@ class Blueprint {
   }
 
   addVariable (v) {
-    console.log ("Adding "+v.toString());
-    this.variables.push(v);
+    if (!this.getVariable(v.id)) {
+      console.log ("Adding "+v.toString());
+      this.variables.push(v);
+    }
+    else {
+      console.log ("Variable "+v.getname()+" already in blueprint");
+    }
 
     return (v);
   }

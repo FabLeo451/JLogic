@@ -1551,6 +1551,9 @@ function appClearVariables ()
   var table = document.getElementById("tab_output");
   table.innerHTML = "";
 
+  var table = document.getElementById("tab_global_variables");
+  table.innerHTML = "";
+
   var table = document.getElementById("tab_variables");
   table.innerHTML = "";
 }
