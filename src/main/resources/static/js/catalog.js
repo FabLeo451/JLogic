@@ -1,6 +1,6 @@
 'use strict';
 
-var jsonResponse;  
+var jsonResponse;
 var header = ['Name'];
 var expanded = {};
 var contextMenu = null;
@@ -37,11 +37,11 @@ function menuCallback(id, data) {
     case MenuItems.ADD_FOLDER:
       createFolder(data);
       break;
-      
+
     case MenuItems.DELETE_FOLDER:
       deleteFolder(data);
       break;
-      
+
     default:
       break;
   }
@@ -66,9 +66,9 @@ function createProgramMenu(event) {
   var t = event.currentTarget;
   var id = t.getAttribute('id');
   var name = t.getAttribute('name');
-  
+
   console.log(id+" "+name);
-    
+
   var jmenu =
     {
         'items': [
@@ -80,13 +80,13 @@ function createProgramMenu(event) {
           {'icon': '<i class="icon i-trash-alt"></i>',  'item': 'Delete',  action: () => deleteProgram(id, name) }
         ]
     };
-  
+
   if (contextMenu) {
     hideContextMenu(event);
   }
-   
+
   contextMenu = new ContextMenu();
- 
+
   contextMenu.enableSearch (false);
   contextMenu.createFromJson(jmenu);
   contextMenu.setWidthAuto();
@@ -111,14 +111,14 @@ function addBlueprints (programId, containerElem, jblueprints) {
   var listElem =  document.createElement('div');
   listElem.classList.add('w3-panel');
   containerElem.appendChild(listElem);
-  
+
   for (var i=0; i<jblueprints.length; i++) {
     jo = jblueprints[i];
-    
+
     var bpElem = document.createElement('div');
     bpElem.classList.add('w3-container');
     bpElem.setAttribute('id', jo.id);
-    
+
     var delButton = jo.type == 'GENERIC' ? `<i id="del_`+jo.id+`" class="icon i-trash-alt w3-text-gray" style="margin-left:2em; cursor:pointer; visibility:hidden" onclick="deleteBlueprint('`+jo.id+`', '`+jo.name+`')" title="Delete blueprint"></i>` : '<div id="del_'+jo.id+'"></div>';
 
     bpElem.innerHTML = `<i class="icon i-project-diagram w3-text-blue-gray" style="width:1.5em;"></i> <a href="/blueprint/`+jo.id+`/edit" target="_blank" title="Open in editor">`+jo.name+`</a> `+delButton;
@@ -138,7 +138,7 @@ function addBlueprints (programId, containerElem, jblueprints) {
 
     listElem.appendChild(bpElem);
   }
-  
+
   var addElem = document.createElement('div');
   addElem.classList.add('w3-container');
   addElem.innerHTML = `<button class="btnApp" onclick="addBlueprint('`+programId+`');" style="margin-left:1.5em;"><i class="icon i-add"></i> New Blueprint</button>`;
@@ -155,7 +155,7 @@ function createProgramHeader(jo) {
     var col = document.createElement('div');
     col.classList.add('w3-col');
     col.classList.add('s3');
-      
+
         var caret = '<span id="caret_'+jo.id+'" onclick="expandItem(\''+jo.id+'\')">' + (expanded[jo.id] ? '<i class="icon i-caret-down"></i>' : '<i class="icon i-caret-right"></i>') + '</span>';
         //icon = "i-cog w3-text-blue-gray";
 
@@ -163,15 +163,15 @@ function createProgramHeader(jo) {
           case 'READY':
             status = '<i class="icon i-clock w3-text-green"></i> Ready';
             break;
-            
+
           case 'COMPILED':
             status = '<i class="icon i-check w3-text-green"></i> Compiled';
             break;
-            
+
           case 'ERRORS':
             status = '<i class="icon i-exclamation-triangle w3-text-red"></i> Errors';
             break;
-            
+
           default:
             status = '<i class="icon i-question w3-text-orange"></i> Unknown';
             break;
@@ -181,25 +181,25 @@ function createProgramHeader(jo) {
     col.innerHTML = caret+' <b onclick="expandItem(\''+jo.id+'\')">'+jo.name+'</b>';
     col.style.cursor = 'pointer';
     //col.style.paddingLeft = (level+padding)+'em';
-    
+
     //col.oncontextmenu = createContextMenu;
-    
+
     headerElem.appendChild(col);
-    
+
     // Status
     col = document.createElement('div');
     col.classList.add('w3-col');
     col.classList.add('s3');
     col.innerHTML = status;
     headerElem.appendChild(col);
-    
+
     // Modified
     col = document.createElement('div');
     col.classList.add('w3-col');
     col.classList.add('s3');
-    col.innerHTML = secondsToString(Date.parse(jo.updateTime) / 1000);
+    col.innerHTML = secondsToString(dateFromISO8601(jo.updateTime) / 1000);
     headerElem.appendChild(col);
-    
+
     // Actions
       col = document.createElement('div');
       col.classList.add('w3-col');
@@ -223,15 +223,15 @@ function createProgramHeader(jo) {
 function addObjects (containerElem, jtree) {
   var tr, progElem, row, col, caret, icon, padding = 0;
   var status = '&nbsp;';
-  
+
   for (var i=0; i<jtree.length; i++) {
 
     var jo = jtree[i];
     var key = jo.id;
-    
+
     if (!expanded.hasOwnProperty(key))
       expanded.key = false;
-    
+
     //console.log(jo);
 
     progElem = document.createElement('div');
@@ -243,10 +243,10 @@ function addObjects (containerElem, jtree) {
 /*
     progElem.setAttribute('id', key);
     //progElem.setAttribute('tag', jo.tag);
-    progElem.setAttribute('name', jo.name);  
+    progElem.setAttribute('name', jo.name);
     //progElem.oncontextmenu = createProgramMenu;
     progElem.onclick = createProgramMenu;
-*/   
+*/
     progElem.appendChild(createProgramHeader(jo));
 
     /*
@@ -254,7 +254,7 @@ function addObjects (containerElem, jtree) {
       e.preventDefault();
       this.classList.add('catalog-selected');
     }
-      
+
     progElem.ondragleave = function(e) {
       e.preventDefault();
       this.classList.remove('catalog-selected');
@@ -264,18 +264,18 @@ function addObjects (containerElem, jtree) {
       //e.preventDefault();
       var folderId = e.dataTransfer.getData("id");
       var parentId = this.getAttribute('id');
-      
+
       moveFolder (folderId, parentId);
     }
-    
+
     progElem.ondragstart = dragFolder;
     progElem.draggable = true;
-    */  
-    
+    */
+
     containerElem.appendChild(progElem);
 
     // Container element for children
-    
+
     var childrenContainer = document.createElement('div');
     childrenContainer.classList.add('w3-container');
     childrenContainer.classList.add('w3-stretch');
@@ -306,7 +306,7 @@ function refreshCatalog () {
           document.getElementById('catalog').innerHTML = xhttp.statusText;
         }
       }
-      else if (xhttp.readyState == 3) { // Processing request 
+      else if (xhttp.readyState == 3) { // Processing request
         document.getElementById('catalog').innerHTML = "Getting blueprints...";
       }
       else {
@@ -320,14 +320,14 @@ function myCallback (xhttp) {
   if (xhttp.readyState == 4) {
     if (dialogWorking)
       dialogWorking.destroy();
-      
+
     var jresponse = null, status, message, output;
-    
+
     //console.log(xhttp.responseText);
-    
+
     try {
       jresponse = JSON.parse(xhttp.responseText);
-      
+
       if (jresponse.hasOwnProperty('status') && jresponse.hasOwnProperty('message')) {
         status = jresponse.status;
         message = jresponse.message;
@@ -337,16 +337,16 @@ function myCallback (xhttp) {
     catch (err) {
       console.error(err.message);
     }
-            
+
     if (xhttp.status == 200) {
-  
+
       if (jresponse) {
         if (jresponse.hasOwnProperty('message')) {
           showSnacknar(BPResult.SUCCESS, message, 2000);
         }
         else {
           showSnacknar(BPResult.SUCCESS, "Success", 2000);
-          
+
           // Update catalog tree
           jsonResponse = jresponse;
           refreshTable ();
@@ -356,7 +356,7 @@ function myCallback (xhttp) {
     else {
       if (jresponse) {
         var jresponse = JSON.parse(xhttp.responseText);
-        
+
         if (jresponse.hasOwnProperty('message')) {
           dialogError (message+'\n'+output);
         }
@@ -374,15 +374,15 @@ function myCallback (xhttp) {
 
 function editFolderDialog (title, folderName, cbFun) {
   var dialog = new Dialog ();
-  
+
   /* Callback functions */
-  
+
   dialog.callbackOK = function (dlg) {
     var content = dlg.getContentElement ();
-    
+
     var folderName = document.getElementById("folderName").value.trim();
     var resultElem = document.getElementById("result");
-    
+
     if (!folderName) {
       resultElem.innerHTML = '<div class="w3-text-red">Missing folder name</div>';
       return;
@@ -394,9 +394,9 @@ function editFolderDialog (title, folderName, cbFun) {
     dlg.destroy();
     cbFun(data);
   }
-  
+
   dialog.callbackCancel = function (dialog) { dialog.destroy(); };
-  
+
   /* Build dialog */
 
   dialog.create(title);
@@ -492,18 +492,18 @@ function addBlueprintCallback(xhttp) {
 
     if (dialogWorking)
       dialogWorking.destroy();
-          
+
     //console.log(xhttp.responseText);
-    
+
     jresponse = JSON.parse(xhttp.responseText);
-    
+
     if (xhttp.status == 200) {
       window.open("/blueprint/"+jresponse.id+"/edit");
       refreshCatalog();
     }
     else {
         var jresponse = JSON.parse(xhttp.responseText);
-        
+
         if (jresponse.hasOwnProperty('message')) {
           dialogError (message+'\n'+output);
         }
@@ -531,4 +531,3 @@ function deleteBlueprint (id, name) {
     }
   );
 }
-

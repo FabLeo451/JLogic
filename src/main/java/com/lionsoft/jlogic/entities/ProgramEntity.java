@@ -713,6 +713,7 @@ public class ProgramEntity {
 
 		    if (exitVal == 0) {
 		      setBuildTime(new Date());
+          setUpdateTime(new Date());
           setMessage ("Successfully compiled "+getName());
 		    } else {
 			    setMessage ("Compiler error ("+exitVal+"): "+output);

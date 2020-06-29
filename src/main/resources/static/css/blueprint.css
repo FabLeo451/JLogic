@@ -31,7 +31,7 @@ main {
   /*position: relative;*/
   /*position: relative; NO: sballa edges*/
   /* border: 3px solid green; */
- 
+
   width: 100%;
   /*height: inherit;
   display: flex;
@@ -62,7 +62,7 @@ main {
   position: relative;
   z-index: 0;
   /*resize: vertical;*/
-  
+
   flex: 0 0 auto;
   /* only manually resize */
 }
@@ -74,10 +74,10 @@ main {
     bottom: 0;*/
   border: 1px solid rgb(210,210,210);
   z-index: 0;
-  
+
   display: flex;
   flex-direction: column;
-  
+
   flex: 1 1 auto;
   /* resizable */
 }
@@ -95,25 +95,25 @@ main {
 .bp-bg {
   background-size: 100px 100px;
   background-color: #ffffff;
-  
-  background-image: 
-    linear-gradient(to right, 
-                    transparent 0%, #e5e5e5 1%, transparent 2%, 
-                    transparent 20%, #f1f1f1 21%, transparent 22%, 
-                    transparent 40%, #f1f1f1 41%, transparent 42%, 
-                    transparent 60%, #f1f1f1 61%, transparent 62%, 
-                    transparent 80%, #f1f1f1 81%, transparent 82%), 
-    linear-gradient(to bottom, 
-                    transparent 0%, #e5e5e5 1%, transparent 2%, 
-                    transparent 20%, #f1f1f1 21%, transparent 22%, 
-                    transparent 40%, #f1f1f1 41%, transparent 42%, 
-                    transparent 60%, #f1f1f1 61%, transparent 62%, 
-                    transparent 80%, #f1f1f1 81%, transparent 82%);
-    
-  background-image: 
-    -webkit-linear-gradient(right, 
-                            transparent 0%, #0001 1%, transparent 2%, transparent 25%, #0001 26%, transparent 27%, transparent 50%, #0003 51%, transparent 52%, transparent 75%, #0001 76%, transparent 77%), 
-    -webkit-linear-gradient(to bottom, 
+
+  background-image:
+    linear-gradient(to right,
+                    transparent 0%, rgba(0,0,0,0.2) 1%, transparent 2%,
+                    transparent 20%, rgba(0,0,0,0.1) 21%, transparent 22%,
+                    transparent 40%, rgba(0,0,0,0.1) 41%, transparent 42%,
+                    transparent 60%, rgba(0,0,0,0.1) 61%, transparent 62%,
+                    transparent 80%, rgba(0,0,0,0.1) 81%, transparent 82%),
+    linear-gradient(to bottom,
+                    transparent 0%, rgba(0,0,0,0.2) 1%, transparent 2%,
+                    transparent 20%, rgba(0,0,0,0.1) 21%, transparent 22%,
+                    transparent 40%, rgba(0,0,0,0.1) 41%, transparent 42%,
+                    transparent 60%, rgba(0,0,0,0.1) 61%, transparent 62%,
+                    transparent 80%, rgba(0,0,0,0.1) 81%, transparent 82%);
+
+  background-image:
+    -webkit-linear-gradient(right,
+                            transparent 0%, #0001 1%, transparent 2%, transparent 25%, #0001 26%, transparent 27%, transparent 50%, #0003 51%, transparent 52%, transparent 75%, #0001 76%, transparent 77%),
+    -webkit-linear-gradient(to bottom,
                     transparent 0%, #0001 1%, transparent 2%, transparent 25%, #0001 26%, transparent 27%, transparent 50%, #0003 51%, transparent 52%, transparent 75%, #0001 76%, transparent 77%);
   width: 100%;
   height: 100%;
@@ -133,7 +133,7 @@ main {
 }
 
 .bp-title {
-  position: absolute; 
+  position: absolute;
   left: 25px;
   color: black;
   opacity: 0.1;
@@ -145,11 +145,11 @@ main {
   background-color: rgba(0, 0, 0, 0.15);
   /*opacity: 0.1;*/
   border-style: solid;
-  
+
   moz-webkit-box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.3);
      -webkit-box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.3);
              box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.3);
-  
+
 /*box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);*/
 
   border-radius: .35em;
@@ -400,5 +400,3 @@ main {
   min-height: 200px;
   background: #eee;
 }
-
-

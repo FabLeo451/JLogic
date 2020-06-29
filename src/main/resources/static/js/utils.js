@@ -7,7 +7,7 @@ var rect = element.getBoundingClientRect();
     top: rect.top,
     left: rect.left,
   };
- /* 
+ /*
   if(element.offsetParent){
     var po = GetFullOffset(element.offsetParent);
     offset.top += po.top;
@@ -17,10 +17,10 @@ var rect = element.getBoundingClientRect();
   else*/
     return offset;
 }
-  
+
 function getAttachPoint(element){
   var offset = GetFullOffset(element);
-  
+
   var rect = element.getBoundingClientRect();
   return {
     //x: offset.left + element.offsetWidth / 2,
@@ -47,47 +47,47 @@ function includeHTML() {
     file = elmnt.getAttribute("w3-include-html");
     if (file) {
       console.log ('Including '+file);
-      
+
       /*make an HTTP request using the attribute value as the file name:*/
       xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4) {
           if (this.status == 200) {elmnt.innerHTML = this.responseText;}
           if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
-          
+
           /*remove the attribute, and call this function once more:*/
           elmnt.removeAttribute("w3-include-html");
      /*
           var i;
           var x = document.getElementsByClassName("title");
-          for (i = 0; i < x.length; i++) 
+          for (i = 0; i < x.length; i++)
             x[i].innerHTML = __SERVER.package.application_name;
 
           //document.getElementById('version').innerHTML = __SERVER['version'];
           x = document.getElementsByClassName("version");
-          for (i = 0; i < x.length; i++) 
+          for (i = 0; i < x.length; i++)
             x[i].innerHTML = __SERVER.package.version;
 
           x = document.getElementsByClassName("nodename");
-          for (i = 0; i < x.length; i++) 
+          for (i = 0; i < x.length; i++)
             x[i].innerHTML = __SERVER.system.nodename;
 
           x = document.getElementsByClassName("username");
-          for (i = 0; i < x.length; i++) 
+          for (i = 0; i < x.length; i++)
             x[i].innerHTML = __SERVER.auth.username;
-          
+
           if (__SERVER.auth.enabled) {
             var x = document.getElementById("logout_button");
-            
+
             if (x) {
               x.innerHTML = `<a target="Javascript:void(0);" onclick="window.location = '/logout';" style="cursor:pointer;"><i class="icon i-sign-out w3-text-gray w3-hover-text-orange"></i></a>`;
             }
           }
-            
+
           //<a href="/bp" class="w3-bar-item w3-button w3-padding"><i class="icon i-project-diagram" style="color:lightslategray; min-width: 1.5em;"></i> Blueprints</a>
-          
+
           x = document.getElementById("menu");
-          
+
           for (i=0;i<__SERVER.menu.length; i++) {
             var item = __SERVER.menu[i];
             var a = document.createElement('a');
@@ -96,16 +96,16 @@ function includeHTML() {
             a.classList.add("w3-button");
             a.classList.add("w3-padding");
             a.innerHTML = '<i class="icon '+item.icon+'" style="color:lightslategray; min-width: 1.5em;"></i> '+item.label;
-            
+
             x.appendChild(a);
           }
     */
           includeHTML();
         }
       }
-      
+
       //console.log ('Including '+file);
-      
+
       xhttp.open("GET", file, true);
       xhttp.send();
       /*exit the function:*/
@@ -130,7 +130,7 @@ function findGetParameter(parameterName) {
 function detectBrowser()
 {
   var ua = navigator.userAgent.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i), browser;
-  
+
   if (navigator.userAgent.match(/Trident.*rv[ :]*11\./i)) {
     browser = "MSIE";
   }
@@ -140,19 +140,19 @@ function detectBrowser()
   else {
     browser = ua[1];
   }
-  
+
   // Detect version
   var start, end, version = null;
-  
+
   if (browser === 'Safari')
     start = navigator.userAgent.indexOf('Version') + 8;
   else
     start = navigator.userAgent.indexOf(browser) + browser.length + 1;
-    
+
   if (start > -1) {
     version = navigator.userAgent.substring(start);
     end = version.indexOf(' ');
-    
+
     if (end > -1)
       version = version.substring(0, end);
     else
@@ -161,7 +161,7 @@ function detectBrowser()
 
   if (version)
     browser += '/'+version;
-   
+
   //console.log ("[detectBrowser] "+browser);
   return (browser);
 }
@@ -177,8 +177,8 @@ function detectPlatform()
 
 function callServer (method, resource, data, callbackFunction) {
   var xhttp = new XMLHttpRequest();
-  
-  
+
+
   xhttp.onreadystatechange = function() {
     //if (this.readyState == 4) {
     //  if (this.status == 200) {
@@ -193,14 +193,14 @@ function callServer (method, resource, data, callbackFunction) {
     //    showSnacknar(BPResult.ERROR, "Error "+this.status, 5000);
     //}
   };
-        
+
   console.log (method+ " "+resource);
-    
+
   //xhttp.open(method, " "+__SERVER['url']+"/"+resource, true);
   xhttp.open(method, resource, true);
   xhttp.setRequestHeader ("Content-Type", "application/json");
   xhttp.setRequestHeader ('Client', detectBrowser()/*+'/'+navigator.appVersion*/+' ('+detectPlatform()+')');
-  
+
   if (data) {
     //console.log ("data = "+data);
     //xhttp.setRequestHeader("Content-Length", data.length);
@@ -219,7 +219,7 @@ const BPResult = {
 function showSnacknar(resultId, text, time) {
   // Get the snackbar DIV
   var icon, x = document.getElementById("snackbar");
-  
+
   switch (resultId) {
     case BPResult.SUCCESS:
       icon = '<i class="icon i-check w3-text-green"></i>';
@@ -233,7 +233,7 @@ function showSnacknar(resultId, text, time) {
     default:
       break;
   }
-  
+
   x.innerHTML = '<div class="snackbarRow"><div class="snackbarColumn" style="margin-right:1em;">'+icon+'</div><div class="snackbarColumn">'+text+'</div></div>';
   //console.log ('[snacknar] '+x.innerHTML);
 
@@ -258,7 +258,7 @@ function modalHide() {
 
 function setElementZoom(el, zoom, ox, oy) {
   //console.log ('[setZoom] zoom = '+zoom);
-  
+
   //transformOrigin = [0.5,0.5];
   el = el || instance.getContainer();
   var p = ["webkit", "moz", "ms", "o"],
@@ -289,11 +289,11 @@ function setInputFilter(textbox, inputFilter) {
         this.value = this.oldValue;
         //this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
       }
-      
+
       //console.log ('value = '+ (this.value === "" ? 'empty' : this.value));
-      
+
       /* Check null */
-      /*if (this.value === "") 
+      /*if (this.value === "")
         this.classList.add('inputNull');
       else
         this.classList.remove('inputNull');*/
@@ -318,31 +318,36 @@ function copyStringToClipboard (str) {
    document.body.removeChild(el);
 }
 
+function dateFromISO8601(isostr) {
+    var parts = isostr.match(/\d+/g);
+    return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+}
+
 function secondsToString (seconds) {
   var s;
   var t = new Date(seconds * 1000);
-  
+
   s = t.getFullYear()+'-'+(t.getMonth()+1).toString().padStart(2,'0')+'-'+t.getDate().toString().padStart(2,'0')+' '+
       t.getHours().toString().padStart(2,'0') +':'+ t.getMinutes().toString().padStart(2,'0') +':'+ t.getSeconds().toString().padStart(2,'0');
-      
+
   return (s);
 }
 
 function secondsToDay (seconds) {
   var s;
   var t = new Date(seconds * 1000);
-  
+
   s = t.getFullYear()+'-'+(t.getMonth()+1).toString().padStart(2,'0')+'-'+t.getDate().toString().padStart(2,'0');
-      
+
   return (s);
 }
 
 function secondsToTime (seconds) {
   var s;
   var t = new Date(seconds * 1000);
-  
+
   s = t.getHours().toString().padStart(2,'0') +':'+ t.getMinutes().toString().padStart(2,'0') +':'+ t.getSeconds().toString().padStart(2,'0');
-      
+
   return (s);
 }
 
@@ -385,12 +390,11 @@ function stringForJson (s) {
 
 function lightenColor(color, percent) {
   var num = parseInt(color.replace("#",""),16);
-  
+
   amt = Math.round(2.55 * percent),
   R = (num >> 16) + amt,
   B = (num >> 8 & 0x00FF) + amt,
   G = (num & 0x0000FF) + amt;
-  
+
   return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (B<255?B<1?0:B:255)*0x100 + (G<255?G<1?0:G:255)).toString(16).slice(1);
 };
-
