@@ -24,7 +24,7 @@ image:http://hal9k.altervista.org/jlogic/bp-sample.jpg["Area of a circle"]
 * JRE to only execute blueprints
 
 == Getting started
-Download[https://github.com/FabLeo451/JLogic/releases/download/v0.1.0-alpha/jlogic-0.1.0-alpha.tar.xz] and unzip the package. Then start the server:
+https://github.com/FabLeo451/JLogic/releases/download/v0.1.0-alpha/jlogic-0.1.0-alpha.tar.xz[Download] and unzip the package. Then start the server:
 
 tar -vxf jlogic-0.1.0-alpha.tar.xz<br>
 cd jlogic-0.1.0-alpha<br>
