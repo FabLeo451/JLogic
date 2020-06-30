@@ -7,8 +7,11 @@
       <b><span class="title"></span>&nbsp;<span class="version"/></b>
     </div>
   </div-->
-  <div class="w3-container">
-    <span style="margin-right:1em;"><img src="/img/logo-medium.png" width="15%"></span> <b><span th:text="${name}" style="font-size:16px"></span>&nbsp;<span th:text="${version}" style="font-size:18px"/></b>
+  <div class="w3-container w3-center">
+    <table>
+    <tr><td><img src="/img/logo-64.png" style="width:2em;margin-right:1em;"></td><td style="text-align: left;"><b><span th:text="${name}" style="font-size:18px"/></b></td></tr>
+    <tr><td/><td style="text-align: left;"><span th:text="${version}" style="font-size:16px"/></td></tr>
+    </table>
   </div>
 
   <hr style="border-top:1px solid lightgray;">

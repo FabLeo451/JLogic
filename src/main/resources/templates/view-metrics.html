@@ -48,11 +48,11 @@
     <h4 style="color:black"><i class="icon i-chart-bar" style="color:slategray"></i> <b>Metrics</b></h4>
     <hr style="margin:5px">
   </header>
-  
-  <div id="chartContainer" style="height: 50%; width: 75%;"></div>
-  <div style="height: 50%;"></div>
 
-  <div class="w3-container" style="position: absolute; top: 55%; width:80%;">
+  <div id="chartContainer" style="height: 300px; width: 75%;"></div>
+  <!--div style="height: 50%;"></div-->
+
+  <div class="w3-container" style="position: absolute; width:80%;">
     <div class="w3-row">
       <div class="w3-col s4">
         <!-- System -->
@@ -66,7 +66,7 @@
           </table>
         </div>
       </div>
-      
+
       <div class="w3-col s4">
         <!-- Process -->
         <div class=" w3-light-grey w3-round-medium w3-margin w3-padding">
@@ -75,12 +75,12 @@
           <table>
             <tr><td>Start time:</td><td id="process.start.time"></td></tr>
             <tr><td>Total sessions:</td><td id="tomcat.sessions.created"></td></tr>
-            <tr><td>Max sessions:</td><td id="tomcat.sessions.active.max"></td></tr>
+            <!--tr><td>Max sessions:</td><td id="tomcat.sessions.active.max"></td></tr-->
             <tr><td>Active sessions:</td><td id="tomcat.sessions.active.current"></td></tr>
           </table>
         </div>
       </div>
-      
+
       <div class="w3-col s4">
         <!-- Process -->
         <div class=" w3-light-grey w3-round-medium w3-margin w3-padding">
@@ -94,7 +94,7 @@
           </table>
         </div>
       </div>
-      
+
     </div>
   </div>
 </div>
@@ -102,7 +102,7 @@
 </main>
 
   <script th:inline="javascript">
-  
+
   'use strict';
 
   includeHTML();
@@ -111,9 +111,9 @@
       if (xhttp.readyState == 4) {
         if (xhttp.status == 200) {
           var jstats = JSON.parse(xhttp.responseText);
-          
+
           var jchart = {
-            animationEnabled: false,  
+            animationEnabled: false,
             title:{
               text: "Requests in the last 10 minutes"
             },
@@ -141,18 +141,18 @@
               ]
             }]
           };
-          
+
           var sum = 0;
-          
+
           for (var t in jstats) {
             var point = {x:new Date(t), y:jstats[t]};
-            
+
             //console.log(point);
-            
+
             jchart.data[0].dataPoints.push(point);
             sum += jstats[t];
           }
-          
+
           var average = sum / Object.keys(jstats).length;
           jchart.axisY.stripLines[0].label = "Average ("+average.toFixed(0)+" / min)";
           jchart.axisY.stripLines[0].value = average;
@@ -160,7 +160,7 @@
 
           var chart = new CanvasJS.Chart("chartContainer", jchart);
           chart.render();
-          
+
           //document.getElementById("chartContainer").style.position = 'relative';
         }
         else {
@@ -168,25 +168,25 @@
         }
       }
     }
-  ); 
+  );
 
-  
+
   function setPct(memMax, memUsed) {
     if (memMax < 0 || memUsed < 0)
       return;
-      
+
     var pct = (memUsed / memMax) * 100;
     /*console.log(memUsed);
     console.log(memMax);
     console.log(pct);*/
     document.getElementById("used_memory_pct").innerHTML = pct.toFixed(2).toString() + '%';
   }
-  
+
   var metrics = [
     "jvm.memory.max",
     "jvm.memory.used",
     "tomcat.sessions.created",
-    "tomcat.sessions.active.max",
+    //"tomcat.sessions.active.max",
     "tomcat.sessions.active.current",
     "process.start.time",
     //"process.cpu.usage",
@@ -194,16 +194,16 @@
     "system.cpu.usage",
     "system.load.average.1m"
   ];
-  
+
   var jvmMemoryMax = -1;
   var jvmMemoryUsed = -1;
-  
+
   for (var i=0; i<metrics.length; i++) {
     //var label = metrics[i].label;
     //var metric = metrics[i].metric;
     //var uri = metrics[i].uri;
     var metric = metrics[i];
-    
+
     callServer ("GET", "/actuator/metrics/"+metric, null, function (xhttp) {
         if (xhttp.readyState == 4) {
           if (xhttp.status == 200) {
@@ -211,22 +211,22 @@
             var name = jresponse.name;
             var baseUnit = jresponse.baseUnit;
             var value = jresponse.measurements[0].value;
-            
+
             switch (name) {
               case 'jvm.memory.max':
                 jvmMemoryMax = value;
                 setPct(jvmMemoryMax, jvmMemoryUsed);
                 break;
-                
+
               case 'jvm.memory.used':
                 jvmMemoryUsed = value;
                 setPct(jvmMemoryMax, jvmMemoryUsed);
                 break;
-                
+
               default:
                 break;
             }
-            
+
             if (baseUnit == "bytes")
               value = (value / (1024*1024)).toFixed(1);
             else if (baseUnit == "seconds")
@@ -239,16 +239,16 @@
                 case 'tomcat.sessions.active.current':
                   value = value.toFixed(0);
                   break;
-                  
+
                 default:
                   value = value.toFixed(2);
                   break;
               }
             }
-                          
+
             //console.log(jresponse.name);
             var col = document.getElementById(jresponse.name);
-            
+
             col.innerHTML = value;
           }
           else {
@@ -258,7 +258,7 @@
       }
     );
   }
-  
+
   </script>
 
 </body>
