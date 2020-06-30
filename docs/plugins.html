@@ -16,62 +16,63 @@
 <body>
   <!-- Header -->
   <div w3-include-html="header.html"></div>
-  
-  <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:10%; margin-right:10%">    
+
+  <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:10%; margin-right:10%">
 
     <h2 class="w3-myFont">Plugin</h2>
+    To install a plugin download the archive and uncompress in the <b>plugin</b> folder.<br>
+    If you are already editing a blueprint, reload the page to see new nodes.
     <hr>
-    
+
     <div id="list"></div>
-    
+
     <!------------------------------------------------------------------------------->
 
     <div class="w3-center w3-margin w3-text-gray">Copyright &copy; 2020 Fabio Leone</div>  </div>
   </div>
-  
+
   <script>
     'use strict';
-    
+
     includeHTML();
-    
+
     var plugins = [
       {
         "name": "SFTP",
         "description":"Transfer files using SFTP protocol.",
-        "url":"https://repository/SFTP.zip"
+        "url":"https://drive.google.com/file/d/1JkrwRSxdyqDeoFPBYw4Tg6obv2pm8ENs/view?usp=sharing"
       },
       {
         "name": "Oracle",
-        "description":"Connect to Oracle databases and perform queries.<br>",
-        "url":"https://repository/Oracle.zip"
+        "description":"Connect to Oracle databases and execute queries.<br>Needs ojdbc8.jar present in the lib folder.<br>",
+        "url":"https://drive.google.com/file/d/1Wv_5GopS2hnLE_v06uvekGLbSyh2ohpp/view?usp=sharing"
       },
       {
         "name": "Elasticsearch",
         "description":"Elasticsearch interface.<br>",
-        "url":"https://repository/ElasticsearchClient.zip"
+        "url":"https://drive.google.com/file/d/10lQeSYcOcIM_Op5ID33aDlGECD_bWUk0/view?usp=sharing"
       }
     ];
-    
+
     var listElem = document.getElementById("list");
-    
+
     for (var i=0; i<plugins.length; i++) {
       var p = plugins[i];
-      
+
       //console.log(p.name+" "+p.description);
-      
+
       var item = document.createElement('div');
-      
+
       item.innerHTML = `
         <h3 class="w3-myFont">`+p.name+`</h3>
         <p>`+p.description+`</p>
         <i class="fas fa-download w3-text-gray"></i> <a href="`+p.url+`">`+p.url+`</a>
         <hr>
       `;
-      
+
       listElem.appendChild(item);
     }
   </script>
-  
+
 </body>
 </html>
-
