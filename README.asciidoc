@@ -25,14 +25,14 @@ image:http://hal9k.altervista.org/jlogic/bp-sample.jpg["Area of a circle"]
 
 == Getting started
 https://github.com/FabLeo451/JLogic/releases/download/v0.1.0-alpha/jlogic-0.1.0-alpha.tar.xz[Download] and unzip the package. Then start the server:
-
-tar -vxf jlogic-0.1.0-alpha.tar.xz<br>
-cd jlogic-0.1.0-alpha<br>
+----
+tar -vxf jlogic-0.1.0-alpha.tar.xz
+cd jlogic-0.1.0-alpha
 bin/jlogic
-
+----
 Go to https://localhost:8443/home[https://localhost:8443/home] with your browser.
 Log in with admin/admin default credentials.
-See labs[docs/labs.html] to take a tour.
+See https://fableo451.github.io/JLogic/labs.html[labs] to take a tour.
 
 == Documentation
-_Under construction_
+https://fableo451.github.io/JLogic/tutorial.html[https://fableo451.github.io/JLogic/tutorial.html]
