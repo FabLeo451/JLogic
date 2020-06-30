@@ -31,7 +31,9 @@ cd jlogic-0.1.0-alpha
 bin/jlogic
 ----
 Go to https://localhost:8443/home[https://localhost:8443/home] with your browser.
+
 Log in with admin/admin default credentials.
+
 See https://fableo451.github.io/JLogic/labs.html[labs] to take a tour.
 
 == Documentation
