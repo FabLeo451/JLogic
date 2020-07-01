@@ -39,13 +39,19 @@
     callServer ("GET", "https://api.github.com/repos/FabLeo451/JLogic/releases", null, function (xhttp) {
         if (xhttp.readyState == 4) {
           if (xhttp.status == 200) {
+            listElem.innerHTML = "";
             var ja = JSON.parse(xhttp.responseText);
 
             for (var i=0; i<ja.length; i++) {
               var jrelease = ja[i];
               var item = document.createElement('div');
               item.classList.add('w3-container');
-              item.innerHTML = jrelease.name;
+              
+              item.innerHTML = `<div><a href="`+jrelease.assets[0].browser_download_url+`"><b>`+jrelease.name+`</b></a></div>
+                                <div>`+jrelease.body+`</div>
+                                Published: `+jrelease.published_at+`<br>
+                                Downloads: `+jrelease.assets[0].download_count+`<br>
+                               `;
 
               listElem.appendChild(item);
             }
