@@ -35,6 +35,8 @@
     includeHTML();
 
     var listElem = document.getElementById("list");
+    
+    listElem.innerHTML = "<i class="fas fa-spinner w3-spin"></i> Loading...";
 
     callServer ("GET", "https://api.github.com/repos/FabLeo451/JLogic/releases", null, function (xhttp) {
         if (xhttp.readyState == 4) {
@@ -66,7 +68,7 @@
           }
         }
         else if (xhttp.readyState == 3) { // Processing request
-          listElem.innerHTML = "Getting data...";
+          //listElem.innerHTML = "Getting data...";
         }
         else {
           listElem.innerHTML = xhttp.statusText;
