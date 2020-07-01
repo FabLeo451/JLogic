@@ -36,7 +36,7 @@
 
     var listElem = document.getElementById("list");
     
-    listElem.innerHTML = "<i class="fas fa-spinner w3-spin"></i> Loading...";
+    listElem.innerHTML = '<i class="fas fa-spinner w3-spin"></i> Loading...';
 
     callServer ("GET", "https://api.github.com/repos/FabLeo451/JLogic/releases", null, function (xhttp) {
         if (xhttp.readyState == 4) {
