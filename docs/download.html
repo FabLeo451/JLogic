@@ -47,10 +47,14 @@
               var item = document.createElement('div');
               item.classList.add('w3-container');
               
-              item.innerHTML = `<div><i class="fas fa-download"></i> <a href="`+jrelease.assets[0].browser_download_url+`"><b>`+jrelease.name+`</b></a></div>
-                                <div class="w3-container">`+jrelease.body+`</div>
-                                Published: `+jrelease.published_at+`<br>
-                                Downloads: `+jrelease.assets[0].download_count+`<br>
+              item.innerHTML = `<div class="w3-large"><i class="fas fa-download" class="w3-text-gray"></i> <b>`+jrelease.name+`</b></div>
+                                <div class="w3-section">`+jrelease.body+`</div>
+                                <table class="w3-table">
+                                  <tr><td>Link</td><td><a href="`+jrelease.assets[0].browser_download_url+`"><b>`+jrelease.assets[0].name+`</b></a></td><tr>
+                                  <tr><td>Published</td><td>`+jrelease.published_at+`</td><tr>
+                                  <tr><td>Size</td><td>`+(jrelease.assets[0].size/1024/1024).toFixed(1)+`</td><tr>
+                                  <tr><td>Downloads</td><td>`+jrelease.assets[0].download_count+`</td><tr>
+                                </table>
                                `;
 
               listElem.appendChild(item);
