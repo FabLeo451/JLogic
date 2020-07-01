@@ -63,7 +63,7 @@ function callServer (method, resource, data, callbackFunction) {
   //xhttp.open(method, " "+__SERVER['url']+"/"+resource, true);
   xhttp.open(method, resource, true);
   xhttp.setRequestHeader ("Content-Type", "application/json");
-  xhttp.setRequestHeader ('Client', detectBrowser()/*+'/'+navigator.appVersion*/+' ('+detectPlatform()+')');
+  //xhttp.setRequestHeader ('Client', detectBrowser()/*+'/'+navigator.appVersion*/+' ('+detectPlatform()+')');
 
   if (data) {
     //console.log ("data = "+data);
