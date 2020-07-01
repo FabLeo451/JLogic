@@ -47,8 +47,8 @@
               var item = document.createElement('div');
               item.classList.add('w3-container');
               
-              item.innerHTML = `<div><a href="`+jrelease.assets[0].browser_download_url+`"><b>`+jrelease.name+`</b></a></div>
-                                <div>`+jrelease.body+`</div>
+              item.innerHTML = `<div><i class="fas fa-download"></i> <a href="`+jrelease.assets[0].browser_download_url+`"><b>`+jrelease.name+`</b></a></div>
+                                <div class="w3-container">`+jrelease.body+`</div>
                                 Published: `+jrelease.published_at+`<br>
                                 Downloads: `+jrelease.assets[0].download_count+`<br>
                                `;
