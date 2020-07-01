@@ -36,7 +36,7 @@
 
     var listElem = document.getElementById("list");
 
-    callServer ("GET", "/programs", null, function (xhttp) {
+    callServer ("GET", "https://api.github.com/repos/FabLeo451/JLogic/releases", null, function (xhttp) {
         if (xhttp.readyState == 4) {
           if (xhttp.status == 200) {
             ja = JSON.parse(xhttp.responseText);
