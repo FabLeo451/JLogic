@@ -22,7 +22,7 @@
     <h2 class="w3-myFont">Download</h2>
     <hr>
 
-    <div id="list"></div>
+    <div id="list"><i class="fas fa-spinner w3-spin"></i> Loading...</div>
 
     <!------------------------------------------------------------------------------->
 
@@ -36,7 +36,7 @@
 
     var listElem = document.getElementById("list");
     
-    listElem.innerHTML = '<i class="fas fa-spinner w3-spin"></i> Loading...';
+    //listElem.innerHTML = '<i class="fas fa-spinner w3-spin"></i> Loading...';
 
     callServer ("GET", "https://api.github.com/repos/FabLeo451/JLogic/releases", null, function (xhttp) {
         if (xhttp.readyState == 4) {
