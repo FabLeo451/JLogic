@@ -41,8 +41,9 @@
     callServer ("GET", "https://api.github.com/repos/FabLeo451/JLogic/releases", null, function (xhttp) {
         if (xhttp.readyState == 4) {
           if (xhttp.status == 200) {
-            listElem.innerHTML = "";
             var ja = JSON.parse(xhttp.responseText);
+
+            listElem.innerHTML = "";
 
             for (var i=0; i<ja.length; i++) {
               var jrelease = ja[i];
