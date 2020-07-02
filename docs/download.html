@@ -54,7 +54,7 @@
                                 <div class="w3-section">`+jrelease.body+`</div>
                                 <table class="w3-table" style="width:50%;">
                                   <tr><td>Link:</td><td><a href="`+jrelease.assets[0].browser_download_url+`">`+jrelease.assets[0].name+`</a></td><tr>
-                                  <tr><td>Published:</td><td>`+jrelease.published_at+`</td><tr>
+                                  <tr><td>Published:</td><td>`+jrelease.published_at.substring(0, 9)+`</td><tr>
                                   <tr><td>Size:</td><td>`+(jrelease.assets[0].size/1024/1024).toFixed(1)+` MB</td><tr>
                                   <tr><td>Downloads:</td><td>`+jrelease.assets[0].download_count+`</td><tr>
                                   <tr><td>Production ready:</td><td>`+(jrelease.prerelease ? '<span class="w3-text-orange">No</span>' : '<span class="w3-text-green">Yes</span>')+`</td><tr>
