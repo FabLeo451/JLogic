@@ -2,6 +2,8 @@
 boolean _{node.id}_restOK = false;
 
 try {
+  //Class.forName("{className}$DefaultTrustManager");
+
   SSLContext _{node.id}_ctx = SSLContext.getInstance("TLS");
   _{node.id}_ctx.init(new KeyManager[0], new TrustManager[] {new DefaultTrustManager()}, new SecureRandom());
   SSLContext.setDefault(_{node.id}_ctx);
@@ -40,7 +42,9 @@ try {
     out{3} = e.getMessage();
 } catch (KeyManagementException e) {
     out{3} = e.getMessage();
-}
+} /*catch (ClassNotFoundException e) {
+    out{3} = "Class not found: "+e.getMessage();
+}*/
 
 if (_{node.id}_restOK) {
   exec{0}

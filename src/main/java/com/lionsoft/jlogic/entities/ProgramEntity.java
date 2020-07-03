@@ -422,6 +422,8 @@ public class ProgramEntity {
     JSONParser jsonParser = new JSONParser();
     JSONArray ja;
 
+    classPathList.add(getMyDir());
+
     // Default dependencies
     addClassPath("lib/Standard.jar");
     addClassPath("lib/java-getopt-1.0.13.jar");
@@ -859,7 +861,7 @@ public class ProgramEntity {
 	  //System.setProperty("user.dir", getMyDir());
 
 	  logger.info("Creating JAR for "+getName());
-	  logger.debug("Current direcotry: "+System.getProperty("user.dir"));
+	  //logger.debug("Current direcotry: "+System.getProperty("user.dir"));
 
     loadDeps();
 
@@ -875,7 +877,20 @@ public class ProgramEntity {
     args.add("-cvfm");
     args.add(getJARFilename());
     args.add(mf);
-    args.add("../"+className/*getClassFilename()*/); // We are in temp directory
+    //args.add("../"+className/*getClassFilename()*/); // We are in temp directory
+
+    // Add all .class files (Program.class and nested classes Program$x)
+
+    String[] pathnames;
+    File f = new File(getMyDir());
+    pathnames = f.list();
+
+    for (String pathname : pathnames) {
+      if (pathname.endsWith(".class")) {
+        System.out.println("Adding "+getMyDir()+"/"+pathname);
+        args.add("../"+pathname);
+      }
+    }
 
     // Create temporary directory
 
@@ -911,7 +926,7 @@ public class ProgramEntity {
       }
     }
 
-    //System.out.println(args.toString());
+    System.out.println(args.toString());
 
     // Run jar
 
