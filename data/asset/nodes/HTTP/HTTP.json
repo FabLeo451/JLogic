@@ -70,7 +70,7 @@
       "type": 4,
       "version": 1,
       "import": ["java.net.HttpURLConnection","java.net.URL", "java.io.IOException"],
-      "java":"try { int ret = 0; while ((ret = in{1}.getInputStream().read()) > 0) { System.out.println(\"ret = \"+ret); } in{1}.getInputStream().close(); } catch (IOException e) { logger.error(\"HTTP Close exception: \"+e.getMessage()); }",
+      "java":"try { int ret = 0; while ((ret = in{1}.getInputStream().read()) > 0) { /*System.out.println(\"ret = \"+ret);*/ } in{1}.getInputStream().close(); } catch (IOException e) { logger.error(\"HTTP Close exception: \"+e.getMessage()); }",
       "input": [
         { "type": "Exec", "label": "" },
         { "type": "HttpURLConnection", "label": "Connection" }
@@ -97,7 +97,7 @@
       "output": [
         { "type": "Exec", "label": "Success" },
         { "type": "Integer", "label": "Status", "java":{"references":{"variable":"status"}} },
-        { "type": "JSONObject", "label": "Response", "java":{"references":{"variable":"response"}} },
+        { "type": "String", "label": "Response", "java":{"references":{"variable":"response"}} },
         { "type": "Exec", "label": "Error" },
         { "type": "String", "label": "Message", "java":{"references":{"variable":"msg"}} }
       ]

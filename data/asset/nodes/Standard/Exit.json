@@ -7,7 +7,7 @@
   "java": "_exit(in{1}, in{2});",
   "input": [
     { "type": "Exec", "label": "" },
-    { "type": "Integer", "label": "Code", "value": 0, "enum": [ 
+    { "type": "Integer", "label": "Code", "value": 0, "enum": [
                                                         "Success",
                                                         "Failure"
     ] },

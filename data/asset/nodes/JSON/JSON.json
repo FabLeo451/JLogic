@@ -35,6 +35,51 @@
       ]
     },
     {
+      "name": "JSON Array Get",
+      "type": 4,
+      "version": 1,
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"out{1} = in{1}.get(in{2}); ",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "JSONArray", "label": "Array" },
+        { "type": "Integer", "label": "Index", "value":0 }
+      ],
+      "output": [
+        { "type": "Exec", "label": "Success" },
+        { "type": "Object", "label": "Object", "java": { "references":{"variable":"obj"} } }
+      ]
+    },
+    {
+      "name": "Object To JSONObject",
+      "type": 5,
+      "version": 1,
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"((JSONObject) in{0})",
+      "input": [
+        { "type": "Object", "label": "Object" }
+      ],
+      "output": [
+        { "type": "JSONObject", "label": "JSONObject" }
+      ]
+    },
+    {
+      "name": "Object To JSONArray",
+      "type": 5,
+      "version": 1,
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"((JSONArray) in{0})",
+      "input": [
+        { "type": "Object", "label": "Object" }
+      ],
+      "output": [
+        { "type": "JSONArray", "label": "JSONArray" }
+      ]
+    },
+    {
       "name": "JSON Parse",
       "type": 4,
       "version": 1,
@@ -106,6 +151,23 @@
       ]
     },
     {
+      "name": "JSON Get Object",
+      "type": 4,
+      "version": 1,
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"out{1} = in{1}.get(in{2});",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "JSONObject", "label": "Json" },
+        { "type": "String", "label": "Key", "value": "", "single_line":true }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "Object", "label": "Object", "java": { "references":{"variable":"obj"} } }
+      ]
+    },
+    {
       "name": "JSON Get String",
       "type": 4,
       "version": 1,
@@ -120,6 +182,40 @@
       "output": [
         { "type": "Exec", "label": "" },
         { "type": "String", "label": "Value", "java": { "references":{"variable":"s"} } }
+      ]
+    },
+    {
+      "name": "JSON Get Long",
+      "type": 4,
+      "version": 1,
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"out{1} = (Long) in{1}.get(in{2});",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "JSONObject", "label": "Json" },
+        { "type": "String", "label": "Key", "value": "", "single_line":true }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "Long", "label": "Value", "java": { "references":{"variable":"l"} } }
+      ]
+    },
+    {
+      "name": "JSON Get Integer",
+      "type": 4,
+      "version": 1,
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "import": ["org.json.simple.*"],
+      "java":"out{1} = ((Long) in{1}.get(in{2})).intValue();",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "JSONObject", "label": "Json" },
+        { "type": "String", "label": "Key", "value": "", "single_line":true }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "Integer", "label": "Value", "java": { "references":{"variable":"i"} } }
       ]
     },
     {

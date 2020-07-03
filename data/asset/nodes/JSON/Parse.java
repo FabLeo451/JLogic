@@ -16,9 +16,9 @@ try {
     out{2} = (JSONArray) _{node.id}_obj;
     out{3} = true;
   }
-  
+
   _{node.id}_parse_success = true;
-  
+
 } catch (ParseException e) {
   _{node.id}_parse_success = false;
 }
@@ -28,4 +28,3 @@ if (_{node.id}_parse_success) {
 } else {
   exec{4}
 }
-
