@@ -997,8 +997,17 @@ public class ProgramEntity {
 	  f = new File(getJARFilename());
 	  f.delete();
 
-	  f = new File(getClassFilename());
-	  f.delete();
+    // Delete all .class files
+    String[] pathnames;
+    f = new File(getMyDir());
+    pathnames = f.list();
+
+    for (String pathname : pathnames) {
+      if (pathname.endsWith(".class")) {
+        File c = new File(getMyDir()+"/"+pathname);
+    	  c.delete();
+      }
+    }
 
 	  f = new File(getMyDir()+"/MANIFEST.MF");
 	  f.delete();
