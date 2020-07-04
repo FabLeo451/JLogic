@@ -314,13 +314,13 @@ function appStart () {
     if (xhttp.readyState == 4) {
 
       if (xhttp.status == 200) {
-        console.log ('Blueprint OK');
+        bpConsole.append('Blueprint loaded.');
 
         _jbp = JSON.parse(xhttp.responseText);
 
         // Get program
 
-        console.log ('Getting program ...');
+        bpConsole.append('Getting program ...');
 
         callServer ("GET", "/program/"+ _jbp.programId, null, function (xhttp) {
             if (xhttp.readyState == 4) {
@@ -361,6 +361,8 @@ function appStart () {
                 undo.dump();
 
                 dialog.destroy();
+
+                bpConsole.append("Ready.");
               }
               else
                 console.log(xhttp.responseText);

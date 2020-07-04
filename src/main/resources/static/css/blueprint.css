@@ -359,7 +359,7 @@ main {
   white-space: pre-wrap;
   padding: 5px;
   position: relative;
-  padding-top: 20px;
+  /*padding-top: 20px;*/
   height: calc(100% - 25px);
   overflow-x: hidden;
   overflow-y: scroll;
