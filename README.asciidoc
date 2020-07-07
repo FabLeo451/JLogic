@@ -24,7 +24,7 @@ image:https://fableo451.github.io/JLogic/img/bp-cover.png["Cover"]
 * JRE to only execute blueprints
 
 == Getting started
-https://github.com/FabLeo451/JLogic/releases/download/v0.1.0-alpha2/jlogic-0.1.0-alpha2.tar.xz[Download] and unzip the package. Then start the server:
+https://fableo451.github.io/JLogic/download.html[Download] and unzip the package. Then start the server:
 ----
 tar -vxf jlogic-<version>.tar.xz
 cd jlogic-<version>
