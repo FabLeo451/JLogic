@@ -1,0 +1,115 @@
+{
+  "types": [
+    { "name":"Document", "color":"lightslategray", "init":"new Document()" },
+    { "name":"Node", "color":"lightslategray" },
+    { "name":"NodeList", "color":"lightslategray" }
+  ],
+  "nodes": [
+    {
+      "name": "XML Parse",
+      "type": 4,
+      "version": 1,
+      "import": ["javax.xml.parsers.DocumentBuilder", "javax.xml.parsers.DocumentBuilderFactory", "org.w3c.dom.Document", "org.w3c.dom.Node", "org.w3c.dom.NodeList", "org.xml.sax.InputSource", "java.io.StringReader"],
+      "java":"@Parse.java",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "String", "value": "" }
+      ],
+      "output": [
+        { "type": "Exec", "label": "Success" },
+        { "type": "Document", "label": "Document", "java": { "references":{"variable":"doc"} } },
+        { "type": "Exec", "label": "Error" }
+      ]
+    },
+    {
+      "name": "XML Get First Child",
+      "type": 4,
+      "version": 1,
+      "import": ["org.w3c.dom.Document", "org.w3c.dom.Node"],
+      "java":"out{1} = in{1}.getFirstChild();",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Document", "label": "Document" }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "Node", "label": "Node", "java": { "references":{"variable":"node"} } }
+      ]
+    },
+    {
+      "name": "XML Node Get Name",
+      "type": 4,
+      "version": 1,
+      "import": ["org.w3c.dom.Node"],
+      "java":"out{1} = in{1}.getNodeName();",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Node", "label": "Node" }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Name", "java": { "references":{"variable":"name"} } }
+      ]
+    },
+    {
+      "name": "XML Node Get Value",
+      "type": 4,
+      "version": 1,
+      "import": ["org.w3c.dom.Node"],
+      "java":"out{1} = in{1}.getFirstChild() != null ? in{1}.getFirstChild().getNodeValue() : null;",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Node", "label": "Node" }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Value", "java": { "references":{"variable":"value"} } }
+      ]
+    },
+    {
+      "name": "XML Get Elements By Tag Name",
+      "type": 4,
+      "version": 1,
+      "import": ["org.w3c.dom.NodeList"],
+      "java":"out{1} = in{1}.getElementsByTagName(in{2});",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Document", "label": "Document" },
+        { "type": "String", "label": "Tag name", "value":"*", "single_line":true }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "NodeList", "label": "Node list", "java": { "references":{"variable":"nodeList"} } }
+      ]
+    },
+    {
+      "name": "XML Node List Length",
+      "type": 5,
+      "version": 1,
+      "import": ["org.w3c.dom.NodeList"],
+      "java":"in{0}.getLength()",
+      "input": [
+        { "type": "NodeList", "label": "Node" }
+      ],
+      "output": [
+        { "type": "Integer", "label": "Length" }
+      ]
+    },
+    {
+      "name": "XML Node List Get",
+      "type": 4,
+      "version": 1,
+      "import": ["org.w3c.dom.NodeList", "org.w3c.dom.Node"],
+      "java":"out{1} = in{1}.item(in{2});",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "NodeList", "label": "Node list" },
+        { "type": "Integer", "label": "index", "value":0 }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "Node", "label": "Node", "java": { "references":{"variable":"node"} } }
+      ]
+    }
+  ]
+}
