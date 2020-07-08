@@ -13,6 +13,20 @@
       ]
     },
     {
+      "name": "String Equals",
+      "type": 5,
+      "version": 1,
+      "inner_text": "==",
+      "java": "in{0}.equals(in{1})",
+      "input": [
+        { "type": "String", "label": "String 1", "value":"" },
+        { "type": "String", "label": "String 2", "value":"" }
+      ],
+      "output": [
+        { "type": "Boolean", "label": "" }
+      ]
+    },
+    {
       "name": "String To Upper",
       "type": 5,
       "version": 1,

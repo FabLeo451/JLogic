@@ -37,11 +37,57 @@
       ]
     },
     {
+      "name": "XML Node Get Children",
+      "type": 4,
+      "version": 1,
+      "import": ["org.w3c.dom.NodeList", "org.w3c.dom.Node"],
+      "java":"out{1} = in{1}.getChildNodes();",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Node", "label": "Node" }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "NodeList", "label": "Children", "java": { "references":{"variable":"nodes"} } }
+      ]
+    },
+    {
+      "name": "XML Node Get Child",
+      "type": 4,
+      "version": 1,
+      "import": ["org.w3c.dom.Node"],
+      "java":"NodeList _{node.id}_children = in{1}.getChildNodes(); for (int _{node.id}_i=0; _{node.id}_children != null && _{node.id}_i<_{node.id}_children.getLength(); _{node.id}_i++) { if (_{node.id}_children.item(_{node.id}_i).getNodeName().equals(in{2})) { out{1} = _{node.id}_children.item(_{node.id}_i); break; }  }",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Node", "label": "Node" },
+        { "type": "String", "label": "Tag", "value":"", "single_line":true }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "Node", "label": "Node", "java": { "references":{"variable":"node"} } }
+      ]
+    },
+    {
       "name": "XML Node Get Name",
       "type": 4,
       "version": 1,
       "import": ["org.w3c.dom.Node"],
       "java":"out{1} = in{1}.getNodeName();",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Node", "label": "Node" }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Name", "java": { "references":{"variable":"name"} } }
+      ]
+    },
+    {
+      "name": "XML Node Get Text Content",
+      "type": 4,
+      "version": 1,
+      "import": ["org.w3c.dom.Node"],
+      "java":"out{1} = in{1}.getTextContent();",
       "input": [
         { "type": "Exec", "label": "" },
         { "type": "Node", "label": "Node" }
@@ -60,6 +106,22 @@
       "input": [
         { "type": "Exec", "label": "" },
         { "type": "Node", "label": "Node" }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Value", "java": { "references":{"variable":"value"} } }
+      ]
+    },
+    {
+      "name": "XML Node Get Attribute",
+      "type": 4,
+      "version": 1,
+      "import": ["org.w3c.dom.Node", "org.w3c.dom.NamedNodeMap"],
+      "java":"NamedNodeMap _{node.id}_nm = in{1}.getAttributes(); Node _{node.id}_node = _{node.id}_nm.getNamedItem(in{2}); out{1} = _{node.id}_node.getFirstChild() != null ? _{node.id}_node.getFirstChild().getNodeValue() : null;",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Node", "label": "Node" },
+        { "type": "String", "label": "Attribute", "value":"", "single_line":true }
       ],
       "output": [
         { "type": "Exec", "label": "" },
@@ -89,7 +151,7 @@
       "import": ["org.w3c.dom.NodeList"],
       "java":"in{0}.getLength()",
       "input": [
-        { "type": "NodeList", "label": "Node" }
+        { "type": "NodeList", "label": "Node list" }
       ],
       "output": [
         { "type": "Integer", "label": "Length" }
