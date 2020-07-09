@@ -19,6 +19,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.annotation.Annotation;
 
@@ -29,6 +30,7 @@ import java.net.URLClassLoader;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
@@ -226,19 +228,28 @@ public class ProgramService {
 
       Method[] methods = Program.getMethods();
       for (Method m : methods) {
-        //System.out.println(m.toString());
+
+
         Annotation annotation = m.getAnnotation(BlueprintAnnotation);
 
         if (annotation != null) {
-           System.out.println(m.toString());
-           System.out.println(BlueprintAnnotation.cast(annotation));
+          System.out.println(" method: " + m.getName());
+          System.out.println(" ReturnType: "+ m.getReturnType());
+          System.out.println(" Returns: "+ (m.getReturnType().equals(Void.TYPE) ? "No" : "Yes"));
+          //System.out.println(" GenericReturnType: "+ m.getGenericReturnType());
+          //System.out.println(m.toString());
 
-           Class<? extends Annotation> type = annotation.annotationType();
-           System.out.println("Values of " + type.getName());
-           for (Method method : type.getDeclaredMethods()) {
-               Object value = method.invoke(annotation, (Object[])null);
-               System.out.println(" " + method.getName() + ": " + value);
-           }
+          for (Parameter p : m.getParameters()) {
+            System.out.println(" "+ p.getType() +"  " + p.getName() + " " + Modifier.toString(p.getModifiers()));
+            System.out.println(" dimensions: "+ StringUtils.countOccurrencesOf(p.getType().toString(), "["));
+          }
+
+          Class<? extends Annotation> type = annotation.annotationType();
+          //System.out.println("Values of " + type.getName());
+          for (Method method : type.getDeclaredMethods()) {
+             Object value = method.invoke(annotation, (Object[])null);
+             System.out.println(" " + method.getName() + ": " + value);
+          }
         }
       }
     } catch (ClassNotFoundException e) {
