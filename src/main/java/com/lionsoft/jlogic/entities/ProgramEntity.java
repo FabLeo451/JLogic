@@ -39,7 +39,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.MalformedURLException;
 import java.beans.IntrospectionException;
-import java.net.URLClassLoader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -1094,6 +1093,37 @@ public class ProgramEntity {
   }
 */
 
+  /**
+   * Returns an array of dependency urls
+   */
+  @Transient
+  @JsonIgnore
+  public URL[] getURLs() {
+    List<URL> urls = new ArrayList<>();
+    URL[] clUrls = null;
+
+    try {
+	    loadDeps();
+
+      for (int i = 0; i < classPathList.size(); i++) {
+        System.out.println("Adding classpath "+ classPathList.get(i));
+        File f = new File(classPathList.get(i));
+        urls.add(f.toURI().toURL());
+      }
+
+      File file = new File(getMyDir());
+      urls.add(file.toURI().toURL());
+
+      clUrls = new URL[urls.size()];
+      clUrls = urls.toArray(clUrls);
+    } catch (MalformedURLException e) {
+      logger.error("Malformed URL: "+e.getMessage());
+      return null;
+    }
+
+    return clUrls;
+	}
+
 	public boolean run(String methodName, String data) {
 	  return (run(methodName, data, getName(), null));
 	}
@@ -1110,8 +1140,6 @@ public class ProgramEntity {
     // Create a File object on the root of the directory containing the class file
     //System.out.println("Loading class "+ getClassFilename() +"...");
 
-    File file = new File(getMyDir());
-
     try {
 	    //System.out.println("Loading dependencies");
 
@@ -1123,7 +1151,8 @@ public class ProgramEntity {
         urls.add(f.toURI().toURL());
       }
 
-       urls.add(file.toURI().toURL());
+      File file = new File(getMyDir());
+      urls.add(file.toURI().toURL());
 
        URL[] clUrls = new URL[urls.size()];
        clUrls = urls.toArray(clUrls);

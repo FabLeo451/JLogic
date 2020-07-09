@@ -20,9 +20,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.annotation.Annotation;
 
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.net.MalformedURLException;
 import java.beans.IntrospectionException;
 import java.net.URLClassLoader;
@@ -214,4 +214,44 @@ public class ProgramService {
 
 	  return false;
 	}
+
+  public boolean describe(ProgramEntity program) {
+    try {
+      URL[] urls = program.getURLs();
+
+      ClassLoader cl = new URLClassLoader(urls);
+
+      Class Program = cl.loadClass("Program");
+      Class BlueprintAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.Blueprint");
+
+      Method[] methods = Program.getMethods();
+      for (Method m : methods) {
+        //System.out.println(m.toString());
+        Annotation annotation = m.getAnnotation(BlueprintAnnotation);
+
+        if (annotation != null) {
+           System.out.println(m.toString());
+           System.out.println(BlueprintAnnotation.cast(annotation));
+
+           Class<? extends Annotation> type = annotation.annotationType();
+           System.out.println("Values of " + type.getName());
+           for (Method method : type.getDeclaredMethods()) {
+               Object value = method.invoke(annotation, (Object[])null);
+               System.out.println(" " + method.getName() + ": " + value);
+           }
+        }
+      }
+    } catch (ClassNotFoundException e) {
+      logger.error("Class not found: "+e.getMessage());
+      return false;
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+      return false;
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+      return false;
+    }
+
+    return true;
+  }
 }

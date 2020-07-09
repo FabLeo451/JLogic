@@ -43,16 +43,16 @@ public class ProgramController {
 
   Logger logger = LoggerFactory.getLogger(ProgramController.class);
   static ApplicationHome home = new ApplicationHome(ProgramController.class);
-  
+
   @Autowired
   ProgramRepository programRepository;
-  
+
   @Autowired
   ProgramService programService;
-  
+
   @Autowired
   BlueprintService blueprintService;
-  
+
   @Autowired
   CatalogService catalogService;
 
@@ -66,26 +66,26 @@ public class ProgramController {
 	@GetMapping(value = "/program/{id}")
 	public ProgramEntity get(@PathVariable("id") String id) {
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
-	  if (!program.isPresent()) 
+
+	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-	  	   
+
 		return program.get();
 	}
-/*  
+/*
   private String createProgram(String parentId, String name) {
-  
+
     logger.info("Creating program "+name);
-	  
+
 	  ProgramEntity program = programService.create(name);
-	  
+
 	  if (program != null) {
 	    logger.info("Created "+program.toString());
 	    BlueprintEntity blueprint = blueprintService.create(program, BlueprintType.MAIN, "Main");
 	    //program.addBlueprint(blueprint);
 	    programRepository.refresh(program);
 	  }
-	      
+
     return (catalogService.getCatalog().toString());
   }*/
 
@@ -101,29 +101,29 @@ public class ProgramController {
     catch (JSONException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
     }
-    
+
     //response = createProgram(null, jo.optString("name"));
     logger.info("Creating program "+jo.optString("name"));
-	  
+
 	  ProgramEntity program = programService.create(jo.optString("name"));
-    
+
 		return (catalogService.getPrograms());
 	}
 
 	// PUT /program/{id}/blueprint
 	@PutMapping(value = "/program/{programId}/blueprint/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> addBlueprint(@PathVariable("programId") String programId, 
+	public ResponseEntity<String> addBlueprint(@PathVariable("programId") String programId,
 	                                           @PathVariable("name") String name,
 	                                           @RequestParam(value = "tree", defaultValue = "0") String tree) {
 	  BlueprintEntity blueprint = null;
 	  Optional<ProgramEntity> program = programService.findById(programId);
-	  
+
 	  if (program.isPresent()) {
 	    blueprint = blueprintService.create(program.get(), BlueprintType.GENERIC, name);
-	    
+
 	    if (blueprint != null) {
 	      logger.info("Created "+blueprint.toString());
-	      programRepository.refresh(program.get());	  
+	      programRepository.refresh(program.get());
 	    } else {
 	      logger.error("Can't create blueprint "+name);
 	      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't create blueprint "+name);
@@ -134,17 +134,17 @@ public class ProgramController {
 
 		return new ResponseEntity<>("{\"id\":\""+blueprint.getId()+"\"}", HttpStatus.OK);
 	}
-	
+
 	// PUT /program/{id}/rename/{name}
 	@PutMapping(value = "/program/{id}/rename/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<ProgramEntity> rename(@PathVariable("id") String id, 
+	public List<ProgramEntity> rename(@PathVariable("id") String id,
 	                                     @PathVariable("name") String name,
 	                                     @RequestParam(value = "tree", defaultValue = "0") String tree) {
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
-	  if (!program.isPresent()) 
+
+	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-	    
+
 	  programService.rename(program.get(), name);
 
 		return (tree.equals("0") ? null : catalogService.getPrograms());
@@ -154,12 +154,12 @@ public class ProgramController {
 	@DeleteMapping(value = "/program/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<ProgramEntity> delete(@PathVariable("id") String id) {
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
-	  if (!program.isPresent()) 
+
+	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-	  
+
 	  programService.delete(program.get());
-	  
+
 		return catalogService.getPrograms();
 	}
 
@@ -169,12 +169,12 @@ public class ProgramController {
 
 	  HttpStatus responseStatus = HttpStatus.OK;
 	  JSONObject jresponse = new JSONObject();
-		
+
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
+
 	  if (program.isPresent()) {
 	      logger.info("Compiling program "+program.get().getName());
-	      
+
         if (programService.compile(program.get())) {
           logger.info(program.get().getMessage());
         }
@@ -182,14 +182,14 @@ public class ProgramController {
           responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
           logger.error(program.get().getMessage());
         }
-        
+
         jresponse.put("status", program.get().getStatus());
         jresponse.put("message", program.get().getMessage());
         jresponse.put("output", program.get().getOutput());
 	  } else {
 	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 	  }
-	  
+
 	  return new ResponseEntity<>(jresponse.toString(), responseStatus);
 	}
 
@@ -201,13 +201,13 @@ public class ProgramController {
 	  JSONObject jresponse = new JSONObject();
 
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
+
 	  if (!program.isPresent())
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found");
-	      
+
     if (program.get().getStatus() != ProgramStatus.COMPILED)
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Program not compiled");
-    
+
     if (program.get().createJAR()) {
       logger.info(program.get().getMessage());
     }
@@ -215,11 +215,11 @@ public class ProgramController {
       logger.error(program.get().getMessage());
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, program.get().getMessage());
     }
-    
+
     jresponse.put("status", program.get().getStatus());
     jresponse.put("message", program.get().getMessage());
     jresponse.put("output", program.get().getOutput());
-	  
+
 		return (catalogService.getPrograms());
 	}
 
@@ -230,16 +230,16 @@ public class ProgramController {
 	  String javaCode = "";
 
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
+
 	  if (program.isPresent()) {
 	    javaCode = program.get().getJava();
-	    
+
 	    if (javaCode == null)
 	      return new ResponseEntity<>("Java code not found", HttpStatus.NOT_FOUND);
 	  } else {
 	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 	  }
-	  	   
+
 		return new ResponseEntity<>(javaCode, HttpStatus.OK);
 	}
 
@@ -248,7 +248,7 @@ public class ProgramController {
 	public ResponseEntity<Resource> getJAR(@PathVariable("id") String id) {
 
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
+
 	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found");
 
@@ -264,11 +264,11 @@ public class ProgramController {
     } catch (IOException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
     }
-    
+
     //Response.AppendHeader("content-disposition", "attachment; filename=\"" + fileName +"\"");
     HttpHeaders headers = new HttpHeaders();
     headers.set("Content-Disposition", "attachment; filename=\""+program.get().getName()+".jar\"");
-   	  	   
+
     return ResponseEntity.ok()
             .headers(headers)
             .contentLength(file.length())
@@ -282,29 +282,29 @@ public class ProgramController {
 	public ResponseEntity<String> clean(@PathVariable("id") String id) {
 
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
+
 	  if (program.isPresent()) {
 	    program.get().clean();
 	  } else {
 	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 	  }
-	   
+
 		return new ResponseEntity<>("{\"status\":0}", HttpStatus.OK);
 	}*/
-	
+
 	// POST /program/{id}/run/{method}
 	@PostMapping(value = "/program/{id}/run/{method}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> run(@PathVariable("id") String id, 
+	public ResponseEntity<String> run(@PathVariable("id") String id,
 	                                  @PathVariable("method") String method,
 	                                  @RequestBody String data) {
 
 	  String outData = "";
-	  
+
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
+
 	  if (program.isPresent()) {
 	      Optional<BlueprintEntity> blueprint = blueprintService.findByNameAndProgram(method, program.get());
-	      
+
 	      if (blueprint.isPresent()) {
 	          if (program.get().run(blueprint.get().getMethod(), data)) {
 	            logger.info(program.get().getName()+"."+method+" successfully executed");
@@ -313,11 +313,11 @@ public class ProgramController {
 	          else {
 	            logger.error(program.get().getName()+"."+method+" error: "+program.get().getResult());
 	            outData = program.get().getOutput();
-	            
+
 	            switch (program.get().getResult()) {
 	              case ProgramEntity.METHOD_NOT_FOUND:
 	                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Method Not Found");
-	                
+
 	              default:
 	                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, program.get().getMessage());
 	            }
@@ -325,76 +325,76 @@ public class ProgramController {
 	      } else {
 	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Method Not Found: "+method);
 	      }
-	      
+
 	  } else {
 	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 	  }
-	   
+
 		return new ResponseEntity<>(outData, HttpStatus.OK);
 	}
-	
+
 	// GET /program/{id}/status
 	@GetMapping(value = "/program/{id}/status", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> getStatus(@PathVariable("id") String id) {
 	  String outData = "";
 
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
+
 	  if (program.isPresent()) {
 	    outData = "{\"status\":\""+program.get().getStatus()/*.ordinal()*/ + "\"}";
 	  } else {
 	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 	  }
-	   
+
 		return new ResponseEntity<>(outData, HttpStatus.OK);
 	}
-	
+
 	// GET /program/{id}/index
 	@GetMapping(value = "/program/{id}/index", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getIndex(@PathVariable("id") String id) {
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
+
 	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program Not Found");
-	   
+
 		return (program.get().getBlueprintIndex());
 	}
-	
+
 	@GetMapping(value = "/program/{id}/properties", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Properties> getProperties(@PathVariable("id") String id) {
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
+
 	  if (!program.isPresent())
 	    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-	  
+
 		return new ResponseEntity<>(program.get().getProperties(), HttpStatus.OK);
 	}
-	
+
 	@PostMapping(value = "/program/{id}/properties", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Properties> create(@PathVariable("id") String id, @RequestBody Properties prop) {
 	  PropertiesManager pm = null;
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
+
 	  if (!program.isPresent())
 	    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 
     pm = program.get().getPropertiesManager();
     pm.merge(prop);
     pm.save();
-        
+
 		return new ResponseEntity<>(pm.getProperties(), HttpStatus.OK);
 	}
-	
+
 	// DELETE /properties
 	@DeleteMapping(value = "/program/{id}/properties", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Properties> deleteProperties(@PathVariable("id") String id, @RequestBody String data) {
     JSONArray ja = null;
 	  PropertiesManager pm = null;
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
+
 	  if (!program.isPresent())
 	    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-	      
+
     try {
       ja = new JSONArray(data);
     }
@@ -403,89 +403,103 @@ public class ProgramController {
     }
 
     pm = program.get().getPropertiesManager();
-    
+
     for (int i=0; i<ja.length(); i++) {
       String key = ja.getString(i);
       logger.info("Deleting property "+key);
       pm.remove(key);
     }
-    
+
     pm.save();
-    
+
 		return new ResponseEntity<>(pm.getProperties(), HttpStatus.OK);
 	}
-	
+
 	// PUT /program/variable
 	@PutMapping(value = "/program/{id}/variable", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Variable createVariable(@PathVariable("id") String id, @RequestBody Variable v) {
 	  Optional<ProgramEntity> program = programService.findById(id);
 
-	  if (!program.isPresent()) 
+	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
-	  
+
 	  logger.info("Creating variable "+v.getName()+" for program "+program.get().getName());
-	  
+
 	  Variable newVar = programService.addVariable(program.get(), v);
-	  
+
 	  if (newVar == null)
 	    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't create variable.");
-	    
+
 		return newVar;
 	}
-	
+
 	// POST /program/variable
 	@PostMapping(value = "/program/{id}/variable", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> modifyVariable(@PathVariable("id") String id, @RequestBody Variable v) {
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
-	  if (!program.isPresent()) 
+
+	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
-	  
+
 	  logger.info("Updating variable "+v.getName()+" for program "+program.get().getName());
-	  
-	  if (!program.get().hasVariable(v.getName())) 
+
+	  if (!program.get().hasVariable(v.getName()))
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable not found.");
-	    
+
 	  if (!programService.updateVariable(program.get(), v))
 	    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot update variable.");
 
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
-	
+
 	// POST /program/variable/rename
 	@PostMapping(value = "/program/{id}/variable/{oldName}/rename/{newName}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> modifyVariable(@PathVariable("id") String id, @PathVariable("oldName") String oldName, @PathVariable("newName") String newName) {
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
-	  if (!program.isPresent()) 
+
+	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
-	  
+
 	  logger.info("Renaming variable "+oldName+" to "+newName+" for program "+program.get().getName());
-	  
-	  if (!program.get().hasVariable(oldName)) 
+
+	  if (!program.get().hasVariable(oldName))
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable not found.");
-	    
+
 	  if (!programService.renameVariable(program.get(), oldName, newName))
 	    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot rename variable.");
 
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
-	
+
 	// DELETE /program/variable
 	@DeleteMapping(value = "/program/{id}/variable/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> deleteVariable(@PathVariable("id") String id, @PathVariable("name") String name) {
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
-	  if (!program.isPresent()) 
+
+	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
-	  
+
 	  logger.info("Deleting variable "+name+" from program "+program.get().getName());
-	    
+
 	  if (!programService.deleteVariable(program.get(), name))
 	    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't delete variable.");
 
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
-}
+	/**
+   * Describe Program.class
+   */
+	@GetMapping(value = "/program/{id}/class/desc", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> descClass(@PathVariable("id") String id) {
+	  Optional<ProgramEntity> program = programService.findById(id);
 
+	  if (!program.isPresent())
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
+
+    programService.describe(program.get());
+
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+
+}
