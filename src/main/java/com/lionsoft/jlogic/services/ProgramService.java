@@ -6,9 +6,8 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 import java.time.Instant;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -217,7 +216,9 @@ public class ProgramService {
 	  return false;
 	}
 
-  public boolean describe(ProgramEntity program) {
+  public JSONObject describe(ProgramEntity program) {
+    JSONObject jprogram = new JSONObject();
+
     try {
       URL[] urls = program.getURLs();
 
@@ -228,7 +229,18 @@ public class ProgramService {
 
       Method[] methods = Program.getMethods();
       for (Method m : methods) {
+        String id = null;
+        JSONObject jbp = new JSONObject();
+        JSONArray jinput = new JSONArray();
+        JSONArray joutput = new JSONArray();
+        jbp.put("input", jinput);
+        jbp.put("output", joutput);
 
+        JSONObject jexec = new JSONObject();
+        jexec.put("label", "");
+        jexec.put("type", "Exec");
+        jinput.add(jexec);
+        joutput.add(jexec);
 
         Annotation annotation = m.getAnnotation(BlueprintAnnotation);
 
@@ -239,30 +251,66 @@ public class ProgramService {
           //System.out.println(" GenericReturnType: "+ m.getGenericReturnType());
           //System.out.println(m.toString());
 
+          jbp.put("method", m.getName());
+
           for (Parameter p : m.getParameters()) {
-            System.out.println(" "+ p.getType() +"  " + p.getName() + " " + Modifier.toString(p.getModifiers()));
-            System.out.println(" dimensions: "+ StringUtils.countOccurrencesOf(p.getType().toString(), "["));
+            //System.out.println(" "+ p.getType() +"  " + p.getName() + " " + Modifier.toString(p.getModifiers()));
+            //System.out.println(" dimensions: "+ StringUtils.countOccurrencesOf(p.getType().toString(), "["));
+            String[] parts = p.getType().toString().split("\\.");
+            System.out.println(p.getType().toString());
+            System.out.println(parts.length);
+            System.out.println(parts);
+            JSONObject jparam = new JSONObject();
+            jparam.put("label", p.getName());
+            jparam.put("type", parts[parts.length-1].replace(";", ""));
+            jparam.put("dimensions", StringUtils.countOccurrencesOf(p.getType().toString(), "["));
+
+            jinput.add(jparam);
           }
 
           Class<? extends Annotation> type = annotation.annotationType();
           //System.out.println("Values of " + type.getName());
-          for (Method method : type.getDeclaredMethods()) {
+          /*for (Method method : type.getDeclaredMethods()) {
              Object value = method.invoke(annotation, (Object[])null);
              System.out.println(" " + method.getName() + ": " + value);
-          }
+             jbp.put(method.getName(), value);
+          }*/
+          System.out.println("Annotation: "+type.getName());
+
+          Method method;
+          Object value;
+
+          method = type.getMethod("id");
+          value = method.invoke(annotation, (Object[])null);
+          id = (String) value;
+          jbp.put("id", value);
+
+          method = type.getMethod("name");
+          value = method.invoke(annotation, (Object[])null);
+          jbp.put("name", value);
+
+          method = type.getMethod("type");
+          value = method.invoke(annotation, (Object[])null);
+          jbp.put("type", value);
+
+          jprogram.put(id, jbp);
         }
+
       }
     } catch (ClassNotFoundException e) {
       logger.error("Class not found: "+e.getMessage());
-      return false;
+      return null;
     } catch (InvocationTargetException e) {
       e.printStackTrace();
-      return false;
+      return null;
     } catch (IllegalAccessException e) {
       e.printStackTrace();
-      return false;
+      return null;
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+      return null;
     }
 
-    return true;
+    return jprogram;
   }
 }

@@ -27,9 +27,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
@@ -94,18 +95,25 @@ public class ProgramController {
 	public List<ProgramEntity> put(@RequestBody String data) {
 	  String response;
 	  JSONObject jo;
-
+/*
     try {
       jo = new JSONObject(data);
     }
     catch (JSONException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+    }*/
+    JSONParser jsonParser = new JSONParser();
+
+    try {
+      jo = (JSONObject) jsonParser.parse(data);
+    } catch (ParseException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
     }
 
     //response = createProgram(null, jo.optString("name"));
-    logger.info("Creating program "+jo.optString("name"));
+    logger.info("Creating program "+ (String) jo.get("name"));
 
-	  ProgramEntity program = programService.create(jo.optString("name"));
+	  ProgramEntity program = programService.create( (String) jo.get("name"));
 
 		return (catalogService.getPrograms());
 	}
@@ -394,18 +402,25 @@ public class ProgramController {
 
 	  if (!program.isPresent())
 	    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-
+/*
     try {
       ja = new JSONArray(data);
     }
     catch (JSONException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
     }
+*/
+    JSONParser jsonParser = new JSONParser();
+    try {
+      ja = (JSONArray) jsonParser.parse(data);
+    } catch (ParseException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+    }
 
     pm = program.get().getPropertiesManager();
 
-    for (int i=0; i<ja.length(); i++) {
-      String key = ja.getString(i);
+    for (int i=0; i<ja.size(); i++) {
+      String key = (String) ja.get(i);
       logger.info("Deleting property "+key);
       pm.remove(key);
     }
@@ -497,9 +512,9 @@ public class ProgramController {
 	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
 
-    programService.describe(program.get());
+    JSONObject jo = programService.describe(program.get());
 
-		return new ResponseEntity<>(null, HttpStatus.OK);
+		return new ResponseEntity<>(jo != null ? jo.toString() : null, jo != null ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }
