@@ -450,7 +450,7 @@ public class ProgramEntity {
       }
     }
 	}
-
+/*
   @JsonIgnore
 	public String getBlueprintIndex () {
 	  String index = null;
@@ -463,8 +463,8 @@ public class ProgramEntity {
     }
 
     return index;
-	}
-
+	}*/
+/*
 	public void updateIndex (BlueprintEntity blueprint, String content) {
     JSONObject jindex, jbp = null;
     JSONParser jsonParser = new JSONParser();
@@ -512,7 +512,7 @@ public class ProgramEntity {
     } catch (IOException e) {
         e.printStackTrace();
     }
-	}
+	} */
 
 	public boolean createIndex () {
     try (FileWriter file = new FileWriter(getMyDir()+"/index.json")) {

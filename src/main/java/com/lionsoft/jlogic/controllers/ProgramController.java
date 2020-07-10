@@ -172,7 +172,7 @@ public class ProgramController {
 	}
 
 	// POST /program/{id}/compile
-	@PostMapping(value = "/program/{id}/compile")
+	@PostMapping(value = "/program/{id}/compile", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> compile(@PathVariable("id") String id) {
 
 	  HttpStatus responseStatus = HttpStatus.OK;
@@ -191,7 +191,7 @@ public class ProgramController {
           logger.error(program.get().getMessage());
         }
 
-        jresponse.put("status", program.get().getStatus());
+        jresponse.put("status", program.get().getStatus().name());
         jresponse.put("message", program.get().getMessage());
         jresponse.put("output", program.get().getOutput());
 	  } else {
@@ -224,7 +224,7 @@ public class ProgramController {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, program.get().getMessage());
     }
 
-    jresponse.put("status", program.get().getStatus());
+    jresponse.put("status", program.get().getStatus().name());
     jresponse.put("message", program.get().getMessage());
     jresponse.put("output", program.get().getOutput());
 
@@ -359,13 +359,15 @@ public class ProgramController {
 
 	// GET /program/{id}/index
 	@GetMapping(value = "/program/{id}/index", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String getIndex(@PathVariable("id") String id) {
+  public ResponseEntity<String> getIndex(@PathVariable("id") String id) {
 	  Optional<ProgramEntity> program = programService.findById(id);
 
 	  if (!program.isPresent())
-	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program Not Found");
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
 
-		return (program.get().getBlueprintIndex());
+    JSONObject jo = programService.getIndex(program.get());
+
+		return new ResponseEntity<>(jo != null ? jo.toString() : null, jo != null ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@GetMapping(value = "/program/{id}/properties", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -512,7 +514,7 @@ public class ProgramController {
 	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
 
-    JSONObject jo = programService.describe(program.get());
+    JSONObject jo = programService.getIndex(program.get());
 
 		return new ResponseEntity<>(jo != null ? jo.toString() : null, jo != null ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
 	}

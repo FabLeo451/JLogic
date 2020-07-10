@@ -216,7 +216,7 @@ public class ProgramService {
 	  return false;
 	}
 
-  public JSONObject describe(ProgramEntity program) {
+  public JSONObject getIndex(ProgramEntity program) {
     JSONObject jprogram = new JSONObject();
 
     try {
@@ -226,6 +226,7 @@ public class ProgramService {
 
       Class Program = cl.loadClass("Program");
       Class BlueprintAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.Blueprint");
+      Class BPConnectorAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.BPConnector");
 
       Method[] methods = Program.getMethods();
       for (Method m : methods) {
@@ -242,28 +243,62 @@ public class ProgramService {
         jinput.add(jexec);
         joutput.add(jexec);
 
+        Method method;
+        Object value;
+        String[] parts = null;
+
         Annotation annotation = m.getAnnotation(BlueprintAnnotation);
 
         if (annotation != null) {
+          // Is a Blueprint
+
           System.out.println(" method: " + m.getName());
           System.out.println(" ReturnType: "+ m.getReturnType());
           System.out.println(" Returns: "+ (m.getReturnType().equals(Void.TYPE) ? "No" : "Yes"));
           //System.out.println(" GenericReturnType: "+ m.getGenericReturnType());
           //System.out.println(m.toString());
 
+          Annotation outAnnotation = m.getAnnotation(BPConnectorAnnotation);
+
+          if (outAnnotation != null) {
+            // Has output
+
+            JSONObject jout = new JSONObject();
+            Class<? extends Annotation> outConn = outAnnotation.annotationType();
+
+            for (Method mOut : outConn.getDeclaredMethods()) {
+               value = mOut.invoke(outAnnotation, (Object[])null);
+               jout.put(mOut.getName(), value);
+            }
+
+            parts = m.getReturnType().toString().split("\\.");
+            jout.put("type", parts[parts.length-1].replace(";", ""));
+
+            jout.put("dimensions", StringUtils.countOccurrencesOf(m.getReturnType().toString(), "["));
+
+            joutput.add(jout);
+          }
+
           jbp.put("method", m.getName());
 
           for (Parameter p : m.getParameters()) {
             //System.out.println(" "+ p.getType() +"  " + p.getName() + " " + Modifier.toString(p.getModifiers()));
             //System.out.println(" dimensions: "+ StringUtils.countOccurrencesOf(p.getType().toString(), "["));
-            String[] parts = p.getType().toString().split("\\.");
-            System.out.println(p.getType().toString());
-            System.out.println(parts.length);
-            System.out.println(parts);
+            parts = p.getType().toString().split("\\.");
+
             JSONObject jparam = new JSONObject();
             jparam.put("label", p.getName());
             jparam.put("type", parts[parts.length-1].replace(";", ""));
             jparam.put("dimensions", StringUtils.countOccurrencesOf(p.getType().toString(), "["));
+
+            Annotation paramAnnotation = p.getAnnotation(BPConnectorAnnotation);
+
+            if (paramAnnotation != null) {
+              Class<? extends Annotation> bpconnector = paramAnnotation.annotationType();
+              method = bpconnector.getMethod("id");
+              value = method.invoke(paramAnnotation, (Object[])null);
+              jparam.put("id", value);
+            }
 
             jinput.add(jparam);
           }
@@ -276,9 +311,6 @@ public class ProgramService {
              jbp.put(method.getName(), value);
           }*/
           System.out.println("Annotation: "+type.getName());
-
-          Method method;
-          Object value;
 
           method = type.getMethod("id");
           value = method.invoke(annotation, (Object[])null);

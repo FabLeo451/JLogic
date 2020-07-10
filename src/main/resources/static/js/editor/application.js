@@ -579,6 +579,7 @@ function compileProgram () {
   callServer ("POST", "/program/"+_jbp.programId+"/compile", null, function (xhttp) {
       if (xhttp.readyState == 4) {
         if (xhttp.status == 200) {
+          //console.log(xhttp.responseText);
           var jo = JSON.parse(xhttp.responseText);
 
           bpConsole.append ("<i class=\"icon i-check w3-text-green\"></i> Program successfully compiled", BPConsoleTextType.SUCCESS);
