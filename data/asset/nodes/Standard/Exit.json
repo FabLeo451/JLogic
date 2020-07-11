@@ -4,7 +4,7 @@
   "type": 10,
   "version": 1,
   "can_delete": true,
-  "java": "_exit(in{1}, in{2});",
+  "java": "_exit(in{1}, in{2});\nthrow new ExitException(\"Program terminated by exit\");",
   "input": [
     { "type": "Exec", "label": "" },
     { "type": "Integer", "label": "Code", "value": 0, "enum": [

@@ -13,6 +13,19 @@
       ]
     },
     {
+      "name": "String Lengh",
+      "type": 5,
+      "version": 1,
+      "inner_text": "LEN",
+      "java": "in{0}.length()",
+      "input": [
+        { "type": "String", "label": "String", "value":"" }
+      ],
+      "output": [
+        { "type": "Integer", "label": "Length" }
+      ]
+    },
+    {
       "name": "String Equals",
       "type": 5,
       "version": 1,
