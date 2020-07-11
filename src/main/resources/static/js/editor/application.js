@@ -150,12 +150,22 @@ function readFile(e) {
     return;
   }
   var reader = new FileReader();
+
   reader.onload = function(e) {
     var contents = e.target.result;
-    var j = JSON.parse(contents);
-    appLoadBlueprint (j);
 
-    setStatus (BPEditStatus.MODIFIED);
+    try {
+      var j = JSON.parse(contents);
+
+      if (j.type == blueprint.type) {
+        appLoadBlueprint (j);
+        setStatus (BPEditStatus.MODIFIED);
+      } else {
+        dialogError ('Blueprint types are different.<br>This blueprint: '+blueprint.type+'<br>File blueprint: '+j.type);
+      }
+    } catch (err) {
+      dialogError ('Not a valid JSON file.');
+    }
 
     /* Reset so 'changed' event triggers again */
     document.getElementById('file-dialog').value="";
