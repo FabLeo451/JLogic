@@ -2,7 +2,7 @@ boolean _{node.id}_exeOK = false;
 
 List<String> _{node.id}_args = new ArrayList<String>();
 
-// Add command and arguments (from out{2} on...)
+// Add command and arguments (from in{3} on...)
 for (int _{node.id}_i = 3; _{node.id}_i < {count.in}; _{node.id}_i++) {
   _{node.id}_args.add((String) _{node.id}_in [_{node.id}_i]);
 }
@@ -45,10 +45,12 @@ try {
 }
 catch (IOException e) {
   out{1} = e.getMessage();
+  out{3} = 1;
   _{node.id}_exeOK = false;
 }
 catch (InterruptedException e) {
   out{1} = e.getMessage();
+  out{3} = 1;
   _{node.id}_exeOK = false;
 }
 
