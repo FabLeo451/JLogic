@@ -331,7 +331,7 @@ class Blueprint {
       if (k)
         data += ', ';
 
-      if (this.selection[i].type != BPNodeTypeID.ENTRY_POINT && this.selection[i].type != BPNodeTypeID.RETURN) {
+      if (this.selection[i].type != BPNodeTypeID.ENTRY_POINT && this.selection[i].type != BPNodeTypeID.RETURN && this.selection[i].type != BPNodeTypeID.EVENT) {
         data += JSON.stringify(this.selection[i].toJSON());
         k ++;
       }

@@ -140,6 +140,8 @@ function appLoadBlueprint (j) {
   bpName.value = blueprint.getName();
   document.title = blueprint.getName();
 
+  blueprint.clearSelection();
+
   console.log ("[application] [appLoadBlueprint] End");
 }
 
@@ -354,7 +356,7 @@ function appStart () {
                 document.getElementById('programName').innerHTML = program.name;
                 document.getElementById('bp-title').innerHTML = _jbp.name;
 
-                // Check if it's a main blueprint
+                // Check if it's a MAIN or EVEMTS blueprint
 
                 if (_jbp.type == BlueprintType.MAIN || _jbp.type == BlueprintType.EVENTS) {
                   document.getElementById("bpName").readOnly = true;
