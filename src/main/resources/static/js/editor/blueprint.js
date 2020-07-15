@@ -711,6 +711,7 @@ class Blueprint {
     edge.setConnector2 (c2);
     edge.setLocked (false);
     edge.setColor (c1.getColor());
+    edge.setWidth (c1.getPinType().name == 'Exec' ? 3.5 : 2.8);
     edge.setCallbackMouseEnter (edgeMouseEnter);
     edge.setCallbackMouseLeave (edgeMouseLeave);
     this.edges.push (edge);
