@@ -40,6 +40,19 @@
       ]
     },
     {
+      "name": "String Is Empty",
+      "type": 5,
+      "version": 1,
+      "inner_text": "EMPTY",
+      "java": "in{0}.isEmpty()",
+      "input": [
+        { "type": "String", "label": "" }
+      ],
+      "output": [
+        { "type": "Boolean", "label": "" }
+      ]
+    },
+    {
       "name": "String To Upper",
       "type": 5,
       "version": 1,
@@ -124,6 +137,23 @@
         { "type": "Exec", "label": "" },
         { "type": "String", "label": "Array", "dimensions":1, "java": {"references": {"variable":"lines"}} },
         { "type": "Integer", "label":"Count", "java": {"references": {"variable":"count"}} }
+      ]
+    },
+    {
+      "name": "Regular Expression",
+      "type": 4,
+      "version": 1,
+      "import": ["java.util.regex.Pattern", "java.util.regex.Matcher" , "java.util.List", "java.util.ArrayList"],
+      "java": "@Regex.java",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Regex", "value":"", "single_line":true },
+        { "type": "String", "label": "String", "value":"" }
+      ],
+      "output": [
+        { "type": "Exec", "label": "Matched" },
+        { "type": "String", "label": "Matches", "dimensions":1, "java": {"references": {"variable":"matches"}} },
+        { "type": "Exec", "label": "No match" }
       ]
     }
   ]
