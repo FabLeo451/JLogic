@@ -42,7 +42,7 @@ function refreshTable () {
 
         g_apiList = ordered;
 
-        var header = ['API', 'Program', 'Blueprint', 'Enabled', 'Modified', null];
+        var header = ['API', '', 'Program', 'Blueprint', 'Enabled', 'Modified', null];
         //var fields = ['name', 'blueprint_id', 'enabled', 'modified'];
 
         var tr = document.createElement('tr');
@@ -74,10 +74,17 @@ function refreshTable () {
             tr.setAttribute('id', rowId);
 
             //for (var i = 0; i < fields.length; i++) {
+              // API name
               td = document.createElement('td');
               td.classList.add('td1');
               //td.classList.add('w3-padding');
               td.innerHTML = `<a target="Javascript:void(0);" onclick="editAPI (`+index+`)" style="cursor:pointer;"><strong>`+value["name"]+`</strong></a>`;
+              tr.appendChild(td);
+
+              // GET
+              td = document.createElement('td');
+              td.classList.add('td1');
+              td.innerHTML = '<a target="_blank" href="/api/'+value.name+'">GET <i class="icon i-external-link-alt w3-text-gray" title="HTTP GET"></a>';
               tr.appendChild(td);
 
               // Program
