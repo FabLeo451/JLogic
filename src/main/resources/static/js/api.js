@@ -78,7 +78,7 @@ function refreshTable () {
               td = document.createElement('td');
               td.classList.add('td1');
               //td.classList.add('w3-padding');
-              td.innerHTML = `<a target="Javascript:void(0);" onclick="editAPI (`+index+`)" style="cursor:pointer;"><strong>`+value["name"]+`</strong></a>`;
+              td.innerHTML = `<a target="Javascript:void(0);" onclick="editAPI (`+index+`)" style="cursor:pointer;"><strong>`+value["name"]+`</strong> <i class="icon i-pen w3-text-gray" title="Edit"></a>`;
               tr.appendChild(td);
 
               // GET
@@ -101,7 +101,7 @@ function refreshTable () {
               td.classList.add('td1');
               var bp = value.blueprint; //searchCatalog (jcatalog, value["blueprintId"]); //_blueprints[value["blueprintId"]];
               var bpName = bp ?
-                           bp.name+' <a href="/blueprint/'+bp.id+'/edit" target="_blank" style="cursor:pointer;"><i class="icon i-external-link-alt w3-text-gray w3-hover-text-green" title="Open blueprint"></a>' :
+                           '<a href="/blueprint/'+bp.id+'/edit" target="_blank" style="cursor:pointer;">'+bp.name+' <i class="icon i-external-link-alt w3-text-gray" title="Open blueprint"></a>' :
                            '<div class="w3-text-red">Not found</div>';
               td.innerHTML = bpName;
               tr.appendChild(td);

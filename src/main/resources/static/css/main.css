@@ -1,4 +1,4 @@
-html, body { 
+html, body {
   /*font: 400 16px/24px Roboto,Noto Sans,Noto Sans JP,Noto Sans KR,Noto Naskh Arabic,Noto Sans Thai,Noto Sans Hebrew,Noto Sans Bengali,sans-serif;
   font-style: normal;
   font-variant-ligatures: normal;
@@ -13,7 +13,7 @@ html, body {
   font-family: Roboto, "Noto Sans", "Noto Sans JP", "Noto Sans KR", "Noto Naskh Arabic", "Noto Sans Thai", "Noto Sans Hebrew", "Noto Sans Bengali", sans-serif;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  height:100% 
+  height:100%
 }
 
 body {
@@ -23,16 +23,32 @@ body {
   margin: 0;
 }
 
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:active {
+  text-decoration: underline;
+}
+
 .logo {
   moz-webkit-filter: drop-shadow(2px 2px 2px #555);
       webkit-filter: drop-shadow(2px 2px 2px #555);
-             filter: drop-shadow(2px 2px 2px #555); 
+             filter: drop-shadow(2px 2px 2px #555);
 }
 
 .shadow {
   moz-webkit-filter: drop-shadow(2px 2px 2px #555);
       webkit-filter: drop-shadow(2px 2px 2px #555);
-             filter: drop-shadow(2px 2px 2px #555); 
+             filter: drop-shadow(2px 2px 2px #555);
 }
 
 .content {
@@ -217,6 +233,7 @@ legend {
 .i-bolt:before { content: "\f0e7" }
 .i-list-ol:before { content: "\f0cb" }
 .i-edit:before { content: "\f044" }
+.i-pen:before { content: "\f304" }
 .i-retweet:before { content: "\f079" }
 .i-memory:before { content: "\f538" }
 .i-cube:before { content: "\f1b2" }
@@ -245,9 +262,6 @@ legend {
 
 .i-align-left:before { content: "\f036" } /* A */
 .i-font:before { content: "\f031" }
-.i-calculator:before { content: "\f1ec" } 
-.i-hashtag:before { content: "\f292" } 
-.i-code:before { content: "\f121" } 
-
-
-
+.i-calculator:before { content: "\f1ec" }
+.i-hashtag:before { content: "\f292" }
+.i-code:before { content: "\f121" }
