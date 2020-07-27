@@ -84,5 +84,17 @@
     "output": [
       { "type": "Integer", "label": "" }
     ]
+  },
+  {
+    "name": "Integer To String",
+    "type": 5,
+    "version": 1,
+    "java": "Integer.toString(in{0})",
+    "input": [
+      { "type": "Integer", "label": "", "value": 0 }
+    ],
+    "output": [
+      { "type": "String", "label": "" }
+    ]
   }
 ]
