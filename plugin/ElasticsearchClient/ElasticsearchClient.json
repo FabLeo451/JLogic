@@ -104,8 +104,8 @@
                  "org.elasticsearch.action.bulk.BulkItemResponse",
                  "org.elasticsearch.action.DocWriteResponse",
                  "org.elasticsearch.action.index.IndexResponse",
-                 "org.elasticsearch.rest.RestStatus", 
-                 "java.util.*", 
+                 "org.elasticsearch.rest.RestStatus",
+                 "java.util.*",
                  "org.json.simple.*"],
       "classpath": ["{path}/ElasticsearchClient.jar"],
       "jar": ["lib/json-simple-1.1.1.jar"],
@@ -122,6 +122,30 @@
         { "type": "Integer", "label": "Updated", "java": { "references":{"variable":"updated"} } },
         { "type": "Integer", "label": "Errors", "java": { "references":{"variable":"errors"} } },
         { "type": "Boolean", "label": "Has failures", "java": { "references":{"variable":"hasFailures"} } },
+        { "type": "Exec", "label": "Error" },
+        { "type": "String", "label": "Message", "java": { "references":{"variable":"msg"} } }
+      ]
+    },
+    {
+      "name": "Elasticsearch Query",
+      "type": 4,
+      "version": 1,
+      "import": ["com.lionsoft.elasticsearch.ElasticsearchClient",
+                 "org.elasticsearch.index.query.QueryBuilders",
+                 "org.elasticsearch.rest.RestStatus",
+                 "java.util.*",
+                 "org.json.simple.*"],
+      "classpath": ["{path}/ElasticsearchClient.jar"],
+      "jar": ["lib/json-simple-1.1.1.jar"],
+      "java":"@Query.java",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "ElasticsearchClient", "label": "Client" },
+        { "type": "String", "label": "Index", "value":"", "single_line":true }
+      ],
+      "output": [
+        { "type": "Exec", "label": "Success" },
+        { "type": "JSONArray", "label": "Results", "java": { "references":{"variable":"ja"} } },
         { "type": "Exec", "label": "Error" },
         { "type": "String", "label": "Message", "java": { "references":{"variable":"msg"} } }
       ]
