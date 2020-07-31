@@ -419,6 +419,7 @@ class Connector {
     //this.setType (type);
     this.setPinType (pinType);
     this.setDataType (dataType);
+    this.element.title = this.getPinType().name;
     this.exec = this.pinType.exec ? this.pinType.exec : false;
     //this.setArray (isArray === true);
     this.dimensions = dimensions;
