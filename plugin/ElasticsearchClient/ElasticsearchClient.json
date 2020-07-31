@@ -141,7 +141,10 @@
       "input": [
         { "type": "Exec", "label": "" },
         { "type": "ElasticsearchClient", "label": "Client" },
-        { "type": "String", "label": "Index", "value":"", "single_line":true }
+        { "type": "String", "label": "Index", "value":"", "single_line":true },
+        { "type": "Integer", "label": "Type", "value": 0, "enum": [ "Match all", "Term query", "Match query" ] },
+        { "type": "String", "label": "Key", "value":"", "single_line":true },
+        { "type": "String", "label": "Value", "value":"", "single_line":true }
       ],
       "output": [
         { "type": "Exec", "label": "Success" },
