@@ -39,16 +39,19 @@
     var plugins = [
       {
         "name": "SFTP",
+        "filename": "SFTP.tar.xz",
         "description":"Transfer files using SFTP protocol.",
         "url":"https://drive.google.com/file/d/1JkrwRSxdyqDeoFPBYw4Tg6obv2pm8ENs/view?usp=sharing"
       },
       {
         "name": "Oracle",
-        "description":"Connect to Oracle databases and execute queries.<br>Needs ojdbc8.jar present in the lib folder.<br>",
+        "filename": "Oracle.tar.xz",
+        "description":"Connect to Oracle databases and execute queries.<br>Needs ojdbc8.jar (not included in the plugin) present in the lib folder.<br>",
         "url":"https://drive.google.com/file/d/1Wv_5GopS2hnLE_v06uvekGLbSyh2ohpp/view?usp=sharing"
       },
       {
-        "name": "Elasticsearch",
+        "name": "Elasticsearch Client",
+        "filename": "ElasticsearchClient.tar.xz",
         "description":"Elasticsearch interface.<br>",
         "url":"https://drive.google.com/file/d/10lQeSYcOcIM_Op5ID33aDlGECD_bWUk0/view?usp=sharing"
       }
@@ -66,7 +69,7 @@
       item.innerHTML = `
         <h3 class="w3-myFont">`+p.name+`</h3>
         <p>`+p.description+`</p>
-        <i class="fas fa-download w3-text-gray"></i> <a href="`+p.url+`">`+p.url+`</a>
+        <i class="fas fa-download w3-text-gray"></i> <a href="`+p.url+`">`+p.filename+`</a>
         <hr>
       `;
 
