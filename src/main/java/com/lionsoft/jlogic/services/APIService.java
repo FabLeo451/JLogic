@@ -122,4 +122,19 @@ public class APIService {
 
     return result;
   }
+
+  public APIResult execute(String name, String data, HttpServletRequest request) {
+    APIResult result = new APIResult();
+
+    Optional<APIEntity> api = repository.findByName(name);
+
+    if (!api.isPresent()) {
+      result.setResult(404, HttpStatus.NOT_FOUND, "API '"+name+"' not found");
+      return(result);
+    }
+
+	  result = execute(api.get(), data, request);
+
+    return(result);
+  }
 }

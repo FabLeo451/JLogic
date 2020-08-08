@@ -22,31 +22,31 @@ public class Session {
   private String agent = null;
   private String requestURI = null;
   private String remoteAddress = null;
-  
+
   public Session(HttpServletRequest request) {
     HttpSession session = request.getSession();
-    
+
     id = session.getId();
     creationTime = new Date(session.getCreationTime());
     requestURI = request.getRequestURI();
     update(request);
   }
-  
+
   public void update(HttpServletRequest request) {
     HttpSession session = request.getSession();
 
     lastAccessedTime = session.getLastAccessedTime();
     user = request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown";
     status = Session.ACTIVE;
-    
+
     agent = request.getHeader("User-Agent");
-    
+
     UserAgent userAgent = UserAgent.parseUserAgentString(agent);
-    
+
     if (userAgent != null) {
       Browser browser = userAgent.getBrowser();
       BrowserType type = browser.getBrowserType();
-      
+
       if (type != BrowserType.TOOL) {
         String bwrVersion = "?";
         Version v = userAgent.getBrowserVersion();
@@ -54,15 +54,15 @@ public class Session {
           bwrVersion = userAgent.getBrowserVersion().getMajorVersion();
 
         String bwrName = browser.getName();
-        
+
         OperatingSystem os = userAgent.getOperatingSystem();
         String osName = os.getName();
         //String deType = os.getDeviceType().getName();
-      
+
         agent = bwrName+"/"+bwrVersion+" "+osName;
       }
     }
-    
+
     remoteAddress = request.getRemoteAddr();
   }
 

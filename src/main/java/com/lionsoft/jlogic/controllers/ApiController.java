@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.server.ResponseStatusException;
+import javax.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -39,6 +42,9 @@ public class ApiController {
 
   @Autowired
   BlueprintService blueprintService;
+
+  @Autowired
+  SessionService sessionService;
 
   Logger logger = LoggerFactory.getLogger(ApiController.class);
 
@@ -117,9 +123,10 @@ public class ApiController {
    * Execute an API on GET /api/{name}
    */
 	@GetMapping(value = "/api/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> execute(HttpServletRequest request, @PathVariable("name") String name) {
+	public ResponseEntity<String> executeGET(HttpServletRequest request, @PathVariable("name") String name) {
     logger.info("Executing API "+name);
 
+/*
     Optional<APIEntity> api = repository.findByName(name);
 
     if (!api.isPresent())
@@ -129,12 +136,19 @@ public class ApiController {
 
     if (result.getCode() != 0)
       throw new ResponseStatusException(result.getStatus(), result.getMessage());
+*/
+    APIResult result = APIService.execute(name, null, request);
+
+    sessionService.deleteSession(request);
+
+    if (result.getCode() != 0)
+      throw new ResponseStatusException(result.getStatus(), result.getMessage());
 
 		return new ResponseEntity<>(result.getResponse(), result.getStatus());
 	}
 
   /**
-   * Execute an API on POST /api/{name}     
+   * Execute an API on POST /api/{name}
    */
   @PostMapping(value = "/api/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> executePOST(HttpServletRequest request,
@@ -142,12 +156,9 @@ public class ApiController {
                                             @RequestBody String data) {
 	  logger.info("Executing API "+name);
 
-    Optional<APIEntity> api = repository.findByName(name);
+    APIResult result = APIService.execute(name, data, request);
 
-    if (!api.isPresent())
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
-
-	  APIResult result = APIService.execute(api.get(), data, request);
+    sessionService.deleteSession(request);
 
     if (result.getCode() != 0)
       throw new ResponseStatusException(result.getStatus(), result.getMessage());

@@ -17,7 +17,7 @@ function refreshSessionsCallback (xhttp) {
         var data = xhttp.responseText;
         var jsonResponse = JSON.parse(data);
 
-        var header = ['Client&nbsp;IP', 'User', 'Login&nbsp;time', 'Status', 'Resource', 'API', 'Blueprint', 'Agent'];
+        var header = ['Client&nbsp;IP', 'User', 'Login&nbsp;time', 'Status', /*'Resource', 'API',*/ 'Blueprint', 'Agent'];
         //var fields = ['sid', 'pid', 'ip', 'resource', 'status', 'start_time', 'agent'];
 
         var tr = document.createElement('tr');
@@ -90,16 +90,18 @@ function refreshSessionsCallback (xhttp) {
           tr.appendChild(td);
 
           /* Resource */
+          /*
           var td = document.createElement('td');
           td.classList.add('td1');
           td.appendChild(document.createTextNode(row.requestURI));
-          tr.appendChild(td);
+          tr.appendChild(td);*/
 
           /* API */
+          /*
           var td = document.createElement('td');
           td.classList.add('td1');
           td.appendChild(document.createTextNode(row.hasOwnProperty('api_name') ? row['api_name'] : ''));
-          tr.appendChild(td);
+          tr.appendChild(td);*/
 
           /* Blueprint */
           var td = document.createElement('td');
