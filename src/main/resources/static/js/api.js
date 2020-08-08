@@ -122,7 +122,7 @@ function refreshTable () {
               td = document.createElement('td');
               td.classList.add('td1');
               //td.classList.add('w3-padding');
-              td.appendChild(document.createTextNode(secondsToString(dateFromISO8601(value.updateTime) / 1000)));
+              td.appendChild(document.createTextNode(secondsToString(Date.parse(value.updateTime) / 1000)));
               tr.appendChild(td);
 
               td = document.createElement ('td');

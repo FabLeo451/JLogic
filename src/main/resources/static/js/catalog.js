@@ -197,7 +197,7 @@ function createProgramHeader(jo) {
     col = document.createElement('div');
     col.classList.add('w3-col');
     col.classList.add('s3');
-    col.innerHTML = secondsToString(dateFromISO8601(jo.updateTime) / 1000);
+    col.innerHTML = secondsToString(Date.parse(jo.updateTime) / 1000);
     headerElem.appendChild(col);
 
     // Actions

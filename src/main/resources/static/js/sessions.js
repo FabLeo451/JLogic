@@ -45,25 +45,6 @@ function refreshSessionsCallback (xhttp) {
           // Skip completed
           if (row.status == 3)
             continue;
-          /*
-          for (var i = 0; i < fields.length; i++) {
-            var td = document.createElement('td');
-            td.classList.add('td1');
-
-            if (!fields[i].localeCompare ('start_time')) {
-              td.innerHTML = secondsToString(row[fields[i]]);
-            }
-            else if (!fields[i].localeCompare ('http_method')) {
-              td.innerHTML = method[row[fields[i]]];
-            }
-            else if (!fields[i].localeCompare ('status')) {
-              td.innerHTML = status[row[fields[i]]];
-            }
-            else
-              td.appendChild(document.createTextNode(row[fields[i]]));
-
-            tr.appendChild(td);
-          }*/
 
           /* IP */
           var td = document.createElement('td');
@@ -80,7 +61,8 @@ function refreshSessionsCallback (xhttp) {
           /* Start time */
           var td = document.createElement('td');
           td.classList.add('td1');
-          td.innerHTML = secondsToString(dateFromISO8601(row.creationTime)/1000);
+          //td.innerHTML = secondsToString(dateFromISO8601(row.creationTime)/1000);
+          td.innerHTML = secondsToString(Date.parse(row.creationTime)/1000);
           tr.appendChild(td);
 
           /* Status */
