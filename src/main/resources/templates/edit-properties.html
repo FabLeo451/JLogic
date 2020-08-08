@@ -86,7 +86,7 @@
 
 <!-- !PAGE CONTENT! -->
 <div class="w3-main" style="margin-left:210px;">
-  
+
   <!--div class="w3-panel">
     <h2><i class="icon i-database" style="color:#4CAF50"></i> Data</h2>
     <button class="btnApp" onclick="refreshData ();"><i class="icon i-refresh"></i> Reload</button>
@@ -98,10 +98,10 @@
 
   <!-- Header -->
   <header class="w3-container">
-    <h4 style="color:black"><i class="icon i-sliders-h" style="color:slategray"></i> <b><span th:text="${title}"></span></b></h4>
+    <h4 style="color:black"><b><span th:text="${title}"></span></b></h4>
     <hr style="margin:5px">
   </header>
-  
+
   <div class="w3-container">
     <button class="btnApp" onclick="addString();"><i class="icon i-add"></i> Add property</button>
     <!--div class="dropdown">
@@ -115,7 +115,7 @@
         <a href="JavaScript:void(0);" onclick="addTimestamp();"><i class="icon i-clock dropdown-icon"></i> Timestamp</a>
       </div>
     </div-->
-    
+
     <button class="btnApp" onclick="importData ();"><i class="icon i-upload"></i> Import</button>
     <button class="btnApp" onclick="exportData ();"><i class="icon i-download"></i> Export</button>
     <button class="btnApp" onclick="deleteSelected ();"><i class="icon i-trash-alt"></i> Delete</button>
@@ -126,23 +126,23 @@
       <table id="myTable" class="table1">
       </table>
     </div>
-    
+
   </div>
-  
-</div>    
+
+</div>
 
 <script>
   var __request = window.location.pathname == '/edit-properties' ? 'properties' : __request = window.location.pathname.replace('/edit-properties', '/properties');
   var __title = window.location.pathname == '/edit-properties' ? 'Properties' : 'Program properties';
-  
+
   //document.getElementById("title").innerHTML = __title;
   //document.title = __SERVER.package.application_name;
-  
+
   includeHTML();
   refreshData ();
-  
+
   document.getElementById('file-dialog').addEventListener('change', readFile, false);
-  
+
   function searchData() {
     var input, filter, table, tr, td, i, txtValue;
     input = document.getElementById("myInput");
@@ -159,11 +159,11 @@
         } else {
           tr[i].style.display = "none";
         }
-      }       
+      }
     }
   }
 
-  /* When the user clicks on the button, 
+  /* When the user clicks on the button,
   toggle between hiding and showing the dropdown content */
   function toggleButton() {
     document.getElementById("myDropdown").classList.toggle("show");
@@ -182,21 +182,21 @@
       }
     }
   }
-  
+
   function addInteger () {
     var dialog = new DialogData ();
     dialog.callbackOK = callbackSaveData;
     dialog.callbackCancel = function (dialog) { dialog.destroy(); };
     dialog.create('Integer', '', 0, DataFlags.DEFAULT);
   }
-  
+
   function addTimestamp () {
     var dialog = new DialogData ();
     dialog.callbackOK = callbackSaveData;
     dialog.callbackCancel = function (dialog) { dialog.destroy(); };
     dialog.create('Integer', '', 0, DataFlags.DEFAULT | DataFlags.TIMESTAMP);
   }
-  
+
   function addNumber () {
     //dialogEditData ('Double', '', DataFlags.DEFAULT, callbackSaveData);
     var dialog = new DialogData ();
@@ -204,7 +204,7 @@
     dialog.callbackCancel = function (dialog) { dialog.destroy(); };
     dialog.create('Double', '', 0, DataFlags.DEFAULT);
   }
-  
+
   function addBoolean () {
     //dialogEditData ('Boolean', '', true, DataFlags.DEFAULT, callbackSaveData);
     var dialog = new DialogData ();
@@ -212,7 +212,7 @@
     dialog.callbackCancel = function (dialog) { dialog.destroy(); };
     dialog.create('Boolean', '', true, DataFlags.DEFAULT);
   }
-  
+
   function addString () {
     //dialogEditData ('String', '', '', DataFlags.DEFAULT, callbackSaveData);
     var dialog = new DialogData ();
@@ -220,7 +220,7 @@
     dialog.callbackCancel = function (dialog) { dialog.destroy(); };
     dialog.create('String', '', '', DataFlags.DEFAULT);
   }
-/* 
+/*
   function addJson () {
     //dialogEditData (DataType.JSON, '', { }, DataFlags.DEFAULT, callbackSaveData);
     var dialog = new DialogData ();

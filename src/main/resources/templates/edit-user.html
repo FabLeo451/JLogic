@@ -44,7 +44,7 @@
 
   <!-- Header -->
   <header class="w3-container">
-    <h4 style="color:black"><i class="icon i-user" style="color:slategray"></i> <b><span th:text="${title}"></span></b></h4>
+    <h4 style="color:black"><b><span th:text="${title}"></span></b></h4>
     <hr style="margin:5px">
   </header>
 
@@ -89,12 +89,12 @@
       </select>
     </div>
     <br><br>
-    
+
     <button th:if="${creating}" class="w3-button w3-round-medium w3-green" onclick="createUser();">Create</button>
     <button th:if="${updating}" class="w3-button w3-round-medium w3-green" onclick="updateUser();">Update</button>
     <!--button id="btnDebug" class="btnApp" onclick="debugDate();">Debug</button-->
     <br><br>
-    
+
     <div id="response"></div>
   </div>
 </div>
@@ -104,9 +104,9 @@
   <script th:inline="javascript">
   if (document.getElementById('role'))
     document.getElementById('role').value = [[${roleSet}]];
-    
+
   includeHTML();
-  
+
   </script>
 
 </body>
