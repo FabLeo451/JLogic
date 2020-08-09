@@ -1,0 +1,15 @@
+{
+  "name": "Delay",
+  "icon": "<i class=\"icon i-clock\"></i>",
+  "type": 4,
+  "version": 1,
+  "import": ["java.lang.Thread"],
+  "java": "try { Thread.sleep(in{1}); } catch (Exception e) { }",
+  "input": [
+    { "type": "Exec", "label": "" },
+    { "type": "Integer", "label": "msecs", "value": 0 }
+  ],
+  "output": [
+    { "type": "Exec", "label": "" }
+  ]
+}

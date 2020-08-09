@@ -5,9 +5,10 @@
   ],
   "nodes": [
     {
-      "name": "Now",
+      "name": "Date Now",
       "type": 5,
       "version": 1,
+      "inner_text": "<i class=\"icon i-clock\"></i>",
       "import": ["java.util.Date"],
       "java": "new Date()",
       "input": [
