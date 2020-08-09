@@ -56,20 +56,22 @@ public class SessionService {
   }
 
   public static void addSession(HttpServletRequest request) {
-    HttpSession httpSession = request.getSession();
+    HttpSession httpSession = request.getSession(false);
 
-    Lock writeLock = rwLock.writeLock();
-    writeLock.lock();
+    if (httpSession != null) {
+      Lock writeLock = rwLock.writeLock();
+      writeLock.lock();
 
-    try {
-      Session session = findById(httpSession.getId());
+      try {
+        Session session = findById(httpSession.getId());
 
-      if (session == null)
-        list.add(new Session(request));
-      else
-        session.update(request);
-    } finally {
-      writeLock.unlock();
+        if (session == null)
+          list.add(new Session(request));
+        else
+          session.update(request);
+      } finally {
+        writeLock.unlock();
+      }
     }
   }
 
@@ -90,13 +92,16 @@ public class SessionService {
 
   public static void deleteSession(HttpServletRequest request) {
     HttpSession httpSession = request.getSession(false);
-    deleteSession(httpSession.getId());
 
-    // Invalidate session
-    //HttpSession session = request.getSession(false);
-    SecurityContextHolder.clearContext();
     if (httpSession != null) {
-        httpSession.invalidate();
+      deleteSession(httpSession.getId());
+
+      // Invalidate session
+      //HttpSession session = request.getSession(false);
+      SecurityContextHolder.clearContext();
+      if (httpSession != null) {
+          httpSession.invalidate();
+      }
     }
   }
 
@@ -104,18 +109,19 @@ public class SessionService {
     Session session = null;
 
     try {
-      HttpSession httpSession = request.getSession();
-      session = findById(httpSession.getId());
+      HttpSession httpSession = request.getSession(false);
+
+      if (httpSession != null)
+        session = findById(httpSession.getId());
     }
     catch (IllegalStateException e) {}
 
     return session;
   }
 
-  public static void completed(HttpServletRequest request) {
+  public void completed(HttpServletRequest request) {
     try {
-      HttpSession httpSession = request.getSession();
-      Session session = findById(httpSession.getId());
+      Session session = getSession(request);
 
       if (session != null) {
         if (request.getUserPrincipal() != null)
@@ -129,11 +135,14 @@ public class SessionService {
 
   public static void setStatus(HttpServletRequest request, int status) {
     try {
-      HttpSession httpSession = request.getSession();
-      Session session = findById(httpSession.getId());
+      HttpSession httpSession = request.getSession(false);
 
-      if (session != null) {
-          session.setStatus(status);
+      if (httpSession != null) {
+        Session session = findById(httpSession.getId());
+
+        if (session != null) {
+            session.setStatus(status);
+        }
       }
     }
     catch (IllegalStateException e) {}

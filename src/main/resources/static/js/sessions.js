@@ -17,7 +17,7 @@ function refreshSessionsCallback (xhttp) {
         var data = xhttp.responseText;
         var jsonResponse = JSON.parse(data);
 
-        var header = ['Client&nbsp;IP', 'User', 'Login&nbsp;time', 'Status', /*'Resource', 'API',*/ 'Executing', 'Agent'];
+        var header = ['Client&nbsp;IP', '', 'User', 'Login&nbsp;time', 'Status', /*'Resource', 'API',*/ 'Executing', 'Agent'];
         //var fields = ['sid', 'pid', 'ip', 'resource', 'status', 'start_time', 'agent'];
 
         var tr = document.createElement('tr');
@@ -50,6 +50,12 @@ function refreshSessionsCallback (xhttp) {
           var td = document.createElement('td');
           td.classList.add('td1');
           td.appendChild(document.createTextNode(row.remoteAddress));
+          tr.appendChild(td);
+
+          /* Application */
+          var td = document.createElement('td');
+          td.classList.add('td1');
+          td.innerHTML = row['webApplication'] ? '<i class="icon i-laptop w3-text-gray" title="Web application"></i>' : '';
           tr.appendChild(td);
 
           /* User */

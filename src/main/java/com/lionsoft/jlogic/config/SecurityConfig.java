@@ -28,23 +28,23 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   static Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
-  
+
   @Autowired
   private SessionRegistry sessionRegistry;
-  
+
   @Autowired
   private UserDetailsService userDetailsService;
-    
+
   @Autowired
   PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private UserRepository userRepository;
-    
+
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {      
+	protected void configure(HttpSecurity http) throws Exception {
 	  http.headers().frameOptions().disable();
-	     
+
 	  http
 	    .csrf().disable()
 	    .httpBasic().and()
@@ -60,12 +60,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.PUT, "/me").authenticated()
 				.antMatchers(HttpMethod.PUT, "/user/*").hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.PUT, "/user/*").hasAuthority("ADMIN")
-				
+
 				.antMatchers(HttpMethod.POST, "/program/**", "/properties/**").hasAuthority("EDITOR")
 				.antMatchers(HttpMethod.PUT, "/properties/**").hasAuthority("EDITOR")
         .anyRequest().authenticated()
 				.and()
-        .formLogin().loginPage("/login").permitAll()
+        .formLogin().loginPage("/login").defaultSuccessUrl("/home").permitAll()
 				.and()
 			  .logout().logoutUrl("/perform_logout").invalidateHttpSession(true).deleteCookies("JSESSIONID").permitAll();
 
@@ -74,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .maximumSessions(100)
       .sessionRegistry(sessionRegistry())
       .expiredUrl("/login?expired");
-/*      
+/*
     http.sessionManagement()
       .expiredUrl("/login?expired")
       .invalidSessionUrl("/login?expired");*/
@@ -82,19 +82,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    
+
     /*
 		  auth
 			  .inMemoryAuthentication()
 			    .passwordEncoder(passwordEncoder)
-				  .withUser("admin").password(passwordEncoder.encode("admin")).roles("VIEWER", "EDITOR", "USER", "ADMIN");   
+				  .withUser("admin").password(passwordEncoder.encode("admin")).roles("VIEWER", "EDITOR", "USER", "ADMIN");
 	  */
 
 		Optional<User> user = userRepository.findByUsername("admin");
-		
+
 		if (!user.isPresent()) {
 		  logger.warn("Creating default admin user...");
-		  
+
 		  User userAdmin = new User("admin", null, "Administrator", null);
 		  //userAdmin.setUsername("admin");
 		  userAdmin.setPassword(new BCryptPasswordEncoder().encode("admin"));
@@ -109,15 +109,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		  userAdmin.setRoleSet(User.ROLE_SET_ADMIN);
 		  userRepository.save(userAdmin);
 		}
-		
+
 	  auth.authenticationProvider(authenticationProvider());
 	}
-	
+
   @Bean
   public PasswordEncoder passwordEncoder() {
       return new BCryptPasswordEncoder();
   }
-  
+
   @Bean
   public DaoAuthenticationProvider authenticationProvider(){
       DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -126,8 +126,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       return provider;
   }
   @Bean
-  SessionRegistry sessionRegistry() { 
-      return new SessionRegistryImpl(); 
+  SessionRegistry sessionRegistry() {
+      return new SessionRegistryImpl();
   }
 
   @Bean

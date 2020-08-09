@@ -33,7 +33,7 @@ import java.text.DecimalFormat;
 class Menu {
   public String href;
   public String label;
-  
+
   public Menu (String href, String label) {
     this.href = href;
     this.label = label;
@@ -43,32 +43,37 @@ class Menu {
 @Controller
 public class AppController {
   Logger logger = LoggerFactory.getLogger(AppController.class);
-  
+
   @Autowired
   BuildProperties buildProperties;
 
 	@Autowired
 	private UserRepository userRepository;
-  
+
   @Autowired
   ProgramService programService;
-  
+
   @Autowired
   SessionService sessionService;
-	  
+
 	@RequestMapping("/home")
-	public String home(Model model) { 
+	public String home(HttpServletRequest request, Model model) {
+    Session session = sessionService.getSession(request);
+
+    if (session != null)
+      session.setWebApplication(true);
+
 		model.addAttribute("name", buildProperties.getName());
 		model.addAttribute("version", buildProperties.getVersion());
 		model.addAttribute("buildTime", buildProperties.getTime().toString());
-		
+
 		// JRE info
 		model.addAttribute("java_class_path", System.getProperty("java.class.path"));
 		model.addAttribute("java_home", System.getProperty("java.home"));
 		model.addAttribute("java_vendor", System.getProperty("java.vendor"));
 		model.addAttribute("java_vendor_url", System.getProperty("java.vendor.url"));
 		model.addAttribute("java_version", System.getProperty("java.version"));
-		
+
 		// OS info
 		model.addAttribute("os", System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
 
@@ -79,12 +84,12 @@ public class AppController {
     } catch (UnknownHostException ex) {
         logger.error("Hostname can not be resolved");
     }
-    		
+
 	  return "home";
 	}
-  
+
 	@RequestMapping("/sidebar")
-	public String sidebar(Model model) { 
+	public String sidebar(Model model) {
 		model.addAttribute("name", buildProperties.getName());
 		model.addAttribute("version", buildProperties.getVersion());
 
@@ -104,7 +109,7 @@ public class AppController {
     items.add(new Menu("/sessions",        "<i class=\"icon i-list\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Sessions"));
     items.add(new Menu("/stats",           "<i class=\"icon i-chart-bar\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Analytics"));
     items.add(new Menu("/users",           "<i class=\"icon i-users\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Users"));
-    
+
     model.addAttribute("items", items);
     */
 	  return "sidebar";
@@ -114,7 +119,9 @@ public class AppController {
 	public String favicon() { return "favicon.ico";	}
 
 	@RequestMapping("/login")
-	public String login(Model model) { return "login";	}
+	public String login(HttpServletRequest request, Model model) {
+    return "login";
+  }
 
 	@RequestMapping("/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
@@ -125,7 +132,7 @@ public class AppController {
             sessionService.deleteSession(request);
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-	  return "redirect:/login?logout";	
+	  return "redirect:/login?logout";
 	}
 
 	@RequestMapping("/bp")
@@ -133,27 +140,27 @@ public class AppController {
 
 	@RequestMapping("/apipanel")
 	public String getApiPanel() { return "api";	}
-	
+
 	@RequestMapping("/blueprint/{id}/edit")
 	public String editBlueprint(@PathVariable("id") String id) { return "edit"; }
 
 	@RequestMapping("/edit-properties")
 	public String getGlobalProperties(Model model) {
 	  model.addAttribute("title", "Properties");
-	  return "edit-properties";	
+	  return "edit-properties";
 	}
-	
+
 	@RequestMapping("/program/{id}/edit-properties")
 	public String getProgramProperties(Model model, @PathVariable("id") String id) {
 	  String page = "edit-properties";
 	  Optional<ProgramEntity> program = programService.findById(id);
-	  
+
 	  if (program.isPresent()) {
 	    model.addAttribute("title", "Properties of program "+program.get().getName());
 	  } else {
 	    page = "not-found";
 	  }
-	  
+
 	  return page;
 	}
 
@@ -163,7 +170,7 @@ public class AppController {
 	@RequestMapping("/metrics")
 	public String viewMetrics(Model model) {
 	  long mb = 1024L * 1024L;
-	  
+
 
 	  Long totalMemory = Runtime.getRuntime().totalMemory();
 	  Long freeMemory = Runtime.getRuntime().freeMemory();
@@ -172,18 +179,18 @@ public class AppController {
 	  MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
     Long totalMemory = (double)memoryMXBean.getHeapMemoryUsage().getMax();
     Long freeMemory = (double)memoryMXBean.getHeapMemoryUsage().getUsed();*/
-	  
+
 	  double pctUsedMemory = ((double)(totalMemory - freeMemory)/totalMemory) * 100;
-	  
+
 	  System.out.println(totalMemory);
 	  System.out.println(freeMemory);
 	  System.out.println(pctUsedMemory);
-	  
+
 	  //DecimalFormat decimalFormat = new DecimalFormat("###.##");
 	  model.addAttribute("totalMemory", String.format("%.2f MB", (double) totalMemory / mb));
 	  model.addAttribute("freeMemory", String.format("%.2f MB", (double) freeMemory / mb));
 	  model.addAttribute("pctUsedMemory", String.format("%.2f%%", pctUsedMemory));
-	  
+
 	  return "view-metrics";
 	}
 
@@ -196,14 +203,14 @@ public class AppController {
 	  model.addAttribute("id", 0);
 	  model.addAttribute("creating", true);
 	  model.addAttribute("updating", false);
-	  return "edit-user";	
+	  return "edit-user";
 	}
 
 	@RequestMapping("/user/edit")
 	public String editUser(HttpServletRequest request, Model model) {
-	
+
 	  Optional<User> user = userRepository.findByUsername(request.getUserPrincipal().getName());
-	  
+
 	  model.addAttribute("title", "Edit user");
 	  model.addAttribute("username", user.get().getUsername());
 	  model.addAttribute("firstName", user.get().getFirstName());
@@ -213,14 +220,14 @@ public class AppController {
 	  model.addAttribute("creating", false);
 	  model.addAttribute("updating", true);
 	  model.addAttribute("updating_current_user", true);
-	  return "edit-user";	
+	  return "edit-user";
 	}
 
 	@RequestMapping("/user/{username}/edit")
 	public String editUser(Model model, @PathVariable("username") String username/*, @RequestParam(value = "username", defaultValue = "0") String username*/) {
-	
+
 	  Optional<User> user = userRepository.findByUsername(username);
-	  
+
 	  model.addAttribute("title", "Edit user");
 	  model.addAttribute("username", user.get().getUsername());
 	  model.addAttribute("firstName", user.get().getFirstName());
@@ -229,19 +236,18 @@ public class AppController {
 	  model.addAttribute("id", user.get().getId());
 	  model.addAttribute("creating", false);
 	  model.addAttribute("updating", true);
-	  return "edit-user";	
+	  return "edit-user";
 	}
-	
+
 	@RequestMapping("/change-password")
 	public String changePassword(HttpServletRequest request, Model model) {
-	
+
 	  Optional<User> user = userRepository.findByUsername(request.getUserPrincipal().getName());
-	  
+
 	  model.addAttribute("title", "Change password of user "+user.get().getUsername());
 	  model.addAttribute("username", user.get().getUsername());
 	  model.addAttribute("id", "-1");
-	  return "change-password";	
+	  return "change-password";
 	}
 
 }
-

@@ -144,12 +144,12 @@ public class ProgramService {
     boolean result = false;
 
     Session session = sessionService.getSession(request);
-    session.setStatus(Session.EXECUTING);
+    //session.setStatus(Session.EXECUTING);
     session.setProgramUnit(program.getName()+"."+methodName);
 
     result = program.run(methodName, data, logName, request);
 
-    session.setStatus(Session.ACTIVE);
+    //session.setStatus(Session.ACTIVE);
     session.setProgramUnit("");
 
     return(result);

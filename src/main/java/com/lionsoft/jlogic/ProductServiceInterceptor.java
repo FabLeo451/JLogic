@@ -14,11 +14,11 @@ import org.slf4j.LoggerFactory;
 
 @Component
 public class ProductServiceInterceptor implements HandlerInterceptor {
-  
+
   @Autowired
   SessionService sessionService;
 
-  Logger logger = LoggerFactory.getLogger(ProductServiceInterceptor.class); 
+  Logger logger = LoggerFactory.getLogger(ProductServiceInterceptor.class);
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -30,21 +30,26 @@ public class ProductServiceInterceptor implements HandlerInterceptor {
     */
     sessionService.addSession(request);
     sessionService.addRequest(request);
-    
+
     return true;
   }
 
   @Override
   public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
     //System.out.println("Post Handle method is Calling");
-    
+
     //SessionsUtils sessionUtils = SessionsUtils.getInstance();
     sessionService.completed(request);
   }
 
   @Override
-  public void afterCompletion (HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) throws Exception {      
+  public void afterCompletion (HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) throws Exception {
     //logger.info("Response: " + response.getStatus() + " " + request.getMethod() + " " + request.getRemoteAddr() + " " + request.getRequestURI());
-    
+    Session session = sessionService.getSession(request);
+
+    if (session != null && !session.getWebApplication()) {
+      logger.info("Deleting session " + session.getId());
+      sessionService.deleteSession(request);
+    }
   }
 }

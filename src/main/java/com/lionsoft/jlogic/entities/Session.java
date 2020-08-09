@@ -24,6 +24,7 @@ public class Session {
   private String requestURI = null;
   private String remoteAddress = null;
   private String programUnit;
+  private boolean isWebApplication = false;
 
   public Session(HttpServletRequest request) {
     HttpSession session = request.getSession();
@@ -111,5 +112,13 @@ public class Session {
 
   public void setProgramUnit(String pu) {
     this.programUnit = pu;
+  }
+
+  public boolean getWebApplication() {
+    return isWebApplication;
+  }
+
+  public void setWebApplication(boolean wa) {
+    isWebApplication = wa;
   }
 }

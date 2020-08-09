@@ -138,9 +138,12 @@ public class ApiController {
       throw new ResponseStatusException(result.getStatus(), result.getMessage());
 */
     APIResult result = APIService.execute(name, null, request);
+/*
+    Session session = sessionService.getSession(request);
 
-    sessionService.deleteSession(request);
-
+    if (session != null && !session.getWebApplication())
+      sessionService.deleteSession(request);
+*/
     if (result.getCode() != 0)
       throw new ResponseStatusException(result.getStatus(), result.getMessage());
 
@@ -157,9 +160,12 @@ public class ApiController {
 	  logger.info("Executing API "+name);
 
     APIResult result = APIService.execute(name, data, request);
+/*
+    Session session = sessionService.getSession(request);
 
-    sessionService.deleteSession(request);
-
+    if (session != null && !session.getWebApplication())
+      sessionService.deleteSession(request);
+*/
     if (result.getCode() != 0)
       throw new ResponseStatusException(result.getStatus(), result.getMessage());
 
