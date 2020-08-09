@@ -302,7 +302,8 @@ public class ProgramController {
 
 	// POST /program/{id}/run/{method}
 	@PostMapping(value = "/program/{id}/run/{method}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> run(@PathVariable("id") String id,
+	public ResponseEntity<String> run(HttpServletRequest request,
+                                    @PathVariable("id") String id,
 	                                  @PathVariable("method") String method,
 	                                  @RequestBody String data) {
 
@@ -314,7 +315,7 @@ public class ProgramController {
 	      Optional<BlueprintEntity> blueprint = blueprintService.findByNameAndProgram(method, program.get());
 
 	      if (blueprint.isPresent()) {
-	          if (program.get().run(blueprint.get().getMethod(), data)) {
+	          if (/*program.get().run(blueprint.get().getMethod(), data)*/programService.run(program.get(), blueprint.get().getMethod(), data, null, request)) {
 	            logger.info(program.get().getName()+"."+method+" successfully executed");
 	            outData = program.get().getOutput();
 	          }

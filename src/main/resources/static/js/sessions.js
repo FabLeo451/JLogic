@@ -17,7 +17,7 @@ function refreshSessionsCallback (xhttp) {
         var data = xhttp.responseText;
         var jsonResponse = JSON.parse(data);
 
-        var header = ['Client&nbsp;IP', 'User', 'Login&nbsp;time', 'Status', /*'Resource', 'API',*/ 'Blueprint', 'Agent'];
+        var header = ['Client&nbsp;IP', 'User', 'Login&nbsp;time', 'Status', /*'Resource', 'API',*/ 'Executing', 'Agent'];
         //var fields = ['sid', 'pid', 'ip', 'resource', 'status', 'start_time', 'agent'];
 
         var tr = document.createElement('tr');
@@ -88,7 +88,7 @@ function refreshSessionsCallback (xhttp) {
           /* Blueprint */
           var td = document.createElement('td');
           td.classList.add('td1');
-          td.appendChild(document.createTextNode(row.hasOwnProperty('blueprint_name') ? row['blueprint_name'] : ''));
+          td.appendChild(document.createTextNode(row.hasOwnProperty('programUnit') ? row['programUnit'] : ''));
           tr.appendChild(td);
 
           /* Agent */

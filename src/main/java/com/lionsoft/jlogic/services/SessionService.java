@@ -100,6 +100,18 @@ public class SessionService {
     }
   }
 
+  public Session getSession(HttpServletRequest request) {
+    Session session = null;
+
+    try {
+      HttpSession httpSession = request.getSession();
+      session = findById(httpSession.getId());
+    }
+    catch (IllegalStateException e) {}
+
+    return session;
+  }
+
   public static void completed(HttpServletRequest request) {
     try {
       HttpSession httpSession = request.getSession();
@@ -110,6 +122,18 @@ public class SessionService {
           session.setStatus(Session.IDLE);
         else
           deleteSession(request);
+      }
+    }
+    catch (IllegalStateException e) {}
+  }
+
+  public static void setStatus(HttpServletRequest request, int status) {
+    try {
+      HttpSession httpSession = request.getSession();
+      Session session = findById(httpSession.getId());
+
+      if (session != null) {
+          session.setStatus(status);
       }
     }
     catch (IllegalStateException e) {}

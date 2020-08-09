@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
 import java.security.Principal;
@@ -48,6 +49,9 @@ public class ProgramService {
 
   @Autowired
   BlueprintService blueprintService;
+
+  @Autowired
+  SessionService sessionService;
 
 	Logger logger = LoggerFactory.getLogger(ProgramService.class);
 	ApplicationHome home = new ApplicationHome(ProgramService.class);
@@ -135,6 +139,21 @@ public class ProgramService {
 	  repository.refresh(program);
 	  return (result);
 	}
+
+  public boolean run(ProgramEntity program, String methodName, String data, String logName, HttpServletRequest request) {
+    boolean result = false;
+
+    Session session = sessionService.getSession(request);
+    session.setStatus(Session.EXECUTING);
+    session.setProgramUnit(program.getName()+"."+methodName);
+
+    result = program.run(methodName, data, logName, request);
+
+    session.setStatus(Session.ACTIVE);
+    session.setProgramUnit("");
+
+    return(result);
+  }
 
 	public Variable addVariable (ProgramEntity program, Variable v) {
 	  if (program.hasVariable(v.getName()))

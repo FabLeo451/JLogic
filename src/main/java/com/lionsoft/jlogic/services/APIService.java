@@ -35,6 +35,9 @@ public class APIService {
   @Autowired
   BlueprintService blueprintService;
 
+  @Autowired
+  ProgramService programService;
+
   ApplicationHome home = new ApplicationHome(APIService.class);
   Logger logger = LoggerFactory.getLogger(APIService.class);
 
@@ -84,6 +87,9 @@ public class APIService {
     return api;
 	}
 
+  /**
+   * Execute the blueprint associated to APIEntity api
+   */
   public APIResult execute(APIEntity api, String data, HttpServletRequest request) {
     APIResult result = new APIResult();
 
@@ -99,7 +105,7 @@ public class APIService {
 
     // Execute
 
-    if (program.run(method, data, api.getName(), request)) {
+    if (/*program.run(method, data, api.getName(), request)*/programService.run(program, method, data, api.getName(), request)) {
       result.setResponse(program.getHTTPResponse());
       result.setResult(program.getResult(), HttpStatus.OK, "Success");
     } else {
@@ -123,6 +129,9 @@ public class APIService {
     return result;
   }
 
+  /**
+   * Execute the API with the given name
+   */
   public APIResult execute(String name, String data, HttpServletRequest request) {
     APIResult result = new APIResult();
 

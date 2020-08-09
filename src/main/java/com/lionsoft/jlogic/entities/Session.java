@@ -13,6 +13,7 @@ import eu.bitwalker.useragentutils.*;
 public class Session {
   public static int IDLE = 0;
   public static int ACTIVE = 1;
+  public static int EXECUTING = 2;
 
   private String id = null;
   private Date creationTime;
@@ -22,6 +23,7 @@ public class Session {
   private String agent = null;
   private String requestURI = null;
   private String remoteAddress = null;
+  private String programUnit;
 
   public Session(HttpServletRequest request) {
     HttpSession session = request.getSession();
@@ -29,6 +31,7 @@ public class Session {
     id = session.getId();
     creationTime = new Date(session.getCreationTime());
     requestURI = request.getRequestURI();
+    programUnit = "";
     update(request);
   }
 
@@ -100,5 +103,13 @@ public class Session {
 
   public String getRemoteAddress() {
     return remoteAddress;
+  }
+
+  public String getProgramUnit() {
+    return programUnit;
+  }
+
+  public void setProgramUnit(String pu) {
+    this.programUnit = pu;
   }
 }
