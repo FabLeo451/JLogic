@@ -98,10 +98,9 @@ public class SessionService {
 
       // Invalidate session
       //HttpSession session = request.getSession(false);
+      System.out.println("Invalidating "+httpSession.getId());
       SecurityContextHolder.clearContext();
-      if (httpSession != null) {
-          httpSession.invalidate();
-      }
+      httpSession.invalidate();
     }
   }
 
@@ -126,8 +125,8 @@ public class SessionService {
       if (session != null) {
         if (request.getUserPrincipal() != null)
           session.setStatus(Session.IDLE);
-        else
-          deleteSession(request);
+        /*else
+          deleteSession(request);*/
       }
     }
     catch (IllegalStateException e) {}
