@@ -123,6 +123,12 @@ public class AppController {
     return "login";
   }
 
+	@RequestMapping("/expired")
+	public String expired(HttpServletRequest request, Model model) {
+    sessionService.deleteSession(request);
+    return "redirect:/login?expired";
+  }
+
 	@RequestMapping("/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
 	  logger.info("Logging out "+(request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown")+" "+request.getSession().getId());
