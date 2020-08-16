@@ -40,11 +40,13 @@ function refreshSessionsCallback (xhttp) {
 
         for (key in jsonResponse) {
           row = jsonResponse[key];
-          tr = document.createElement('tr');
 
           // Skip completed
           if (row.status == 3)
             continue;
+
+          tr = document.createElement('tr');
+          tr.title = row.id;
 
           /* IP */
           var td = document.createElement('td');

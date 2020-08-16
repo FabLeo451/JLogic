@@ -125,12 +125,13 @@ public class AppController {
 
 	@RequestMapping("/expired")
 	public String expired(HttpServletRequest request, Model model) {
+    logger.warn("Expired: "+request.getSession(false).getId());
     sessionService.deleteSession(request);
     return "redirect:/login?expired";
   }
 
-	@RequestMapping("/logout")
-	public String logout(HttpServletRequest request, HttpServletResponse response) {
+	@PostMapping("/logout")
+	public String perform_logout(HttpServletRequest request, HttpServletResponse response) {
 	  logger.info("Logging out "+(request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown")+" "+request.getSession().getId());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
