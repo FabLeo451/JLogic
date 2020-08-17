@@ -76,7 +76,7 @@ function refreshSessionsCallback (xhttp) {
           /* Status */
           var td = document.createElement('td');
           td.classList.add('td1');
-          td.innerHTML = status[row.status];
+          td.innerHTML = row.status; //status[row.status];
           tr.appendChild(td);
 
           /* Resource */

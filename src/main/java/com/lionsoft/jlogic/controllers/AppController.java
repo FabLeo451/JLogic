@@ -17,6 +17,7 @@ import java.util.Formatter;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import javax.servlet.http.HttpSession;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,10 +59,6 @@ public class AppController {
 
 	@RequestMapping("/home")
 	public String home(HttpServletRequest request, Model model) {
-    Session session = sessionService.getSession(request);
-
-    if (session != null)
-      session.setWebApplication(true);
 
 		model.addAttribute("name", buildProperties.getName());
 		model.addAttribute("version", buildProperties.getVersion());
@@ -121,6 +118,21 @@ public class AppController {
 	@RequestMapping("/login")
 	public String login(HttpServletRequest request, Model model) {
     return "login";
+  }
+
+	@RequestMapping("/perform_login")
+	public String perform_login(HttpServletRequest request, Model model) {
+    // DEPRECATED ///////////////////////////////
+    Session session = sessionService.getSession(request);
+
+    if (session != null)
+      session.setWebApplication(true);
+    // NEW ///////////////////////////////
+    HttpSession httpSession = request.getSession(false);
+    if (httpSession != null)
+      httpSession.setAttribute("isWebApplication", true);
+
+    return "redirect:/home";
   }
 
 	@RequestMapping("/expired")

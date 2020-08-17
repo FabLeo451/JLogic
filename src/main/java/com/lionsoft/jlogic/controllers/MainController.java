@@ -10,6 +10,7 @@ import org.springframework.boot.info.BuildProperties;
 import java.time.Instant;
 import java.io.FileNotFoundException;
 import org.springframework.web.server.ResponseStatusException;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -338,13 +339,21 @@ public class MainController {
   SessionRegistry sessionRegistry() {
       return new SessionRegistryImpl();
   }*/
-
+/*
   @GetMapping(value="/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<Session> getSessions() {
     //SessionsUtils sessionUtils = new SessionsUtils();
     List<Session> l = sessionService.getList();
 
     return l;
+  }*/
+
+  @GetMapping(value="/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<Object> getSessions2() {
+    //SessionsUtils sessionUtils = new SessionsUtils();
+    List<Object> sessions = sessionService.getSessions();
+
+    return sessions;
   }
 
   @GetMapping(value="/stats", produces = MediaType.APPLICATION_JSON_VALUE)

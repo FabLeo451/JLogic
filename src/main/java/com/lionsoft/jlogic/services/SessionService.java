@@ -14,6 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.apache.commons.lang3.time.DateUtils;
+import eu.bitwalker.useragentutils.*;
 
 @Service
 public class SessionService {
@@ -24,13 +25,14 @@ public class SessionService {
   private static SessionService instance = null;
 
   private static ReadWriteLock rwLock = new ReentrantReadWriteLock();
-  private static List<Session> list = new ArrayList<Session>();
+  private static List<Session> list = new ArrayList<Session>(); // DEPRECATED
+  private static Map<String, HttpSession> sessions; // NEW
 
   // Register all request for statistics
   private static List<Request> requests = new ArrayList<Request>();
 
   private SessionService() {
-
+    sessions = new HashMap<String, HttpSession>();
   }
 
   public static SessionService getInstance() {
@@ -40,7 +42,29 @@ public class SessionService {
       return instance;
   }
 
-  public static List<Session> getList() {
+  public static List<Session> getList() { // DEPRECATED
+    return list;
+  }
+
+  public static List<Object> getSessions() {
+    List<Object> list = new ArrayList<Object>();
+
+    for (Map.Entry<String, HttpSession> entry : sessions.entrySet()) {
+      String id = entry.getKey();
+      HttpSession s = (HttpSession)entry.getValue();
+
+      Map<String, Object> info = new HashMap<String, Object>();
+      info.put("id", id);
+      info.put("status", s.getAttribute("status"));
+      info.put("creationTime", new Date(s.getCreationTime()));
+      info.put("user", s.getAttribute("user"));
+      info.put("agent", s.getAttribute("agent"));
+      info.put("webApplication", s.getAttribute("webApplication") != null ? s.getAttribute("webApplication") : false);
+      info.put("programUnit", s.getAttribute("programUnit"));
+      info.put("remoteAddress", s.getAttribute("remoteAddress"));
+      list.add(info);
+    }
+
     return list;
   }
 
@@ -63,12 +87,51 @@ public class SessionService {
       writeLock.lock();
 
       try {
+        // DEPRECATED ///////////////////////////////
         Session session = findById(httpSession.getId());
 
         if (session == null)
           list.add(new Session(request));
         else
           session.update(request);
+
+        // NEW ///////////////////////////////
+        httpSession.setAttribute("remoteAddress", request.getRemoteAddr());
+
+        if (!sessions.containsKey(httpSession.getId())) {
+          sessions.put(httpSession.getId(), httpSession);
+          httpSession.setAttribute("user", request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown");
+          httpSession.setAttribute("status", "IDLE");
+          httpSession.setAttribute("programUnit", "");
+
+          String agent = request.getHeader("User-Agent");
+
+          UserAgent userAgent = UserAgent.parseUserAgentString(agent);
+
+          if (userAgent != null) {
+            Browser browser = userAgent.getBrowser();
+            BrowserType type = browser.getBrowserType();
+
+            if (type != BrowserType.TOOL) {
+              String bwrVersion = "?";
+              Version v = userAgent.getBrowserVersion();
+              if (v != null)
+                bwrVersion = userAgent.getBrowserVersion().getMajorVersion();
+
+              String bwrName = browser.getName();
+
+              OperatingSystem os = userAgent.getOperatingSystem();
+              String osName = os.getName();
+              //String deType = os.getDeviceType().getName();
+
+              agent = bwrName+"/"+bwrVersion+" "+osName;
+            }
+          }
+
+          httpSession.setAttribute("agent", agent);
+
+        } else
+          httpSession.setAttribute("status", "ACTIVE");
       } finally {
         writeLock.unlock();
       }
@@ -80,11 +143,14 @@ public class SessionService {
     writeLock.lock();
 
     try {
+      // DEPRECATED ///////////////////////////////
       Session session = findById(id);
       //System.out.println("Deleting session "+httpSession.getId());
 
       if (session != null)
         list.remove(session);
+      // NEW ///////////////////////////////
+      sessions.remove(id);
     } finally {
       writeLock.unlock();
     }
@@ -98,7 +164,7 @@ public class SessionService {
 
       // Invalidate session
       //HttpSession session = request.getSession(false);
-      System.out.println("Invalidating "+httpSession.getId());
+      //System.out.println("Invalidating "+httpSession.getId());
       SecurityContextHolder.clearContext();
       httpSession.invalidate();
     }
@@ -119,6 +185,7 @@ public class SessionService {
   }
 
   public void completed(HttpServletRequest request) {
+    // DEPRECATED ///////////////////////////////
     try {
       Session session = getSession(request);
 
@@ -130,6 +197,12 @@ public class SessionService {
       }
     }
     catch (IllegalStateException e) {}
+
+    // NEW ///////////////////////////////
+    HttpSession httpSession = request.getSession(false);
+
+    if (httpSession != null)
+      httpSession.setAttribute("status", "IDLE");
   }
 
   public static void setStatus(HttpServletRequest request, int status) {
@@ -156,6 +229,14 @@ public class SessionService {
     }
 
     return null;
+  }
+
+  public void setProgramUnit(HttpServletRequest request, String pu) {
+    HttpSession httpSession = request.getSession(false);
+
+    if (httpSession != null) {
+      httpSession.setAttribute("programUnit", pu);
+    }
   }
 
   public static Map<String, Long> getStats(Date from, Date to) {

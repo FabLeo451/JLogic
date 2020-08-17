@@ -143,14 +143,13 @@ public class ProgramService {
   public boolean run(ProgramEntity program, String methodName, String data, String logName, HttpServletRequest request) {
     boolean result = false;
 
-    Session session = sessionService.getSession(request);
-    //session.setStatus(Session.EXECUTING);
-    session.setProgramUnit(program.getName()+"."+methodName);
+    //Session session = sessionService.getSession(request);
+    sessionService.setProgramUnit(request, program.getName()+"."+methodName);
 
     result = program.run(methodName, data, logName, request);
 
     //session.setStatus(Session.ACTIVE);
-    session.setProgramUnit("");
+    sessionService.setProgramUnit(request, "");
 
     return(result);
   }
