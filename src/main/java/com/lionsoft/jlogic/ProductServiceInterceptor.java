@@ -54,11 +54,23 @@ public class ProductServiceInterceptor implements HandlerInterceptor {
     //if (request.getSession(false) != null)
     //  logger.info("afterCompletion: "+request.getSession(false).getId()+" "+request.getRequestURI());
 
-    Session session = sessionService.getSession(request);
+  /*Session session = sessionService.getSession(request);
 
     if (session != null && !session.getWebApplication()) {
       //logger.info("Deleting session " + session.getId());
       sessionService.deleteSession(request);
+    }*/
+/*
+    if (!sessionService.isWebApplication(request))
+      sessionService.deleteSession(request);*/
+
+    HttpSession httpSession = request.getSession(false);
+
+    if (httpSession != null) {
+        boolean web = httpSession.getAttribute("webApplication") != null ? (Boolean) httpSession.getAttribute("webApplication") : false;
+
+        if (!web)
+          sessionService.deleteSession(request);
     }
   }
 }

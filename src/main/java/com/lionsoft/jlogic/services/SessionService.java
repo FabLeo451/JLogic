@@ -25,7 +25,7 @@ public class SessionService {
   private static SessionService instance = null;
 
   private static ReadWriteLock rwLock = new ReentrantReadWriteLock();
-  private static List<Session> list = new ArrayList<Session>(); // DEPRECATED
+  //private static List<Session> list = new ArrayList<Session>(); // DEPRECATED
   private static Map<String, HttpSession> sessions; // NEW
 
   // Register all request for statistics
@@ -42,9 +42,9 @@ public class SessionService {
       return instance;
   }
 
-  public static List<Session> getList() { // DEPRECATED
+  /*public static List<Session> getList() { // DEPRECATED
     return list;
-  }
+  }*/
 
   public static List<Object> getSessions() {
     List<Object> list = new ArrayList<Object>();
@@ -53,16 +53,20 @@ public class SessionService {
       String id = entry.getKey();
       HttpSession s = (HttpSession)entry.getValue();
 
-      Map<String, Object> info = new HashMap<String, Object>();
-      info.put("id", id);
-      info.put("status", s.getAttribute("status"));
-      info.put("creationTime", new Date(s.getCreationTime()));
-      info.put("user", s.getAttribute("user"));
-      info.put("agent", s.getAttribute("agent"));
-      info.put("webApplication", s.getAttribute("webApplication") != null ? s.getAttribute("webApplication") : false);
-      info.put("programUnit", s.getAttribute("programUnit"));
-      info.put("remoteAddress", s.getAttribute("remoteAddress"));
-      list.add(info);
+      try {
+        Map<String, Object> info = new HashMap<String, Object>();
+        info.put("id", id);
+        info.put("status", s.getAttribute("status"));
+        info.put("creationTime", new Date(s.getCreationTime()));
+        info.put("user", s.getAttribute("user"));
+        info.put("agent", s.getAttribute("agent"));
+        info.put("webApplication", s.getAttribute("webApplication") != null ? s.getAttribute("webApplication") : false);
+        info.put("programUnit", s.getAttribute("programUnit"));
+        info.put("remoteAddress", s.getAttribute("remoteAddress"));
+        list.add(info);
+      } catch (IllegalStateException e) {
+        // Can occur on already invalidated sessions
+      }
     }
 
     return list;
@@ -88,14 +92,22 @@ public class SessionService {
 
       try {
         // DEPRECATED ///////////////////////////////
-        Session session = findById(httpSession.getId());
+        /*Session session = findById(httpSession.getId());
 
         if (session == null)
           list.add(new Session(request));
         else
           session.update(request);
-
+*/
         // NEW ///////////////////////////////
+
+        /*Enumeration<String> names = httpSession.getAttributeNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            Object value = httpSession.getAttribute(name);
+            System.out.println(name+" = "+value);
+        }*/
+
         httpSession.setAttribute("remoteAddress", request.getRemoteAddr());
 
         if (!sessions.containsKey(httpSession.getId())) {
@@ -144,11 +156,11 @@ public class SessionService {
 
     try {
       // DEPRECATED ///////////////////////////////
-      Session session = findById(id);
+      /*Session session = findById(id);
       //System.out.println("Deleting session "+httpSession.getId());
 
       if (session != null)
-        list.remove(session);
+        list.remove(session);*/
       // NEW ///////////////////////////////
       sessions.remove(id);
     } finally {
@@ -169,7 +181,7 @@ public class SessionService {
       httpSession.invalidate();
     }
   }
-
+/*
   public Session getSession(HttpServletRequest request) {
     Session session = null;
 
@@ -182,21 +194,19 @@ public class SessionService {
     catch (IllegalStateException e) {}
 
     return session;
-  }
+  }*/
 
   public void completed(HttpServletRequest request) {
     // DEPRECATED ///////////////////////////////
-    try {
+    /*try {
       Session session = getSession(request);
 
       if (session != null) {
         if (request.getUserPrincipal() != null)
           session.setStatus(Session.IDLE);
-        /*else
-          deleteSession(request);*/
       }
     }
-    catch (IllegalStateException e) {}
+    catch (IllegalStateException e) {}*/
 
     // NEW ///////////////////////////////
     HttpSession httpSession = request.getSession(false);
@@ -205,7 +215,7 @@ public class SessionService {
       httpSession.setAttribute("status", "IDLE");
   }
 
-  public static void setStatus(HttpServletRequest request, int status) {
+  /*public static void setStatus(HttpServletRequest request, int status) {
     try {
       HttpSession httpSession = request.getSession(false);
 
@@ -218,8 +228,8 @@ public class SessionService {
       }
     }
     catch (IllegalStateException e) {}
-  }
-
+  }*/
+/*
   public static Session findById(String id) {
     for (Session s : list) {
       if (s.getId() != null) {
@@ -229,7 +239,7 @@ public class SessionService {
     }
 
     return null;
-  }
+  }*/
 
   public void setProgramUnit(HttpServletRequest request, String pu) {
     HttpSession httpSession = request.getSession(false);
@@ -237,6 +247,16 @@ public class SessionService {
     if (httpSession != null) {
       httpSession.setAttribute("programUnit", pu);
     }
+  }
+
+  public boolean isWebApplication(HttpServletRequest request) {
+    HttpSession httpSession = request.getSession(false);
+    boolean web = false;
+
+    if (httpSession != null)
+      web = httpSession.getAttribute("webApplication") != null ? (Boolean) httpSession.getAttribute("webApplication") : false;
+
+    return(web);
   }
 
   public static Map<String, Long> getStats(Date from, Date to) {

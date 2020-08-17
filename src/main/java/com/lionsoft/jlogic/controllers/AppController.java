@@ -123,14 +123,17 @@ public class AppController {
 	@RequestMapping("/perform_login")
 	public String perform_login(HttpServletRequest request, Model model) {
     // DEPRECATED ///////////////////////////////
-    Session session = sessionService.getSession(request);
+    /*Session session = sessionService.getSession(request);
 
     if (session != null)
-      session.setWebApplication(true);
+      session.setWebApplication(true);*/
     // NEW ///////////////////////////////
     HttpSession httpSession = request.getSession(false);
-    if (httpSession != null)
-      httpSession.setAttribute("isWebApplication", true);
+    if (httpSession != null) {
+      httpSession.setAttribute("webApplication", true);
+    }
+
+    logger.warn("Redirecting to /home");
 
     return "redirect:/home";
   }
