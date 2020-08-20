@@ -133,7 +133,7 @@ public class AppController {
       httpSession.setAttribute("webApplication", true);
     }
 
-    logger.warn("Redirecting to /home");
+    //logger.warn("Redirecting to /home");
 
     return "redirect:/home";
   }

@@ -25,7 +25,7 @@ public class ProductServiceInterceptor implements HandlerInterceptor {
     //logger.info("Request: " + request.getRemoteAddr() + " " + request.getMethod() + " " + request.getRequestURI());
 
     //if (request.getSession(false) != null)
-    logger.info("preHandle: "+(request.getSession(false) != null ? request.getSession(false).getId() : "?")+" "+request.getRequestURI());
+    //logger.info("preHandle: "+(request.getSession(false) != null ? request.getSession(false).getId() : "?")+" "+request.getRequestURI());
 
     /*
     SessionsUtils sessionUtils = SessionsUtils.getInstance();
