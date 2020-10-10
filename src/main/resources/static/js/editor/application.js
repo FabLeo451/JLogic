@@ -103,6 +103,8 @@ function appLoadBlueprint (j) {
     var v = new Variable();
     v.fromJSON(j.variables[i]);
 
+    console.log ("Found "+v.getName());
+
     // Add vaiable to blueprint and application
     addVariable(v);
   }
@@ -341,7 +343,7 @@ function appStart () {
 
                 program = JSON.parse(xhttp.responseText);
 
-                // Compmare blueprint global variables with program global variables
+                // Compare blueprint global variables with program global variables
                 var updated = checkGlobals();
 
                 appLoadBlueprint (_jbp);
