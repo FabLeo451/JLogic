@@ -500,7 +500,7 @@ public class ProgramController {
 	  logger.info("Deleting variable "+name+" from program "+program.get().getName());
 
 	  if (!programService.deleteVariable(program.get(), name))
-	    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't delete variable.");
+	    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, programService.getMessage());
 
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}

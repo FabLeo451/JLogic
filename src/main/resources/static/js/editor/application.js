@@ -277,9 +277,9 @@ function checkGlobals() {
       }
 
 		if (!found) {
-      console.log('Global variable '+v.name+' not in blueprint. Adding...');
+      bpConsole.append('Found new global variable <b>'+v.name+'</b>', BPConsoleTextType.WARNING);
       _jbp.variables.push(v);
-      updated = true;
+      //updated = true;
     }
   }
 
@@ -1212,8 +1212,7 @@ function appAddVariable(v)
   rowPrefix = 'row_';
   cbBeginRename = 'beginRename';
   cbEndRename = 'endRenameVariable';
-  //cbDelete = v.isGlobal() ? 'deleteGlobalVariable' : 'deleteVariableCallback';
-  cbDelete = 'deleteVariableCallback';
+  cbDelete = v.isGlobal() ? 'deleteGlobalVariable' : 'deleteVariableCallback';
   //cbTypeChanged = v.isGlobal() ? 'globalVariableTypeChanged' : 'variableTypeChanged';
   cbTypeChanged = 'variableTypeChanged';
   initialize = v.isGlobal() ? '' : `<br><button class="btnApp" onclick="setInitialValue('`+v.id+`');" style="background-color:seagreen;">Initialize</button>`;
@@ -1336,6 +1335,39 @@ function endRenameVariable(ev) {
   cbModified();
 
   actionsEnabled = true;
+}
+
+/**
+ * Delete a global variable (triggered by button)
+ */
+function deleteGlobalVariable(id) {
+  var v = blueprint.getVariable (id);
+
+  if (v.referenced) {
+    dialogMessage ("Blueprint", "You cannot delete a referenced variable.", DialogButtons.OK, DialogIcon.WARNING, function (dialog) {
+        dialog.destroy();
+      }
+    );
+    return;
+  }
+
+  callServer ("DELETE", "/program/"+_jbp.programId+"/variable/"+v.getName(), null, function (xhttp) {
+      if (xhttp.readyState == 4) {
+        if (xhttp.status == 200) {
+          deleteVariableCallback(id);
+          bpConsole.append ("Deleted global variable "+v.getName());
+        }
+        else {
+          if (xhttp.status == 0)
+            bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
+          else {
+              var jerr = JSON.parse (xhttp.responseText);
+              bpConsole.append ("Can't delete variable "+v.getName()+": "+jerr.message, BPConsoleTextType.ERROR);
+          }
+        }
+      }
+    }
+  );
 }
 
 /**

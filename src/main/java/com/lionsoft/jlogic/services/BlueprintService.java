@@ -143,7 +143,11 @@ public class BlueprintService {
             }
 
             logger.info("Updating "+v.toString());
-            programService.updateVariable(program, v);
+            
+            if (!programService.updateVariable(program, v)) {
+              setMessage("Can't update variable "+v.getName());
+              return false;
+            }
           }
         }
       }
