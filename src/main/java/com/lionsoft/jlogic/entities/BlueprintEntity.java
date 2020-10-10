@@ -88,6 +88,10 @@ public class BlueprintEntity {
     @Column(name="classpath")
     List<String> classPathList = Collections.emptyList();
 
+    @JsonIgnore
+    @Transient
+    private List<Variable> variables = Collections.emptyList();
+
     public BlueprintEntity() {
 
     }
@@ -202,6 +206,15 @@ public class BlueprintEntity {
     @JsonIgnore
     public List<APIEntity> getAPIs() {
       return apis;
+    }
+
+    //@JsonIgnore
+    public List<Variable> getVariables() {
+      return variables;
+    }
+
+    public void setVariables(List<Variable> vars) {
+      variables = vars;
     }
 
     @JsonIgnore

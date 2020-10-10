@@ -907,10 +907,11 @@ class Blueprint {
     return (v);
   }
 
-  addNewVariable () {
+  addNewVariable (global = false) {
     var v = new Variable ();
     v.create (blueprint.getAvailableVariableName (), 'Integer', Dimensions.SCALAR);
     v.id = uuidv4(); //this.getVarNewId ();
+    v.setGlobal(global);
     v.reset();
     this.addVariable (v);
 
@@ -1273,9 +1274,10 @@ class Blueprint {
   toJson () {
     var jo = {
       "tag":"BLUEPRINT",
+      "id":this.id,
       "x0":this.x0, "y0":this.y0,
+      "type":this.type, // Keep before name (see BlueprintEntity.setName())
       "name":this.name,
-      "type":this.type,
       "method":this.method,
     };
 

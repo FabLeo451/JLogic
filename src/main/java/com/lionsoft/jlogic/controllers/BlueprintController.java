@@ -39,10 +39,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class BlueprintController {
 
   Logger logger = LoggerFactory.getLogger(BlueprintController.class);
-  
+
   @Autowired
   BlueprintService blueprintService;
-  
+
   @Autowired
   CatalogService catalogService;
 
@@ -51,25 +51,25 @@ public class BlueprintController {
 	public ResponseEntity<String> getById(@PathVariable("id") String id) {
 	  String result = "";
 	  Optional<BlueprintEntity> blueprint = blueprintService.findById(id);
-	  
+
 	  if (blueprint.isPresent()) {
       String programId = blueprint.get().getProgram().getId();
       String programName = blueprint.get().getProgram().getName();
       String filename = blueprint.get().getFilename();
 
       System.out.println("Loading "+filename);
-      
+
       try {
         String content = new String (Files.readAllBytes(Paths.get(filename)));
 
         // Add data
         try {
           JSONObject jo = new JSONObject(content);
-          
+
           jo.put("id", id);
           jo.put("programId", programId);
           jo.put("programName", programName);
-          
+
           result = jo.toString();
 
         }
@@ -92,20 +92,20 @@ public class BlueprintController {
 	public List<ProgramEntity> delete(@PathVariable("blueprintId") String blueprintId,
 	                                     @RequestParam(value = "tree", defaultValue = "0") String tree) {
 	  Optional<BlueprintEntity> blueprint = blueprintService.findById(blueprintId);
-	  
+
 	  if (blueprint.isPresent()) {
 	    if (blueprint.get().getType() == BlueprintType.MAIN || blueprint.get().getType() == BlueprintType.EVENTS)
 	      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Can't delete this blueprint");
-	    
+
       blueprintService.delete(blueprint.get());
-      
+
 	  } else {
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-	  }  
-    
+	  }
+
     return (tree.equals("0") ? null : catalogService.getPrograms());
 	}
-	
+
 	// PUT /blueprint/{blueprintId}
 	@PutMapping(value = "/blueprint/{blueprintId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -113,25 +113,25 @@ public class BlueprintController {
 	                        @RequestParam(value = "tree", defaultValue = "0") String tree,
 	                        @RequestBody String content) {
 
-           
 	  Optional<BlueprintEntity> blueprint = blueprintService.findById(blueprintId);
-	  
+    System.out.println(content);
+    
 	  if (blueprint.isPresent()) {
       try {
         JSONObject jo = new JSONObject(content);
-        
+
         blueprint.get().setName((String) jo.get("name"));
-        
+
         logger.info("Updating blueprint "+blueprint.get().toString());
 
         blueprintService.update(blueprint.get(), content);
       } catch (JSONException e) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-      }     
+      }
 	  } else {
 	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
-	  }            
-	
+	  }
+
   	return (new ResponseEntity<>(tree.equals("0") ? "" : catalogService.getCatalog().toString(), HttpStatus.OK));
 	}
 }

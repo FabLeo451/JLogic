@@ -2,9 +2,15 @@ package com.lionsoft.jlogic;
 
 import org.springframework.boot.system.ApplicationHome;
 import java.io.*;
+/*
 import org.json.JSONObject;
 import org.json.JSONArray;
-import org.json.JSONException;
+import org.json.JSONException;*/
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +33,9 @@ public class BlueprintService {
 
   @Autowired
   BlueprintRepository repository;
+
+  @Autowired
+  ProgramService programService;
 
   ApplicationHome home = new ApplicationHome(BlueprintService.class);
   Logger logger = LoggerFactory.getLogger(ProgramController.class);
@@ -74,27 +83,63 @@ public class BlueprintService {
 		return home.getDir()+"/../data/blueprint";
 	}
 
-	public boolean saveContent(String filename, BlueprintEntity blueprint, String content) {
-
-	  logger.info("Saving blueprint "+blueprint.getName());
-
-	  //System.out.println(content);
+	public boolean saveContent(ProgramEntity program, String filename, BlueprintEntity blueprint, String content) {
 
     // Add/modify content data
 
-    JSONObject jo;
+    JSONParser jsonParser = new JSONParser();
+    JSONObject jo = null;
 
     try {
-      jo = new JSONObject(content);
+      //jo = new JSONObject(content);
+      jo = (JSONObject) jsonParser.parse(content);
       jo.put("id", blueprint.getId());
-      jo.put("type", blueprint.getType()/*.ordinal()*/);
+      jo.put("type", blueprint.getType().name());
       jo.put("name", blueprint.getName());
       jo.put("method", blueprint.getMethod());
+
+  	  logger.info("Checking global variables...");
+
+      JSONArray ja = (JSONArray) jo.get("variables");
+
+      for (int k=0; k<ja.size(); k++) {
+        JSONObject jvar = (JSONObject) ja.get(k);
+
+        Variable v = new Variable((String) jvar.get("type"), ((Long) jvar.get("dimensions")).intValue(), (String) jvar.get("name"));
+        v.setId(UUID.fromString((String) jvar.get("id")));
+        v.setGlobal(jvar.containsKey("global") ? (boolean) jvar.get("global") : false);
+
+        //System.out.println("Found "+v.toString());
+
+        if (v.isGlobal()) {
+          logger.info("Checking "+v.toString());
+
+          Variable progVar = program.getVariable(v.getId());
+
+          if (progVar == null) {
+            logger.info("Adding "+v.toString());
+            Variable newVar = programService.addVariable(program, v);
+
+            if (newVar == null)
+              return false;
+          } else {
+            boolean isSameType = (v.getType() == progVar.getType()) && (v.getDimensions() == progVar.getDimensions());
+
+            if (!isSameType && program.variableIsReferenced(progVar))
+              return false;
+
+            logger.info("Updating "+v.toString());
+            programService.updateVariable(program, v);
+          }
+        }
+      }
     }
-    catch (JSONException e) {
+    catch (ParseException e) {
       e.printStackTrace();
       return false;
     }
+
+    logger.info("Saving blueprint "+blueprint.getName());
 
     // Update database
 
@@ -116,7 +161,7 @@ public class BlueprintService {
 
 	public BlueprintEntity create(ProgramEntity program, BlueprintType type, String name) {
 	  String templateFilename;
-	  JSONObject jo = null;
+	  //JSONObject jo = null;
 
 	  logger.info("Creating blueprint "+name);
 
@@ -145,7 +190,7 @@ public class BlueprintService {
 	  try {
 	    String content = new String (Files.readAllBytes(Paths.get(templateFilename)));
 
-      if (saveContent(blueprint.getFilename(), blueprint, content)) {
+      if (saveContent(program, blueprint.getFilename(), blueprint, content)) {
         //blueprint.getProgram().updateIndex(blueprint, content);
         repository.save(blueprint);
       }
@@ -164,7 +209,7 @@ public class BlueprintService {
 	}
 
   public void update (BlueprintEntity blueprint, String content) {
-    if (saveContent(blueprint.getFilename(), blueprint, content)) {
+    if (saveContent(blueprint.getProgram(), blueprint.getFilename(), blueprint, content)) {
       //blueprint.getProgram().updateIndex(blueprint, content);
       repository.save(blueprint);
     }

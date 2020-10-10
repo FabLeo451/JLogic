@@ -18,18 +18,18 @@ class Variable {
 		name = "UUID",
 		strategy = "org.hibernate.id.UUIDGenerator"
 	)*/
-  private UUID id;   
+  private UUID id;
   private String name;
   private String type;
   //private Object value;
   private int dimensions;
   private boolean global;
   //private int referenced;
-  
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="program_id")
   private ProgramEntity program;
- 
+
   public Variable() {
     //value = null;
     dimensions = SCALAR;
@@ -37,24 +37,24 @@ class Variable {
     global = true;
     //referenced = 0;
   }
- 
+
   public Variable(String type, int dimensions, String name) {
     this();
-    
+
     this.type = type;
     this.dimensions = dimensions;
     this.name = name;
   }
- 
+
   public Variable(Variable v) {
-    this();   
+    this();
     set(v);
   }
- 
+
   public String toString() {
-    return "Variable [id=" + id.toString() + ", name=" + name + ", type=" + type + "]";
+    return "Variable [id=" + id.toString() + ", name=" + name + ", type=" + type + ", global=" + global + "]";
   }
- 
+
   public void set(Variable v) {
     this.id = v.getId();
     this.type = v.getType();
@@ -62,7 +62,7 @@ class Variable {
     this.name = v.getName();
     this.global = v.isGlobal();
   }
-  
+
   @JsonIgnore
   public boolean isValid() {
     return (id != null &&
@@ -72,16 +72,16 @@ class Variable {
             dimensions <= 2
            );
   }
-  
+
   public void setProgram(ProgramEntity p) {
       this.program = p;
   }
-  
+
   @JsonIgnore
   public ProgramEntity getProgram() {
       return (this.program);
   }
-  
+
   public void setId(UUID id) {
     this.id = id;
   }
@@ -89,7 +89,7 @@ class Variable {
   public UUID getId() {
     return id;
   }
-  
+
   public void setName(String name) {
       this.name = name;
   }
@@ -97,26 +97,29 @@ class Variable {
   public String getName() {
     return (name);
   }
-  
+
   public String getType() {
     return (type);
   }
-  
+
   public void setType(String t) {
       this.type = t;
   }
-  
+
   public void setDimensions(int d) {
       this.dimensions = d;
   }
-  
+
   public int getDimensions() {
     return (dimensions);
   }
-  
+
   public boolean isGlobal() {
     return (global);
   }
 
-};
+  public void setGlobal(boolean g) {
+    global = g;
+  }
 
+};
