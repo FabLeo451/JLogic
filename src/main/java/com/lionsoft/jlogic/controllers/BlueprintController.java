@@ -115,7 +115,7 @@ public class BlueprintController {
 
 	  Optional<BlueprintEntity> blueprint = blueprintService.findById(blueprintId);
     System.out.println(content);
-    
+
 	  if (blueprint.isPresent()) {
       try {
         JSONObject jo = new JSONObject(content);
@@ -124,7 +124,8 @@ public class BlueprintController {
 
         logger.info("Updating blueprint "+blueprint.get().toString());
 
-        blueprintService.update(blueprint.get(), content);
+        if (!blueprintService.update(blueprint.get(), content))
+          throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, blueprintService.getMessage());
       } catch (JSONException e) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
       }

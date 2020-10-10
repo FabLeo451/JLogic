@@ -196,7 +196,7 @@ public class ProgramService {
 	public boolean updateVariable (ProgramEntity program, Variable v) {
 	  Variable pv = program.getVariable(v.getId());
 
-	  if (pv != null && v.isValid() && !program.variableIsReferenced(pv)) {
+	  if (pv != null && v.isValid() /*&& !program.variableIsReferenced(pv)*/) {
 	    pv.set(v);
 	    repository.save(program);
 	    repository.refresh(program);

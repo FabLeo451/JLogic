@@ -40,6 +40,8 @@ public class BlueprintService {
   ApplicationHome home = new ApplicationHome(BlueprintService.class);
   Logger logger = LoggerFactory.getLogger(ProgramController.class);
 
+  String message;
+
 	public BlueprintService() {
 	}
 
@@ -73,6 +75,14 @@ public class BlueprintService {
 
 	  return (0);
 	}*/
+
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String m) {
+    message = m;
+  }
 
 	public String getFilename(BlueprintEntity blueprint) {
     ProgramEntity program = blueprint.getProgram();
@@ -120,13 +130,17 @@ public class BlueprintService {
             logger.info("Adding "+v.toString());
             Variable newVar = programService.addVariable(program, v);
 
-            if (newVar == null)
-              return false;
+            if (newVar == null) {
+                setMessage("Can't create global variable "+v.getName());
+                return false;
+            }
           } else {
-            boolean isSameType = (v.getType() == progVar.getType()) && (v.getDimensions() == progVar.getDimensions());
+            boolean isSameType = (v.getType().equals(progVar.getType())) && (v.getDimensions() == progVar.getDimensions());
 
-            if (!isSameType && program.variableIsReferenced(progVar))
+            if (!isSameType && program.variableIsReferenced(progVar)) {
+              setMessage("Can't modify referenced variable "+v.getName());
               return false;
+            }
 
             logger.info("Updating "+v.toString());
             programService.updateVariable(program, v);
@@ -136,6 +150,7 @@ public class BlueprintService {
     }
     catch (ParseException e) {
       e.printStackTrace();
+      setMessage(e.getMessage());
       return false;
     }
 
@@ -153,6 +168,7 @@ public class BlueprintService {
       file.close();
 	  } catch (IOException e) {
       e.printStackTrace();
+      setMessage(e.getMessage());
       return false;
     }
 
@@ -208,11 +224,14 @@ public class BlueprintService {
 	  return blueprint;
 	}
 
-  public void update (BlueprintEntity blueprint, String content) {
+  public boolean update (BlueprintEntity blueprint, String content) {
     if (saveContent(blueprint.getProgram(), blueprint.getFilename(), blueprint, content)) {
       //blueprint.getProgram().updateIndex(blueprint, content);
       repository.save(blueprint);
+      return true;
     }
+
+    return false;
   }
 
   public void delete (BlueprintEntity blueprint) {
