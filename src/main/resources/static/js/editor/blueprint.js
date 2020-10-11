@@ -325,30 +325,46 @@ class Blueprint {
   }
 
   copySelection () {
-    var k = 0, data = '[ ';
+    var jdata = {}, jnodes = [], jedges = [], /*copiedNodes = [],*/ copiedConnectors = [];
 
     for (var i=0; i<this.selection.length; i++) {
-      if (k)
-        data += ', ';
+      var node = this.selection[i];
 
-      if (this.selection[i].type != BPNodeTypeID.ENTRY_POINT && this.selection[i].type != BPNodeTypeID.RETURN && this.selection[i].type != BPNodeTypeID.EVENT) {
-        data += JSON.stringify(this.selection[i].toJSON());
-        k ++;
+      if (node.type != BPNodeTypeID.ENTRY_POINT && node.type != BPNodeTypeID.RETURN && node.type != BPNodeTypeID.EVENT) {
+        jnodes.push(node.toJSON());
+        //copiedNodes.push(this.selection[i]);
+        //console.log (node.getName()+ " has "+node.getConnectors().length+" connectors");
+        copiedConnectors = copiedConnectors.concat(node.getConnectors());
       }
     }
 
-    data += ' ]';
+    //console.log (copiedConnectors);
 
-    console.log ("[copySelection] Copy to clipboard");
+    for (var i=0; i<this.edges.length; i++) {
+      var c1 = this.edges[i].getConnector1();
+      var c2 = this.edges[i].getConnector2();
 
-    this.clipboard = data;
-    copyStringToClipboard (data);
+      if (copiedConnectors.includes(c1) && copiedConnectors.includes(c2))
+        jedges.push(this.edges[i].toJSON());
+    }
+
+    console.log (jedges);
+
+    jdata.nodes = jnodes;
+    jdata.edges = jedges;
+
+    console.log ("Copying to clipboard...");
+
+    this.clipboard = JSON.stringify(jdata);
+    copyStringToClipboard (JSON.stringify(jdata));
+
+    //console.log (JSON.stringify(jdata));
   }
 
   paste () {
     var text;
 
-    console.log ("[paste] ");
+    console.log ("Paste...");
 
     /*if (!this.clipboard)
       return;
@@ -357,21 +373,29 @@ class Blueprint {
 
     navigator.clipboard.readText()
       .then(text => {
-          var j = JSON.parse(text);
+          var jdata = JSON.parse(text);
+          var jnodes = jdata.nodes, jedges = jdata.edges;
           var addedNodes = [];
 
-          if (j) {
+          if (jnodes) {
 
-            for (var i=0; i<j.length; i++) {
+            substitutions = []; // reset substitutions
 
-              var node = blueprint.addNodeFromJson(j[i], false);
+            // Nodes
+            for (var i=0; i<jnodes.length; i++) {
+              var node = blueprint.addNodeFromJson(jnodes[i], false);
 
               /* Change ids */
               node.setID (blueprint.getNewNodeId());
-
               node.moveDelta(20, 20);
-
               addedNodes.push(node);
+            }
+
+            console.log(substitutions);
+
+            // Edges
+            for (var i=0; i<jedges.length; i++) {
+              this.connectByID (substitutions[jedges[i]["from"]], substitutions[jedges[i]["to"]]);
             }
 
             blueprint.clearSelection();

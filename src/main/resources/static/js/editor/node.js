@@ -221,6 +221,10 @@ class NodeBase {
     return (null);
   }
 
+  getConnectors () {
+    return (this.connectors);
+  }
+
   makeDraggable() {
     var nodeRef = this;
     var elmnt = this.nodeElem;
@@ -561,6 +565,10 @@ class Node extends NodeBase {
 
         if (preserveId && c.hasOwnProperty('id'))
           conn.setID (j["input"][i]["id"]);
+        else {
+          //console.log (j["input"][i].id+ " -> "+conn.getId());
+          substitutions[j["input"][i].id] = conn.getId();
+        }
 
         if (c.hasOwnProperty('canDelete'))
           conn.canDelete = c["canDelete"];
@@ -594,6 +602,10 @@ class Node extends NodeBase {
 
         if (preserveId && c.hasOwnProperty('id'))
           conn.setID (c["id"]);
+        else {
+          //console.log (j["output"][i].id+ " -> "+conn.getId());
+          substitutions[j["output"][i].id] = conn.getId();
+        }
 
         /*if (c.hasOwnProperty('type'))
           c.pinType = c.dataType = c.type;*/

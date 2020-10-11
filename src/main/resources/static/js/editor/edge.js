@@ -141,8 +141,16 @@ class Edge {
     this.connector1 = c;
   }
 
+  getConnector1 () {
+    return this.connector1;
+  }
+
   setConnector2 (c) {
     this.connector2 = c;
+  }
+
+  getConnector2 () {
+    return this.connector2;
   }
 
   setPoint1 (p) {

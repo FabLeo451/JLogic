@@ -4,6 +4,7 @@ var blueprint, blueprint_id;
 var undo;
 var actionsEnabled = true;
 const debug = 0;
+var substitutions = []; // used to keep track of original ids replaced by new ones
 
 const MenuID = {
   INCLUDE_BLUEPRINT: 10000 /* Include another blueprint */
@@ -32,11 +33,11 @@ const typeColor = [ "red", "green", "yellow", "purple", "blue" ];
 /* Node types */
 
 const BPNodeTypeID = {
-  ENTRY_POINT: 0, 
-  RETURN: 1, 
-  SEQUENCE: 2, 
-  BRANCH: 3, 
-  INTERNAL_FUNCTION: 4, 
+  ENTRY_POINT: 0,
+  RETURN: 1,
+  SEQUENCE: 2,
+  BRANCH: 3,
+  INTERNAL_FUNCTION: 4,
   OPERATOR: 5,
   GET: 6,
   SET: 7,
@@ -92,16 +93,16 @@ class BPType {
 
 function getTypeIcon (type) {
   var i;
-  
+
   switch (type) {
     case "Integer":
       i = 'i-hashtag';
       break;
-      
+
     case "Double":
       i = 'i-calculator';
       break;
-      
+
     case "JSONObject":
       i = 'i-code';
       break;
@@ -113,7 +114,7 @@ function getTypeIcon (type) {
     case "String":
       i = 'i-align-left';
       break;
-      
+
     default:
       i = 'i-square';
       break;
@@ -136,26 +137,26 @@ class Variable {
     this.dimensions = 0;
     this.value = null;
     this.global = false;
-    
+
     this.referenced = 0;
-    
+
     this.element = null;
   }
-  
+
   create (name, type, dimensions) {
     this.name = name;
     this.type = type;
     this.dimensions = dimensions;
   }
-  
+
   setGlobal(g) {
     this.global = g;
   }
-  
+
   isGlobal() {
     return this.global;
   }
-  
+
   fromJSON(jo) {
     this.id = jo.id;
     this.name = jo.name;
@@ -165,73 +166,73 @@ class Variable {
     this.global = jo.hasOwnProperty("global") ? jo.global : false;
     this.referenced = jo.hasOwnProperty("referenced") ? jo.referenced : 0;
 
-    this.element = null;  
+    this.element = null;
   }
-  
+
   reset () {
     switch (this.type) {
       case 'Booelan':
         this.value = true;
         break;
-        
+
       case 'Integer':
       case 'Double':
         this.value = 0;
         break;
-        
+
       case 'String':
         this.value = "";
         break;
-/*        
+/*
       case 'JSONObject:
         this.value = { };
         break;
-*/        
+*/
       default:
         this.value = null;
         break;
     }
   }
-  
+
   set (value) {
     this.value = value;
   }
-  
+
   get () {
     return (this.value);
   }
-  
+
   setName (n) {
     this.name = n;
   }
-  
+
   getName () {
     return (this.name);
   }
-  
+
   setType (t) {
     this.type = t;
   }
-  
+
   getType () {
     return (this.type);
   }
-  
+
   ref () { this.referenced ++; }
-  
-  unref () { 
-    if (this.referenced) 
-      this.referenced --; 
+
+  unref () {
+    if (this.referenced)
+      this.referenced --;
   }
-  
+
   toJSON () {
     var jo = { "id":this.id, "name":this.name, "type":this.type, "dimensions":this.dimensions, "referenced":this.referenced };
-    
+
     if (this.global)
       jo.global = true;
-    
+
     if (this.value != null) {
-       
+
       switch (this.type) {
         case 'Booelan':
         case 'Integer':
@@ -251,14 +252,14 @@ class Variable {
           break;
       }
     }
-        
+
     return (jo);
   }
-  
+
   stringDump () {
     return (JSON.stringify(this.toJSON()));
   }
-  
+
   toString () {
     return ("Variable [id="+this.id+" name="+this.name+" type="+this.type+" dimensions="+this.dimensions+" referenced="+this.referenced+"]");
   }
