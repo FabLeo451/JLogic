@@ -720,6 +720,10 @@ class NodeGet extends NodeBase {
 
       if (preserveId && c.hasOwnProperty('id'))
         conn.setID (c["id"]);
+      else {
+        //console.log (j["input"][i].id+ " -> "+conn.getId());
+        substitutions[c.id] = conn.getId();
+      }
 
       if (c["canDelete"] !== null)
         conn.canDelete = c["canDelete"];
