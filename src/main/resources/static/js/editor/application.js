@@ -1330,9 +1330,15 @@ function endRenameVariable(ev) {
   var v = blueprint.getVariable (id);
   var oldName = v.getName();
 
-  v = blueprint.setVariableName (v, newName);
-  ev.target.innerHTML = v.name;
-  cbModified();
+  console.log ("Renaming "+oldName+" to "+newName);
+
+  if (blueprint.setVariableName (v, newName)) {
+    //ev.target.innerHTML = v.name;
+    cbModified();
+  } else {
+    ev.target.value = oldName;
+    bpConsole.append ("Variable "+oldName+" can't be renamed "+newName, BPConsoleTextType.ERROR);
+  }
 
   actionsEnabled = true;
 }

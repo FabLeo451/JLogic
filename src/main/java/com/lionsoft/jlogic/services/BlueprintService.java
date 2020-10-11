@@ -127,7 +127,14 @@ public class BlueprintService {
           Variable progVar = program.getVariable(v.getId());
 
           if (progVar == null) {
+            // New variable, check name
+            if (program.getVariable(v.getName()) != null) {
+                setMessage("a global variable with name "+v.getName()+" already existing");
+                return false;
+            }
+
             logger.info("Adding "+v.toString());
+
             Variable newVar = programService.addVariable(program, v);
 
             if (newVar == null) {
@@ -143,7 +150,7 @@ public class BlueprintService {
             }
 
             logger.info("Updating "+v.toString());
-            
+
             if (!programService.updateVariable(program, v)) {
               setMessage("Can't update variable "+v.getName());
               return false;

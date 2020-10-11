@@ -933,20 +933,25 @@ class Blueprint {
   }
 
   setVariableName (v, newNameIn) {
+    var renamed = false;
     var newName = newNameIn.trim();
 
     if (newName.length > 0) {
-      if (!this.getVariableByName (newName))
+      var vtemp = this.getVariableByName (newName);
+
+      if (!vtemp || vtemp.isGlobal() != v.isGlobal()) {
         v.name = newName;
+        renamed = true;
+      }
     }
 
-    //console.log ("[setVariableName] "+v.name);
+    console.log ("renamed = "+renamed);
 
     if (v.referenced) {
       this.refreshNodes()
     }
 
-    return (v);
+    return (renamed);
   }
 
   setVariableType (v, newType) {
