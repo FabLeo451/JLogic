@@ -153,7 +153,7 @@ class NodeBase {
     if (c.hasOwnProperty('java'))
       connector.java = c['java'];
 
-    console.log ('Creating connector for '+c.label+' '+c.dataType);
+    //console.log ('Creating connector for '+c.label+' '+c.dataType);
 
     connector.create(this, direction, pinType, dataType, /*isArray*/ dim, c["label"], hasValue);
 

@@ -391,7 +391,7 @@ class Blueprint {
               addedNodes.push(node);
             }
 
-            console.log(substitutions);
+            //console.log(substitutions);
 
             // Edges
             for (var i=0; i<jedges.length; i++) {
