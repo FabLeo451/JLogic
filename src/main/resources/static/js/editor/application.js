@@ -103,6 +103,8 @@ function appLoadBlueprint (j) {
     var v = new Variable();
     v.fromJSON(j.variables[i]);
 
+    console.log ("Found "+v.getName());
+
     // Add vaiable to blueprint and application
     addVariable(v);
   }
@@ -218,7 +220,7 @@ function onNameChanged() {
 function checkGlobals() {
   var updated = false;
 
-  // Check global variables in blueprint
+  // Find global variables present in the blueprint and not in the program
   var del = [];
   var found;
   for (var b=0; b<_jbp.variables.length; b++) {
@@ -239,7 +241,7 @@ function checkGlobals() {
     }
   }
 
-  // Delete global variables presento only in blueprint
+  // Delete global variables present only in blueprint
   for (var i=0; i<del.length; i++) {
     var v = _jbp.variables[del[i]];
 
@@ -275,9 +277,9 @@ function checkGlobals() {
       }
 
 		if (!found) {
-      console.log('Global variable '+v.name+' not in blueprint. Adding...');
+      bpConsole.append('Found new global variable <b>'+v.name+'</b>', BPConsoleTextType.WARNING);
       _jbp.variables.push(v);
-      updated = true;
+      //updated = true;
     }
   }
 
@@ -341,7 +343,7 @@ function appStart () {
 
                 program = JSON.parse(xhttp.responseText);
 
-                // Compmare blueprint global variables with program global variables
+                // Compare blueprint global variables with program global variables
                 var updated = checkGlobals();
 
                 appLoadBlueprint (_jbp);
@@ -1298,48 +1300,6 @@ function addVariable(v)
   appAddVariable (v);
 }
 
-function endRenameVariable(ev) {
-  var id = ev.target.getAttribute('_varid');
-  var newName = ev.target.value;
-
-  var v = blueprint.getVariable (id);
-  var oldName = v.getName();
-
-  if (v.isGlobal()) {
-    var newVar = new Variable();
-    newVar.fromJSON(v.toJSON());
-    newVar.setName(newName);
-
-    callServer ("POST", "/program/"+_jbp.programId+"/variable/"+oldName+"/rename/"+newName, JSON.stringify(v.toJSON()), function (xhttp) {
-        if (xhttp.readyState == 4) {
-          if (xhttp.status == 200) {
-            bpConsole.append (v.getName() + " successfully updated");
-            v = blueprint.setVariableName (v, newName);
-            ev.target.innerHTML = v.name;
-            cbModified();
-          }
-          else {
-            if (xhttp.status == 0)
-              bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
-            else {
-                var jerr = JSON.parse (xhttp.responseText);
-                bpConsole.append (jerr.message, BPConsoleTextType.ERROR);
-            }
-
-            ev.target.value = oldName;
-          }
-        }
-      }
-    );
-  } else {
-    v = blueprint.setVariableName (v, newName);
-    ev.target.innerHTML = v.name;
-    cbModified();
-  }
-
-  actionsEnabled = true;
-}
-
 /**
  * Create a local variable (triggered by button)
  */
@@ -1356,31 +1316,31 @@ function addLocalVariable()
  * Create a global variable (triggered by button)
  */
 function addGlobalVariable() {
-  callServer ("PUT", "/program/"+_jbp.programId+"/variable", '{}', function (xhttp) {
-      if (xhttp.readyState == 4) {
-        if (xhttp.status == 200) {
-          var v = new Variable();
-          console.log(xhttp.responseText);
-          v.fromJSON(JSON.parse(xhttp.responseText));
+  undo.begin();
+  var v = blueprint.addNewVariable (true);
+  appAddVariable (v);
+  cbModified();
+  undo.end();
+}
 
-          undo.begin();
-          addVariable(v);
-          undo.end();
-          cbModified();
+function endRenameVariable(ev) {
+  var id = ev.target.getAttribute('_varid');
+  var newName = ev.target.value;
 
-          bpConsole.append ("Created global variable "+v.getName());
-        }
-        else {
-          if (xhttp.status == 0)
-            bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
-          else {
-              var jerr = JSON.parse (xhttp.responseText);
-              bpConsole.append (jerr.message, BPConsoleTextType.ERROR);
-          }
-        }
-      }
-    }
-  );
+  var v = blueprint.getVariable (id);
+  var oldName = v.getName();
+
+  console.log ("Renaming "+oldName+" to "+newName);
+
+  if (blueprint.setVariableName (v, newName)) {
+    //ev.target.innerHTML = v.name;
+    cbModified();
+  } else {
+    ev.target.value = oldName;
+    bpConsole.append ("Variable "+oldName+" can't be renamed "+newName, BPConsoleTextType.ERROR);
+  }
+
+  actionsEnabled = true;
 }
 
 /**
@@ -1408,7 +1368,7 @@ function deleteGlobalVariable(id) {
             bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
           else {
               var jerr = JSON.parse (xhttp.responseText);
-              bpConsole.append (jerr.message, BPConsoleTextType.ERROR);
+              bpConsole.append ("Can't delete variable "+v.getName()+": "+jerr.message, BPConsoleTextType.ERROR);
           }
         }
       }
@@ -1440,31 +1400,6 @@ function deleteVariableCallback(id)
 }
 
 /**
- * Update global variable
- */
-function updateGlobalVariable(v, fSuccess, fError) {
-    callServer ("POST", "/program/"+_jbp.programId+"/variable", JSON.stringify(v.toJSON()), function (xhttp) {
-        if (xhttp.readyState == 4) {
-          if (xhttp.status == 200) {
-            bpConsole.append (v.getName() + " successfully updated");
-            fSuccess();
-          }
-          else {
-            if (xhttp.status == 0)
-              bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
-            else {
-                var jerr = JSON.parse (xhttp.responseText);
-                bpConsole.append (jerr.message, BPConsoleTextType.ERROR);
-            }
-
-            fError();
-          }
-        }
-      }
-    );
-}
-
-/**
  * Change type of variable
  */
 function variableTypeChanged(ev) {
@@ -1482,26 +1417,8 @@ function variableTypeChanged(ev) {
     return;
   }
 
-  if (v.isGlobal()) {
-    var newVar = new Variable();
-    newVar.fromJSON(v.toJSON());
-    newVar.setType(ev.target.value);
-
-    updateGlobalVariable(newVar,
-      function() {
-        setVariableType(v, ev.target.value);
-        cbModified();
-      },
-      function () {
-        // Restore value
-        ev.target.value = v.type;
-      }
-    );
-  }
-  else {
-    setVariableType(v, ev.target.value);
-    cbModified();
-  }
+  setVariableType(v, ev.target.value);
+  cbModified();
 }
 
 function setVariableType(v, type) {

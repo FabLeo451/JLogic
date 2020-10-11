@@ -907,10 +907,11 @@ class Blueprint {
     return (v);
   }
 
-  addNewVariable () {
+  addNewVariable (global = false) {
     var v = new Variable ();
     v.create (blueprint.getAvailableVariableName (), 'Integer', Dimensions.SCALAR);
     v.id = uuidv4(); //this.getVarNewId ();
+    v.setGlobal(global);
     v.reset();
     this.addVariable (v);
 
@@ -932,20 +933,25 @@ class Blueprint {
   }
 
   setVariableName (v, newNameIn) {
+    var renamed = false;
     var newName = newNameIn.trim();
 
     if (newName.length > 0) {
-      if (!this.getVariableByName (newName))
+      var vtemp = this.getVariableByName (newName);
+
+      if (!vtemp || vtemp.isGlobal() != v.isGlobal()) {
         v.name = newName;
+        renamed = true;
+      }
     }
 
-    //console.log ("[setVariableName] "+v.name);
+    console.log ("renamed = "+renamed);
 
     if (v.referenced) {
       this.refreshNodes()
     }
 
-    return (v);
+    return (renamed);
   }
 
   setVariableType (v, newType) {
@@ -1273,9 +1279,10 @@ class Blueprint {
   toJson () {
     var jo = {
       "tag":"BLUEPRINT",
+      "id":this.id,
       "x0":this.x0, "y0":this.y0,
+      "type":this.type, // Keep before name (see BlueprintEntity.setName())
       "name":this.name,
-      "type":this.type,
       "method":this.method,
     };
 

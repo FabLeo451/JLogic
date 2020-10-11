@@ -358,6 +358,14 @@ public class ProgramEntity {
 		return result;
 	}
 
+	public Variable getVariable(UUID id) {
+	  for (Variable v: variables)
+	    if (v.getId().equals(id))
+	      return v;
+
+	  return null;
+	}
+
 	public Variable getVariable(String name) {
 	  for (Variable v: variables)
 	    if (v.getName().equals(name))

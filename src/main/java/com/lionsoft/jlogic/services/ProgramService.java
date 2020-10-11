@@ -56,9 +56,19 @@ public class ProgramService {
 	Logger logger = LoggerFactory.getLogger(ProgramService.class);
 	ApplicationHome home = new ApplicationHome(ProgramService.class);
 
+  String message;
+
 	public ProgramService() {
 
 	}
+
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String m) {
+    message = m;
+  }
 
 	public String getProgramBaseDirectory() {
 		return home.getDir()+"/../data/program";
@@ -194,9 +204,9 @@ public class ProgramService {
 	}
 
 	public boolean updateVariable (ProgramEntity program, Variable v) {
-	  Variable pv = program.getVariable(v.getName());
+	  Variable pv = program.getVariable(v.getId());
 
-	  if (pv != null && v.isValid() && !program.variableIsReferenced(pv)) {
+	  if (pv != null && v.isValid() /*&& !program.variableIsReferenced(pv)*/) {
 	    pv.set(v);
 	    repository.save(program);
 	    repository.refresh(program);
@@ -210,14 +220,18 @@ public class ProgramService {
 	public boolean deleteVariable (ProgramEntity program, String name) {
     Variable pv = program.getVariable(name);
 
-    if (pv != null && program.variableIsReferenced(pv))
+    if (pv != null && program.variableIsReferenced(pv)) {
+      setMessage("used in one or more blueprints.");
       return false;
+    }
 
 	  if (program.deleteVariable(name)) {
 	    repository.save(program);
 	    //System.out.println(program.getVariables());
 	    return (true);
 	  }
+
+    //setMessage("Can't delete variable "+pv.getName());
 
 	  return false;
 	}

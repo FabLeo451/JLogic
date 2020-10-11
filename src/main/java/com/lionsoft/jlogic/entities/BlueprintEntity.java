@@ -88,6 +88,10 @@ public class BlueprintEntity {
     @Column(name="classpath")
     List<String> classPathList = Collections.emptyList();
 
+    @JsonIgnore
+    @Transient
+    private List<Variable> variables = Collections.emptyList();
+
     public BlueprintEntity() {
 
     }
@@ -204,6 +208,15 @@ public class BlueprintEntity {
       return apis;
     }
 
+    //@JsonIgnore
+    public List<Variable> getVariables() {
+      return variables;
+    }
+
+    public void setVariables(List<Variable> vars) {
+      variables = vars;
+    }
+
     @JsonIgnore
     public JSONObject loadJson() {
       JSONParser jsonParser = new JSONParser();
@@ -290,19 +303,19 @@ public class BlueprintEntity {
 
     public boolean referencesVariable(Variable v) {
       JSONObject jo = loadJson();
-      System.out.println("Checking "+v.getName()+" in "+getName());
+      //System.out.println("Checking "+v.getName()+" in "+getName());
 
       if (jo != null) {
-        System.out.println("Getting variable data...");
+        //System.out.println("Getting variable data...");
         JSONArray ja = (JSONArray) jo.get("variables");
 
         for (int k=0; k<ja.size(); k++) {
           JSONObject jvar = (JSONObject) ja.get(k);
 
-          System.out.println(v.getId()+" <-> "+(String) jvar.get("id"));
+          //System.out.println(v.getId()+" <-> "+(String) jvar.get("id"));
 
           if (v.getId().toString().equals((String) jvar.get("id"))) {
-            System.out.println("FOUND. Referenced = "+(Long) jvar.get("referenced"));
+            //System.out.println("FOUND. Referenced = "+(Long) jvar.get("referenced"));
             return ((Long) jvar.get("referenced") > 0L);
           }
         }
