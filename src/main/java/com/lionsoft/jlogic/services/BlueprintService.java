@@ -233,7 +233,7 @@ public class BlueprintService {
       return null;
     }
 
-    logger.info("Created "+blueprint);
+    //logger.info("Created "+blueprint);
 
 	  return blueprint;
 	}

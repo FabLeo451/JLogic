@@ -51,7 +51,7 @@ public class BlueprintEntity {
     private String id;
 
     @Column(name="internal_id")
-    private Integer internalId = 0;
+    private Integer internalId = 0; // Unique id within the program
 
     @Column(name="name")
     private String name;
