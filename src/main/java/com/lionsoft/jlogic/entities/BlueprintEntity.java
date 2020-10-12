@@ -50,6 +50,9 @@ public class BlueprintEntity {
     //@GeneratedValue
     private String id;
 
+    @Column(name="internal_id")
+    private Integer internalId = 0;
+
     @Column(name="name")
     private String name;
 
@@ -107,7 +110,7 @@ public class BlueprintEntity {
 
     @Override
     public String toString() {
-        return "BlueprintEntity [id=" + id + ", name=" + name + ", type=" + type + "]";
+        return "BlueprintEntity [id=" + id + " ("+internalId+"), name=" + name + ", type=" + type + "]";
     }
 
     public String getTag() {
@@ -120,6 +123,14 @@ public class BlueprintEntity {
 
     public void setId(String id) {
       this.id = id;
+    }
+
+    public Integer getInternalId() {
+      return (internalId);
+    }
+
+    public void setInternalId(Integer id) {
+      this.internalId = id;
     }
 
     public String getName() {
@@ -196,6 +207,7 @@ public class BlueprintEntity {
 
     public void setProgram(ProgramEntity program) {
       this.program = program;
+      this.internalId = program.getNewInternalId();
     }
 
     @JsonIgnore
