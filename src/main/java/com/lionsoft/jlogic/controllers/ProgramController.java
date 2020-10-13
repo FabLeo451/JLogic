@@ -130,7 +130,7 @@ public class ProgramController {
 	    blueprint = blueprintService.create(program.get(), BlueprintType.GENERIC, name);
 
 	    if (blueprint != null) {
-	      logger.info("Created "+blueprint.toString());
+	      //logger.info("Created "+blueprint.toString());
 	      programRepository.refresh(program.get());
 	    } else {
 	      logger.error("Can't create blueprint "+name);
