@@ -193,6 +193,7 @@ public class BlueprintService {
 	  logger.info("Creating blueprint "+name);
 
 	  BlueprintEntity blueprint = new BlueprintEntity (UUID.randomUUID().toString(), name, type);
+    // program.addBlueprint(blueprint);
 	  blueprint.setProgram(program);
 	  repository.save(blueprint);
 
@@ -203,10 +204,12 @@ public class BlueprintService {
 	  switch (type) {
 	    case MAIN:
 	      templateFilename = getTemplateDirectory()+"/Main.json";
+        blueprint.setInternalId(1);
 	      break;
 
 	    case EVENTS:
 	      templateFilename = getTemplateDirectory()+"/Events.json";
+        blueprint.setInternalId(2);
 	      break;
 
 	    default:

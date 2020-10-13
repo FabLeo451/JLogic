@@ -104,7 +104,7 @@ public class ProgramEntity {
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,
             mappedBy = "program")
-    private List<BlueprintEntity> blueprints;
+    private List<BlueprintEntity> blueprints = new ArrayList<BlueprintEntity>();
 
     @OneToMany(mappedBy="program", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Variable> variables = Collections.emptyList();
@@ -268,10 +268,10 @@ public class ProgramEntity {
     public List<BlueprintEntity> getBlueprints() {
       return (blueprints);
     }
-
+/*
     public void addBlueprint(BlueprintEntity b) {
       blueprints.add(b);
-    }
+    }*/
 
     @JsonIgnore
 	  public String getHomeDir() {
@@ -402,6 +402,32 @@ public class ProgramEntity {
 
 	  return (false);
 	}
+
+	public BlueprintEntity getBlueprintByInternalId(int id) {
+    List<BlueprintEntity> bl = getBlueprints();
+
+    if (bl == null || bl.size() == 0)
+      return (null);
+
+    //System.out.println("bl.size() = "+bl.size());
+
+    for (BlueprintEntity b: bl) {
+      //System.out.println(b);
+      if (b != null && b.getInternalId() == id)
+        return b;
+    }
+
+	  return (null);
+	}
+
+  public int getNewInternalId() {
+    int newId = 10;
+
+    while (getBlueprintByInternalId(newId) != null)
+      newId ++;
+
+    return newId;
+  }
 
 	public void addClassPath(String cp) {
 	  if (!classPathList.contains(cp))
