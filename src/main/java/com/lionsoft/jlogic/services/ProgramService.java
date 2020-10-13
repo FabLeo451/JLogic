@@ -263,6 +263,7 @@ public class ProgramService {
       Method[] methods = Program.getMethods();
       for (Method m : methods) {
         String id = null;
+        Integer internalId = null;
         JSONObject jbp = new JSONObject();
         JSONArray jinput = new JSONArray();
         JSONArray joutput = new JSONArray();
@@ -348,6 +349,11 @@ public class ProgramService {
           value = method.invoke(annotation, (Object[])null);
           id = (String) value;
           jbp.put("id", value);
+
+          method = type.getMethod("internalId");
+          value = method.invoke(annotation, (Object[])null);
+          internalId = (Integer) value;
+          jbp.put("internalId", internalId);
 
           method = type.getMethod("name");
           value = method.invoke(annotation, (Object[])null);
