@@ -750,11 +750,13 @@ class NodeBlueprint extends Node {
 
     //this.method = null;
     this.blueprintId = null;
+    this.internalId = null;
   }
 
   createFromJson (j, preserveId = true) {
     //this.method = j.method;
     this.blueprintId = j.blueprintId;
+    this.internalId = j.internalId;
     //this.name = programIndex[this.blueprintId].name;
     this.name = j.name;
     j.name = this.name;
@@ -775,7 +777,9 @@ class NodeBlueprint extends Node {
     var jo = super.toJSON();
     //jo.method = this.method;
     jo.blueprintId = this.blueprintId;
+    jo.internalId = this.internalId;
     console.log ("blueprintId = "+this.blueprintId);
+    console.log ("internalId = "+this.internalId);
     return (jo);
   }
 }

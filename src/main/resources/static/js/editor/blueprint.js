@@ -42,7 +42,7 @@ function bpAddNode (id, data) {
 
               dialog.destroy();
 
-              console.log ('Including blueprint '+bp.name+' ('+bp.method+')');
+              console.log ('Including blueprint '+bp.name+' ('+bp.method+') '+bp.id+' '+bp.internalId);
               console.log (bp);
 
               bp.type = BPNodeTypeID.BLUEPRINT;
