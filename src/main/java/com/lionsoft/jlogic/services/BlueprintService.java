@@ -104,6 +104,7 @@ public class BlueprintService {
       //jo = new JSONObject(content);
       jo = (JSONObject) jsonParser.parse(content);
       jo.put("id", blueprint.getId());
+      jo.put("internalId", blueprint.getInternalId());
       jo.put("type", blueprint.getType().name());
       jo.put("name", blueprint.getName());
       jo.put("method", blueprint.getMethod());

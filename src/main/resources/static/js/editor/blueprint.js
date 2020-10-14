@@ -163,10 +163,10 @@ class Blueprint {
     this.name = name;
     document.title = name;
   }
-
+/*
   setID(id) {
     this.id = id;
-  }
+  }*/
 
   getName() {
     return (this.name);
@@ -1303,7 +1303,7 @@ class Blueprint {
   toJson () {
     var jo = {
       "tag":"BLUEPRINT",
-      "id":this.id,
+      //"id":this.id,
       "x0":this.x0, "y0":this.y0,
       "type":this.type, // Keep before name (see BlueprintEntity.setName())
       "name":this.name,
