@@ -13,7 +13,7 @@
       ]
     },
     {
-      "name": "String Lengh",
+      "name": "String Length",
       "type": 5,
       "version": 1,
       "inner_text": "LEN",
@@ -106,6 +106,22 @@
       "output": [
         { "type": "Exec", "label": "" },
         { "type": "String", "label": "", "java": {"references": {"input":1}} }
+      ]
+    },
+    {
+      "name": "String Replace",
+      "type": 4,
+      "version": 1,
+      "java": "out{1} = in{1}.replace(in{2}, in{3});",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "String", "value": "" },
+        { "type": "String", "label": "Search", "value": "" },
+        { "type": "String", "label": "Replace", "value": "" },
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "", "java": {"references": {"variable":"str"}} }
       ]
     },
     {
