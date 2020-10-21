@@ -18,6 +18,24 @@
       ]
     },
     {
+      "name": "File Load Bytes",
+      "type": 4,
+      "version": 1,
+      "import": ["java.io.FileReader", "java.nio.file.Files", "java.nio.file.Paths", "java.io.IOException", "java.nio.file.NoSuchFileException"],
+      "java": "@LoadBytes.java",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "File name", "value": "", "single_line":true }
+      ],
+      "output": [
+        { "type": "Exec", "label": "Success" },
+        { "type": "Byte", "label": "Bytes", "dimensions":1, "java": {"references": {"variable":"bytes"}} },
+        { "type": "Integer", "label": "Length", "java": {"references": {"variable":"length"}} },
+        { "type": "Exec", "label": "Error" },
+        { "type": "String", "label": "Message", "java": {"references": {"variable":"msg"}} }
+      ]
+    },
+    {
       "name": "File Save",
       "type": 4,
       "version": 1,
