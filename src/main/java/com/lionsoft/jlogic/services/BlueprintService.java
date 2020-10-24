@@ -255,4 +255,37 @@ public class BlueprintService {
     File file = new File(getFilename(blueprint));
     file.delete();
   }
+  
+  public JSONObject toJSON(BlueprintEntity blueprint) {
+    String programId = blueprint.getProgram().getId();
+    String programName = blueprint.getProgram().getName();
+    String filename = blueprint.getFilename();
+
+    //System.out.println("Loading "+filename);
+
+    try {
+      String content = new String (Files.readAllBytes(Paths.get(filename)));
+
+      // Add data
+      try {
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jo = (JSONObject) jsonParser.parse(content);
+
+        jo.put("id", blueprint.getId());
+        jo.put("programId", programId);
+        jo.put("programName", programName);
+
+        return jo;
+
+      }
+      catch (ParseException e) {
+        logger.error(e.getMessage());
+        return null;
+      }
+    }
+    catch (IOException e) {
+      logger.error(e.getMessage());
+      return null;
+    }
+  }
 }

@@ -19,9 +19,14 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+/*
 import org.json.JSONObject;
 import org.json.JSONArray;
-import org.json.JSONException;
+import org.json.JSONException;*/
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.util.concurrent.locks.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -53,6 +58,7 @@ public class BlueprintController {
 	  Optional<BlueprintEntity> blueprint = blueprintService.findById(id);
 
 	  if (blueprint.isPresent()) {
+	    /*
       String programId = blueprint.get().getProgram().getId();
       String programName = blueprint.get().getProgram().getName();
       String filename = blueprint.get().getFilename();
@@ -80,6 +86,14 @@ public class BlueprintController {
       catch (IOException e) {
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
       }
+      */
+      JSONObject jo = blueprintService.toJSON(blueprint.get());
+      
+      if (jo == null)
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't get blueprint json.");
+        
+      result = jo.toString();
+      
 	  } else {
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 	  }
@@ -118,7 +132,8 @@ public class BlueprintController {
 
 	  if (blueprint.isPresent()) {
       try {
-        JSONObject jo = new JSONObject(content);
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jo = (JSONObject) jsonParser.parse(content);
 
         blueprint.get().setName((String) jo.get("name"));
 
@@ -126,7 +141,7 @@ public class BlueprintController {
 
         if (!blueprintService.update(blueprint.get(), content))
           throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, blueprintService.getMessage());
-      } catch (JSONException e) {
+      } catch (ParseException e) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
       }
 	  } else {

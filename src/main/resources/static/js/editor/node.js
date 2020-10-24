@@ -38,6 +38,10 @@ class NodeBase {
   getName () {
     return (this.name);
   }
+  
+  setName(name) {
+    this.header.innerHTML = name;
+  }
 
   setIcon (i) {
     this.icon = i;
@@ -757,7 +761,8 @@ class NodeBlueprint extends Node {
     //this.method = j.method;
     this.blueprintId = j.blueprintId;
     this.internalId = j.internalId;
-    //this.name = programIndex[this.blueprintId].name;
+    //this.name = programIndex[this.blueprintId].name;    
+    
     this.name = j.name;
     j.name = this.name;
     super.createFromJson (j, preserveId);
@@ -770,7 +775,28 @@ class NodeBlueprint extends Node {
         window.open('/blueprint/'+nodeSelf.blueprintId+'/edit');
     }
 
-    console.log ("Creating blueprint node "+this.name+" "+this.blueprintId);
+    console.log ("Created blueprint node "+this.name+" "+this.blueprintId);
+
+    // Update name
+    callServer ("GET", "/program/"+_jbp.programId+"/blueprint/"+j.internalId, null, function (xhttp) {
+        if (xhttp.readyState == 4) {
+          if (xhttp.status == 200) {
+            var jo = JSON.parse(xhttp.responseText);
+            console.log("Updating node name to "+jo.name);
+            nodeSelf.setName(jo.name);
+          }
+          else {
+            if (xhttp.status == 0)
+              bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
+            else {
+              var jerr = JSON.parse (xhttp.responseText);
+              bpConsole.append ("Can't get blueprint "+j.internalId+": "+jerr.message, BPConsoleTextType.ERROR);
+            }
+          }
+        }
+      }
+    );
+
   }
 
   toJSON() {
@@ -778,8 +804,8 @@ class NodeBlueprint extends Node {
     //jo.method = this.method;
     jo.blueprintId = this.blueprintId;
     jo.internalId = this.internalId;
-    console.log ("blueprintId = "+this.blueprintId);
-    console.log ("internalId = "+this.internalId);
+    //console.log ("blueprintId = "+this.blueprintId);
+    //console.log ("internalId = "+this.internalId);
     return (jo);
   }
 }

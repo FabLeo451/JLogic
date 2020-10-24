@@ -383,4 +383,16 @@ public class ProgramService {
 
     return jprogram;
   }
+  
+  /**
+   * Get blueprint by internal id
+   */
+	public BlueprintEntity getBlueprint (ProgramEntity program, int interalId) {
+    for (BlueprintEntity b: program.getBlueprints()) {
+      if (b.getInternalId() == interalId)
+        return b;
+    }
+
+    return null;
+	}
 }

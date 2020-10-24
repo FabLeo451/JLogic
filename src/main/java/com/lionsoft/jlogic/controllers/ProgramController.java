@@ -520,4 +520,27 @@ public class ProgramController {
 		return new ResponseEntity<>(jo != null ? jo.toString() : null, jo != null ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	/**
+   * GET blueprint by internal id
+   */
+	@GetMapping(value = "/program/{id}/blueprint/{internalId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> descClass(@PathVariable("id") String id, @PathVariable("internalId") int internalId) {
+	  Optional<ProgramEntity> program = programService.findById(id);
+
+	  if (!program.isPresent())
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
+
+    BlueprintEntity b = programService.getBlueprint(program.get(), internalId);
+    
+    if (b == null)
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Blueprint not found.");
+      
+    JSONObject jo = blueprintService.toJSON(b);
+    
+    if (jo == null)
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't get blueprint json.");
+
+		return new ResponseEntity<>(jo.toString(), HttpStatus.OK);
+	}
+
 }
