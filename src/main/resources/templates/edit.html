@@ -91,19 +91,19 @@ var _jbp = null;
 
       <!-- Program -->
       <div class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
-        <div class="w3-margin-bottom" style="border-bottom: 1px dotted grey"><i class="icon i-cog" style="color:lightslategray"></i> <b>Program</b></div>
+        <div class="w3-margin-bottom" style="border-bottom: 1px dotted grey"><b>Program</b></div>
         <table class="tabVars">
-          <tr><td class="tdVars">Program</td><td class="tdVars"><div id="programName"></div></td></tr>
+          <tr><td class="tdVars">Name</td><td class="tdVars"><div id="programName"></div></td></tr>
           <tr><td class="tdVars">Status</td><td class="tdVars"><div id="programStatus"></div></td></tr>
         </table>
       </div>
 
       <!-- Blueprint -->
       <div class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
-        <div class="w3-margin-bottom" style="border-bottom: 1px dotted grey"><i class="icon i-project-diagram" style="color:lightslategray"></i> <b>Blueprint</b></div>
+        <div class="w3-margin-bottom" style="border-bottom: 1px dotted grey"><b>Blueprint</b></div>
         <table class="tabVars">
           <tr>
-            <td class="tdVars">Blueprint</td>
+            <td class="tdVars">Name</td>
             <td class="tdVars">
               <input class="inputConnector" id="bpName" type="text" name="bpName" value="Name" onfocus="beginEdit();" onblur="endEdit();" onchange="onNameChanged();">
             </td>
@@ -115,7 +115,7 @@ var _jbp = null;
       <!-- Input -->
       <div id="input-panel" class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
           <div class="edit-box-header w3-margin-bottom">
-            <div><i class="icon i-sign-in" style="color:lightslategray"></i> <b>Input</b></div>
+            <div><b>Input</b></div>
             <button class="btnApp w3-right" onclick="addInputCallback();" ><i class="icon i-add"></i> Add</button>
           </div>
           <table id="tab_input" class="tabVars">
@@ -125,7 +125,7 @@ var _jbp = null;
       <!-- Output -->
       <div id="output-panel" class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
           <div class="edit-box-header w3-margin-bottom">
-            <div><i class="icon i-sign-out" style="color:lightslategray"></i> <b>Output</b></div>
+            <div><b>Output</b></div>
             <button id="btn_add_output" class="btnApp w3-right" onclick="addOutputCallback();" ><i class="icon i-add"></i> Add</button>
           </div>
           <table id="tab_output" class="tabVars">
@@ -135,7 +135,7 @@ var _jbp = null;
       <!-- Global variables -->
       <div class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
           <div class="edit-box-header w3-margin-bottom">
-            <div><i class="icon i-square" style="color:lightslategray"></i> <b>Global variables</b></div>
+            <div><b>Global variables</b></div>
             <button class="btnApp w3-right" onclick="addGlobalVariable();" ><i class="icon i-add"></i> Add</button>
           </div>
           <table id="tab_global_variables" class="tabVars">
@@ -146,7 +146,7 @@ var _jbp = null;
       <!-- Local variables -->
       <div class="edit-box w3-panel w3-round w3-padding-small w3-light-gray w3-border">
           <div class="edit-box-header w3-margin-bottom">
-            <div><i class="icon i-square" style="color:lightslategray"></i> <b>Blueprint variables</b></div>
+            <div><b>Blueprint variables</b></div>
             <button class="btnApp w3-right" onclick="addLocalVariable();" ><i class="icon i-add"></i> Add</button>
           </div>
           <table id="tab_variables" class="tabVars">
