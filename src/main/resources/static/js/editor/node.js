@@ -41,6 +41,7 @@ class NodeBase {
   
   setName(name) {
     this.header.innerHTML = name;
+    this.name = j.name;
   }
 
   setIcon (i) {
