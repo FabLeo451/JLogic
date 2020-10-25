@@ -40,8 +40,10 @@ class NodeBase {
   }
   
   setName(name) {
-    this.header.innerHTML = name;
-    this.name = j.name;
+    this.name = name;
+
+    if (this.header)
+      this.header.innerHTML = name;
   }
 
   setIcon (i) {
@@ -783,8 +785,11 @@ class NodeBlueprint extends Node {
         if (xhttp.readyState == 4) {
           if (xhttp.status == 200) {
             var jo = JSON.parse(xhttp.responseText);
-            console.log("Updating node name to "+jo.name);
-            nodeSelf.setName(jo.name);
+            
+            if (jo.name != nodeSelf.getName()) {
+              console.log("Updating node name from "+nodeSelf.getName()+" to "+jo.name);
+              nodeSelf.setName(jo.name);
+            }
           }
           else {
             if (xhttp.status == 0)
