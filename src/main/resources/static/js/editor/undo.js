@@ -7,7 +7,7 @@ class UndoRedo {
     this.backup = null;
     this.current = 0;
     this.stackCount = 0; // For nested begin... end
-    this.maxDepth = 3;
+    this.maxDepth = 30;
   }
   
   length () {
@@ -19,8 +19,15 @@ class UndoRedo {
     this.backup = x;
   }
   
+  setMaxDepth(n) {
+    if (n > 0)
+      this.maxDepth = n;
+  }
+  
   dump () {
     var s;
+    
+    console.log ('History max depth: '+this.maxDepth);
     
     for (var i=0; i<this.history.length; i++) {
       s = this.history[i].tag+" "+this.history[i].name+(i == this.current ? ' <-' : '');

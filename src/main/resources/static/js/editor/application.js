@@ -308,6 +308,7 @@ function appStart () {
 
 
   undo = new UndoRedo ();
+  undo.setMaxDepth(50);
   undo.begin();
 
   console.log ('Initializing blueprint...');
