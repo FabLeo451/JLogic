@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.lionsoft</groupId>
 	<artifactId>jlogic</artifactId>
-	<version>0.1.0-alpha-6</version>
+	<version>0.1.0-alpha-7</version>
 	<name>JLogic</name>
 	<description>Visual scripting</description>
 
