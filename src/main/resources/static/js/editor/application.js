@@ -1007,11 +1007,9 @@ function createMenu (id) {
      {
        "menu": "Blueprint",
        "items": [
-         { "item": "Run", "id": MenuItems.BLUEPRINT_RUN , "icon": "<i class=\"icon i-play\"></i>" },
-         //{ "item": "Command line", "id": MenuItems.BLUEPRINT_COMMAND_LINE , "icon": "<i class=\"icon i-terminal\"></i>" },
-         { "separator": true },
-         //{ "item": "Validate", "id": MenuItems.BLUEPRINT_VALIDATE, "icon": '<i class="icon i-check"></i>' },
          { "item": "Compile", "id": MenuItems.BLUEPRINT_COMPILE, "icon": '<i class="icon i-cogs"></i>' },
+         { "item": "Run", "id": MenuItems.BLUEPRINT_RUN , "icon": "<i class=\"icon i-play\"></i>" },
+         //{ "item": "Validate", "id": MenuItems.BLUEPRINT_VALIDATE, "icon": '<i class="icon i-check"></i>' },
          { "separator": true },
          { "item": "Revert", "id": MenuItems.BLUEPRINT_REVERT, "icon": "<i class=\"icon i-revert\"></i>" }
        ]
@@ -1028,10 +1026,9 @@ function createMenu (id) {
      { "item": "Zoom out", "id": MenuItems.VIEW_ZOOM_OUT, "icon": "<i class=\"icon i-zoom-out\"></i>" },
      { "item": "Zoom 1:1", "id": MenuItems.VIEW_ZOOM_1_1, "icon": "<i class=\"icon i-search\"></i>" },
      { "separator": true },
-     { "item": "Run", "id": MenuItems.BLUEPRINT_RUN, "icon": '<i class="icon i-play"></i>' },
-     { "separator": true },
+     { "item": "Compile", "id": MenuItems.BLUEPRINT_COMPILE, "icon": '<i class="icon i-cogs"></i>' },
+     { "item": "Run", "id": MenuItems.BLUEPRINT_RUN, "icon": '<i class="icon i-play"></i>' }
      //{ "item": "Validate", "id": MenuItems.BLUEPRINT_VALIDATE, "icon": '<i class="icon i-check"></i>' },
-     { "item": "Compile", "id": MenuItems.BLUEPRINT_COMPILE, "icon": '<i class="icon i-cogs"></i>' }
    ]
   }
   );
@@ -1087,7 +1084,7 @@ function updateVariableColor (id, typeId) {
   /* Update icon */
   elem.className = "";
   elem.classList.add ('icon');
-  elem.classList.add (getTypeIcon (typeId));
+  elem.classList.add ('i-circle'/*getTypeIcon (typeId)*/);
 }
 
 function connectorTypeChanged(ev) {
