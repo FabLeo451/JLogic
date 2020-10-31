@@ -1177,7 +1177,7 @@ function appAddInOut(paramType, target)
 
     var htmlRow = `
        <td class="tdVars" valign="top">
-          <i id="i_`+targetId+`" class="icon `+getTypeIcon(type_id)+`" style="color:`+color+`; padding-right:4px"></i>
+          <i id="i_`+targetId+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i>
        </td>
        <td class="tdVars">
           <input id="input_`+targetId+`" class="inputConnector" _varid=`+targetId+` style="width:12em; margin-bottom:3px;" value="`+targetName+`" name="varName" onfocus="`+cbBeginRename+`(event)" onblur="`+cbEndRename+`(event);"  ondragstart="return false;" ondrop="return false;">
@@ -1246,7 +1246,7 @@ function appAddVariable(v)
 
     var htmlRow = `
        <td class="tdVars" valign="top">
-          <i id="i_`+v.id+`" class="icon `+getTypeIcon(type_id)+`" style="color:`+color+`; padding-right:4px"></i>
+          <i id="i_`+v.id+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i>
        </td>
        <td class="tdVars">
           <input id="input_`+v.id+`" class="inputConnector" _varid=`+v.id+` style="width:12em; margin-bottom:3px;" value="`+v.name+`" name="varName" onfocus="`+cbBeginRename+`(event)" onblur="`+cbEndRename+`(event);"  ondragstart="return false;" ondrop="return false;">
@@ -1266,13 +1266,13 @@ function appAddVariable(v)
     var inElem = document.getElementById('input_'+v.id);
     setInputFilter(inElem, function(value) { return /^[a-zA-Z0-9_-]*$/.test(value); });
 
-    /* Variables can be dragged to into blueprint */
-      tr.classList.add ('trVars');
-      tr.title = 'Drag into blueprint';
-      //var v = document.getElementById('i_'+targetId);
-      tr.ondragstart = dragVariable;
-      tr.draggable = true;
-      v.element = tr;
+    /* Variables can be dragged into blueprint */
+    tr.classList.add ('trVars');
+    tr.title = 'Drag into blueprint';
+    //var v = document.getElementById('i_'+targetId);
+    tr.ondragstart = dragVariable;
+    tr.draggable = true;
+    v.element = tr;
 
     setStatus (BPEditStatus.MODIFIED);
     cbModified ();

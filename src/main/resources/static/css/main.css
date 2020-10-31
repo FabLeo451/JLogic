@@ -252,6 +252,7 @@ legend {
 .i-external-link-square-alt:before { content: "\f360" }
 .i-external-link-alt:before { content: "\f35d" }
 .i-spinner:before { content: "\f110" }
+.i-circle:before { content: "\f111" }
 
 .i-lock-open:before { content: "\f3c1" }
 .i-lock:before { content: "\f023" }
