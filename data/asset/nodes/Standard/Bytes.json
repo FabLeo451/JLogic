@@ -64,6 +64,34 @@
         { "type": "Exec", "label": "" },
         { "type": "Integer", "label": "Integer", "java": {"references": {"variable":"i"}} }
       ]
+    },
+    {
+      "name": "Bytes to Hex String",
+      "type": 4,
+      "version": 1,
+      "java": "StringBuffer _{node.id}_sb = new StringBuffer();\n for(Byte _{node.id}_b: in{1}) _{node.id}_sb.append(Character.forDigit((_{node.id}_b.byteValue() >> 4) & 0xF, 16) + Character.forDigit((_{node.id}_b.byteValue() & 0xF), 16));\n out{1} = _{node.id}_sb.toString();",
+      "__java": "String _{node.id}_s = \"\";\n for(Byte _{node.id}_b: in{1}) _{node.id}_s += String.format(\"%02\", _{node.id}_b.byteValue());\n out{1} = _{node.id}_s;",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Byte", "label": "Bytes", "dimensions":1 }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "String", "java": {"references": {"variable":"s"}} }
+      ]
+    },
+    {
+      "name": "Byte to String",
+      "type": 5,
+      "version": 1,
+      "inner_text":"to",
+      "java": "String.format(\"0x%02\", in{0}.byteValue())",
+      "input": [
+        { "type": "Byte", "label": "Byte" }
+      ],
+      "output": [
+        { "type": "String", "label": "String" }
+      ]
     }
   ]
 }
