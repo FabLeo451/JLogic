@@ -9,20 +9,20 @@
       "version": 1,
       "import": ["com.lionsoft.elasticsearch.ElasticsearchClient", "org.elasticsearch.rest.RestStatus", "java.util.*"],
       "classpath": ["{path}/ElasticsearchClient.jar"],
-      "java":"out{1} = new ElasticsearchClient((in{1} == 0 ? \"http\" : \"https\"), in{2}, in{3}, in{4}, in{5}, in{6}, in{7});",
+      "java":"@Connect.java",
       "input": [
         { "type": "Exec", "label": "" },
         { "type": "Integer", "label": "Protocol", "value": 0, "enum": [ "HTTP", "HTTPS" ] },
         { "type": "String", "label": "Hostname", "value": "localhost", "single_line":true },
         { "type": "Integer", "label": "Port", "value": 9200 },
         { "type": "String", "label": "Username", "value": "" },
-        { "type": "String", "label": "Password", "value": "", "password":true },
-        { "type": "Boolean", "label": "Check certificate", "value": false },
-        { "type": "String", "label": "Certificate", "value": "", "single_line":true },
+        { "type": "String", "label": "Password", "value": "", "password":true }
       ],
       "output": [
-        { "type": "Exec", "label": "" },
-        { "type": "ElasticsearchClient", "label": "Client", "java": { "references":{"variable":"client"} } }
+        { "type": "Exec", "label": "Success" },
+        { "type": "ElasticsearchClient", "label": "Client", "java": { "references":{"variable":"client"} } },
+        { "type": "Exec", "label": "Error" },
+        { "type": "String", "label": "Message", "java": { "references":{"variable":"msg"} } }
       ]
     },
     {
