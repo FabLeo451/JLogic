@@ -1,0 +1,53 @@
+{
+  "nodes": [
+    {
+      "name": "Bytes Subset",
+      "type": 4,
+      "version": 1,
+      "import": ["java.util.Arrays"],
+      "java": "out{1} = Arrays.copyOfRange(in{1}, in{2}, in{2}+in{3});",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Byte", "label": "Bytes", "dimensions":1 },
+        { "type": "Integer", "label": "Start", "value":0 },
+        { "type": "Integer", "label": "Length", "value":0 }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "Byte", "label": "Bytes", "dimensions":1, "java": {"references": {"variable":"bytes"}} }
+      ]
+    },
+    {
+      "name": "Bytes Read",
+      "type": 4,
+      "version": 1,
+      "import": ["java.util.Arrays"],
+      "declare": "static int _47a1aad0_bytesReadOffset = 0;",
+      "java": "if (in{3}) _47a1aad0_bytesReadOffset = 0; out{1} = Arrays.copyOfRange(in{1}, _47a1aad0_bytesReadOffset, _47a1aad0_bytesReadOffset+in{2}); _47a1aad0_bytesReadOffset += in{2};",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Byte", "label": "Bytes", "dimensions":1 },
+        { "type": "Integer", "label": "Length", "value":0 },
+        { "type": "Boolean", "label": "Reset offset", "value":false }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "Byte", "label": "Bytes", "dimensions":1, "java": {"references": {"variable":"bytes"}} }
+      ]
+    },
+    {
+      "name": "Bytes to String",
+      "type": 4,
+      "version": 1,
+      "java": "byte[] _{node.id}_bytes = new byte[in{1}.length];\nint _{node.id}_j=0;\nfor(Byte _{node.id}_b: in{1})\n_{node.id}_bytes[_{node.id}_j++] = _{node.id}_b.byteValue();\nout{1} = new String(_{node.id}_bytes);",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Byte", "label": "Bytes", "dimensions":1 }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "String", "java": {"references": {"variable":"str"}} }
+      ]
+    }
+  ]
+}
