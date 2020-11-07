@@ -48,6 +48,22 @@
         { "type": "Exec", "label": "" },
         { "type": "String", "label": "String", "java": {"references": {"variable":"str"}} }
       ]
+    },
+    {
+      "name": "Bytes to Integer",
+      "type": 4,
+      "version": 1,
+      "import": ["java.nio.ByteBuffer", "java.nio.ByteOrder"],
+      "java": "byte[] _{node.id}_bytes = new byte[in{1}.length];\nint _{node.id}_j=0;\nfor(Byte _{node.id}_b: in{1})\n_{node.id}_bytes[_{node.id}_j++] = _{node.id}_b.byteValue();\n ByteBuffer _{node.id}_bb = ByteBuffer.wrap(_{node.id}_bytes);\n if (in{2} == 1) _{node.id}_bb.order(ByteOrder.LITTLE_ENDIAN);\n out{1} = _{node.id}_bb.getInt();",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "Byte", "label": "Bytes", "dimensions":1 },
+        { "type": "Integer", "label": "Order", "value": 0, "enum": [ "Big endian", "Little endian" ] }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "Integer", "label": "Integer", "java": {"references": {"variable":"i"}} }
+      ]
     }
   ]
 }
