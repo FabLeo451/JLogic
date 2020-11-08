@@ -128,7 +128,7 @@ public class BlueprintController {
 	                        @RequestBody String content) {
 
 	  Optional<BlueprintEntity> blueprint = blueprintService.findById(blueprintId);
-    System.out.println(content);
+    //System.out.println(content);
 
 	  if (blueprint.isPresent()) {
       try {
