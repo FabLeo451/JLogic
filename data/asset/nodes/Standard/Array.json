@@ -41,5 +41,20 @@
       { "type": "Exec", "label": "" },
       { "type": "String", "label": "Element", "java": {"references": {"variable":"arrayStr"}} }
     ]
+  },
+  {
+    "name": "Array Reverse",
+    "type": 4,
+    "version": 1,
+    "import": ["java.util.*"],
+    "java": "Collections.reverse(Arrays.asList(in{1})); ",
+    "input": [
+      { "type": "Exec", "label": "" },
+      { "type": "Any", "label": "Array", "dimensions":1 }
+    ],
+    "output": [
+      { "type": "Exec", "label": "" },
+      { "type": "Any", "label": "Reversed", "dimensions":1, "java": {"references": {"input":1}} }
+    ]
   }
 ]
