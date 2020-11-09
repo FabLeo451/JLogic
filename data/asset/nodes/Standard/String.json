@@ -156,6 +156,21 @@
       ]
     },
     {
+      "name": "String Reverse",
+      "type": 4,
+      "version": 1,
+      "import": ["java.lang.*", "java.io.*", "java.util.*"],
+      "java": "StringBuffer _{node.id}_sb = new StringBuffer(in{1});\n _{node.id}_sb.reverse();\n out{1} = _{node.id}_sb.toString();",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "String", "value":"" }
+      ],
+      "output": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "Reversed", "java": {"references": {"variable":"reversed"}} }
+      ]
+    },
+    {
       "name": "Regular Expression",
       "type": 4,
       "version": 1,
