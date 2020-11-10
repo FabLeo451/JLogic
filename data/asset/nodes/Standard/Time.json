@@ -39,11 +39,12 @@
       "type": 4,
       "version": 1,
       "import": ["java.util.Date", "java.text.SimpleDateFormat", "java.text.ParseException"],
-      "java": "out{3} = \"\";\n boolean _{node.id}_parse_ok = false; try { SimpleDateFormat _{node.id}_sdf = new SimpleDateFormat(in{2});\n out{1} = _{node.id}_sdf.parse(in{1}); _{node.id}_parse_ok = true; } catch (ParseException e) { out{3} = e.getMessage(); } if (_{node.id}_parse_ok) { exec{0} } else { exec{2}}\n ",
+      "java": "out{3} = \"\";\n boolean _{node.id}_parse_ok = false; try { SimpleDateFormat _{node.id}_sdf = new SimpleDateFormat(in{2});\n if (!in{3}.isEmpty()) _{node.id}_sdf.setTimeZone(TimeZone.getTimeZone(in{3})); \n out{1} = _{node.id}_sdf.parse(in{1}); _{node.id}_parse_ok = true; } catch (ParseException e) { out{3} = e.getMessage(); } if (_{node.id}_parse_ok) { exec{0} } else { exec{2}}\n ",
       "input": [
         { "type": "Exec", "label": ""},
         { "type": "String", "label": "String", "value":"", "single_line":true },
-        { "type": "String", "label": "Pattern", "value":"yyyy-MM-dd HH:mm:ss", "single_line":true }
+        { "type": "String", "label": "Pattern", "value":"yyyy-MM-dd HH:mm:ss", "single_line":true },
+        { "type": "String", "label": "Timezone", "value":"", "single_line":true }
       ],
       "output": [
         { "type": "Exec", "label": "Success"},
