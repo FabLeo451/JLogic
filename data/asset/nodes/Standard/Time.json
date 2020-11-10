@@ -21,31 +21,35 @@
       "name": "Date to String",
       "type": 4,
       "version": 1,
-      "import": ["java.util.Date"],
-      "java": "out{1} = in{1}.toString();",
+      "import": ["java.util.Date", "java.util.TimeZone", "java.text.SimpleDateFormat"],
+      "java": "SimpleDateFormat _{node.id}_sdf = new SimpleDateFormat(in{2});\n if (!in{3}.isEmpty()) _{node.id}_sdf.setTimeZone(TimeZone.getTimeZone(in{3})); \n out{1} = _{node.id}_sdf.format(in{1}).toString();",
       "input": [
         { "type": "Exec", "label": ""},
-        { "type": "Date", "label": "Date"}
+        { "type": "Date", "label": "Date"},
+        { "type": "String", "label": "Format", "value":"yyyy-MM-dd HH:mm:ss", "single_line":true },
+        { "type": "String", "label": "Timezone", "value":"", "single_line":true }
       ],
       "output": [
         { "type": "Exec", "label": ""},
-        { "type": "String", "label": "", "java":{"references":{"variable":"date_str"}}}
+        { "type": "String", "label": "", "java":{"references":{"variable":"dateStr"}}}
       ]
     },
     {
       "name": "Date Parse",
       "type": 4,
       "version": 1,
-      "import": ["java.util.Date", "java.text.DateFormat", "java.text.ParseException"],
-      "java": "boolean _{node.id}_parse_ok = false; try { DateFormat df = DateFormat.getDateInstance(); out{1} = df.parse(in{1}); _{node.id}_parse_ok = true; } catch (ParseException e) { _{node.id}_parse_ok = false; } if (_{node.id}_parse_ok) { exec{0} } else { exec{2}}",
+      "import": ["java.util.Date", "java.text.SimpleDateFormat", "java.text.ParseException"],
+      "java": "out{3} = \"\";\n boolean _{node.id}_parse_ok = false; try { SimpleDateFormat _{node.id}_sdf = new SimpleDateFormat(in{2});\n out{1} = _{node.id}_sdf.parse(in{1}); _{node.id}_parse_ok = true; } catch (ParseException e) { out{3} = e.getMessage(); } if (_{node.id}_parse_ok) { exec{0} } else { exec{2}}\n ",
       "input": [
         { "type": "Exec", "label": ""},
-        { "type": "String", "label": "String", "value":"", "single_line":true }
+        { "type": "String", "label": "String", "value":"", "single_line":true },
+        { "type": "String", "label": "Pattern", "value":"yyyy-MM-dd HH:mm:ss", "single_line":true }
       ],
       "output": [
         { "type": "Exec", "label": "Success"},
         { "type": "Date", "label": "Date", "java":{"references":{"variable":"date"}}},
-        { "type": "Exec", "label": "Error"}
+        { "type": "Exec", "label": "Error"},
+        { "type": "String", "label": "Message", "java":{"references":{"variable":"dateErr"}}}
       ]
     }
   ]
