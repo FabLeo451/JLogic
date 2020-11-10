@@ -59,6 +59,7 @@ class Connector {
     this.inputElem = null;
     this.owner = null; // Node
     this.any = false;
+    this.elemArray = null;
   }
 
   getElement() {
@@ -124,8 +125,18 @@ class Connector {
     this.array = a;
   }
 */
+  setArrayElemVisible(visible) {
+    if (this.elemArray)
+      this.elemArray.style.display = visible ? "inline" : "none";
+  }
+  
   setDimensions (d) {
     this.dimensions = d;
+    this.setArrayElemVisible(d > 0)
+  }
+  
+  getDimensions () {
+    return(this.dimensions);
   }
 
   setValue (v) {
@@ -470,15 +481,14 @@ class Connector {
 	    this.element.style.textAlign = "right";
       this.element.appendChild(this.label);
 
-      //if (this.array) {
-      if (this.dimensions > Dimensions.SCALAR) {
-        var iconName = this.dimensions == Dimensions.ARRAY ? 'ellipsis-h' : 'i-th';
-        var elemArray = document.createElement('div');
-        elemArray.className = "label";
-        elemArray.innerHTML = "&nbsp;<i class=\"icon "+iconName+"\" style=\"color:darkgray\"></i>";
-        this.element.appendChild(elemArray);
-      }
-      else {
+      var iconName = this.dimensions == Dimensions.ARRAY ? 'ellipsis-h' : 'i-th';
+      this.elemArray = document.createElement('div');
+      this.elemArray.className = "label";
+      this.elemArray.innerHTML = "&nbsp;<i class=\"icon "+iconName+"\" style=\"color:darkgray\"></i>";
+      this.element.appendChild(this.elemArray);
+      this.setDimensions(this.dimensions);
+
+      if (this.dimensions == Dimensions.SCALAR) {
         if (withValue)
           this.element.appendChild(this.createValueElement ());
       }

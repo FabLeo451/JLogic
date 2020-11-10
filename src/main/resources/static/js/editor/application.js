@@ -1100,6 +1100,18 @@ function connectorTypeChanged(ev) {
   updateVariableColor ('i_'+id, ev.target.value);
 }
 
+function connectorArrayChanged(ev) {
+  var id = ev.target.getAttribute('_varid');
+  //var v = blueprint.getVariable (id);
+  var connector = blueprint.getConnector (id);
+
+  console.log("Connector array changed to "+ev.target.checked);
+
+  connector.disconnectAll ();
+  connector.setDimensions (ev.target.checked ? 1 : 0);
+  //connector.setDefaultValue ();
+}
+
 function deleteConnectorCallback(id) {
   var connector = blueprint.getConnector (id);
   var node = connector.owner;
@@ -1122,7 +1134,7 @@ function deleteConnectorCallback(id) {
 function appAddInOut(paramType, target)
 {
   var targetId, targetName, targetType, tabId, rowPrefix;
-  var table, cbBeginRename, cbEndRename, cbDelete, cbTypeChanged, initialize='';
+  var table, cbBeginRename, cbEndRename, cbDelete, cbTypeChanged;
   var types = blueprint.getTypes();
   var draggable = false;
 
@@ -1153,6 +1165,7 @@ function appAddInOut(paramType, target)
   table = document.getElementById(tabId);
   tr.setAttribute('id', rowPrefix+targetId);
 
+  // Type combo
   var color, type_id;
   var combo = '<select _varid='+targetId+' onchange="'+cbTypeChanged+'(event);" class="select-css">';
   for (var i=0; i<types.length; i++) {
@@ -1171,22 +1184,27 @@ function appAddInOut(paramType, target)
     }
   }
   combo += '</select>';
+  
+  // Array flag
+  var checked = target.getDimensions() > 0 ? "checked" : "";
+  var arrayFlag = '<input _varid='+targetId+' type="checkbox" id="array" name="array" value="0" onclick="connectorArrayChanged(event);" '+checked+'> Array';
+  
+  // Row
+  var htmlRow = `
+     <td class="tdVars" valign="top">
+        <i id="i_`+targetId+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i>
+     </td>
+     <td class="tdVars">
+        <input id="input_`+targetId+`" class="inputConnector" _varid=`+targetId+` style="width:12em; margin-bottom:3px;" value="`+targetName+`" name="varName" onfocus="`+cbBeginRename+`(event)" onblur="`+cbEndRename+`(event);"  ondragstart="return false;" ondrop="return false;">
 
-    var htmlRow = `
-       <td class="tdVars" valign="top">
-          <i id="i_`+targetId+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i>
-       </td>
-       <td class="tdVars">
-          <input id="input_`+targetId+`" class="inputConnector" _varid=`+targetId+` style="width:12em; margin-bottom:3px;" value="`+targetName+`" name="varName" onfocus="`+cbBeginRename+`(event)" onblur="`+cbEndRename+`(event);"  ondragstart="return false;" ondrop="return false;">
-
-        <br>
-        `+combo+`
-        `+initialize+`
-       </td>
-       <td class="tdVars" valign="top">
-         <i class="icon i-times w3-text-gray w3-hover-text-red" onclick="`+cbDelete+`('`+targetId+`');" style="cursor:pointer;" title="Delete"></i>
-       </td>
-     `;
+      <br>
+      `+combo+`<br>
+      `+arrayFlag+`
+     </td>
+     <td class="tdVars" valign="top">
+       <i class="icon i-times w3-text-gray w3-hover-text-red" onclick="`+cbDelete+`('`+targetId+`');" style="cursor:pointer;" title="Delete"></i>
+     </td>
+   `;
 
     tr.innerHTML = htmlRow;
     table.appendChild(tr);
