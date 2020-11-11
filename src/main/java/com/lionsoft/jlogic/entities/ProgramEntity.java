@@ -673,6 +673,9 @@ public class ProgramEntity {
 
 		  int exitVal = process.waitFor();
 
+      System.out.println(output.toString());
+      logger.info("Java code generation: "+exitVal);
+
 		  if (exitVal == 0) {
 		  } else {
 			  logger.error ("Error generating Java code ("+exitVal+"): "+output.toString());
