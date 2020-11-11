@@ -138,7 +138,8 @@ class Connector {
       this.elemArray.innerHTML = "&nbsp;<i class=\"icon "+iconName+"\" style=\"color:darkgray\"></i>";
     }
 
-    this.setArrayElemVisible(d > 0)
+    this.setArrayElemVisible(d > 0);
+    this.showValue(d == 0);
   }
   
   getDimensions () {
@@ -467,6 +468,7 @@ class Connector {
       this.element.appendChild(this.pin);
 
       //if (this.array) {
+/*
       if (this.dimensions > Dimensions.SCALAR) {
         var iconName = this.dimensions == Dimensions.ARRAY ? 'ellipsis-h' : 'i-th';
         var elemArray = document.createElement('div');
@@ -474,6 +476,11 @@ class Connector {
         elemArray.innerHTML = "<i class=\"icon "+iconName+"\" style=\"color:gray\"></i>&nbsp;";
         this.element.appendChild(elemArray);
       }
+*/
+      this.elemArray = document.createElement('div');
+      this.elemArray.className = "label";
+      this.element.appendChild(this.elemArray);
+      this.setDimensions(this.dimensions);
 
       this.element.appendChild(this.label);
 
