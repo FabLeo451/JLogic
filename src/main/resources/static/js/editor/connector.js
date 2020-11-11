@@ -132,6 +132,12 @@ class Connector {
   
   setDimensions (d) {
     this.dimensions = d;
+  
+    if (this.elemArray && d > 0) {
+      var iconName = this.dimensions == Dimensions.ARRAY ? 'ellipsis-h' : 'i-th';
+      this.elemArray.innerHTML = "&nbsp;<i class=\"icon "+iconName+"\" style=\"color:darkgray\"></i>";
+    }
+
     this.setArrayElemVisible(d > 0)
   }
   
@@ -481,10 +487,10 @@ class Connector {
 	    this.element.style.textAlign = "right";
       this.element.appendChild(this.label);
 
-      var iconName = this.dimensions == Dimensions.ARRAY ? 'ellipsis-h' : 'i-th';
+      //var iconName = this.dimensions == Dimensions.ARRAY ? 'ellipsis-h' : 'i-th';
       this.elemArray = document.createElement('div');
       this.elemArray.className = "label";
-      this.elemArray.innerHTML = "&nbsp;<i class=\"icon "+iconName+"\" style=\"color:darkgray\"></i>";
+      //this.elemArray.innerHTML = "&nbsp;<i class=\"icon "+iconName+"\" style=\"color:darkgray\"></i>";
       this.element.appendChild(this.elemArray);
       this.setDimensions(this.dimensions);
 
