@@ -52,6 +52,23 @@
         { "type": "Exec", "label": "Error"},
         { "type": "String", "label": "Message", "java":{"references":{"variable":"dateErr"}}}
       ]
+    },
+    {
+      "name": "Date Compare",
+      "type": 4,
+      "version": 1,
+      "import": ["java.util.Date"],
+      "java": "int _{node.id}_c = in{1}.compareTo(in{2});\n if (_{node.id}_c > 0) { exec{0} } else if (_{node.id}_c == 0) { exec{1} } else { exec{2} }",
+      "input": [
+        { "type": "Exec", "label": ""},
+        { "type": "Date", "label": "Date 1"},
+        { "type": "Date", "label": "Date 2"}
+      ],
+      "output": [
+        { "type": "Exec", "label": ">" },
+        { "type": "Exec", "label": "==" },
+        { "type": "Exec", "label": "<" }
+      ]
     }
   ]
 }

@@ -171,6 +171,20 @@
       ]
     },
     {
+      "name": "Substring",
+      "type": 5,
+      "version": 1,
+      "java": "in{0}.substring(in{1}, in{2})",
+      "input": [
+        { "type": "String", "label": "String", "value":"" },
+        { "type": "Integer", "label": "Start", "value":0 },
+        { "type": "Integer", "label": "End", "value":0 }
+      ],
+      "output": [
+        { "type": "String", "label": "Substring" }
+      ]
+    },
+    {
       "name": "Regular Expression",
       "type": 4,
       "version": 1,
