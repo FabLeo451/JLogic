@@ -129,6 +129,10 @@ class Connector {
     if (this.elemArray)
       this.elemArray.style.display = visible ? "inline" : "none";
   }
+
+  updateTooltip() {
+    this.element.title = this.getPinType().name + (this.dimensions > 0 ? "[]" : "");
+  }
   
   setDimensions (d) {
     this.dimensions = d;
@@ -140,6 +144,7 @@ class Connector {
 
     this.setArrayElemVisible(d > 0);
     this.showValue(d == 0);
+    this.updateTooltip();
   }
   
   getDimensions () {
@@ -437,7 +442,6 @@ class Connector {
     //this.setType (type);
     this.setPinType (pinType);
     this.setDataType (dataType);
-    this.element.title = this.getPinType().name;
     this.exec = this.pinType.exec ? this.pinType.exec : false;
     //this.setArray (isArray === true);
     this.dimensions = dimensions;
@@ -509,6 +513,8 @@ class Connector {
       this.element.appendChild(this.pin);
 	    //this.rightColumn.appendChild(this.element);
     }
+
+    this.updateTooltip();
 
     var connectorSelf = this;
 
