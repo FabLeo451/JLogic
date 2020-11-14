@@ -44,6 +44,7 @@ var bpConsole, g_filename = null;
 var dialogWorking;
 //var programIndex = null;
 var program = null;
+var lastInput = null;
 
 function appKeyPressed(e) {
   if (!actionsEnabled)
@@ -504,6 +505,8 @@ function run (dialog) {
 
   //console.log('input = '+input);
   //callServer ("POST", "/program/"+_jbp.programId+"/run/"+blueprint.getName()+"?client_id="+__SERVER['client_id']+trace, input, runCallback);
+  
+  lastInput = input;
 
   callServer ("POST", "/program/"+_jbp.programId+"/run/"+blueprint.getName(), input, runCallback);
   endEdit();
@@ -683,6 +686,27 @@ function toggleConsoleVisibility () {
 */
   paned.collapse(1);
   //icon.innerHTML = visible ? '<i class="icon i-check"></i>' : "";
+}
+
+function getDefaultInput() {
+  var jinput = blueprint.getInputArray();
+  var k = 0, input = '{\n';
+
+  for (var i=0; i<jinput.length; i++) {
+    //console.log('type = '+jinput[i].type);
+    if (jinput[i].type === 'Exec')
+      continue;
+
+    if (k > 0)
+      input += ',\n';
+
+    input += '  "'+jinput[i].label+'": '+JSON.stringify(jinput[i].value);
+    k ++;
+  }
+
+  input += '\n}';
+  
+  return input;
 }
 
 function processAction (a) {
@@ -869,25 +893,12 @@ function processAction (a) {
       var content = dialog.getContentElement ();
       console.log(blueprint.getInputArrayAsString());
       //var jinput = JSON.parse(blueprint.getInputArrayAsString());
-      var jinput = blueprint.getInputArray();
-      var k = 0, input = '{\n';
+      
+      input = lastInput ? lastInput : getDefaultInput();
 
-
-      for (var i=0; i<jinput.length; i++) {
-        //console.log('type = '+jinput[i].type);
-        if (jinput[i].type === 'Exec')
-          continue;
-
-        if (k > 0)
-          input += ',\n';
-
-        input += '  "'+jinput[i].label+'": '+JSON.stringify(jinput[i].value);
-        k ++;
-      }
-
-      input += '\n}';
-
-      content.innerHTML = '<textarea class="w3-border" id="inputTextArea" rows="15" cols="30">'+input+'</textarea><!--<input id="_trace" class="w3-check" type="checkbox"> Trace -->';
+      content.innerHTML = `<textarea class="w3-border" id="inputTextArea" rows="15" cols="30">`+input+`</textarea>
+                           <button class="btnApp" onclick="document.getElementById('inputTextArea').value = getDefaultInput();">Reset</button>
+                          `;
       break;
 
     case MenuItems.BLUEPRINT_COMPILE:
