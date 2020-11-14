@@ -798,8 +798,11 @@ function processAction (a) {
       break;
 
     case MenuItems.EDIT_PASTE:
-      if (blueprint.getStatus() == BPStatus.READY)
-        blueprint.paste ();
+      if (blueprint.getStatus() == BPStatus.READY) {
+        undo.begin();
+        blueprint.paste();
+        undo.end();
+      }
       break;
 
     case MenuItems.EDIT_DELETE:

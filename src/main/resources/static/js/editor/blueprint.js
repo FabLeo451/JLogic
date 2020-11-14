@@ -132,6 +132,25 @@ class Blueprint {
     this.callbackBeginModify = null;
     this.callbackModified = null;
     this.clipboard = null;
+    this.code = 0;
+    this.message = null;
+  }
+  
+  setMessage(m) {
+    this.message = m;
+  }
+  
+  getMessage() {
+    return(this.message);
+  }
+  
+  getCode() {
+    return(this.code);
+  }
+  
+  setResult(c, m) {
+    this.code = c;
+    this.setMessage(m);
   }
 
   clear () {
@@ -362,14 +381,17 @@ class Blueprint {
   }
 
   paste () {
-    var text;
+    var text, result = 0;
 
     console.log ("Paste...");
+    this.setResult(0, 'OK');
 
     /*if (!this.clipboard)
       return;
 
     text = this.clipboard;*/
+    
+    //var selfBlueprint = this;
 
     navigator.clipboard.readText()
       .then(text => {
@@ -383,19 +405,35 @@ class Blueprint {
 
             // Nodes
             for (var i=0; i<jnodes.length; i++) {
-              var node = blueprint.addNodeFromJson(jnodes[i], false);
+              //console.log('Paste node '+jnodes[i].name);
+              
+              var pasteOK = true;
+              
+              if (jnodes[i].type == BPNodeTypeID.GET || jnodes[i].type == BPNodeTypeID.SET) {
+                // Check if variable exists
+                if (!blueprint.getVariable(jnodes[i].references))
+                  pasteOK = false;
+              }
+              
+              if (pasteOK) {
+                var node = blueprint.addNodeFromJson(jnodes[i], false);
 
-              /* Change ids */
-              node.setID (blueprint.getNewNodeId());
-              node.moveDelta(20, 20);
-              addedNodes.push(node);
+                /* Change ids */
+                node.setID (blueprint.getNewNodeId());
+                node.moveDelta(20, 20);
+                addedNodes.push(node);
+              }
             }
 
-            console.log(substitutions);
+            //console.log(substitutions);
 
             // Edges
             for (var i=0; i<jedges.length; i++) {
-              this.connectByID (substitutions[jedges[i]["from"]], substitutions[jedges[i]["to"]]);
+              var from = substitutions[jedges[i]["from"]];
+              var to = substitutions[jedges[i]["to"]];
+              
+              if (from && to)
+                this.connectByID (from, to);
             }
 
             blueprint.clearSelection();
@@ -403,11 +441,12 @@ class Blueprint {
             for (var i=0; i<addedNodes.length; i++)
               blueprint.addToSelection (addedNodes[i]);
           }
-
+ 
       })
       .catch(err => {
         // maybe user didn't grant access to read from clipboard
-        console.log('Paste error: ', err);
+        console.error('Paste error: ', err);
+        blueprint.setResult(1, err);
       });
   }
 
