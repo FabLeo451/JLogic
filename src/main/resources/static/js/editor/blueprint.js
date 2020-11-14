@@ -409,10 +409,22 @@ class Blueprint {
               
               var pasteOK = true;
               
-              if (jnodes[i].type == BPNodeTypeID.GET || jnodes[i].type == BPNodeTypeID.SET) {
-                // Check if variable exists
-                if (!blueprint.getVariable(jnodes[i].references))
-                  pasteOK = false;
+              switch (jnodes[i].type) {
+                case BPNodeTypeID.GET:
+                  // Check if variable exists
+                  if (blueprint.getVariable(jnodes[i].output[0].references) == null) {
+                    console.log('Node '+jnodes[i].name+' '+jnodes[i].references+' will not be pasted');
+                    pasteOK = false;
+                  }
+                  break;
+                
+                case BPNodeTypeID.SET:
+                  // Check if variable exists
+                  if (blueprint.getVariable(jnodes[i].input[1].references) == null) {
+                    console.log('Node '+jnodes[i].name+' '+jnodes[i].references+' will not be pasted');
+                    pasteOK = false;
+                  }
+                  break;
               }
               
               if (pasteOK) {
