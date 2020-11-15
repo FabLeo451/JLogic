@@ -31,7 +31,7 @@
       "version": 1,
       "import": ["com.lionsoft.elasticsearch.ElasticsearchClient", "org.elasticsearch.rest.RestStatus", "java.util.*"],
       "classpath": ["{path}/ElasticsearchClient.jar"],
-      "java":"in{1}.close();",
+      "java":"if (in{1} != null) in{1}.close();",
       "input": [
         { "type": "Exec", "label": "" },
         { "type": "ElasticsearchClient", "label": "Client" }
