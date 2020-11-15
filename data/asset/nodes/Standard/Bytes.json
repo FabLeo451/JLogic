@@ -18,12 +18,12 @@
       ]
     },
     {
-      "name": "Bytes Read",
+      "name": "Read Bytes",
       "type": 4,
       "version": 1,
       "import": ["java.util.Arrays"],
       "declare": "static int _47a1aad0_bytesReadOffset = 0;",
-      "java": "if (in{3}) _47a1aad0_bytesReadOffset = 0; out{1} = Arrays.copyOfRange(in{1}, _47a1aad0_bytesReadOffset, _47a1aad0_bytesReadOffset+in{2}); _47a1aad0_bytesReadOffset += in{2};",
+      "java": "@ReadBytes.java",
       "input": [
         { "type": "Exec", "label": "" },
         { "type": "Byte", "label": "Bytes", "dimensions":1 },
@@ -32,7 +32,8 @@
       ],
       "output": [
         { "type": "Exec", "label": "" },
-        { "type": "Byte", "label": "Bytes", "dimensions":1, "java": {"references": {"variable":"bytes"}} }
+        { "type": "Byte", "label": "Bytes", "dimensions":1, "java": {"references": {"variable":"bytes"}} },
+        { "type": "Integer", "label": "Length", "java": {"references": {"variable":"len"}} }
       ]
     },
     {

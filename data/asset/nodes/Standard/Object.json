@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Add",
+    "type": 5,
+    "version": 1,
+    "inner_text": "+",
+    "symbol": "+",
+    "addInput": { "type": "Object", "label": "", "value": 0 },
+    "input": [
+      { "type": "Object", "label": "", "value": 0 },
+      { "type": "Object", "label": "", "value": 0 },
+    ],
+    "output": [
+      { "type": "Object", "label": "" }
+    ]
+  }
+]
