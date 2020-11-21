@@ -31,6 +31,9 @@ import com.lionsoft.jlogic.BlueprintType;
 //@Transactional
 public class BlueprintService {
 
+  final static int SUCCESS = 0;
+  final static int ERROR = 1;
+
   @Autowired
   BlueprintRepository repository;
 
@@ -40,6 +43,7 @@ public class BlueprintService {
   ApplicationHome home = new ApplicationHome(BlueprintService.class);
   Logger logger = LoggerFactory.getLogger(ProgramController.class);
 
+  int code = 0;
   String message;
 
 	public BlueprintService() {
@@ -76,12 +80,25 @@ public class BlueprintService {
 	  return (0);
 	}*/
 
+  public int getCode() {
+    return code;
+  }
+
+  public void setCode(int c) {
+    code = c;
+  }
+  
   public String getMessage() {
     return message;
   }
 
   public void setMessage(String m) {
     message = m;
+  }
+  
+  public void setResult(int c, String m) {
+    setCode(c);
+    setMessage(m);
   }
 
 	public String getFilename(BlueprintEntity blueprint) {
@@ -288,4 +305,23 @@ public class BlueprintService {
       return null;
     }
   }
+  
+  public BlueprintEntity clone(BlueprintEntity blueprint) {
+    BlueprintEntity clone = null;
+    String cloneName = "Clone of "+blueprint.getName();
+    
+    ProgramEntity program = blueprint.getProgram();
+    clone = create(program, blueprint.getType(), cloneName);
+
+    if (!update(clone, toJSON(blueprint).toString())) {
+      delete(clone);
+      setResult(ERROR, getMessage());
+      return null;
+    }
+    
+    programService.refresh(program);
+         
+    return clone;
+  }
+
 }

@@ -106,6 +106,20 @@ function hideContextMenu(evt) {
     document.removeEventListener('click', hideContextMenu);
 }
 
+function getBlueprintMenuHTML(jo) {
+  var marginLeft = '0.5em';
+  var html = '<span id="bpmenu_'+jo.id+'" style="margin-left:2em;visibility:hidden;">';
+  
+  if (jo.type == 'GENERIC') {
+    html += `<i class="icon i-clone w3-text-gray" style="margin-left:`+marginLeft+`; cursor:pointer;" onclick="cloneBlueprint('`+jo.id+`', '`+jo.name+`')" title="Clone blueprint"></i>`;
+    html += `<i class="icon i-trash-alt w3-text-gray" style="margin-left:`+marginLeft+`; cursor:pointer;" onclick="deleteBlueprint('`+jo.id+`', '`+jo.name+`')" title="Delete blueprint"></i>`;
+  }
+  
+  html += '</span>';
+  
+  return(html);
+}
+
 function addBlueprints (programId, containerElem, jblueprints) {
   var jo;
 
@@ -120,20 +134,20 @@ function addBlueprints (programId, containerElem, jblueprints) {
     bpElem.classList.add('w3-container');
     bpElem.setAttribute('id', jo.id);
 
-    var delButton = jo.type == 'GENERIC' ? `<i id="del_`+jo.id+`" class="icon i-trash-alt w3-text-gray" style="margin-left:2em; cursor:pointer; visibility:hidden" onclick="deleteBlueprint('`+jo.id+`', '`+jo.name+`')" title="Delete blueprint"></i>` : '<div id="del_'+jo.id+'"></div>';
+    //var delButton = jo.type == 'GENERIC' ? `<i id="del_`+jo.id+`" class="icon i-trash-alt w3-text-gray" style="margin-left:2em; cursor:pointer; visibility:hidden" onclick="deleteBlueprint('`+jo.id+`', '`+jo.name+`')" title="Delete blueprint"></i>` : '<div id="del_'+jo.id+'"></div>';
 
-    bpElem.innerHTML = `<i class="icon i-project-diagram w3-text-blue-gray" style="width:1.5em;"></i> <a href="/blueprint/`+jo.id+`/edit" target="_blank" title="Open in editor">`+jo.name+`</a> `+delButton;
+    bpElem.innerHTML = `<i class="icon i-project-diagram w3-text-blue-gray" style="width:1.5em;"></i> <a href="/blueprint/`+jo.id+`/edit" target="_blank" title="Open in editor">`+jo.name+`</a> `+getBlueprintMenuHTML(jo);
 
     bpElem.onmouseenter = function(ev) {
       var t = ev.currentTarget;
       var id = t.getAttribute('id');
-      document.getElementById('del_'+id).style.visibility="visible";
+      document.getElementById('bpmenu_'+id).style.visibility="visible";
     }
 
     bpElem.onmouseleave = function(ev) {
       var t = ev.currentTarget;
       var id = t.getAttribute('id');
-      document.getElementById('del_'+id).style.visibility="hidden";
+      document.getElementById('bpmenu_'+id).style.visibility="hidden";
     }
 
 
@@ -561,4 +575,10 @@ function importBlueprint (programId) {
   
   input.click();
 }
+
+function cloneBlueprint (id, name) {
+  dialogWorking = dialogMessage ('Working', 'Cloning blueprint '+name+'...', DialogButtons.NONE, DialogIcon.RUNNING, null);
+  callServer ("PUT", "/blueprint/"+id+"/clone?tree=1", null, myCallback);
+}
+
 

@@ -48,6 +48,7 @@ import java.util.Optional;
 public class ProgramService {
 
   final static int SUCCESS = 0;
+  final static int ERROR = 1;
 
   @Autowired
   ProgramRepository repository;
@@ -91,6 +92,10 @@ public class ProgramService {
 
 	public String getProgramBaseDirectory() {
 		return home.getDir()+"/../data/program";
+	}
+
+	public void refresh(ProgramEntity program) {
+		repository.refresh(program);
 	}
 
 	public ProgramEntity createEmpty(String name) {

@@ -150,4 +150,30 @@ public class BlueprintController {
 
   	return (new ResponseEntity<>(tree.equals("0") ? "" : catalogService.getCatalog().toString(), HttpStatus.OK));
 	}
+	
+	/**
+	 * Clone blueprint
+   * PUT /blueprint/{blueprintId}/clone
+   */
+	@PutMapping(value = "/blueprint/{blueprintId}/clone", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<ProgramEntity> clone(@PathVariable("blueprintId") String blueprintId,
+	                                 @RequestParam(value = "tree", defaultValue = "0") String tree) {
+	  Optional<BlueprintEntity> blueprint = blueprintService.findById(blueprintId);
+
+	  if (blueprint.isPresent()) {
+	    if (blueprint.get().getType() == BlueprintType.MAIN || blueprint.get().getType() == BlueprintType.EVENTS)
+	      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Can't clone this blueprint");
+
+      logger.info("Cloning blueprint "+blueprint.get().getName());
+      
+      if (blueprintService.clone(blueprint.get()) == null)
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, blueprintService.getMessage());
+
+	  } else {
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+	  }
+
+    return (tree.equals("0") ? null : catalogService.getPrograms());
+	}
+
 }

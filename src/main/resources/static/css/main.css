@@ -206,6 +206,7 @@ legend {
 .i-cut:before { content: "\f0c4" }
 .i-copy:before { content: "\f0c5" }
 .i-paste:before { content: "\f0ea" }
+.i-clone:before { content: "\f24d" }
 
 .i-zoom-in:before { content: "\f00e" }
 .i-zoom-out:before { content: "\f010" }
