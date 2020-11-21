@@ -6,8 +6,11 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
+
 import java.time.Instant;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -44,6 +47,8 @@ import java.util.Optional;
 @Service
 public class ProgramService {
 
+  final static int SUCCESS = 0;
+
   @Autowired
   ProgramRepository repository;
 
@@ -56,11 +61,20 @@ public class ProgramService {
 	Logger logger = LoggerFactory.getLogger(ProgramService.class);
 	ApplicationHome home = new ApplicationHome(ProgramService.class);
 
+  int code = 0;
   String message;
 
 	public ProgramService() {
 
 	}
+
+  public int getCode() {
+    return code;
+  }
+
+  public void setCode(int c) {
+    code = c;
+  }
 
   public String getMessage() {
     return message;
@@ -68,6 +82,11 @@ public class ProgramService {
 
   public void setMessage(String m) {
     message = m;
+  }
+
+  public void setResult(int c, String m) {
+    setCode(c);
+    setMessage(m);
   }
 
 	public String getProgramBaseDirectory() {
@@ -394,5 +413,37 @@ public class ProgramService {
     }
 
     return null;
+	}
+	
+	/**
+	 * Import a bluerint
+	 */
+	public BlueprintEntity importBlueprint(ProgramEntity program, String content) {
+	  BlueprintEntity blueprint = null;
+	  
+	  setResult(SUCCESS, "");
+
+    try {
+      JSONParser jsonParser = new JSONParser();
+      JSONObject jbp = (JSONObject) jsonParser.parse(content);
+
+      String name = (String) jbp.get("name");
+      String type = (String) jbp.get("type");
+      blueprint = blueprintService.create(program, BlueprintType.GENERIC, name);
+
+      //logger.info("Updating blueprint "+blueprint.get().toString());
+
+      if (!blueprintService.update(blueprint, content)) {
+        setResult(1, blueprintService.getMessage());
+        return null;
+      }
+      
+      return(blueprint);
+      
+    } catch (ParseException e) {
+      setResult(1, e.getMessage());
+    }
+      	  
+	  return null;
 	}
 }

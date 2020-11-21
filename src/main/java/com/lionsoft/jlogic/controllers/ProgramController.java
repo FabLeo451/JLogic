@@ -118,7 +118,7 @@ public class ProgramController {
 		return (catalogService.getPrograms());
 	}
 
-	// PUT /program/{id}/blueprint
+	// PUT /program/{programId}/blueprint/{name}
 	@PutMapping(value = "/program/{programId}/blueprint/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> addBlueprint(@PathVariable("programId") String programId,
 	                                           @PathVariable("name") String name,
@@ -141,6 +141,30 @@ public class ProgramController {
 	  }
 
 		return new ResponseEntity<>("{\"id\":\""+blueprint.getId()+"\"}", HttpStatus.OK);
+	}
+	
+	/**
+	 * Import a blueprint
+	 * PUT /program/{programId}/import/blueprint
+	 */
+	@PutMapping(value = "/program/{programId}/import/blueprint", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> addBlueprint(@PathVariable("programId") String programId,
+	                                           @RequestBody String content) {
+	  Optional<ProgramEntity> program = programService.findById(programId);
+	  
+	  if (!program.isPresent())
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found: "+programId);
+	    
+	  logger.info("Importing blueprint into "+program.get().getName()+"...");
+	    
+	  BlueprintEntity blueprint = programService.importBlueprint(program.get(), content);
+	  
+	  if (blueprint == null)
+	    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't import blueprint "+programService.getMessage());
+	    
+	  logger.info("Successfully imported "+blueprint.toString());
+	  
+	  return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	// PUT /program/{id}/rename/{name}
