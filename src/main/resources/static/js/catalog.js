@@ -77,6 +77,7 @@ function createProgramMenu(event) {
           {'icon': '<i class="icon i-project-diagram"></i>', 'item': 'Import blueprint file',  action: () => importBlueprint(id) },
           {'icon': '<i class="icon i-sliders-h"></i>', 'item': 'Edit properties',  action: () => window.location = '/program/'+id+'/edit-properties' },
           {'icon': '<i class="icon i-edit"></i>',   'item': 'Rename',  action: () => renameProgram(id, name) },
+          {'icon': '<i class="icon i-download"></i>',   'item': 'Export',  action: () => exportProgram(id) },
           {'item': 'separator' },
           {'icon': '<i class="icon i-trash-alt"></i>',  'item': 'Delete',  action: () => deleteProgram(id, name) }
         ]
@@ -581,4 +582,9 @@ function cloneBlueprint (id, name) {
   callServer ("PUT", "/blueprint/"+id+"/clone?tree=1", null, myCallback);
 }
 
+
+function exportProgram (programId) {
+  console.log("Exporting...");
+  document.getElementById('my_iframe').src = '/program/'+programId+'/export';
+}
 

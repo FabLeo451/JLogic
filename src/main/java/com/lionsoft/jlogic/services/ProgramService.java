@@ -1,6 +1,7 @@
 package com.lionsoft.jlogic;
 
 import org.springframework.boot.system.ApplicationHome;
+import org.springframework.boot.info.BuildProperties;
 import java.io.*;
 import java.util.*;
 import org.slf4j.Logger;
@@ -44,6 +45,9 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.Optional;
 
+import java.util.zip.ZipOutputStream;
+import java.util.zip.ZipEntry;
+
 @Service
 public class ProgramService {
 
@@ -58,6 +62,9 @@ public class ProgramService {
 
   @Autowired
   SessionService sessionService;
+  
+  @Autowired
+  BuildProperties buildProperties;
 
 	Logger logger = LoggerFactory.getLogger(ProgramService.class);
 	ApplicationHome home = new ApplicationHome(ProgramService.class);
@@ -92,6 +99,10 @@ public class ProgramService {
 
 	public String getProgramBaseDirectory() {
 		return home.getDir()+"/../data/program";
+	}
+
+	public String getTempDirectory() {
+		return home.getDir()+"/../temp";
 	}
 
 	public void refresh(ProgramEntity program) {
@@ -472,5 +483,84 @@ public class ProgramService {
     }
       	  
 	  return null;
+	}
+	
+	/**
+	 * Pack program into a given zip file
+	 */
+	public boolean pack(ProgramEntity program, String packFilename) {
+	  List<String> srcFiles = new ArrayList<String>();
+	  
+	  logger.info("Packing "+program.getName()+" into "+packFilename);
+      
+    JSONObject jinfo = new JSONObject();
+    jinfo.put("name", program.getName());
+    jinfo.put("fromVersion", buildProperties.getVersion());
+    jinfo.put("exportTime", (new Date()).toString());
+	  
+	  JSONArray jbpa = new JSONArray();
+	  
+    for (BlueprintEntity b: program.getBlueprints()) {
+      //System.out.println(b.getFilename());
+      srcFiles.add(b.getFilename());
+      jbpa.add(b.getBaseFilename());
+    }
+    
+    jinfo.put("blueprints", jbpa);
+    
+    srcFiles.add(program.getMyDir()+"/Program.properties");
+    
+    try {
+      FileOutputStream fos = new FileOutputStream(packFilename);
+      ZipOutputStream zipOut = new ZipOutputStream(fos);
+      
+      // Pack program files
+      for (String srcFile : srcFiles) {
+        //logger.info("Packing "+srcFile);
+        
+        File fileToZip = new File(srcFile);
+        FileInputStream fis = new FileInputStream(fileToZip);
+        ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+        zipOut.putNextEntry(zipEntry);
+
+        byte[] bytes = new byte[1024];
+        int length;
+        while((length = fis.read(bytes)) >= 0) {
+            zipOut.write(bytes, 0, length);
+        }
+        fis.close();
+      }
+      
+      // Pack info file
+      ZipEntry zipEntry = new ZipEntry("info.json");
+      zipOut.putNextEntry(zipEntry);
+      zipOut.write(jinfo.toString().getBytes("UTF-8"), 
+                   0, 
+                   jinfo.toString().getBytes("UTF-8").length);
+      
+      zipOut.close();
+      fos.close();
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+        return false;
+    } catch (IOException e) {
+        e.printStackTrace();
+        return false;    
+    }
+              
+	  return true;
+	}
+	
+	/**
+	 * Pack program
+	 */
+	public String pack(ProgramEntity program) {
+	  String packFileBase = program.getName().replaceAll("[ .;]", "_")+".zip";
+	  String packFile = getTempDirectory()+"/"+packFileBase;
+	  
+	  if (!pack(program, packFile))
+	    return null;
+	    
+	  return packFile;
 	}
 }

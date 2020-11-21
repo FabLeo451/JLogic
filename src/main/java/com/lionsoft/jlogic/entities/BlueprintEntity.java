@@ -211,8 +211,13 @@ public class BlueprintEntity {
     }
 
     @JsonIgnore
+    public String getBaseFilename() {
+      return ("BP_"+getId()+".json");
+    }
+
+    @JsonIgnore
     public String getFilename() {
-      return (program != null ? program.getMyDir()+"/BP_"+getId()+".json" : null);
+      return (program != null ? program.getMyDir()+"/"+getBaseFilename() : null);
     }
 
     @JsonIgnore

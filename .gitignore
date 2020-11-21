@@ -4,3 +4,4 @@ data/program/**
 target
 plugin/**/*.jar
 plugin/**/*.tar.xz
+temp/**

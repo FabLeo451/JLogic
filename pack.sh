@@ -29,6 +29,7 @@ mkdir -p ${target_dir}/bin
 mkdir -p ${target_dir}/log
 mkdir -p ${target_dir}/lib
 mkdir -p ${target_dir}/plugin
+mkdir -p ${target_dir}/temp
 mkdir -p ${target_dir}/data/program
 mkdir -p ${target_dir}/data/asset/nodes
 

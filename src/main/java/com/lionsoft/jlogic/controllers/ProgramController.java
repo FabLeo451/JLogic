@@ -300,6 +300,7 @@ public class ProgramController {
 
     //Response.AppendHeader("content-disposition", "attachment; filename=\"" + fileName +"\"");
     HttpHeaders headers = new HttpHeaders();
+    headers.set("Content-Type", "application/octet-stream");
     headers.set("Content-Disposition", "attachment; filename=\""+program.get().getName()+".jar\"");
 
     return ResponseEntity.ok()
@@ -566,6 +567,50 @@ public class ProgramController {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't get blueprint json.");
 
 		return new ResponseEntity<>(jo.toString(), HttpStatus.OK);
+	}
+
+	/**
+   * Export program
+   */
+	@GetMapping(value = "/program/{id}/export", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Resource> export(@PathVariable("id") String id) {
+	  Optional<ProgramEntity> program = programService.findById(id);
+
+	  if (!program.isPresent())
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found: "+id);
+
+    // Pack files
+    logger.info("Packing "+program.get().getName());
+    
+    JSONObject jo = null;
+    String packFile = programService.pack(program.get());
+    
+    if (packFile == null)
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to pack progam for export.");
+      
+    // Export zip file
+    File file = new File(packFile);
+    ByteArrayResource resource;
+
+    try {
+      Path path = Paths.get(packFile);
+      resource = new ByteArrayResource(Files.readAllBytes(path));
+    } catch (FileNotFoundException e) {
+      logger.error ("Not found: "+packFile);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+    } catch (IOException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+    }
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Content-Type", "application/octet-stream");
+    headers.set("Content-Disposition", "attachment; filename=\""+file.getName()+"\"");
+
+    return ResponseEntity.ok()
+            .headers(headers)
+            .contentLength(file.length())
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            .body(resource);
 	}
 
 }
