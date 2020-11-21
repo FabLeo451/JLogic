@@ -93,7 +93,7 @@ public class ProgramService {
 		return home.getDir()+"/../data/program";
 	}
 
-	public ProgramEntity create (String name) {
+	public ProgramEntity createEmpty(String name) {
 	  ProgramEntity program = new ProgramEntity(UUID.randomUUID().toString(), name);
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -101,20 +101,19 @@ public class ProgramService {
     program.setOwner(((User) auth.getPrincipal()).getUsername());
     program = repository.save(program);
 
-    logger.info("Created "+program.toString());
+    logger.info("Successfully created "+program.toString());
 
     String progDir = getProgramBaseDirectory()+"/"+program.getId();
 
     File progFile = new File(progDir);
 
     if (progFile.mkdir()) {
-      program.createIndex();
-      //program.createDefaultDependecies();
-      program.createProperties();
+      //program.createIndex();
+      //program.createProperties();
 
       // Create blueprints
-	    BlueprintEntity main = blueprintService.create(program, BlueprintType.MAIN, "Main");
-	    BlueprintEntity events = blueprintService.create(program, BlueprintType.EVENTS, "Events");
+	    //BlueprintEntity main = blueprintService.create(program, BlueprintType.MAIN, "Main");
+	    //BlueprintEntity events = blueprintService.create(program, BlueprintType.EVENTS, "Events");
 
 	    repository.refresh(program);
 
@@ -122,6 +121,27 @@ public class ProgramService {
     }
 
     return null;
+	}
+
+	public ProgramEntity create(String name) {
+	  ProgramEntity program = createEmpty(name);
+
+    if (program == null)
+      return null;
+      
+    logger.info("Creating index for "+program.getName());
+    program.createIndex();
+      
+    logger.info("Adding properties to "+program.getName());
+    program.createProperties();
+
+    logger.info("Adding default blueprints to "+program.getName());
+    BlueprintEntity main = blueprintService.create(program, BlueprintType.MAIN, "Main");
+    BlueprintEntity events = blueprintService.create(program, BlueprintType.EVENTS, "Events");
+
+    repository.refresh(program);
+
+    return program;
 	}
 
   boolean deleteDirectory(File directoryToBeDeleted) {
