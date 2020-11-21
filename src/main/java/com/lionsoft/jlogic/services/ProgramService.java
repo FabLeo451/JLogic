@@ -458,6 +458,8 @@ public class ProgramService {
         return null;
       }
       
+      repository.refresh(program);
+      
       return(blueprint);
       
     } catch (ParseException e) {

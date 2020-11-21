@@ -74,6 +74,7 @@ function createProgramMenu(event) {
         'items': [
           //{'icon': '<i class="icon i-project-diagram"></i>', 'item':'Add blueprint',  action: () => addBlueprint(id) },
           {'icon': '<i class="icon i-archive"></i>', 'item': 'Create JAR',  action: () => createJAR(id) },
+          {'icon': '<i class="icon i-project-diagram"></i>', 'item': 'Import blueprint file',  action: () => importBlueprint(id) },
           {'icon': '<i class="icon i-sliders-h"></i>', 'item': 'Edit properties',  action: () => window.location = '/program/'+id+'/edit-properties' },
           {'icon': '<i class="icon i-edit"></i>',   'item': 'Rename',  action: () => renameProgram(id, name) },
           {'item': 'separator' },
@@ -289,6 +290,7 @@ function addObjects (containerElem, jtree) {
 }
 
 function refreshTable () {
+  console.log("Refreshing table...");
   document.getElementById("catalog").innerHTML = "";
   addObjects (document.getElementById("catalog"), jsonResponse);
 }
@@ -531,3 +533,32 @@ function deleteBlueprint (id, name) {
     }
   );
 }
+
+function importBlueprint (programId) {
+  var input = document.getElementById('file-dialog');
+  
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    //console.log("file = "+e.target.value);  
+    
+    if (!file)
+      return;
+    
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      var contents = e.target.result;
+      
+      dialogWorking = dialogMessage ('Working', 'Importing ...', DialogButtons.NONE, DialogIcon.RUNNING, null);
+      callServer ("PUT", '/program/'+programId+'/import/blueprint?tree=1', contents, myCallback);
+  
+      /* Reset so 'changed' event triggers again */
+      document.getElementById('file-dialog').value="";
+    };
+
+    reader.readAsText(file);
+  }
+  
+  input.click();
+}
+

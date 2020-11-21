@@ -28,6 +28,8 @@
 </head>
 
 <body>
+<input id="file-dialog" type="file" name="Import" style="display: none;" />
+
 <!-- The actual snackbar -->
 <div id="snackbar"></div>
 
@@ -65,6 +67,7 @@
   <script>
   //document.title = __SERVER.system.application_name;
   includeHTML();
+  //document.getElementById('file-dialog').addEventListener('change', readFile, false);
 /*
   function hideContextMenu () {
     if (contextMenu)

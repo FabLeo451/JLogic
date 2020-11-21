@@ -148,8 +148,9 @@ public class ProgramController {
 	 * PUT /program/{programId}/import/blueprint
 	 */
 	@PutMapping(value = "/program/{programId}/import/blueprint", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> addBlueprint(@PathVariable("programId") String programId,
-	                                           @RequestBody String content) {
+	public List<ProgramEntity> importBlueprint(@PathVariable("programId") String programId,
+	                                           @RequestBody String content,
+	                                           @RequestParam(value = "tree", defaultValue = "0") String tree) {
 	  Optional<ProgramEntity> program = programService.findById(programId);
 	  
 	  if (!program.isPresent())
@@ -164,7 +165,7 @@ public class ProgramController {
 	    
 	  logger.info("Successfully imported "+blueprint.toString());
 	  
-	  return new ResponseEntity<>(HttpStatus.OK);
+	  return(tree.equals("0") ? null : catalogService.getPrograms());
 	}
 
 	// PUT /program/{id}/rename/{name}
