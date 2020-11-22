@@ -3,17 +3,19 @@ package com.lionsoft.jlogic;
 import org.springframework.boot.system.ApplicationHome;
 import java.util.concurrent.atomic.AtomicLong;
 import java.lang.*;
+import java.util.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
-import java.util.Date;
-import java.util.List;
+//import java.util.Date;
+//import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ByteArrayResource;
 import org.slf4j.Logger;
@@ -36,8 +38,8 @@ import java.nio.file.Paths;
 import java.nio.file.Path;
 
 import java.util.concurrent.locks.*;
-import java.util.Properties;
-import java.util.Optional;
+//import java.util.Properties;
+//import java.util.Optional;
 
 @RestController
 public class ProgramController {
@@ -612,5 +614,29 @@ public class ProgramController {
             .contentType(MediaType.APPLICATION_OCTET_STREAM)
             .body(resource);
 	}
-
+	
+	/**
+   * Import program
+   */
+	@PostMapping(value = "/program/import", consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<ProgramEntity> importProgram(HttpServletRequest request,
+	                                         @RequestParam(value = "tree", defaultValue = "0") String tree) {
+    String importId = UUID.randomUUID().toString();
+    String zipFile = programService.getTempDirectory()+"/import-"+importId+".zip";
+    
+    logger.info("Saving zip file to " + zipFile + " ...");
+    
+    try {
+      Files.copy(request.getInputStream(), Paths.get(zipFile));
+    } catch (IOException e) {
+      logger.error ("Unable to write file "+zipFile);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+    }
+     
+    //logger.info("Importing program ...");
+    
+    ProgramEntity program = programService.importProgramFromFile(importId, zipFile);
+    
+    return (tree.equals("0") ? null : catalogService.getPrograms());
+	}
 }

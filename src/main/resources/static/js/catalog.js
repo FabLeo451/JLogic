@@ -334,6 +334,10 @@ function refreshCatalog () {
 }
 
 function myCallback (xhttp) {
+  
+  console.log('readyState = '+xhttp.readyState);
+  console.log('status = '+xhttp.status);
+  
   if (xhttp.readyState == 4) {
     if (dialogWorking)
       dialogWorking.destroy();
@@ -577,14 +581,85 @@ function importBlueprint (programId) {
   input.click();
 }
 
+/**
+ * Clone blueprint
+ */
 function cloneBlueprint (id, name) {
   dialogWorking = dialogMessage ('Working', 'Cloning blueprint '+name+'...', DialogButtons.NONE, DialogIcon.RUNNING, null);
   callServer ("PUT", "/blueprint/"+id+"/clone?tree=1", null, myCallback);
 }
 
-
+/**
+ * Export program
+ */
 function exportProgram (programId) {
   console.log("Exporting...");
   document.getElementById('my_iframe').src = '/program/'+programId+'/export';
+}
+
+/**
+ * Import program
+ */
+function importProgram () {
+  var input = document.getElementById('file-dialog');
+  
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    //console.log("file = "+e.target.value);  
+    
+    if (!file)
+      return;
+    
+    var reader = new FileReader();
+    //var fileByteArray = [];
+    
+
+    reader.onload = function(e) {
+      var contents = e.target.result;
+      
+      dialogWorking = dialogMessage ('Working', 'Importing program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
+      //callServer ("POST", '/program/import?tree=1', contents, myCallback);
+      var xhttp = new XMLHttpRequest();
+      
+      xhttp.onreadystatechange = myCallback;
+      xhttp.open("POST", '/program/import?tree=1', true);
+      xhttp.setRequestHeader ("Content-Type", "application/octet-stream");
+      //xhttp.setRequestHeader ('Client', detectBrowser()/*+'/'+navigator.appVersion*/+' ('+detectPlatform()+')');   
+      
+      xhttp.send(contents);
+        
+      /* Reset so 'changed' event triggers again */
+      document.getElementById('file-dialog').value="";
+    };
+
+    //reader.readAsText(file);
+    reader.readAsArrayBuffer(file);
+  }
+  
+  input.click();
+/*
+  var dialog = new Dialog ();
+
+  // Callback functions
+
+  dialog.callbackCancel = function (dialog) { dialog.destroy(); };
+  dialog.callbackOK = function (dlg) {
+    var content = dlg.getContentElement ();
+    console.log("Uploading...");
+  }
+
+  // Build dialog 
+
+  dialog.create("Import program");
+
+  var content = dialog.getContentElement ();
+
+  content.innerHTML = `
+    <form method="POST" action="/program/import" enctype="multipart/form-data">
+        <input class="w3-input w3-border" type="file" name="file" /><br/><br/>
+        <input class="btnApp" type="submit" value="Import" />
+    </form>
+  `;
+*/
 }
 

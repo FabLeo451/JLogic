@@ -2,6 +2,7 @@ package com.lionsoft.jlogic;
 
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.boot.info.BuildProperties;
+import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.*;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.json.simple.JSONArray;
 import java.time.Instant;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.Iterator;
 
 import java.util.concurrent.locks.*;
@@ -46,6 +48,7 @@ import java.util.UUID;
 import java.util.Optional;
 
 import java.util.zip.ZipOutputStream;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 
 @Service
@@ -562,5 +565,109 @@ public class ProgramService {
 	    return null;
 	    
 	  return packFile;
+	}
+
+	
+  public Optional<String> getExtensionByStringHandling(String filename) {
+	    return Optional.ofNullable(filename)
+	      .filter(f -> f.contains("."))
+	      .map(f -> f.substring(filename.lastIndexOf(".") + 1));
+	}
+
+	/**
+	 * This method guards against writing files to the file system outside of the target folder. 
+	 * This vulnerability is called Zip Slip.
+	 */
+  public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+      File destFile = new File(destinationDir, zipEntry.getName());
+   
+      String destDirPath = destinationDir.getCanonicalPath();
+      String destFilePath = destFile.getCanonicalPath();
+   
+      if (!destFilePath.startsWith(destDirPath + File.separator)) {
+          throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+      }
+   
+      return destFile;
+  }
+  
+  /*public String getInfoFromZip(ZipInputStream zis) {
+    String info = null;
+    
+    try {
+      ZipEntry zipEntry = zis.getNextEntry();
+      
+      while (zipEntry != null) {
+        if (zipEntry.getName().equals("info.json")) {
+          info = "Found";
+        }
+        
+        zipEntry = zis.getNextEntry();
+      }
+
+    } catch (IOException e) { }
+
+    return info;
+  }*/
+
+	/**
+	 * Import program from file
+	 */
+	public ProgramEntity importProgramFromFile(String importId, String zipFile) {
+	  String unzippedDir = getTempDirectory()+"/"+importId;
+	  
+    File destDir = new File(unzippedDir);
+    byte[] buffer = new byte[1024];
+    
+    // Unzip pack file
+    
+    logger.info("Unzipping "+zipFile);
+    
+    try {
+      ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
+      ZipEntry zipEntry = zis.getNextEntry();
+
+      while (zipEntry != null) {
+         File newFile = newFile(destDir, zipEntry);
+         
+         if (zipEntry.isDirectory()) {
+           if (!newFile.isDirectory() && !newFile.mkdirs()) {
+               logger.error("Failed to create directory " + newFile);
+               return null;
+           }
+         } else {
+           logger.info("Extracting "+zipEntry.getName());
+
+           File parent = newFile.getParentFile();
+           if (!parent.isDirectory() && !parent.mkdirs()) {
+               throw new IOException("Failed to create directory " + parent);
+           }
+           
+           // write file content
+           FileOutputStream fos = new FileOutputStream(newFile);
+           int len;
+           while ((len = zis.read(buffer)) > 0) {
+               fos.write(buffer, 0, len);
+           }
+           fos.close();
+         }
+         
+         zipEntry = zis.getNextEntry();
+      }
+      
+      zis.closeEntry();
+      zis.close();
+    } catch (FileNotFoundException e) {
+        logger.error(e.getMessage());
+        return null;
+    } catch (IOException e) {
+        logger.error(e.getMessage());
+        return null;
+    }
+    
+    // Load info file
+    
+            
+	  return null;
 	}
 }
