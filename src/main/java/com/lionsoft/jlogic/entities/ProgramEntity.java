@@ -547,7 +547,7 @@ public class ProgramEntity {
         e.printStackTrace();
     }
 	} */
-
+/*
 	public boolean createIndex () {
     try (FileWriter file = new FileWriter(getMyDir()+"/index.json")) {
         file.write("{}");
@@ -559,7 +559,7 @@ public class ProgramEntity {
     }
 
     return true;
-	}
+	}*/
 	/*
 	public boolean createDefaultDependecies () {
 	  JSONArray ja = new JSONArray();

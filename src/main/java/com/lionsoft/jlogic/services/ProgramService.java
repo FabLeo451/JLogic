@@ -149,8 +149,8 @@ public class ProgramService {
     if (program == null)
       return null;
       
-    logger.info("Creating index for "+program.getName());
-    program.createIndex();
+    //logger.info("Creating index for "+program.getName());
+    //program.createIndex();
       
     logger.info("Adding properties to "+program.getName());
     program.createProperties();
@@ -474,6 +474,7 @@ public class ProgramService {
 
       String name = (String) jbp.get("name");
       String type = (String) jbp.get("type");
+      //int internalId = ((Long) jbp.get("internalId")).intValue();
       blueprint = blueprintService.create(program, /*BlueprintType.GENERIC*/BlueprintType.valueOf(type), name);
 
       //logger.info("Updating blueprint "+blueprint.get().toString());
@@ -524,7 +525,11 @@ public class ProgramService {
     for (BlueprintEntity b: program.getBlueprints()) {
       //System.out.println(b.getFilename());
       srcFiles.add(b.getFilename());
-      jbpa.add(b.getBaseFilename());
+      
+      JSONObject jbp = new JSONObject();
+      jbp.put("internalId", b.getInternalId());
+      jbp.put("name", b.getBaseFilename());
+      jbpa.add(jbp);
     }
     
     jinfo.put("blueprints", jbpa);
@@ -726,10 +731,14 @@ public class ProgramService {
           JSONArray jblueprints = (JSONArray) jinfo.get("blueprints");
           
           for (int k=0; k<jblueprints.size(); k++) {
-             String bpfile = (String) jblueprints.get(k);
-             
-             logger.info("Importing "+bpfile);
-             importBlueprintFile(program, unzippedDir+"/"+bpfile);
+              JSONObject jbp = (JSONObject) jblueprints.get(k);
+              
+              int internalId = ((Long) jbp.get("internalId")).intValue();
+              String bpfile = (String) jbp.get("name");
+
+              logger.info("Importing "+bpfile);
+              BlueprintEntity b = importBlueprintFile(program, unzippedDir+"/"+bpfile);
+              b.setInternalId(internalId);
           }
           
           // Copy propertes file
@@ -748,7 +757,10 @@ public class ProgramService {
       }
       
       logger.info("Deleting temporary dir "+unzippedDir);
-      // deleteDirectory(String d);
+      deleteDirectory(unzippedDir);
+      
+      File file = new File(zipFile);
+      file.delete();
     } else {
       logger.error("Unable to unzip file");
     }
