@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
 
 import java.util.concurrent.locks.*;
@@ -173,6 +174,11 @@ public class ProgramService {
       }
     }
     return directoryToBeDeleted.delete();
+  }
+
+  boolean deleteDirectory(String d) {
+    File dir = new File(d);
+    return(deleteDirectory(dir));
   }
 
 	public boolean delete (ProgramEntity program) {
@@ -468,7 +474,7 @@ public class ProgramService {
 
       String name = (String) jbp.get("name");
       String type = (String) jbp.get("type");
-      blueprint = blueprintService.create(program, BlueprintType.GENERIC, name);
+      blueprint = blueprintService.create(program, /*BlueprintType.GENERIC*/BlueprintType.valueOf(type), name);
 
       //logger.info("Updating blueprint "+blueprint.get().toString());
 
@@ -486,6 +492,18 @@ public class ProgramService {
     }
       	  
 	  return null;
+	}
+	
+	public BlueprintEntity importBlueprintFile(ProgramEntity program, String filename) {
+    try {
+      String content = new String (Files.readAllBytes(Paths.get(filename)));
+      return(importBlueprint(program, content));
+    }
+    catch (IOException e) {
+      logger.error(e.getMessage());
+    }
+    
+    return null;
 	}
 	
 	/**
@@ -609,19 +627,10 @@ public class ProgramService {
 
     return info;
   }*/
-
-	/**
-	 * Import program from file
-	 */
-	public ProgramEntity importProgramFromFile(String importId, String zipFile) {
-	  String unzippedDir = getTempDirectory()+"/"+importId;
-	  
-    File destDir = new File(unzippedDir);
+  
+  public boolean unpack(String zipFile, String targetDir) {
+    File destDir = new File(targetDir);
     byte[] buffer = new byte[1024];
-    
-    // Unzip pack file
-    
-    logger.info("Unzipping "+zipFile);
     
     try {
       ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
@@ -633,14 +642,14 @@ public class ProgramService {
          if (zipEntry.isDirectory()) {
            if (!newFile.isDirectory() && !newFile.mkdirs()) {
                logger.error("Failed to create directory " + newFile);
-               return null;
+               return false;
            }
          } else {
            logger.info("Extracting "+zipEntry.getName());
 
            File parent = newFile.getParentFile();
            if (!parent.isDirectory() && !parent.mkdirs()) {
-               throw new IOException("Failed to create directory " + parent);
+               logger.error("Failed to create directory " + parent);
            }
            
            // write file content
@@ -659,15 +668,91 @@ public class ProgramService {
       zis.close();
     } catch (FileNotFoundException e) {
         logger.error(e.getMessage());
-        return null;
+        return false;
     } catch (IOException e) {
         logger.error(e.getMessage());
-        return null;
+        return false;
     }
     
-    // Load info file
+    return true;
+  }
+  
+  public JSONObject loadJsonFile(String filename) {
+    JSONObject jo = null;
     
+    try {
+      String content = new String (Files.readAllBytes(Paths.get(filename)));
+
+      try {
+        JSONParser jsonParser = new JSONParser();
+        jo = (JSONObject) jsonParser.parse(content);
+      }
+      catch (ParseException e) {
+        logger.error("Unable to parse json file "+filename+": "+e.getMessage());
+        return null;
+      }
+    }
+    catch (IOException e) {
+      logger.error(e.getMessage());
+      return null;
+    }  
+    
+    return jo;
+  }
+
+	/**
+	 * Import program from file
+	 */
+	public ProgramEntity importProgramFromFile(String importId, String zipFile) {
+	  ProgramEntity program = null;
+	  String unzippedDir = getTempDirectory()+"/"+importId;
+    
+    // Unpack file
+    logger.info("Unpacking "+zipFile);
+
+    if (unpack(zipFile, unzippedDir)) {
+      // Load info file
+      JSONObject jinfo = loadJsonFile(unzippedDir+"/info.json");
+      
+      if (jinfo != null) {
+        // Create new program
+        String programName = (String) jinfo.get("name");
+        logger.info("Creating program "+programName);
+        
+        program = createEmpty(programName);
+        
+        if (program != null) {
+          // Import blueprints
+          JSONArray jblueprints = (JSONArray) jinfo.get("blueprints");
+          
+          for (int k=0; k<jblueprints.size(); k++) {
+             String bpfile = (String) jblueprints.get(k);
+             
+             logger.info("Importing "+bpfile);
+             importBlueprintFile(program, unzippedDir+"/"+bpfile);
+          }
+          
+          // Copy propertes file
+          try {
+            Path propsFrom = Paths.get(unzippedDir+"/Program.properties");
+            Path propsTo = Paths.get(program.getMyDir()+"/Program.properties");
+            Files.copy(propsFrom, propsTo, StandardCopyOption.REPLACE_EXISTING);
+          } catch (IOException e) {
+            logger.error(e.getMessage());
+          }
+        } else {
+          logger.error("Can't create program");
+        }
+      } else {
+        logger.error("Unable to load info file");
+      }
+      
+      logger.info("Deleting temporary dir "+unzippedDir);
+      // deleteDirectory(String d);
+    } else {
+      logger.error("Unable to unzip file");
+    }
             
-	  return null;
+	  return program;
 	}
 }

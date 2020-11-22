@@ -334,10 +334,7 @@ function refreshCatalog () {
 }
 
 function myCallback (xhttp) {
-  
-  console.log('readyState = '+xhttp.readyState);
-  console.log('status = '+xhttp.status);
-  
+
   if (xhttp.readyState == 4) {
     if (dialogWorking)
       dialogWorking.destroy();
@@ -621,7 +618,7 @@ function importProgram () {
       //callServer ("POST", '/program/import?tree=1', contents, myCallback);
       var xhttp = new XMLHttpRequest();
       
-      xhttp.onreadystatechange = myCallback;
+      xhttp.onreadystatechange = function() { myCallback(this); }
       xhttp.open("POST", '/program/import?tree=1', true);
       xhttp.setRequestHeader ("Content-Type", "application/octet-stream");
       //xhttp.setRequestHeader ('Client', detectBrowser()/*+'/'+navigator.appVersion*/+' ('+detectPlatform()+')');   
