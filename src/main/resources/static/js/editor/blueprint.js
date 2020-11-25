@@ -34,6 +34,7 @@ function bpAddNode (id, data) {
           if (xhttp.status == 200) {
             var jindex = JSON.parse(xhttp.responseText);
 
+            // Choose blueprint
             var dialog = new DialogChooseBlueprint ();
 
             dialog.callbackOK = function (dialog) {
@@ -47,6 +48,7 @@ function bpAddNode (id, data) {
 
               bp.type = BPNodeTypeID.BLUEPRINT;
               bp.blueprintId = bp.id;
+              bp.blueprintInternalId = bp.internalId;
 
               var node = blueprint.addNodeFromJson(bp, false);
               //node.blueprintId = bp.id;

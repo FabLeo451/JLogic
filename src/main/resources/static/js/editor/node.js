@@ -762,13 +762,14 @@ class NodeBlueprint extends Node {
 
     //this.method = null;
     this.blueprintId = null;
-    this.internalId = null;
+    this.blueprintInternalId = null;
   }
 
   createFromJson (j, preserveId = true) {
+    console.log(j);
     //this.method = j.method;
     this.blueprintId = j.blueprintId;
-    this.internalId = j.internalId;
+    this.blueprintInternalId = j.blueprintInternalId;
     //this.name = programIndex[this.blueprintId].name;    
     
     this.name = j.name;
@@ -786,7 +787,7 @@ class NodeBlueprint extends Node {
     console.log ("Created blueprint node "+this.name+" "+this.blueprintId);
 
     // Update name
-    callServer ("GET", "/program/"+_jbp.programId+"/blueprint/"+j.internalId, null, function (xhttp) {
+    callServer ("GET", "/program/"+_jbp.programId+"/blueprint/"+nodeSelf.blueprintInternalId, null, function (xhttp) {
         if (xhttp.readyState == 4) {
           if (xhttp.status == 200) {
             var jo = JSON.parse(xhttp.responseText);
@@ -801,7 +802,7 @@ class NodeBlueprint extends Node {
               bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
             else {
               var jerr = JSON.parse (xhttp.responseText);
-              bpConsole.append ("Can't get blueprint "+j.internalId+": "+jerr.message, BPConsoleTextType.ERROR);
+              bpConsole.append ("Can't get blueprint with internal id "+nodeSelf.blueprintInternalId+": "+jerr.message, BPConsoleTextType.ERROR);
             }
           }
         }
@@ -814,7 +815,7 @@ class NodeBlueprint extends Node {
     var jo = super.toJSON();
     //jo.method = this.method;
     jo.blueprintId = this.blueprintId;
-    jo.internalId = this.internalId;
+    jo.blueprintInternalId = this.blueprintInternalId;
     //console.log ("blueprintId = "+this.blueprintId);
     //console.log ("internalId = "+this.internalId);
     return (jo);
