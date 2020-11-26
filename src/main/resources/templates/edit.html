@@ -184,7 +184,13 @@ var _jbp = null;
 </main>
 
 
-<script>
+<script th:inline="javascript">
+
+__SERVER={ "package":{}, "system":{}, "auth":{}};
+__SERVER.package.application_name = "[(${name})]";
+__SERVER.package.version = "[(${version})]";
+__SERVER.package.copyright = "[(${copyright})]";
+
 
 paned =
  Split(['#a', '#myConsole'], {

@@ -57,12 +57,15 @@ public class AppController {
   @Autowired
   SessionService sessionService;
 
+  public String COPYRIGHT = "Copyright (c) 2020 Fabio Leone";
+
 	@RequestMapping("/home")
 	public String home(HttpServletRequest request, Model model) {
 
 		model.addAttribute("name", buildProperties.getName());
 		model.addAttribute("version", buildProperties.getVersion());
 		model.addAttribute("buildTime", buildProperties.getTime().toString());
+		model.addAttribute("copyright", COPYRIGHT);
 
 		// JRE info
 		model.addAttribute("java_class_path", System.getProperty("java.class.path"));
@@ -164,7 +167,13 @@ public class AppController {
 	public String getApiPanel() { return "api";	}
 
 	@RequestMapping("/blueprint/{id}/edit")
-	public String editBlueprint(@PathVariable("id") String id) { return "edit"; }
+	public String editBlueprint(Model model, @PathVariable("id") String id) {
+		model.addAttribute("name", buildProperties.getName());
+		model.addAttribute("version", buildProperties.getVersion());
+    model.addAttribute("copyright", COPYRIGHT);
+
+    return "edit"; 
+  }
 
 	@RequestMapping("/edit-properties")
 	public String getGlobalProperties(Model model) {

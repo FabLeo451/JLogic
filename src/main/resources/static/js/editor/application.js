@@ -306,7 +306,9 @@ function appStart () {
   */
 
   bpConsole.clear();
-
+  bpConsole.append('------------------------------------------------');
+  bpConsole.append(__SERVER.package.application_name+' '+__SERVER.package.version);
+  bpConsole.append('------------------------------------------------');
 
   undo = new UndoRedo ();
   undo.setMaxDepth(50);
@@ -330,13 +332,13 @@ function appStart () {
     if (xhttp.readyState == 4) {
 
       if (xhttp.status == 200) {
-        bpConsole.append('Blueprint loaded.');
+        console.log('Blueprint loaded.');
 
         _jbp = JSON.parse(xhttp.responseText);
 
         // Get program
 
-        bpConsole.append('Getting program ...');
+        console.log('Getting program ...');
 
         callServer ("GET", "/program/"+ _jbp.programId, null, function (xhttp) {
             if (xhttp.readyState == 4) {
@@ -733,9 +735,10 @@ function processAction (a) {
 
       content.innerHTML = `
       <center>
-        <img src="/img/logo-64.png"><br><br>
-        <b>JLogic blueprint editor</b><br><br>
-        Copyright (c) 2020 Fabio Leone
+        <img src="/img/logo-64.png"><br><br>`+
+        `<b>`+__SERVER.package.application_name+` `+__SERVER.package.version+`<br>
+        Blueprint editor</b><br><br>`+
+        __SERVER.package.copyright+`
       <center>
       `;
 
