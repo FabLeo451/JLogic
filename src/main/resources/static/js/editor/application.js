@@ -1052,8 +1052,9 @@ function createMenu (id) {
 }
 
 function dragVariable(ev) {
-  //ev.dataTransfer.setData("text", ev.target.id.replace ('i_', ''));
-  ev.dataTransfer.setData("text", ev.target.id.replace ('row_', ''));
+  //ev.dataTransfer.setData("text", ev.target.id.replace ('row_', ''));
+  var id=ev.target.id.replace('row_', '');
+  ev.dataTransfer.setData("data", '{ "tag":"VARIABLE", "id":"'+id+'"}');
 }
 
 function beginEdit(ev) {

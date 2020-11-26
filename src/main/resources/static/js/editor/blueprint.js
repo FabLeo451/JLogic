@@ -1101,36 +1101,42 @@ class Blueprint {
     this.bpDiv.ondrop = function(e) {
       e.preventDefault();
 
-      /*console.log ("[bpDiv.ondrop] "+e.dataTransfer.getData("text"));
+			var data = e.dataTransfer.getData("data");
+      console.log (data);
 
-      var varId = e.dataTransfer.getData("text").replace ('var_', '');*/
-      var varId = e.dataTransfer.getData("text");
-      var v = blueprintSelf.getVariable (varId);
+      try {
+        var jdata = JSON.parse (data);
 
-      if (v) {
-        //console.log ("[bpDiv.ondrop] Dropped variable "+v.id+ " "+v.name);
+        if (jdata.tag == 'VARIABLE') {
+          var v = blueprintSelf.getVariable (jdata.id);
 
-        var json = `
-          {
-            "items": [
-               { "id": 0, "item": "Get", "data":"`+v.id+`" },
-               { "id": 1, "item": "Set", "data":"`+v.id+`" }
-            ]
+          if (v) {
+            //console.log ("[bpDiv.ondrop] Dropped variable "+v.id+ " "+v.name);
+
+            var json = `
+              {
+                "items": [
+                   { "id": 0, "item": "Get", "data":"`+v.id+`" },
+                   { "id": 1, "item": "Set", "data":"`+v.id+`" }
+                ]
+              }
+            `;
+
+            //console.log (json);
+
+            blueprintSelf.contextMenu.remove();
+            blueprintSelf.contextMenu.enableSearch (false);
+            blueprintSelf.contextMenu.createFromJson(JSON.parse(json));
+            blueprintSelf.contextMenu.setCallback(bpGetSet);
+            beginEdit();
+            blueprintSelf.contextMenu.show(e.x, e.y);
           }
-        `;
-
-        //console.log (json);
-
-        blueprintSelf.contextMenu.remove();
-        blueprintSelf.contextMenu.enableSearch (false);
-        blueprintSelf.contextMenu.createFromJson(JSON.parse(json));
-        blueprintSelf.contextMenu.setCallback(bpGetSet);
-        beginEdit();
-        blueprintSelf.contextMenu.show(e.x, e.y);
+          else
+            console.error("Variable "+varId+" not found");
+        }
+      } catch (err) {
+        console.error(err.message);
       }
-      else
-        console.error("Variable "+varId+" not found");
-
     }
 
     this.bpDiv.onmouseenter = function (ev) {
