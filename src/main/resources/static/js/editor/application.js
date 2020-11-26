@@ -90,14 +90,27 @@ function appKeyReleased(e) {
   }
 }
 
+/**
+ * Refresh application variables from blueprint variables
+ */
+function appRefreshVariables() {
+  appClearVariables ();
+  var vars = blueprint.getVariables();
+  
+  for (var i=0; i<vars.length; i++) {
+    console.log("Adding variable to app: "+vars[i].getName());
+    appAddVariable(vars[i]);
+  }
+}
+
 function appLoadBlueprint (j) {
   var connectors;
 
-  console.log ("[application] [appLoadBlueprint] Start");
+  console.log ("Start");
 
-  appClearVariables ();
+  appClearAll ();
   blueprint.clear();
-
+/*
   console.log ("Adding variables...");
 
   for (var i=0; i<j["variables"].length; i++) {
@@ -109,9 +122,12 @@ function appLoadBlueprint (j) {
     // Add vaiable to blueprint and application
     addVariable(v);
   }
-
+*/
   /* Build blueprint */
   blueprint.fromJson (j);
+  
+  console.log ("Adding variables...");
+  appRefreshVariables();
 
   //console.log ("Adding input");
 
@@ -195,7 +211,7 @@ function cbBeginModify () {
   //undo.setBackup (blueprint.toJson());
 }
 
-function cbModified () {
+function cbModified() {
   //console.log ("[application] [cbModified]");
 
   if (!blueprint)
@@ -242,7 +258,7 @@ function checkGlobals() {
     }
   }
 
-  // Delete global variables present only in blueprint
+  // Delete global variables fonud
   for (var i=0; i<del.length; i++) {
     var v = _jbp.variables[del[i]];
 
@@ -258,28 +274,32 @@ function checkGlobals() {
 
   // Add program variables not present in the blueprint yet and update exsising
   for (var i=0; i<program.variables.length; i++) {
-		var v = program.variables[i];
+		var pv = program.variables[i];
 
-    //console.log("Found program variable:");
-    //console.log(v);
+    //console.log("Checking program variable:");
+    //console.log(pv);
 
 	  found = false;
-    for (var k=0; k<_jbp.variables.length; k++)
-      if (_jbp.variables[k].id == v.id) {
+    for (var k=0; k<_jbp.variables.length; k++) {
+      if (!_jbp.variables[k].global)
+        continue;
+      
+      if (_jbp.variables[k].id == pv.id) {
         found = true;
         // Name could be changed by others blueprints
         //_jbp.variables[k].name = v.name;
 
         // Update blueprint variable
         var ref = _jbp.variables[k].referenced;
-        _jbp.variables[k] = v;
+        _jbp.variables[k] = pv;
         _jbp.variables[k].referenced = ref;
         break;
       }
+    }
 
 		if (!found) {
-      bpConsole.append('Found new global variable <b>'+v.name+'</b>', BPConsoleTextType.WARNING);
-      _jbp.variables.push(v);
+      bpConsole.append('Found new global variable <b>'+pv.name+'</b>', BPConsoleTextType.WARNING);
+      _jbp.variables.push(pv);
       //updated = true;
     }
   }
@@ -298,12 +318,64 @@ function appStart () {
     console.log ("Focus on console");
     beginEdit ();
   }
-  /*
-  bpConsole.textElem.onmouseleave = function () {
-    console.log ("Console lost focus");
-    endEdit ();
+  
+  // Enable variable drop on globals container
+  document.getElementById("globals_main").ondragover = function(e) {
+    e.preventDefault();
   }
-  */
+  document.getElementById("globals_main").ondrop = function(e) {
+    e.preventDefault();
+		var data = e.dataTransfer.getData("data");
+    console.log (data);
+      try {
+        var jdata = JSON.parse (data);
+
+        if (jdata.tag == 'VARIABLE') {
+          var v = blueprint.getVariable (jdata.id);
+
+          if (v) {
+            undo.begin();
+            v.setGlobal(true);
+            appRefreshVariables();
+            undo.end();
+            cbModified();
+          }
+          else
+            console.error("Variable "+varId+" not found");
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
+  }
+  
+  // Enable variable drop on locals container
+  document.getElementById("locals_main").ondragover = function(e) {
+    e.preventDefault();
+  }
+  document.getElementById("locals_main").ondrop = function(e) {
+    e.preventDefault();
+		var data = e.dataTransfer.getData("data");
+    console.log (data);
+      try {
+        var jdata = JSON.parse (data);
+
+        if (jdata.tag == 'VARIABLE') {
+          var v = blueprint.getVariable (jdata.id);
+
+          if (v) {
+            undo.begin();
+            v.setGlobal(false);
+            appRefreshVariables();
+            undo.end();
+            cbModified();
+          }
+          else
+            console.error("Variable "+varId+" not found");
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
+  }
 
   bpConsole.clear();
   bpConsole.append('------------------------------------------------');
@@ -1511,17 +1583,22 @@ function setInitialValue(id) {
 
 function appClearVariables ()
 {
+  var table = document.getElementById("tab_global_variables");
+  table.innerHTML = "";
+
+  var table = document.getElementById("tab_variables");
+  table.innerHTML = "";
+}
+
+function appClearAll ()
+{
   var table = document.getElementById("tab_input");
   table.innerHTML = "";
 
   var table = document.getElementById("tab_output");
   table.innerHTML = "";
 
-  var table = document.getElementById("tab_global_variables");
-  table.innerHTML = "";
-
-  var table = document.getElementById("tab_variables");
-  table.innerHTML = "";
+  appClearVariables ();
 }
 
 function debugOnConsole() {

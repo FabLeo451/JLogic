@@ -261,6 +261,6 @@ class Variable {
   }
 
   toString () {
-    return ("Variable [id="+this.id+" name="+this.name+" type="+this.type+" dimensions="+this.dimensions+" referenced="+this.referenced+"]");
+    return ("Variable [id="+this.id+" name="+this.name+" type="+this.type+" dimensions="+this.dimensions+" global="+this.global+" referenced="+this.referenced+"]");
   }
 }

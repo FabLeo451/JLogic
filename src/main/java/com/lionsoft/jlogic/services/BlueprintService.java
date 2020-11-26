@@ -126,6 +126,7 @@ public class BlueprintService {
       jo.put("name", blueprint.getName());
       jo.put("method", blueprint.getMethod());
 
+      // Check global variables
   	  logger.info("Checking global variables...");
 
       JSONArray ja = (JSONArray) jo.get("variables");

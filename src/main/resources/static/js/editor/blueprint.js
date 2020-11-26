@@ -230,6 +230,10 @@ class Blueprint {
     if (this.callbackModified)
       this.callbackModified ();
   }
+  
+  getVariables() {
+    return(this.variables);
+  }
 
   setOrigin (x, y) {
     this.x0 = x;
@@ -591,8 +595,17 @@ class Blueprint {
   }
 
   fromJson (j) {
-    console.log ('[blueprint] [fromJson] Start');
+    //console.log ('[blueprint] [fromJson] Start');
     //var variables = j["variables"]; //Added by application
+    
+    for (var i=0; i<j["variables"].length; i++) {
+      var v = new Variable();
+      v.fromJSON(j.variables[i]);
+
+      console.log ("Adding variable "+v.getName());
+      this.addVariable (v);
+    }
+    
     var nodes = j["nodes"];
     var edges = j["edges"];
 
@@ -978,7 +991,7 @@ class Blueprint {
       this.variables.push(v);
     }
     else {
-      console.log ("Variable "+v.getname()+" already in blueprint");
+      console.log ("Variable "+v.getName()+" already in blueprint");
     }
 
     return (v);
