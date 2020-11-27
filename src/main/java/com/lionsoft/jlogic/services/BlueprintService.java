@@ -182,7 +182,7 @@ public class BlueprintService {
           logger.info("Checking local "+v.getName());
           
           /* 
-           * If a local variable exsists as global too, check if it's referenced only by this blueprint and delete the global.
+           * If a local variable exists as global too, check if it's referenced only by this blueprint and delete the global.
            * This can occur when user changes a variable from global to local
            */
           Variable progVar = program.getVariable(v.getId());
@@ -192,7 +192,7 @@ public class BlueprintService {
               programService.deleteVariable(program, progVar);
               logger.info("Deleted global "+v.getName());
             } else {
-              logger.error("Can't switch variable "+v.getName()+" from global to local");
+              logger.error("Variable "+v.getName()+" is referenced by other blueprints and cannot be changed from global to local");
               return false;
             }
           }
