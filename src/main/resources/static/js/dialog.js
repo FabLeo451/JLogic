@@ -13,11 +13,14 @@ const DialogButtons = {
   STOP: 4
 }
 
+const DialogWidthMode = {
+  DEFAULT: 0,
+  MIN: 1
+}
+
 class Dialog {
   constructor() {
-    /*this.appMainElem = document.getElementsByTagName('main')[0];
-    if (!this.appMainElem)
-      this.appMainElem = document.getElementById("main");*/
+    this.widthMode = DialogWidthMode.DEFAULT;
     
     this.bgElem = null;
     this.windowElem = null;
@@ -52,6 +55,7 @@ class Dialog {
     this.windowElem = document.createElement('div');
     this.windowElem.classList.add('dialog-content');
     this.windowElem.classList.add('center');
+    this.setWidth();
     
     this.bgElem.style.display = 'block';
     this.bgElem.appendChild(this.windowElem);
@@ -145,6 +149,26 @@ class Dialog {
     /*this.appMainElem.style.filter = "none";
     this.appMainElem.style.WebkitFilter = "none";*/
   }
+  
+  setWidthMode(m) {
+    this.widthMode = m;
+    console.log('Now this.widthMode = '||this.widthMode);
+  }
+  
+  setWidth() {
+    console.log('this.widthMode = '||this.widthMode);
+    switch (this.widthMode) {
+      case DialogWidthMode.MIN:
+        if (this.windowElem)
+          this.windowElem.style.minWidth = '40%';
+        break;
+        
+      default:
+        if (this.windowElem)
+          this.windowElem.style.minWidth = '';
+        break;
+    }
+  }
 }
 
 const DialogIcon = {
@@ -162,6 +186,7 @@ function dialogMessage (title, message, buttons, icon, callbackOK) {
   dialog.setButtons (buttons);
   dialog.callbackOK = callbackOK;
   dialog.callbackCancel = function (dialog) { dialog.destroy(); };
+  //dialog.setWidthMode(DialogWidthMode.FIT);
   dialog.create(title);
   
   var content = dialog.getContentElement ();

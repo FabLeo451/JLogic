@@ -38,7 +38,7 @@
   padding: 10px;
   border: 1px solid #888;
   /*width: 60%;*/ /* Could be more or less, depending on screen size */
-  min-width: 40%;
+  /*min-width: 40%;*/
   /*left: 50%;*/
   text-align: left; /* Centered text */
   border-radius: 3px; /* Rounded borders */

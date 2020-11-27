@@ -398,7 +398,7 @@ function appStart () {
   var args = window.location.pathname.split("/");
   blueprint_id = args[2];
 
-  var dialog = dialogMessage ('Working', 'Getting blueprint...', DialogButtons.NONE, DialogIcon.RUNNING, null);
+  var dialog = dialogMessage (__SERVER.package.application_name, 'Getting blueprint...', DialogButtons.NONE, DialogIcon.RUNNING, null);
 
   callServer ("GET", "/blueprint/"+blueprint_id, null, function (xhttp) {
     if (xhttp.readyState == 4) {
@@ -736,7 +736,7 @@ function deployBlueprint () {
 
 function compileStart () {
   console.log("Compile");
-  dialogWorking = dialogMessage ('Working', 'Compiling...', DialogButtons.NONE, DialogIcon.RUNNING, null);
+  dialogWorking = dialogMessage (__SERVER.package.application_name, 'Compiling...', DialogButtons.NONE, DialogIcon.RUNNING, null);
 
   if (getStatus() != BPEditStatus.SUBMITTED)
     deployBlueprint();
@@ -795,6 +795,7 @@ function processAction (a) {
     case MenuItems.BP_HELP:
       var dialog = new Dialog ();
 
+      dialog.setWidthMode(DialogWidthMode.MIN);
       dialog.setButtons(DialogButtons.OK);
 
       dialog.callbackOK = function (dialog) {
