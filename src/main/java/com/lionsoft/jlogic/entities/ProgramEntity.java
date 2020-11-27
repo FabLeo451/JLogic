@@ -387,12 +387,31 @@ public class ProgramEntity {
 	  return v;
 	}
 
-	public boolean deleteVariable(String name) {
-	  Variable v = getVariable(name);
+	public boolean deleteVariable(Variable v) {
 	  return (variables.remove(v));
 	}
 
+	public boolean deleteVariable(String name) {
+	  Variable v = getVariable(name);
+	  return (deleteVariable(v));
+	}
+
+	public boolean variableIsReferenced(Variable v, BlueprintEntity bpExclude) {
+    List<BlueprintEntity> bl = getBlueprints();
+
+    for (BlueprintEntity b: bl) {
+      if (bpExclude != null && (b.getId() == bpExclude.getId()))
+        continue;
+        
+      if (b.referencesVariable(v))
+        return true;
+    }
+
+	  return (false);
+	}
+
 	public boolean variableIsReferenced(Variable v) {
+	  /*
     List<BlueprintEntity> bl = getBlueprints();
 
     for (BlueprintEntity b: bl) {
@@ -401,6 +420,8 @@ public class ProgramEntity {
     }
 
 	  return (false);
+	  */
+	  return(variableIsReferenced(v, null));
 	}
 
 	public BlueprintEntity getBlueprintByInternalId(int id) {

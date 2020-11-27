@@ -281,9 +281,26 @@ public class ProgramService {
 	  return false;
 	}
 
+	public boolean deleteVariable (ProgramEntity program, Variable v) {
+    if (v != null && program.variableIsReferenced(v)) {
+      setMessage("used in one or more blueprints.");
+      return false;
+    }
+
+	  if (program.deleteVariable(v)) {
+	    repository.save(program);
+	    //System.out.println(program.getVariables());
+	    return (true);
+	  }
+
+    //setMessage("Can't delete variable "+pv.getName());
+
+	  return false;	
+	}
+
 	public boolean deleteVariable (ProgramEntity program, String name) {
     Variable pv = program.getVariable(name);
-
+/*
     if (pv != null && program.variableIsReferenced(pv)) {
       setMessage("used in one or more blueprints.");
       return false;
@@ -297,7 +314,8 @@ public class ProgramService {
 
     //setMessage("Can't delete variable "+pv.getName());
 
-	  return false;
+	  return false;*/
+	  return(deleteVariable(program, pv));
 	}
 
 	public boolean renameVariable (ProgramEntity program, String oldName, String newName) {

@@ -127,7 +127,7 @@ public class BlueprintService {
       jo.put("method", blueprint.getMethod());
 
       // Check global variables
-  	  logger.info("Checking global variables...");
+  	  logger.info("Checking variables...");
 
       JSONArray ja = (JSONArray) jo.get("variables");
 
@@ -141,12 +141,13 @@ public class BlueprintService {
         //System.out.println("Found "+v.toString());
 
         if (v.isGlobal()) {
-          logger.info("Checking "+v.toString());
+          // Check global variable
+          logger.info("Checking global "+v.toString());
 
           Variable progVar = program.getVariable(v.getId());
 
           if (progVar == null) {
-            // New variable, check name
+            // New variable, check name and add to program
             if (program.getVariable(v.getName()) != null) {
                 setMessage("a global variable with name "+v.getName()+" already existing");
                 return false;
@@ -161,6 +162,7 @@ public class BlueprintService {
                 return false;
             }
           } else {
+            // Exsisting variable, update
             boolean isSameType = (v.getType().equals(progVar.getType())) && (v.getDimensions() == progVar.getDimensions());
 
             if (!isSameType && program.variableIsReferenced(progVar)) {
@@ -172,6 +174,25 @@ public class BlueprintService {
 
             if (!programService.updateVariable(program, v)) {
               setMessage("Can't update variable "+v.getName());
+              return false;
+            }
+          }
+        } else {
+          // Check local variable
+          logger.info("Checking local "+v.getName());
+          
+          /* 
+           * If a local variable exsists as global too, check if it's referenced only by this blueprint and delete the global.
+           * This can occur when user changes a variable from global to local
+           */
+          Variable progVar = program.getVariable(v.getId());
+          
+          if (progVar != null) {
+            if (!program.variableIsReferenced(progVar, blueprint)) {
+              programService.deleteVariable(program, progVar);
+              logger.info("Deleted global "+v.getName());
+            } else {
+              logger.error("Can't switch variable "+v.getName()+" from global to local");
               return false;
             }
           }
