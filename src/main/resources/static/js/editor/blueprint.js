@@ -948,13 +948,26 @@ class Blueprint {
     return (null);
   }
 
-  getVariableByName (name) {
+  getVariableByNameAndScope (name, scope) {
     for (var i=0; i<this.variables.length; i++) {
-      if (!this.variables[i].name.localeCompare(name))
-        return (this.variables[i]);
+      var v = this.variables[i];
+      
+      if (!v.getName().localeCompare(name)) {
+        if (scope == Scope.ALL)
+          return (v);
+          
+        if ((scope == Scope.LOCAL && !v.isGlobal()) || (scope == Scope.GLOBAL && v.isGlobal())) {
+          console.log("Found "+v.getName()+" "+scope+" "+v.isGlobal());
+          return (v);
+        }
+      }
     }
 
     return (null);
+  }
+
+  getVariableByName (name) {
+    return(this.getVariableByNameAndScope(name, Scope.ALL));
   }
 
   getAvailableVariableName () {
@@ -1034,8 +1047,6 @@ class Blueprint {
         renamed = true;
       }
     }
-
-    console.log ("renamed = "+renamed);
 
     if (v.referenced) {
       this.refreshNodes()

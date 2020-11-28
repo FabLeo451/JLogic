@@ -81,6 +81,13 @@ const BPEvent = {
   NODE_SELECTED: 5
 };
 
+/* Variable scope */
+const Scope = {
+  ALL: 0,
+  LOCAL: 1,
+  GLOBAL: 2
+};
+
 class BPType {
   constructor() {
     this.id = 0;

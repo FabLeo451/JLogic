@@ -334,11 +334,14 @@ function appStart () {
           var v = blueprint.getVariable (jdata.id);
 
           if (v) {
-            undo.begin();
-            v.setGlobal(true);
-            appRefreshVariables();
-            undo.end();
-            cbModified();
+            if (!blueprint.getVariableByNameAndScope(v.getName(), Scope.GLOBAL)) {
+              undo.begin();
+              v.setGlobal(true);
+              appRefreshVariables();
+              undo.end();
+              cbModified();
+            } else
+              console.error("Global variable "+v.getName()+" exists");
           }
           else
             console.error("Variable "+varId+" not found");
@@ -363,11 +366,15 @@ function appStart () {
           var v = blueprint.getVariable (jdata.id);
 
           if (v) {
-            undo.begin();
-            v.setGlobal(false);
-            appRefreshVariables();
-            undo.end();
-            cbModified();
+            console.log(v.getName()+" is "+(v.isGlobal() ? "global" : "local"));
+            if (!blueprint.getVariableByNameAndScope(v.getName(), Scope.LOCAL)) {
+              undo.begin();
+              v.setGlobal(false);
+              appRefreshVariables();
+              undo.end();
+              cbModified();
+            } else
+              console.error("Local variable "+v.getName()+" exists");
           }
           else
             console.error("Variable "+varId+" not found");
