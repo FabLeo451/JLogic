@@ -202,12 +202,6 @@ class NodeBase {
 
 	  if (jenum)
 	    c1.enum = jenum;
-/*
-	  if (isArray)
-	    c["array"] = isArray;
-*/
-	  //console.log ('dim = '+dim);
-	  //console.log (c1);
 
 	  //console.log ('Adding connector for '+c1.label+' '+c1.dimensions);
 
@@ -237,16 +231,7 @@ class NodeBase {
     var nodeRef = this;
     var elmnt = this.nodeElem;
     var deltaX = 0, deltaY = 0, x = 0, y = 0;
-/*
-    if (document.getElementById(elmnt.id + "header")) {
-      // if present, the header is where you move the DIV from:
-      document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-      document.getElementById(elmnt.id + "header").oncontextmenu = nodeContextMenu;
-    } else {
-      // otherwise, move the DIV from anywhere inside the DIV:
-      elmnt.onmousedown = dragMouseDown;
-    }
-*/
+
     elmnt.onmousedown = dragMouseDown;
 
     function dragMouseDown(e) {
@@ -567,12 +552,7 @@ class Node extends NodeBase {
     if (j["input"]) {
       for (var i = 0; i < j["input"].length; i++) {
         var c = j["input"][i];
-/*
-        var isArray, single_line;
 
-        if (c.hasOwnProperty('array'))
-          isArray = c['array'];
-*/
         var conn = this.addConnectorFromJson (BPDirection.INPUT, c);
 
         if (preserveId && c.hasOwnProperty('id'))
@@ -590,11 +570,6 @@ class Node extends NodeBase {
           conn.references = v;
         }
 
-        /*if (c.hasOwnProperty('nullable')) {
-          conn.nullable = c.nullable;
-          console.log ('conn.nullable = '+conn.nullable);
-          console.log (conn.toString());
-        }*/
         conn.nullable = c.hasOwnProperty('nullable') ? c.nullable : false
 
         if (c.hasOwnProperty('not_null'))

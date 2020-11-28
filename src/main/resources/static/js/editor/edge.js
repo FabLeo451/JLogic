@@ -198,18 +198,7 @@ class Edge {
     //console.log ("Connector 1 coords:  "+this.connector1.getConnectionPoint ().x+" "+this.connector1.getConnectionPoint ().y);
     var cOut = this.connector1.direction == BPDirection.OUTPUT ? this.connector1 : this.connector2;
     var cIn = this.connector1.direction == BPDirection.INPUT ? this.connector1 : this.connector2;
-    /*
-    var pOut = cOut.getConnectionPoint ();
-    pOut.x *= this.zoom;
-    pOut.y *= this.zoom;
 
-    var pIn = cIn.getConnectionPoint ();
-    pIn.x *= this.zoom;
-    pIn.y *= this.zoom;
-
-    this.setPoint1 (pOut);
-    this.setPoint2 (pIn);
-    */
     this.setPoint1 (cOut.getConnectionPoint ());
     this.setPoint2 (cIn.getConnectionPoint ());
 

@@ -74,17 +74,7 @@ class Menubar {
       //}
     }
   }
-  /*
-  showItems (e) {
-    console.log("[showItems] "+e.target.id+" menubar.active = "+ (menubar.active ? "true" : "false"));
-    this.hideAll();
-    
-    if (this.active) {
-      var id = e.target.id.replace ("dropbtn", "dropdown");
-      document.getElementById(id).classList.toggle("show");
-    }
-  }
-  */
+
   showItems (e) {
     console.log("[showItems] "+e.tagName+" "+e.id+" menubar.active = "+ (menubar.active ? "true" : "false"));
     this.hideAll();

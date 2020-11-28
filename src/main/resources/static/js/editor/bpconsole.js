@@ -53,22 +53,6 @@ class BPConsole {
         break;
     }
 
-    /*
-    var c, p, lines = text.match(/[^\r\n]+/g);
-
-    for (var i=0; i<lines.length; i++) {
-      p = lines[i];
-
-      if (p.includes ("[TRACE] "))
-        c = 'style="color:darkorange; font-weight:bold;"';
-      else
-        c = color;
-
-      p = '<span '+c+'>'+lines[i]+'</span>\n';
-
-      this.textElem.innerHTML += p;
-    }
-    */
     var p = '<span '+color+'>'+text+'</span>\n';
     this.textElem.innerHTML += p;
 

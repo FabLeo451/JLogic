@@ -471,16 +471,6 @@ class Connector {
 
       this.element.appendChild(this.pin);
 
-      //if (this.array) {
-/*
-      if (this.dimensions > Dimensions.SCALAR) {
-        var iconName = this.dimensions == Dimensions.ARRAY ? 'ellipsis-h' : 'i-th';
-        var elemArray = document.createElement('div');
-        elemArray.className = "label";
-        elemArray.innerHTML = "<i class=\"icon "+iconName+"\" style=\"color:gray\"></i>&nbsp;";
-        this.element.appendChild(elemArray);
-      }
-*/
       this.elemArray = document.createElement('div');
       this.elemArray.className = "label";
       this.element.appendChild(this.elemArray);
