@@ -110,19 +110,7 @@ function appLoadBlueprint (j) {
 
   appClearAll ();
   blueprint.clear();
-/*
-  console.log ("Adding variables...");
 
-  for (var i=0; i<j["variables"].length; i++) {
-    var v = new Variable();
-    v.fromJSON(j.variables[i]);
-
-    console.log ("Found "+v.getName());
-
-    // Add vaiable to blueprint and application
-    addVariable(v);
-  }
-*/
   /* Build blueprint */
   blueprint.fromJson (j);
   
@@ -537,8 +525,6 @@ function runCallback (xhttp) {
       //modalHide ();
       dialogRunning.destroy();
 
-      /*var n = xhttp.responseText.search("{");
-      var response = xhttp.responseText.substring (n);*/
       var response = xhttp.responseText;
 
       if (!bpConsole.getVisible())
@@ -548,12 +534,6 @@ function runCallback (xhttp) {
         bpConsole.append ('<i class=\"icon i-check w3-text-green\"></i> Successfully executed', BPConsoleTextType.SUCCESS);
         bpConsole.append (response);
       }
-      /*else if (xhttp.status == 404)
-        bpConsole.append ("Blueprint not found", BPConsoleTextType.ERROR);
-      else if (xhttp.status == 401)
-        bpConsole.append ("Not authorized", BPConsoleTextType.ERROR);
-      else if (xhttp.status == 500)
-        bpConsole.append ("Internal server error", BPConsoleTextType.ERROR);*/
       else if (xhttp.status == 0)
         bpConsole.append ("Can't connect server", BPConsoleTextType.ERROR);
       else {
@@ -764,14 +744,7 @@ function toggleConsoleVisibility () {
   var visible = bpConsole.getVisible();
   var item = menubar.getMenuItem (MenuItems.VIEW_CONSOLE);
   var icon = item.childNodes[0];
-/*
-  if (visible)
-    g_bp_height = blueprint.getHeight();
 
-  blueprint.setHeight(visible ? "100%" : g_bp_height+"px");
-
-  visible = bpConsole.toggleVisibility ();
-*/
   paned.collapse(1);
   //icon.innerHTML = visible ? '<i class="icon i-check"></i>' : "";
 }
@@ -930,14 +903,6 @@ function processAction (a) {
       break;
 
     case MenuItems.VIEW_CONSOLE:
-      /*
-      var visible = bpConsole.toggleVisibility ();
-      var item = menubar.getMenuItem (MenuItems.VIEW_CONSOLE);
-      var icon = item.childNodes[0];
-      icon.innerHTML = visible ? '<i class="icon i-check"></i>' : "";
-      console.log (blueprint.getHeight());
-      blueprint.setHeight("100%");
-      */
       toggleConsoleVisibility ();
       break;
 

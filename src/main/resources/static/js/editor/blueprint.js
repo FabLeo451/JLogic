@@ -6,23 +6,6 @@ const BlueprintType = {
   EVENTS  : "EVENTS"
 }
 
-/*
-function includeBlueprint (id, data) {
-  //console.log (JSON.stringify(blueprint.blueprintList["items"][id]));
-  var node = blueprint.addNodeFromJson(blueprint.blueprintList["items"][id]);
-  node.blueprintId = blueprint.blueprintList["items"][id].id;
-  node.setIcon ('<i class="icon i-project-diagram"></i>');
-}
-*/
-/*
-function includeBlueprint (id, data) {
-  //console.log (JSON.stringify(blueprint.blueprintList["items"][id]));
-  var bp = _blueprints[id];
-  var node = blueprint.addNodeFromJson(bp);
-  node.blueprintId = id;
-  node.setIcon ('<i class="icon i-project-diagram"></i>');
-}
-*/
 function bpAddNode (id, data) {
   if (id == MenuID.INCLUDE_BLUEPRINT) {
     var d = dialogMessage ('Editor', 'Getting blueprints...', DialogButtons.NONE, DialogIcon.RUNNING, null);
@@ -767,12 +750,6 @@ class Blueprint {
       i++;
     }
   }
-  /*
-  createEdge4 (x0, y0, x1, y1) {
-    var a = { x:x0, y:y0 };
-    var b = { x:x1, y:y1 };
-    return (this.createEdge (a, b));
-  }*/
 
   getEdge (c1, c2) {
     for (var i=0; i<this.edges.length; i++) {
@@ -1051,11 +1028,6 @@ class Blueprint {
     this.x0 -= dx;
     this.y0 -= dy;
 
-    /*
-    var transformAttr = ' translate(' + this.x0 + ',' + this.y0 + ')';
-    this.svg.setAttribute('transform', transformAttr);
-    */
-
     this.bgElement.style.backgroundPosition = this.x0+'px '+this.y0+'px';
   }
 
@@ -1217,18 +1189,6 @@ class Blueprint {
         case BPStatus.BP_DRAGGING:
           var dx = this.dragX - e.pageX;
           var dy = this.dragY - e.pageY;
-          /*
-          for (var i=0; i<blueprint.nodes.length; i++) {
-            blueprint.nodes[i].moveDelta(dx, dy);
-          }
-
-          blueprint.redrawEdges ();
-
-          blueprint.x0 -= dx;
-          blueprint.y0 -= dy;
-
-          blueprint.bgElement.style.backgroundPosition = blueprint.x0+'px '+blueprint.y0+'px';
-          */
 
           blueprint.moveDelta (dx, dy);
 
