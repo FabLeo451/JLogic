@@ -43,8 +43,8 @@ public class BlueprintService {
   ApplicationHome home = new ApplicationHome(BlueprintService.class);
   Logger logger = LoggerFactory.getLogger(ProgramController.class);
 
-  int code = 0;
-  String message;
+  //int code = 0;
+  //String message;
 
 	public BlueprintService() {
 	}
@@ -79,7 +79,7 @@ public class BlueprintService {
 
 	  return (0);
 	}*/
-
+/*
   public int getCode() {
     return code;
   }
@@ -100,7 +100,7 @@ public class BlueprintService {
     setCode(c);
     setMessage(m);
   }
-
+*/
 	public String getFilename(BlueprintEntity blueprint) {
     ProgramEntity program = blueprint.getProgram();
 		return home.getDir()+"/../data/program/" + program.getId() + "/BP_" + blueprint.getId() + ".json";
@@ -110,7 +110,7 @@ public class BlueprintService {
 		return home.getDir()+"/../data/blueprint";
 	}
 
-	public boolean saveContent(ProgramEntity program, String filename, BlueprintEntity blueprint, String content) {
+	public Code saveContent(ProgramEntity program, String filename, BlueprintEntity blueprint, String content) {
 
     // Add/modify content data
 
@@ -149,8 +149,8 @@ public class BlueprintService {
           if (progVar == null) {
             // New variable, check name and add to program
             if (program.getVariable(v.getName()) != null) {
-                setMessage("a global variable with name "+v.getName()+" already existing");
-                return false;
+                logger.error("a global variable with name "+v.getName()+" already existing");
+                return(Code.ERR_BP_GLOBAL_EXISTS);
             }
 
             logger.info("Adding "+v.toString());
@@ -158,23 +158,23 @@ public class BlueprintService {
             Variable newVar = programService.addVariable(program, v);
 
             if (newVar == null) {
-                setMessage("Can't create global variable "+v.getName());
-                return false;
+                logger.error("Can't create global variable "+v.getName());
+                return(Code.ERR_BP_CREATE_GLOBAL);
             }
           } else {
             // Exsisting variable, update
             boolean isSameType = (v.getType().equals(progVar.getType())) && (v.getDimensions() == progVar.getDimensions());
 
             if (!isSameType && program.variableIsReferenced(progVar)) {
-              setMessage("Can't modify referenced variable "+v.getName());
-              return false;
+              logger.error("Can't modify referenced variable "+v.getName());
+              return(Code.ERR_BP_MODIFY_REFERENCED);
             }
 
             logger.info("Updating "+v.toString());
 
             if (!programService.updateVariable(program, v)) {
-              setMessage("Can't update variable "+v.getName());
-              return false;
+              logger.error("Can't update variable "+v.getName());
+              return(Code.ERR_BP_UPDATE_VAR);
             }
           }
         } else {
@@ -193,16 +193,15 @@ public class BlueprintService {
               logger.info("Deleted global "+v.getName());
             } else {
               logger.error("Variable "+v.getName()+" is referenced by other blueprints and cannot be changed from global to local");
-              return false;
+              return(Code.ERR_BP_GLOBAL_TO_LOCAL);
             }
           }
         }
       }
     }
     catch (ParseException e) {
-      e.printStackTrace();
-      setMessage(e.getMessage());
-      return false;
+      logger.error(e.getMessage());
+      return(Code.ERR_PARSE);
     }
 
     logger.info("Saving blueprint "+blueprint.getName());
@@ -218,12 +217,11 @@ public class BlueprintService {
       file.flush();
       file.close();
 	  } catch (IOException e) {
-      e.printStackTrace();
-      setMessage(e.getMessage());
-      return false;
+      logger.error(e.getMessage());
+      return(Code.ERR_IO);
     }
 
-    return true;
+    return(Code.SUCCESS);
 	}
 
 	public BlueprintEntity create(ProgramEntity program, BlueprintType type, String name) {
@@ -260,16 +258,15 @@ public class BlueprintService {
 	  try {
 	    String content = new String (Files.readAllBytes(Paths.get(templateFilename)));
 
-      if (saveContent(program, blueprint.getFilename(), blueprint, content)) {
-        //blueprint.getProgram().updateIndex(blueprint, content);
+      Code code = saveContent(program, blueprint.getFilename(), blueprint, content);
+      
+      if (code == Code.SUCCESS)
         repository.save(blueprint);
-      }
       else
         return null;
-
     }
-    catch (IOException e1) {
-      e1.printStackTrace();
+    catch (IOException e) {
+      e.printStackTrace();
       return null;
     }
 
@@ -278,14 +275,13 @@ public class BlueprintService {
 	  return blueprint;
 	}
 
-  public boolean update (BlueprintEntity blueprint, String content) {
-    if (saveContent(blueprint.getProgram(), blueprint.getFilename(), blueprint, content)) {
-      //blueprint.getProgram().updateIndex(blueprint, content);
+  public Code update (BlueprintEntity blueprint, String content) {
+    Code code = saveContent(blueprint.getProgram(), blueprint.getFilename(), blueprint, content);
+    
+    if (code == Code.SUCCESS)
       repository.save(blueprint);
-      return true;
-    }
 
-    return false;
+    return(code);
   }
 
   public void delete (BlueprintEntity blueprint) {
@@ -334,10 +330,12 @@ public class BlueprintService {
     
     ProgramEntity program = blueprint.getProgram();
     clone = create(program, blueprint.getType(), cloneName);
+    
+    Code code = update(clone, toJSON(blueprint).toString());
 
-    if (!update(clone, toJSON(blueprint).toString())) {
+    if (code != Code.SUCCESS) {
       delete(clone);
-      setResult(ERROR, getMessage());
+      //setResult(ERROR, getMessage());
       return null;
     }
     

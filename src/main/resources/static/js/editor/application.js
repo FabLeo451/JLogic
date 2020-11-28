@@ -703,6 +703,21 @@ function compileProgram () {
   );
 }
 
+function processHTTPError(xhttp) {
+  if (xhttp.status == 404)
+    bpConsole.append ("Resource not found", BPConsoleTextType.ERROR);
+  else if (xhttp.status == 0)
+    bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
+  else {
+    try {
+      var j = JSON.parse(xhttp.responseText);
+      bpConsole.append ("Error: "+j.message, BPConsoleTextType.ERROR);
+    } catch (err) {
+      bpConsole.append ("Error "+xhttp.status+": "+xhttp.responseText, BPConsoleTextType.ERROR);
+    }  
+  }
+}
+
 function deployBlueprint () {
   var bpName = document.getElementById('bpName');
   blueprint.setName (bpName.value);
@@ -718,15 +733,7 @@ function deployBlueprint () {
           compileProgram ();
         }
         else {
-          if (xhttp.status == 404)
-            bpConsole.append ("Resource not found", BPConsoleTextType.ERROR);
-          else if (xhttp.status == 0)
-            bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
-          else
-            bpConsole.append ("Error "+xhttp.status+": "+xhttp.responseText, BPConsoleTextType.ERROR);
-
-          //setStatus (g_last_status);
-
+          processHTTPError(xhttp);
           compileEnd ();
         }
       }
@@ -936,26 +943,6 @@ function processAction (a) {
     case MenuItems.VIEW_ZOOM_1_1:
         blueprint.setZoom(1);
       break;
-    /*
-    case MenuItems.BLUEPRINT_VALIDATE:
-      callServer ("POST", "/blueprint/validate", blueprint.toString(), function (xhttp) {
-          if (xhttp.readyState == 4) {
-            if (xhttp.status == 200) {
-              showSnacknar(BPResult.SUCCESS, "Blueprint is valid", 3000);
-              bpConsole.append ("<i class=\"icon i-check w3-text-green\"></i> Blueprint is valid", BPConsoleTextType.SUCCESS);
-            }
-            else {
-              if (xhttp.status == 404)
-                bpConsole.append ("Resource not found", BPConsoleTextType.ERROR);
-              else if (xhttp.status == 0)
-                bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
-              else
-                bpConsole.append ("Blueprint is not valid.\n"+xhttp.responseText, BPConsoleTextType.ERROR);
-            }
-          }
-        }
-      );
-      break;*/
 
     case MenuItems.BLUEPRINT_RUN:
       if (blueprint.type == 'EVENTS') {
@@ -971,7 +958,6 @@ function processAction (a) {
 
       var content = dialog.getContentElement ();
       console.log(blueprint.getInputArrayAsString());
-      //var jinput = JSON.parse(blueprint.getInputArrayAsString());
       
       input = lastInput ? lastInput : getDefaultInput();
 
@@ -998,12 +984,7 @@ function processAction (a) {
                   setStatus (BPEditStatus.SUBMITTED);
                 }
                 else {
-                  if (xhttp.status == 404)
-                    bpConsole.append ("Resource not found", BPConsoleTextType.ERROR);
-                  else if (xhttp.status == 0)
-                    bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
-                  else
-                    bpConsole.append ("Can't get blueprint: "+xhttp.responseText+"\n", BPConsoleTextType.ERROR);
+                  processHTTPError(xhttp);
                 }
               }
             }

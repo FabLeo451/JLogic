@@ -497,8 +497,10 @@ public class ProgramService {
 
       //logger.info("Updating blueprint "+blueprint.get().toString());
 
-      if (!blueprintService.update(blueprint, content)) {
-        setResult(1, blueprintService.getMessage());
+      Code code = blueprintService.update(blueprint, content);
+      
+      if (code != Code.SUCCESS) {
+        setResult(1, "Can't import blueprint");
         return null;
       }
       

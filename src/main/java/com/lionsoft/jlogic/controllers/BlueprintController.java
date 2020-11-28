@@ -51,6 +51,9 @@ public class BlueprintController {
   @Autowired
   CatalogService catalogService;
 
+  @Autowired
+  MainService mainService;
+
   // GET /blueprint/{id}
 	@GetMapping(value = "/blueprint/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> getById(@PathVariable("id") String id) {
@@ -58,35 +61,6 @@ public class BlueprintController {
 	  Optional<BlueprintEntity> blueprint = blueprintService.findById(id);
 
 	  if (blueprint.isPresent()) {
-	    /*
-      String programId = blueprint.get().getProgram().getId();
-      String programName = blueprint.get().getProgram().getName();
-      String filename = blueprint.get().getFilename();
-
-      System.out.println("Loading "+filename);
-
-      try {
-        String content = new String (Files.readAllBytes(Paths.get(filename)));
-
-        // Add data
-        try {
-          JSONObject jo = new JSONObject(content);
-
-          jo.put("id", id);
-          jo.put("programId", programId);
-          jo.put("programName", programName);
-
-          result = jo.toString();
-
-        }
-        catch (JSONException e) {
-          throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-        }
-      }
-      catch (IOException e) {
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-      }
-      */
       JSONObject jo = blueprintService.toJSON(blueprint.get());
       
       if (jo == null)
@@ -138,9 +112,12 @@ public class BlueprintController {
         blueprint.get().setName((String) jo.get("name"));
 
         logger.info("Updating blueprint "+blueprint.get().toString());
+        
+        Code code = blueprintService.update(blueprint.get(), content);
 
-        if (!blueprintService.update(blueprint.get(), content))
-          throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, blueprintService.getMessage());
+        if (code != Code.SUCCESS)
+          throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, mainService.getErrorMessage(code));
+          
       } catch (ParseException e) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
       }
@@ -167,7 +144,7 @@ public class BlueprintController {
       logger.info("Cloning blueprint "+blueprint.get().getName());
       
       if (blueprintService.clone(blueprint.get()) == null)
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, blueprintService.getMessage());
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to clone blueprint");
 
 	  } else {
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
