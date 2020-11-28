@@ -386,7 +386,7 @@ class Blueprint {
     //console.log (JSON.stringify(jdata));
   }
 
-  paste () {
+  paste (cbfunction) {
     var text, result = 0;
 
     console.log ("Paste...");
@@ -401,6 +401,8 @@ class Blueprint {
 
     navigator.clipboard.readText()
       .then(text => {
+          // WARNING: this process is asyncronous
+          
           var jdata = JSON.parse(text);
           var jnodes = jdata.nodes, jedges = jdata.edges;
           var addedNodes = [];
@@ -458,6 +460,11 @@ class Blueprint {
 
             for (var i=0; i<addedNodes.length; i++)
               blueprint.addToSelection (addedNodes[i]);
+              
+            // Don't call this.onModified() here since this routine is asyncronous
+            // Notify end of job
+            if (cbfunction)
+              cbfunction();
           }
  
       })
@@ -468,7 +475,7 @@ class Blueprint {
       });
   }
 
-  deleteSelection () {
+  deleteSelection() {
     var n = 0;
 
     while (this.selection.length) {
@@ -478,7 +485,7 @@ class Blueprint {
     }
 
     if (n)
-      this.onModified ();
+      this.onModified();
   }
 
   selectAll () {
@@ -624,23 +631,6 @@ class Blueprint {
 
     for (var i=0; i<edges.length; i++)
       this.connectByID (edges[i]["from"], edges[i]["to"]);
-
-    /* Create entry point and return if missing */
-/*
-    if (!this.entryPointNode) {
-      console.log ('[blueprint] [fromJson] Creating entry point node ' + JSON.stringify(blueprint.jsonEntryPoint));
-      blueprint.addNodeFromJson (blueprint.jsonEntryPoint);
-    }
-
-    if (!this.returnNode) {
-      console.log ('[blueprint] [fromJson] Creating return node');
-      blueprint.addNodeFromJson (blueprint.jsonReturn);
-    }
-*/
-    /*blueprint.x0 = j.x0;
-    blueprint.y0 = j.y0;
-
-    blueprint.bgElement.style.backgroundPosition = blueprint.x0+'px '+blueprint.y0+'px';*/
 
     if (j.hasOwnProperty('x0') && j.hasOwnProperty('y0'))
       this.setOrigin (j.x0, j.y0);
@@ -879,20 +869,6 @@ class Blueprint {
           if (this.snapToGrid) {
             // Cell size
             var g = Math.round (this.grid * this.zoom);
-            /*
-
-            // Position inside the cell with origin in (0,0)
-            var x = Math.round (this.selection[i].x / g) * g;
-            var y = Math.round (this.selection[i].y / g) * g;
-
-            var _x0 = Math.round(this.x0 * this.zoom) % g;
-            var _y0 = Math.round(this.y0 * this.zoom) % g;
-
-            //console.log ('('+this.selection[i].x+', '+this.selection[i].y+') -> ('+x+', '+y+') (x0='+this.x0+', y0='+this.y0+') (_x0='+_x0+', _y0='+_y0+')');
-
-            this.selection[i].moveTo (x+_x0, y+_y0);
-            */
-
 
             var x = this.selection[i].x - this.x0;
             x = Math.round (x / g) * g;

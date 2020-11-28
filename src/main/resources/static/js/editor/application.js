@@ -220,7 +220,7 @@ function cbModified() {
   setStatus (BPEditStatus.MODIFIED);
 
   try {
-    undo.setCurrent (blueprint.toJson());
+    undo.setCurrent(blueprint.toJson());
   }
   catch (err) {
     //console.log (blueprint.toString());
@@ -890,8 +890,12 @@ function processAction (a) {
     case MenuItems.EDIT_PASTE:
       if (blueprint.getStatus() == BPStatus.READY) {
         undo.begin();
-        blueprint.paste();
-        undo.end();
+        blueprint.paste(function() {
+                undo.end();
+                cbModified();       
+              }
+        );
+
       }
       break;
 
@@ -899,9 +903,9 @@ function processAction (a) {
       if (blueprint.getStatus() == BPStatus.READY) {
         //cbBeginModify ();
         undo.begin();
-        blueprint.deleteSelection ();
+        blueprint.deleteSelection();
         undo.end();
-        cbModified ();
+        cbModified();
       }
       break;
 

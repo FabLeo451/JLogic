@@ -4,7 +4,7 @@ class UndoRedo {
 
   constructor() {
     this.history = [];
-    this.backup = null;
+    //this.backup = null;
     this.current = 0;
     this.stackCount = 0; // For nested begin... end
     this.maxDepth = 30;
@@ -15,9 +15,10 @@ class UndoRedo {
   }
   
   /* Store x without adding to history */
+  /*
   setBackup (x) {
     this.backup = x;
-  }
+  }*/
   
   setMaxDepth(n) {
     if (n > 0)
@@ -42,21 +43,23 @@ class UndoRedo {
   }
   
   /* Add backed up item to history */
+  /*
   pushBackup () {
     this.push (this.backup);
     this.backup = null;
-  }
+  }*/
   
-  /* Add current version to history, if a version whas stored append it before current */
+  /* Add current version to history, if a version was stored append it before current */
   setCurrent (x) {
     if (this.stackCount > 0 || !x)
       return;
-    //console.log ('[undo] [setCurrent] length = '+this.history.length+' current = '+this.current);
+      
+    //console.log ('[undo] Adding to history...');
     
     if (this.current < this.history.length - 1)
       this.history.splice (this.current + 1, this.history.length - this.current - 1);
       
-    this.pushBackup ();
+    //this.pushBackup ();
     this.push (x);
     
     if (this.length() > this.maxDepth) {
@@ -70,19 +73,14 @@ class UndoRedo {
   
   begin () {
     this.stackCount ++;
-    
-    /*if (this.stackCount === 1)
-      console.log ('[undo] [begin]');*/
+    //console.log("[undo] stackCount = "+this.stackCount);
   }
   
   end () { 
-    //this.working = false;
-    
     if (this.stackCount > 0)
       this.stackCount --;
-    
-    /*if (this.stackCount === 0)
-      console.log ('[undo] [end]');*/
+      
+    //console.log("[undo] stackCount = "+this.stackCount);
   }
   
   undo () {
