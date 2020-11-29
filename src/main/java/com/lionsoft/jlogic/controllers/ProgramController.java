@@ -163,7 +163,7 @@ public class ProgramController {
 	  BlueprintEntity blueprint = programService.importBlueprint(program.get(), content);
 	  
 	  if (blueprint == null)
-	    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't import blueprint "+programService.getMessage());
+	    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't import blueprint");
 	    
 	  logger.info("Successfully imported "+blueprint.toString());
 	  

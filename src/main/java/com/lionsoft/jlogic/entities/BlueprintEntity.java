@@ -84,12 +84,12 @@ public class BlueprintEntity {
     @ElementCollection
     @CollectionTable(name = "jar", joinColumns = @JoinColumn(name = "blueprint_id"))
     @Column(name="jar")
-    List<String> jarList = Collections.emptyList();
+    List<String> jarList = new ArrayList<String>();//Collections.emptyList();
 
     @ElementCollection
     @CollectionTable(name = "classpath", joinColumns = @JoinColumn(name = "blueprint_id"))
     @Column(name="classpath")
-    List<String> classPathList = Collections.emptyList();
+    List<String> classPathList = new ArrayList<String>();//Collections.emptyList();
 
     @JsonIgnore
     @Transient
@@ -264,7 +264,7 @@ public class BlueprintEntity {
       }
     }
 
-    public void setContent(String content) {
+    public void setDependecies(String content) {
       JSONObject jcontent;
       JSONParser jsonParser = new JSONParser();
 

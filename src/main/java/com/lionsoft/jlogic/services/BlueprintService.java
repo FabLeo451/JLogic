@@ -204,13 +204,14 @@ public class BlueprintService {
       return(Code.ERR_PARSE);
     }
 
-    logger.info("Saving blueprint "+blueprint.getName());
 
     // Update database
+    logger.info("Setting dependecies for "+blueprint.getName());
 
-    blueprint.setContent(jo.toString());
+    blueprint.setDependecies(jo.toString());
 
 	  // Save file
+    logger.info("Writing "+filename);
 
 	  try (FileWriter file = new FileWriter(filename)) {
       file.write(jo.toString());
@@ -220,6 +221,8 @@ public class BlueprintService {
       logger.error(e.getMessage());
       return(Code.ERR_IO);
     }
+    
+    logger.info("Saved "+filename);
 
     return(Code.SUCCESS);
 	}
@@ -278,8 +281,11 @@ public class BlueprintService {
   public Code update (BlueprintEntity blueprint, String content) {
     Code code = saveContent(blueprint.getProgram(), blueprint.getFilename(), blueprint, content);
     
-    if (code == Code.SUCCESS)
+    if (code == Code.SUCCESS) {
+      logger.info("Storing "+blueprint.getName()+" to repository");
       repository.save(blueprint);
+      logger.info(blueprint.getName()+" successfully stored");
+    }
 
     return(code);
   }

@@ -515,17 +515,19 @@ public class ProgramService {
       String name = (String) jbp.get("name");
       String type = (String) jbp.get("type");
       //int internalId = ((Long) jbp.get("internalId")).intValue();
+      
+      logger.info("Creating blueprint "+name);
       blueprint = blueprintService.create(program, /*BlueprintType.GENERIC*/BlueprintType.valueOf(type), name);
 
-      //logger.info("Updating blueprint "+blueprint.get().toString());
-
+      logger.info("Updating "+blueprint.toString());
       Code code = blueprintService.update(blueprint, content);
       
       if (code != Code.SUCCESS) {
-        setResult(1, "Can't import blueprint");
+        logger.error("Unable to update importing blueprint "+name);
         return null;
       }
       
+      logger.info("Refreshing program "+program.getName());
       repository.refresh(program);
       
       return(blueprint);
