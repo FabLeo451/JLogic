@@ -395,8 +395,11 @@ public class ProgramController {
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
 
     JSONObject jo = programService.getIndex(program.get());
+    
+    if (jo == null)
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to get program index.");
 
-		return new ResponseEntity<>(jo != null ? jo.toString() : null, jo != null ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(jo.toString(), HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/program/{id}/properties", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -31,8 +31,8 @@ import com.lionsoft.jlogic.BlueprintType;
 //@Transactional
 public class BlueprintService {
 
-  final static int SUCCESS = 0;
-  final static int ERROR = 1;
+  //final static int SUCCESS = 0;
+  //final static int ERROR = 1;
 
   @Autowired
   BlueprintRepository repository;
@@ -342,6 +342,73 @@ public class BlueprintService {
     programService.refresh(program);
          
     return clone;
+  }
+  
+  public JSONObject getSpec(BlueprintEntity blueprint) {
+    JSONObject jspec = new JSONObject();
+    JSONArray jinput = new JSONArray();
+    JSONArray joutput = new JSONArray();
+                          
+    JSONObject jbp = toJSON(blueprint);
+    
+    jspec.put("id", jbp.get("id"));
+    jspec.put("internalId", jbp.get("internalId"));
+    jspec.put("name", jbp.get("name"));
+    jspec.put("type", jbp.get("type"));
+
+    /*JSONObject jexec = new JSONObject();
+    jexec.put("label", "");
+    jexec.put("type", "Exec");*/
+
+    // Input
+    jspec.put("input", jinput);
+    //jinput.add(jexec);
+    
+    JSONArray ja = (JSONArray) jbp.get("input");
+
+    for (int i=0; i<ja.size(); i++) {
+      JSONObject jo = (JSONObject) ja.get(i);
+      System.out.println(jo.toString());
+      JSONObject jitem = new JSONObject();
+      
+      jitem.put("label", jo.get("label"));
+      jitem.put("type", jo.get("type") != null ? jo.get("type") : jo.get("pinType"));
+      
+      if (jo.get("id") != null)
+        jitem.put("id", jo.get("id"));
+      
+      if (jo.get("method") != null)
+        jitem.put("method", jo.get("method"));
+      
+      if (jo.get("dimensions") != null)
+        jitem.put("dimensions", jo.get("dimensions"));
+      
+      jinput.add(jitem);
+    }
+
+    // Output
+    jspec.put("output", joutput);  
+    
+    ja = (JSONArray) jbp.get("output");
+
+    for (int i=0; i<ja.size(); i++) {
+      JSONObject jo = (JSONObject) ja.get(i);
+      System.out.println(jo.toString());
+      JSONObject jitem = new JSONObject();
+      
+      jitem.put("label", jo.get("label"));
+      jitem.put("type", jo.get("type") != null ? jo.get("type") : jo.get("pinType"));
+      
+      if (jo.get("id") != null)
+        jitem.put("id", jo.get("id"));
+      
+      if (jo.get("dimensions") != null)
+        jitem.put("dimensions", jo.get("dimensions"));
+      
+      joutput.add(jitem);
+    }
+
+    return(jspec);
   }
 
 }

@@ -112,6 +112,11 @@ public class ProgramService {
 	public void refresh(ProgramEntity program) {
 		repository.refresh(program);
 	}
+	
+	public boolean compiled(ProgramEntity program) {
+    File f = new File(program.getClassFilename());
+    return(f.exists());
+	}
 
 	public ProgramEntity createEmpty(String name) {
 	  ProgramEntity program = new ProgramEntity(UUID.randomUUID().toString(), name);
@@ -331,6 +336,23 @@ public class ProgramService {
 	}
 
   public JSONObject getIndex(ProgramEntity program) {
+    if (compiled(program))
+      return(getIndexFromClass(program));
+    else
+      return(getIndexFromFiles(program));
+  }
+  
+  public JSONObject getIndexFromFiles(ProgramEntity program) {
+    JSONObject jindex = new JSONObject();
+    
+    for (BlueprintEntity b: program.getBlueprints()) {
+      jindex.put(b.getId(), blueprintService.getSpec(b));
+    }
+    
+    return(jindex);
+  }
+  
+  public JSONObject getIndexFromClass(ProgramEntity program) {
     JSONObject jprogram = new JSONObject();
 
     try {

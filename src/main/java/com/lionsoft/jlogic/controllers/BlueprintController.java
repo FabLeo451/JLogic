@@ -152,5 +152,19 @@ public class BlueprintController {
 
     return (tree.equals("0") ? null : catalogService.getPrograms());
 	}
+	
+	/**
+	 * Get blueprint spec
+   * GET /blueprint/{blueprintId}/spec
+   */
+	@GetMapping(value = "/blueprint/{blueprintId}/spec", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> clone(@PathVariable("blueprintId") String blueprintId) {
+	  Optional<BlueprintEntity> blueprint = blueprintService.findById(blueprintId);
+
+	  if (!blueprint.isPresent())
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+    return (new ResponseEntity<>(blueprintService.getSpec(blueprint.get()).toString(), HttpStatus.OK));
+	}
 
 }

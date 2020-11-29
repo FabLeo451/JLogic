@@ -217,6 +217,10 @@ function cbModified() {
   //undo.dump();
 }
 
+function cbError(message) {
+  showError(message);
+}
+
 function onNameChanged() {
   //document.getElementById('bp-title').innerHTML = document.getElementById('bpName').value;
   blueprint.onModified ();
@@ -424,6 +428,7 @@ function appStart () {
                 console.log ('[application] [appStart] Setting callbacks');
                 blueprint.setCallbackBeginModify(cbBeginModify);
                 blueprint.setCallbackModified(cbModified);
+                blueprint.setCallbackError(cbError);
                 //setStatus (BPEditStatus.SUBMITTED);
 
                 document.getElementById('programName').innerHTML = program.name;
@@ -690,18 +695,28 @@ function compileProgram () {
   );
 }
 
+function showError(m) {
+    try {
+      var j = JSON.parse(m);
+      bpConsole.append ("Error: "+j.message, BPConsoleTextType.ERROR);
+    } catch (err) {
+      bpConsole.append ("Error : "+m, BPConsoleTextType.ERROR);
+    }
+}
+
 function processHTTPError(xhttp) {
   if (xhttp.status == 404)
     bpConsole.append ("Resource not found", BPConsoleTextType.ERROR);
   else if (xhttp.status == 0)
     bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
   else {
-    try {
+    showError(xhttp.responseText);
+    /*try {
       var j = JSON.parse(xhttp.responseText);
       bpConsole.append ("Error: "+j.message, BPConsoleTextType.ERROR);
     } catch (err) {
       bpConsole.append ("Error "+xhttp.status+": "+xhttp.responseText, BPConsoleTextType.ERROR);
-    }  
+    }*/
   }
 }
 

@@ -42,7 +42,7 @@ function bpAddNode (id, data) {
             dialog.create(jindex);
           }
           else {
-            showSnacknar(BPResult.ERROR, xhttp.statusText);
+            blueprint.onError(xhttp.responseText);
           }
 
 
@@ -116,6 +116,7 @@ class Blueprint {
     this.blueprintList = null;
     this.callbackBeginModify = null;
     this.callbackModified = null;
+    this.callbackError = null;
     this.clipboard = null;
     this.code = 0;
     this.message = null;
@@ -204,6 +205,10 @@ class Blueprint {
     this.callbackModified = f;
   }
 
+  setCallbackError(f) {
+    this.callbackError = f;
+  }
+
   onBeginModify () {
     if (this.callbackBeginModify)
       this.callbackBeginModify ();
@@ -212,6 +217,11 @@ class Blueprint {
   onModified () {
     if (this.callbackModified)
       this.callbackModified ();
+  }
+
+  onError(message) {
+    if (this.callbackError)
+      this.callbackError(message);
   }
   
   getVariables() {
