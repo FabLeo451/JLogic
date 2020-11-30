@@ -67,10 +67,7 @@ class Dialog {
     
     /* Empty content */
     this.contentElem = document.createElement('div');
-
-		if (this.buttons != DialogButtons.NONE)
-      this.contentElem.style.marginBottom = '4em';
-
+    this.contentElem.style.marginBottom = (this.buttons != DialogButtons.NONE) ? '4em' : '1m';
     this.windowElem.appendChild(this.contentElem);
     
     /* Buttons */
