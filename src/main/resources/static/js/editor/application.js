@@ -378,7 +378,8 @@ function appStart () {
 
   bpConsole.clear();
   bpConsole.append('------------------------------------------------');
-  bpConsole.append(__SERVER.package.application_name+' '+__SERVER.package.version);
+  bpConsole.append(__SERVER.package.application_name);
+  bpConsole.append('Version '+__SERVER.package.version);
   bpConsole.append('------------------------------------------------');
 
   undo = new UndoRedo ();
