@@ -8,6 +8,7 @@ class UndoRedo {
     this.current = 0;
     this.stackCount = 0; // For nested begin... end
     this.maxDepth = 30;
+    this.saved = null;
   }
   
   length () {
@@ -69,6 +70,14 @@ class UndoRedo {
     this.current = this.history.length - 1;
 
     //console.log ('[undo] [setCurrent] length = '+this.history.length+' current = '+this.current);
+  }
+
+  setCurrentAsSaved() {
+    this.saved = this.current;
+  }
+
+  isCurrentSaved() {
+    return(this.saved == this.current);
   }
   
   begin () {

@@ -157,7 +157,7 @@ function addBlueprints (programId, containerElem, jblueprints) {
 
   var addElem = document.createElement('div');
   addElem.classList.add('w3-container');
-  addElem.innerHTML = `<button class="btnApp" onclick="addBlueprint('`+programId+`');" style="margin-left:1.5em;"><i class="icon i-add"></i> New Blueprint</button>`;
+  addElem.innerHTML = `<button class="btnApp" onclick="addBlueprint('`+programId+`');" style="margin-left:1.5em;"><i class="icon i-add"></i> New blueprint</button>`;
   listElem.appendChild(addElem);
 }
 

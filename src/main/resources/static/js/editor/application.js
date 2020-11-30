@@ -443,11 +443,11 @@ function appStart () {
                 }
 
                 // Set program status
-
                 setProgramStatus(program.status);
 
                 undo.end();
-                undo.setCurrent (blueprint.toJson());
+                undo.setCurrent(blueprint.toJson());
+                undo.setCurrentAsSaved();
                 undo.dump();
 
                 dialog.destroy();
@@ -731,6 +731,7 @@ function deployBlueprint () {
         if (xhttp.status == 200) {
           bpConsole.append ("<i class=\"icon i-check w3-text-green\"></i> Blueprint successfully submitted", BPConsoleTextType.SUCCESS);
           setStatus (BPEditStatus.SUBMITTED);
+          undo.setCurrentAsSaved();
 
           compileProgram ();
         }
@@ -846,6 +847,9 @@ function processAction (a) {
 
           appLoadBlueprint (bp);
           blueprint.moveDelta (bp.x0 - x0, bp.y0 - y0);
+
+					if (undo.isCurrentSaved())
+            setStatus (BPEditStatus.SUBMITTED);
         }
 
         undo.end ();
@@ -864,6 +868,9 @@ function processAction (a) {
           var x0 = blueprint.x0, y0 = blueprint.y0;
           appLoadBlueprint (bp);
           blueprint.moveDelta (bp.x0 - x0, bp.y0 - y0);
+
+					if (undo.isCurrentSaved())
+            setStatus (BPEditStatus.SUBMITTED);
         }
 
         undo.end ();
