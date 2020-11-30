@@ -67,7 +67,10 @@ class Dialog {
     
     /* Empty content */
     this.contentElem = document.createElement('div');
-    this.contentElem.style.marginBottom = '4em';
+
+		if (this.buttons != DialogButtons.NONE)
+      this.contentElem.style.marginBottom = '4em';
+
     this.windowElem.appendChild(this.contentElem);
     
     /* Buttons */
@@ -220,7 +223,7 @@ function dialogMessage (title, message, buttons, icon, callbackOK) {
   }
   
   content.innerHTML = `
-      <div id="_glg_icon" class="w3-container w3-cell w3-cell-top"><i class="icon `+iconClass+` w3-xxlarge"></i></div>
+      <div id="_glg_icon" class="w3-container w3-cell w3-cell-top"><i class="icon `+iconClass+` w3-large"></i></div>
       <div id="_dlg_msg" class="w3-container w3-cell w3-cell-middle">`+message+`</div>
   `;
   
