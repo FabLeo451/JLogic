@@ -746,7 +746,7 @@ function deployBlueprint () {
 
 function compileStart () {
   console.log("Compile");
-  dialogWorking = dialogMessage (__SERVER.package.application_name, 'Compiling...', DialogButtons.NONE, DialogIcon.RUNNING, null);
+  dialogWorking = dialogMessage (__SERVER.package.application_name, 'Compiling program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
 
   if (getStatus() != BPEditStatus.SUBMITTED)
     deployBlueprint();
