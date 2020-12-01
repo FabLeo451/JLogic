@@ -11,6 +11,19 @@
       "output": [
         { "type": "Any", "label": "" }
       ]
+    },
+    {
+      "name": "is null",
+      "type": 5,
+      "version": 1,
+      "inner_text": "is null",
+      "java": "(in{0} == null)",
+      "input": [
+				{ "type": "Any", "label": "" }
+      ],
+      "output": [
+        { "type": "Boolean", "label": "" }
+      ]
     }
   ]
 }
