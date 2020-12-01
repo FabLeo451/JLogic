@@ -348,7 +348,7 @@ public class ProgramController {
 	            outData = program.get().getOutput();
 	          }
 	          else {
-	            logger.error(program.get().getName()+"."+method+" error: "+program.get().getResult());
+	            logger.error("Blueprint "+program.get().getName()+"."+method+" error: "+program.get().getResult());
 	            outData = program.get().getOutput();
 
 	            switch (program.get().getResult()) {
@@ -356,7 +356,7 @@ public class ProgramController {
 	                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Method Not Found");
 
 	              default:
-	                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, program.get().getMessage());
+	                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, /*program.get().getMessage()*/program.get().getOutput());
 	            }
 	          }
 	      } else {

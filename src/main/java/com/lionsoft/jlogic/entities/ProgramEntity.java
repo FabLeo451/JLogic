@@ -1351,8 +1351,7 @@ public class ProgramEntity {
 
           } catch (InvocationTargetException e) {
             Throwable cause = e.getCause();
-            logger.error("InvocationTargetException: " +cause.getMessage());
-            System.err.println("InvocationTargetException");
+            //logger.error("InvocationTargetException: " +cause.getMessage());
 
             _event.invoke(programInstance, eventException, cause.getMessage());
 
