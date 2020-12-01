@@ -430,6 +430,10 @@ function appStart () {
                 blueprint.setCallbackBeginModify(cbBeginModify);
                 blueprint.setCallbackModified(cbModified);
                 blueprint.setCallbackError(cbError);
+								blueprint.setCallbackLog(function(m) {
+										bpConsole.append(m);
+									}
+								);
                 //setStatus (BPEditStatus.SUBMITTED);
 
                 document.getElementById('programName').innerHTML = program.name;

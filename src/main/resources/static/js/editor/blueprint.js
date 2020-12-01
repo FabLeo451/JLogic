@@ -117,6 +117,7 @@ class Blueprint {
     this.callbackBeginModify = null;
     this.callbackModified = null;
     this.callbackError = null;
+    this.callbackLog = null;
     this.clipboard = null;
     this.code = 0;
     this.message = null;
@@ -208,6 +209,10 @@ class Blueprint {
 
   setCallbackError(f) {
     this.callbackError = f;
+  }
+
+  setCallbackLog(f) {
+    this.callbackLog = f;
   }
 
   onBeginModify () {
@@ -420,7 +425,7 @@ class Blueprint {
                 case BPNodeTypeID.GET:
                   // Check if variable exists
                   if (blueprint.getVariable(jnodes[i].output[0].references) == null) {
-                    console.log('Node '+jnodes[i].name+' '+jnodes[i].references+' will not be pasted');
+                    this.callbackLog('Node '+jnodes[i].name+' '+jnodes[i].references+' will not be pasted');
                     pasteOK = false;
                   }
                   break;
@@ -428,14 +433,14 @@ class Blueprint {
                 case BPNodeTypeID.SET:
                   // Check if variable exists
                   if (blueprint.getVariable(jnodes[i].input[1].references) == null) {
-                    console.log('Node '+jnodes[i].name+' '+jnodes[i].references+' will not be pasted');
+                    this.callbackLog('Node '+jnodes[i].name+' '+jnodes[i].references+' will not be pasted');
                     pasteOK = false;
                   }
                   break;
 
 								case BPNodeTypeID.BLUEPRINT:
 									if (!sameProgram) {
-										console.log('Node '+jnodes[i].name+' will not be pasted');
+										this.callbackLog('Node '+jnodes[i].name+' will not be pasted');
                     pasteOK = false;
                   }
                   break;
