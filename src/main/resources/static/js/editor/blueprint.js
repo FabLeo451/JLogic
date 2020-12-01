@@ -402,6 +402,9 @@ class Blueprint {
           var jdata = JSON.parse(text);
           var jnodes = jdata.nodes, jedges = jdata.edges;
           var addedNodes = [];
+          var sameProgram = jdata.programId == blueprint.programId;
+
+					console.log ("sameProgram = "+sameProgram);
 
           if (jnodes) {
 
@@ -426,6 +429,13 @@ class Blueprint {
                   // Check if variable exists
                   if (blueprint.getVariable(jnodes[i].input[1].references) == null) {
                     console.log('Node '+jnodes[i].name+' '+jnodes[i].references+' will not be pasted');
+                    pasteOK = false;
+                  }
+                  break;
+
+								case BPNodeTypeID.BLUEPRINT:
+									if (!sameProgram) {
+										console.log('Node '+jnodes[i].name+' will not be pasted');
                     pasteOK = false;
                   }
                   break;
