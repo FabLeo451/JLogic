@@ -120,6 +120,7 @@ public class AppController {
 
 	@RequestMapping("/login")
 	public String login(HttpServletRequest request, Model model) {
+		model.addAttribute("name", buildProperties.getName());
     return "login";
   }
 
