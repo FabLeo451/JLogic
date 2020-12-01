@@ -503,7 +503,7 @@ function runCallback (xhttp) {
   switch (xhttp.readyState) {
     case 1:
       bpConsole.append ("Launching program...");
-      dialogRunning = dialogMessage ("Blueprint", "Executing...", DialogButtons.STOP, DialogIcon.RUNNING, function (dialog) {
+      dialogRunning = dialogMessage (__SERVER.package.application_name, "Executing blueprint...", DialogButtons.STOP, DialogIcon.RUNNING, function (dialog) {
           //dialog.destroy();
           document.getElementById("_dlg_msg").innerHTML = "Stopping...";
 
@@ -524,7 +524,7 @@ function runCallback (xhttp) {
       break;
 
     case 2:
-      bpConsole.append ("Connected");
+      //bpConsole.append ("Connected");
       break;
 
     case 3:
@@ -532,7 +532,6 @@ function runCallback (xhttp) {
       break;
 
     case 4:
-      //modalHide ();
       dialogRunning.destroy();
 
       var response = xhttp.responseText;
@@ -541,7 +540,7 @@ function runCallback (xhttp) {
         toggleConsoleVisibility();
 
       if (xhttp.status == 200) {
-        bpConsole.append ('<i class=\"icon i-check w3-text-green\"></i> Successfully executed', BPConsoleTextType.SUCCESS);
+        bpConsole.append ('<i class="icon i-check w3-text-green"></i> Successfully executed', BPConsoleTextType.SUCCESS);
         bpConsole.append (response);
       }
       else if (xhttp.status == 0)
@@ -552,14 +551,14 @@ function runCallback (xhttp) {
 
         try {
           jo = JSON.parse(response);
-          bpConsole.append ('Error: '+jo.message, BPConsoleTextType.ERROR);
+          bpConsole.append (jo.message, BPConsoleTextType.ERROR);
         }
         catch (err) {
           console.error(err.message);
-          bpConsole.append ('Error: '+response);
+          bpConsole.append (response);
         }
 
-        bpConsole.append ('Execution failed', BPConsoleTextType.ERROR);
+        bpConsole.append ('<i class="icon i-exclamation w3-text-red"></i> Execution failed', BPConsoleTextType.ERROR);
       }
 
       break;
