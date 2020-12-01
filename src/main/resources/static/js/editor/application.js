@@ -953,7 +953,8 @@ function processAction (a) {
       var dialog = new Dialog ();
       dialog.setCallbackOK (run);
       dialog.callbackCancel = function (dialog) { dialog.destroy(); endEdit(); };
-      dialog.create('Run <b>'+blueprint.getName()+'</b>');
+			dialog.setWidthMode(DialogWidthMode.MIN);
+      dialog.create('Run');
 
       var content = dialog.getContentElement ();
       console.log(blueprint.getInputArrayAsString());
