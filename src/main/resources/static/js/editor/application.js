@@ -112,7 +112,7 @@ function appLoadBlueprint (j) {
   blueprint.clear();
 
   /* Build blueprint */
-  blueprint.fromJson (j);
+  blueprint.fromJson(j);
   
   console.log ("Adding variables...");
   appRefreshVariables();

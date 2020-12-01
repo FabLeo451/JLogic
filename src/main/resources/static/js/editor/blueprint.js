@@ -120,6 +120,7 @@ class Blueprint {
     this.clipboard = null;
     this.code = 0;
     this.message = null;
+    this.programId = null;
   }
   
   setMessage(m) {
@@ -345,6 +346,8 @@ class Blueprint {
   copySelection () {
     var jdata = {}, jnodes = [], jedges = [], /*copiedNodes = [],*/ copiedConnectors = [];
 
+		jdata.programId = this.programId;
+
     for (var i=0; i<this.selection.length; i++) {
       var node = this.selection[i];
 
@@ -376,7 +379,7 @@ class Blueprint {
     this.clipboard = JSON.stringify(jdata);
     copyStringToClipboard (JSON.stringify(jdata));
 
-    //console.log (JSON.stringify(jdata));
+    console.log (jdata);
   }
 
   paste (cbfunction) {
@@ -597,6 +600,8 @@ class Blueprint {
   fromJson (j) {
     //console.log ('[blueprint] [fromJson] Start');
     //var variables = j["variables"]; //Added by application
+
+		this.programId = j.programId;
     
     for (var i=0; i<j["variables"].length; i++) {
       var v = new Variable();
