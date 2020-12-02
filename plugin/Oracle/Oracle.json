@@ -1,8 +1,8 @@
 {
   "types": [
-    { "id":100, "name":"Connection", "color":"lightslategray" },
-    { "id":101, "name":"ResultSet", "color":"orange" },
-    { "id":102, "name":"ResultSetMetaData", "color":"orange" }
+    { "id":100, "name":"Connection", "color":"lightslategray", "import":"java.sql.Connection" },
+    { "id":101, "name":"ResultSet", "color":"orange", "import":"java.sql.ResultSet" },
+    { "id":102, "name":"ResultSetMetaData", "color":"orange", "import":"java.sql.ResultSetMetaData" }
   ],
   "nodes": [
     {

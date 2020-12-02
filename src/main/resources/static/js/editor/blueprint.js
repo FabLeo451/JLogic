@@ -97,7 +97,7 @@ class Blueprint {
     this.type = 1;
     //this.id = null;
     this.asset = { };
-    this.types = [];
+    this.types = []; // Known types from assets
     this.nodeTypes = [];
     this.currentEdge = null;
     this.nodes = [];
@@ -254,6 +254,7 @@ class Blueprint {
       t.color = types[i]["color"];
       t.exec = types[i]["exec"] != null ? types[i]["exec"] : false;
       t.init = types[i].hasOwnProperty("init") ? types[i].init : null;
+      t.import = types[i].hasOwnProperty("import") ? types[i].import: null;
       //t.t_html_input_type = types[i]["html_input_type"];
       this.types.push (t);
       //console.log ("Added type "+t.name+" "+t.color + " "+t.exec);
@@ -1349,6 +1350,13 @@ class Blueprint {
     return (JSON.stringify(this.getInputArray ()));
   }
 
+	addArrayUnique(a, x) {
+    if (!a.includes(x)) {
+			console.log ("import "+x);
+			a.push(x);
+    }
+  }
+
   toJson () {
     var jo = {
       "tag":"BLUEPRINT",
@@ -1362,18 +1370,19 @@ class Blueprint {
     /* Variables and types */
     jo.variables = [];
     jo.types = [];
+    jo.import = [];
 
     //console.log (this.variables);
 
     for (var i=0; i<this.variables.length; i++) {
-      /*if (this.variables[i].isGlobal())
-        continue;*/
-
       var jv = this.variables[i].toJSON();
 
       var t = this.getType (jv.type);
       jv.typeName = t.name;
       jo.types.push(t);
+
+			if (t.hasOwnProperty("import"))
+        this.addArrayUnique(jo.import, t.import);
 
       jo.variables.push(jv);
 
@@ -1433,8 +1442,13 @@ class Blueprint {
     jo.nodes = [];
 
     for (var i=0; i<this.nodes.length; i++) {
-      //console.log ('Saving '+this.nodes[i].toString());
-      jo.nodes.push(this.nodes[i].toJSON());
+      var node = this.nodes[i];
+      jo.nodes.push(node.toJSON());
+
+			if (node.import) {
+				for (var k=0; k<node.import.length; k++)
+          this.addArrayUnique(jo.import, node.import[k]);
+      }
     }
 
     /* Edges */
