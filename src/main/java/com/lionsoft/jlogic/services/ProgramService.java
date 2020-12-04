@@ -220,32 +220,10 @@ public class ProgramService {
 	}
 
 	public boolean run(ProgramEntity program, String methodName, String data, String logName, HttpServletRequest request) {
-    JSONParser jsonParser = new JSONParser();
-    JSONObject jdata;
-
     try {
       logger.info("Parsing data...");
-      jdata = (JSONObject) jsonParser.parse(data);
+      Map<String, Object> map = Utils.jsonToMap(data);
       
-      Map<String, Object> map = new HashMap();
-
-      for (Iterator iterator = jdata.keySet().iterator(); iterator.hasNext();) {
-          String key = (String) iterator.next();
-          
-          if (jdata.get(key) instanceof JSONArray) {
-            JSONArray ja = (JSONArray) jdata.get(key);
-            Object[] oa = new Object[ja.size()];
-            
-            for (int i=0; i<ja.size(); i++) {
-              oa[i] = ja.get(i);
-            }
-              
-            map.put(key, oa);
-          }
-          else
-            map.put(key, jdata.get(key));
-      }
-
       return (run(program, methodName, map, logName, request));
 
     } catch (ParseException e) {
@@ -254,7 +232,7 @@ public class ProgramService {
     }
 	}
 	
-  public boolean run(ProgramEntity program, String methodName, /*String data*/Map<String, Object> actual, String logName, HttpServletRequest request) {
+  public boolean run(ProgramEntity program, String methodName, Map<String, Object> actual, String logName, HttpServletRequest request) {
     boolean result = false;
 
     //Session session = sessionService.getSession(request);
