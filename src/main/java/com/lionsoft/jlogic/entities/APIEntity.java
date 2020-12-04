@@ -134,7 +134,6 @@ public class APIEntity {
     }
     
     public Map<String, String> mapURI(String uri) {
-      int n = 0;
       Map<String, String> map = new HashMap();
       
       if (path.endsWith("/") && !uri.endsWith("/"))
@@ -162,7 +161,6 @@ public class APIEntity {
           String ParamValue = parts[i];
           
           map.put(paramName, ParamValue);
-          n ++;
           //System.out.println(paramName+" = "+ParamValue);
         } else {
           if (!parts[i].equals(partsApi[i]))
@@ -170,6 +168,6 @@ public class APIEntity {
         }
       }
       
-      return(n > 0 ? map : null);
+      return(map);
     }
 }

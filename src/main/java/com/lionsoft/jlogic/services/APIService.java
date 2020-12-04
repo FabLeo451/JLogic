@@ -143,7 +143,7 @@ public class APIService {
 
     try {
       logger.info("Parsing data...");
-      Map<String, Object> map = Utils.jsonToMap(data);
+      Map<String, Object> map = data != null ? Utils.jsonToMap(data) : null;
 
       return (execute(method, uri, map, request));
 

@@ -152,11 +152,11 @@ public class ApiController {
 	}
 
   /**
-   * Execute an API on GET /api/{name}
+   * Execute an API on GET /api/...
    */
 	@GetMapping(value = "/api/**", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> executeGET(HttpServletRequest request) {
-    logger.info("Executing API "+request.getRequestURI());
+    logger.info("Executing GET "+request.getRequestURI());
     
     String uri = request.getRequestURI().replaceAll("^/api/", "");
     
@@ -169,21 +169,55 @@ public class ApiController {
 	}
 
   /**
-   * Execute an API on POST /api/{name}
+   * Execute an API on POST /api/...
    */
-   /*
-  @PostMapping(value = "/api/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "/api/**", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> executePOST(HttpServletRequest request,
-                                            @PathVariable("name") String name,
                                             @RequestBody String data) {
-	  logger.info("Executing API "+name);
+	  logger.info("Executing POST "+request.getRequestURI());
+	  
+	  String uri = request.getRequestURI().replaceAll("^/api/", "");
 
-    APIResult result = APIService.execute(name, data, request);
+    APIResult result = APIService.executeWithData("POST", uri, data, request);
 
     if (result.getCode() != 0)
       throw new ResponseStatusException(result.getStatus(), result.getMessage());
 
 		return new ResponseEntity<>(result.getResponse(), result.getStatus());
-	}*/
+	}
 
+  /**
+   * Execute an API on PUT /api/...
+   */
+  @PutMapping(value = "/api/**", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> executePUT(HttpServletRequest request,
+                                            @RequestBody String data) {
+	  logger.info("Executing PUT "+request.getRequestURI());
+	  
+	  String uri = request.getRequestURI().replaceAll("^/api/", "");
+
+    APIResult result = APIService.executeWithData("PUT", uri, data, request);
+
+    if (result.getCode() != 0)
+      throw new ResponseStatusException(result.getStatus(), result.getMessage());
+
+		return new ResponseEntity<>(result.getResponse(), result.getStatus());
+	}
+
+  /**
+   * Execute an API on DELETE /api/...
+   */
+  @DeleteMapping(value = "/api/**", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> executeDELETE(HttpServletRequest request) {
+	  logger.info("Executing DELETE "+request.getRequestURI());
+	  
+	  String uri = request.getRequestURI().replaceAll("^/api/", "");
+
+    APIResult result = APIService.executeWithData("DELETE", uri, null, request);
+
+    if (result.getCode() != 0)
+      throw new ResponseStatusException(result.getStatus(), result.getMessage());
+
+		return new ResponseEntity<>(result.getResponse(), result.getStatus());
+	}
 }
