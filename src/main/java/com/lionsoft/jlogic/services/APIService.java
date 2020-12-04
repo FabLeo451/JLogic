@@ -143,9 +143,9 @@ public class APIService {
 
     try {
       logger.info("Parsing data...");
-      jdata = (JSONObject) jsonParser.parse(data);
+      Map<String, Object> map = Utils.jsonToMap(data);
 
-      return (execute(method, uri, (Map)jdata, request));
+      return (execute(method, uri, map, request));
 
     } catch (ParseException e) {
       result.setResult(1, HttpStatus.BAD_REQUEST, e.getMessage());
@@ -158,6 +158,9 @@ public class APIService {
    */
   public APIResult execute(String method, String uri, Map<String, Object> actual, HttpServletRequest request) {
     APIResult result = new APIResult();
+    Map<String, Object> params = new HashMap<>();
+    
+    // Search matching api
     APIEntity api = searchByMethodAndURI(method, uri);
     
     if (api == null) {
@@ -165,9 +168,26 @@ public class APIService {
       return(result);
     }
     
+    // Add data
+    if (actual != null) {
+      for (Map.Entry<String, Object> p : actual.entrySet()) {
+          params.put(p.getKey(), p.getValue());
+      }
+    }
+    
+    // Get path parameters
+    Map<String, String> pathParams = api.mapURI(uri);
+    
+    // Add path parameters
+    if (pathParams != null) {
+      for (Map.Entry<String, String> p : pathParams.entrySet()) {
+          params.put(p.getKey(), p.getValue());
+      }
+    }
+    
     logger.info("Executing API "+api.getName());
 
-	  result = execute(api, actual, request);
+	  result = execute(api, params, request);
 
     return(result);
   }
