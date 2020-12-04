@@ -80,7 +80,7 @@ public class ApiController {
 	}
 
 	@PutMapping(value = "/api/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<APIEntity> edit(@PathVariable("id") String id, @RequestBody APIEntity api) {
+	public List<APIEntity> update(@PathVariable("id") String id, @RequestBody APIEntity api) {
     logger.info("Updating API "+api.getName());
 
     Optional<APIEntity> apiCheck = repository.findById(id);

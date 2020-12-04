@@ -55,7 +55,13 @@ public class AppController {
   ProgramService programService;
 
   @Autowired
+  APIService APIService;
+
+  @Autowired
   SessionService sessionService;
+
+  @Autowired
+  CatalogService catalogService;
 
   public String COPYRIGHT = "Copyright (c) 2020 Fabio Leone";
 
@@ -166,6 +172,45 @@ public class AppController {
 
 	@RequestMapping("/apipanel")
 	public String getApiPanel() { return "api";	}
+
+  /**
+   * Create API
+   */
+	@RequestMapping("/api/create")
+	public String createApi(HttpServletRequest request, Model model) {
+
+	  Optional<User> user = userRepository.findByUsername(request.getUserPrincipal().getName());
+
+	  model.addAttribute("title", "Create API");
+	  model.addAttribute("id", "-1");
+	  model.addAttribute("creating", true);
+	  model.addAttribute("updating", false);
+	  model.addAttribute("programs", catalogService.getPrograms());
+	  return "edit-api";
+	}
+
+  /**
+   * Update API
+   */
+	@RequestMapping("/api/{id}/edit")
+	public String editApi(HttpServletRequest request, Model model, @PathVariable("id") String id) {
+
+	  Optional<APIEntity> api = APIService.findById(id);
+	  
+	  if (!api.isPresent())
+	    return "/apipanel";
+
+	  model.addAttribute("title", "Edit API");
+	  model.addAttribute("id", id);
+	  model.addAttribute("name", api.get().getName());
+	  model.addAttribute("program", api.get().getBlueprint().getProgram());
+	  model.addAttribute("blueprint", api.get().getBlueprint());
+	  model.addAttribute("creating", false);
+	  model.addAttribute("updating", true);
+	  model.addAttribute("programs", catalogService.getPrograms());
+	  model.addAttribute("blueprints", api.get().getBlueprint().getProgram().getBlueprints());
+	  return "edit-api";
+	}
 
 	@RequestMapping("/blueprint/{id}/edit")
 	public String editBlueprint(Model model, @PathVariable("id") String id) {

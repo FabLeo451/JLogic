@@ -78,7 +78,8 @@ function refreshTable () {
               td = document.createElement('td');
               td.classList.add('td1');
               //td.classList.add('w3-padding');
-              td.innerHTML = `<a target="Javascript:void(0);" onclick="editAPI (`+index+`)" style="cursor:pointer;"><strong>`+value["name"]+`</strong> <i class="icon i-pen w3-text-gray" title="Edit"></a>`;
+              //td.innerHTML = `<a target="Javascript:void(0);" onclick="editAPI (`+index+`)" style="cursor:pointer;"><strong>`+value["name"]+`</strong> <i class="icon i-pen w3-text-gray" title="Edit"></a>`;
+              td.innerHTML = `<a href="/api/`+value.id+`/edit" style="cursor:pointer;"><strong>`+value["name"]+`</strong> <i class="icon i-pen w3-text-gray" title="Edit"></a>`;
               tr.appendChild(td);
 
               // GET
@@ -246,10 +247,82 @@ function programChanged(event) {
   );
 }
 
+function validateAPI() {
+  var apiName = document.getElementById("apiName").value.trim();
+  var progamId = document.getElementById("program").value;
+
+  if (apiName == "" || apiName == null) {
+    dialogError ("Missing API name.");
+    return null;
+  }
+
+  if (progamId == "") {
+    dialogInfo ("Select program.");
+    return null;
+  }
+  
+  var api = {"name": apiName, 
+             "blueprint": {"id": document.getElementById("blueprint").value}, 
+             "enabled": true
+            };
+            
+  return api;
+}
+
+function submitAPI(method, id) {
+  var message, url;
+  var api = validateAPI();
+  
+  if (!api)
+    return;
+    
+  api.id = id;
+    
+  switch (method) {
+    case "POST":
+      message = 'Creating API...';
+      url = '/api';
+      break;
+    case "PUT":
+      message = 'Updating API...';
+      url = '/api/'+id;
+      break;
+  }
+    
+  var d = dialogMessage ('Working', message, DialogButtons.NONE, DialogIcon.RUNNING, null);
+
+  callServer(method, url, JSON.stringify(api), function (xhttp) {
+      if (xhttp.readyState == 4) {
+        d.destroy();
+
+        console.log(xhttp.status+' - '+xhttp.responseText);
+
+        if (xhttp.status == 200) {
+          console.log("API successfully submitted");
+          window.location = '/apipanel';
+        }
+        else {
+          //showSnacknar(BPResult.ERROR, xhttp.responseText);
+          dialogError (JSON.parse(xhttp.responseText).message);
+        }
+      }
+    }
+  );
+}
+
+function createAPI() {
+  submitAPI('POST', null);
+}
+
+function updateAPI() {
+  submitAPI('PUT', document.getElementById("apiId").value);
+}
+
+/*
 function editAPIDialog (title, api, cbFun) {
   var dialog = new Dialog ();
 
-  /* Callback functions */
+  //* Callback functions
 
   dialog.callbackOK = function (dlg) {
     var content = dlg.getContentElement ();
@@ -263,7 +336,7 @@ function editAPIDialog (title, api, cbFun) {
       resultElem.innerHTML = '<div class="w3-text-red">Missing API name</div>';
       return;
     }
-    var data = {"name":apiName, /*"programId":progamId,*/ "blueprint":{"id":blueprintId}, "enabled":true};
+    var data = {"name":apiName, "blueprint":{"id":blueprintId}, "enabled":true};
 
     if (api)
       data.id = api.id;
@@ -276,7 +349,7 @@ function editAPIDialog (title, api, cbFun) {
 
   dialog.callbackCancel = function (dialog) { dialog.destroy(); };
 
-  /* Build dialog */
+  //* Build dialog
 
   dialog.create(title);
 
@@ -328,7 +401,8 @@ function editAPIDialog (title, api, cbFun) {
     );
   }
 }
-
+*/
+/*
 function createAPI () {
   var api = new API();
   api.setName('New API');
@@ -355,7 +429,9 @@ function createAPI () {
     }
   );
 }
+*/
 
+/*
 function editAPI (index) {
   var japi = g_apiList[index];
   console.log(JSON.stringify(g_apiList));
@@ -384,6 +460,7 @@ function editAPI (index) {
     }
   );
 }
+*/
 
 function deleteAPI (id, name) {
   dialogMessage ("Confirm", "Delete API "+name+"?", DialogButtons.YES_NO, DialogIcon.QUESTION, function (dialog) {

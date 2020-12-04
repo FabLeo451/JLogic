@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="utf-8">
+<title th:text="${title}"></title>
+<link rel="stylesheet" href="/css/w3.css">
+<link rel='stylesheet' href='/css/snackbar.css'>
+<link rel='stylesheet' href='/css/main.css'>
+<link rel='stylesheet' href='/css/button.css'>
+<link rel='stylesheet' href='/css/table.css'>
+<link rel='stylesheet' href='/css/modal.css'>
+<link rel='stylesheet' href='/css/tree.css'>
+
+<script src="/js/utils.js"></script>
+<script src="/js/dialog.js"></script>
+<script src="/js/api.js"></script>
+
+</head>
+
+<body>
+<!-- The actual snackbar -->
+<div id="snackbar"></div>
+
+<main>
+<!-- Sidebar/menu -->
+<div w3-include-html="/sidebar" id="sidebar"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:210px;">
+
+  <!-- Header -->
+  <header class="w3-container">
+    <h4 style="color:black"><b><span th:text="${title}"></span></b></h4>
+    <hr style="margin:5px">
+  </header>
+
+  <div class="w3-container" style="margin-right:60%;">
+    <input id="apiId" type="hidden" th:value="${id}">
+
+    Name
+    <input id="apiName" class="w3-input w3-border w3-round" type="text" th:value="${name}">
+    <br>
+    
+    Program
+    <select id="program" onchange="programChanged(event);" class="w3-select">
+      <option th:if="${creating}" value="">Select program</option>
+      <option th:if="${creating}" th:each="p : ${programs}" th:value="${p.id}" th:text="${p.name}"></option>
+      <option th:if="${updating}" th:each="p : ${programs}" th:value="${p.id}" th:text="${p.name}" th:selected="${p.id == program.id}"></option>
+    </select>
+    <br><br>
+
+    Blueprint
+    <select id="blueprint" class="w3-select">
+      <option th:each="b : ${blueprints}" th:value="${b.id}" th:text="${b.name}" th:selected="${b.id == blueprint.id}"></option>
+    </select>
+    <br><br>
+
+    <button th:if="${creating}" class="w3-button w3-round-medium w3-green" onclick="createAPI();">Create</button>
+    <button th:if="${updating}" class="w3-button w3-round-medium w3-green" onclick="updateAPI();">Update</button>
+    <!--button id="btnDebug" class="btnApp" onclick="debugDate();">Debug</button-->
+    <br><br>
+
+    <div id="response"></div>
+  </div>
+</div>
+
+</main>
+
+  <script th:inline="javascript">
+  includeHTML();
+  </script>
+
+</body>
+
+</html>
