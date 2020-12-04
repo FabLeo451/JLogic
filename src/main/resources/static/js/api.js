@@ -42,7 +42,7 @@ function refreshTable () {
 
         g_apiList = ordered;
 
-        var header = ['API', '', 'Program', 'Blueprint', 'Enabled', 'Modified', null];
+        var header = ['API', 'Method', 'Path', 'Program', 'Blueprint', 'Enabled', 'Modified', null];
         //var fields = ['name', 'blueprint_id', 'enabled', 'modified'];
 
         var tr = document.createElement('tr');
@@ -79,21 +79,24 @@ function refreshTable () {
               td.classList.add('td1');
               //td.classList.add('w3-padding');
               //td.innerHTML = `<a target="Javascript:void(0);" onclick="editAPI (`+index+`)" style="cursor:pointer;"><strong>`+value["name"]+`</strong> <i class="icon i-pen w3-text-gray" title="Edit"></a>`;
-              td.innerHTML = `<a href="/api/`+value.id+`/edit" style="cursor:pointer;"><strong>`+value["name"]+`</strong> <i class="icon i-pen w3-text-gray" title="Edit"></a>`;
+              td.innerHTML = `<a href="/mapping/`+value.id+`/edit" style="cursor:pointer;"><strong>`+value["name"]+`</strong></a>`;
               tr.appendChild(td);
 
-              // GET
+              // Method
               td = document.createElement('td');
               td.classList.add('td1');
-              td.innerHTML = '<a target="_blank" href="/api/'+value.name+'">GET <i class="icon i-external-link-alt w3-text-gray" title="HTTP GET"></a>';
+              td.innerHTML = value.method;
+              tr.appendChild(td);
+
+              // Path
+              td = document.createElement('td');
+              td.classList.add('td1');
+              td.innerHTML = value.path;
               tr.appendChild(td);
 
               // Program
               td = document.createElement('td');
               td.classList.add('td1');
-              /*var pr = searchCatalog (jcatalog, value["programId"]);
-              var prName = pr ? pr["name"] : '<div class="w3-text-red">Not found</div>';
-              td.innerHTML = prName;*/
               td.innerHTML = value.blueprint ? value.blueprint.programName : '';
               tr.appendChild(td);
 
@@ -163,7 +166,7 @@ function refreshAPICallback (xhttp) {
 
 function refreshAPIs () {
   document.getElementById("api-table").innerHTML =  '<div class="loader"></div>Refreshing...';
-  callServer ("GET", "/api", null, refreshAPICallback);
+  callServer ("GET", "/mapping", null, refreshAPICallback);
 };
 
 function loadCatalog () {
@@ -284,11 +287,11 @@ function submitAPI(method, id) {
   switch (method) {
     case "POST":
       message = 'Creating API...';
-      url = '/api';
+      url = '/mapping';
       break;
     case "PUT":
       message = 'Updating API...';
-      url = '/api/'+id;
+      url = '/mapping/'+id;
       break;
   }
     
@@ -446,7 +449,7 @@ function editAPI (index) {
 
   editAPIDialog ('Edit API', api, function (data) {
       var d = dialogMessage ('Working', 'Updating API...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("PUT", '/api/'+api.id, JSON.stringify(data), function (xhttp) {
+      callServer ("PUT", '/mapping/'+api.id, JSON.stringify(data), function (xhttp) {
           if (xhttp.readyState == 4) {
             d.destroy();
 
@@ -470,7 +473,7 @@ function deleteAPI (id, name) {
       dialog.destroy();
       var d = dialogMessage ('Working', 'Deleting folder...', DialogButtons.NONE, DialogIcon.RUNNING, null);
 
-      callServer ("DELETE", "/api/"+id, null, function (xhttp) {
+      callServer ("DELETE", "/mapping/"+id, null, function (xhttp) {
           if (xhttp.readyState == 4) {
             d.destroy();
 
@@ -491,7 +494,7 @@ function deleteAPI (id, name) {
 function enableAPI (id, name, enabled) {
   dialogMessage ("Confirm", (enabled ? 'Enable' : 'Disable')+" API <b>"+name+"</b>?", DialogButtons.YES_NO, DialogIcon.QUESTION, function (dialog) {
       dialog.destroy();
-      callServer ("PUT", "/api/"+id+"/"+(enabled ? 'enable' : 'disable'), null, function (xhttp) {
+      callServer ("PUT", "/mapping/"+id+"/"+(enabled ? 'enable' : 'disable'), null, function (xhttp) {
         if (xhttp.readyState == 4) {
           if (xhttp.status == 200) {
             showSnacknar(BPResult.SUCCESS, "API successfully "+(enabled ? 'enabled' : 'disabled'), 2000);

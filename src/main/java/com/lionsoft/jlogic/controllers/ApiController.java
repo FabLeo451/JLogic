@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @RestController
 public class ApiController {
 
+  public String apiExecPrefix = "/api";
+
   @Autowired
   APIRepository repository;
 
@@ -48,7 +50,7 @@ public class ApiController {
 
   Logger logger = LoggerFactory.getLogger(ApiController.class);
 
-	@GetMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/mapping", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> get() {
 	  List<APIEntity> list = APIService.findAll();
 
@@ -58,7 +60,7 @@ public class ApiController {
 		return (APIService.findAll());
 	}
 
-	@PostMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/mapping", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> create(@RequestBody APIEntity api) {
 	  logger.info("Creating API "+api.getName());
 
@@ -79,7 +81,7 @@ public class ApiController {
 		return (repository.findAll());
 	}
 
-	@PutMapping(value = "/api/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/mapping/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> update(@PathVariable("id") String id, @RequestBody APIEntity api) {
     logger.info("Updating API "+api.getName());
 
@@ -105,7 +107,7 @@ public class ApiController {
 		return (repository.findAll());
 	}
 
-	@DeleteMapping(value = "/api/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "/mapping/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> delete(@PathVariable("id") String id) {
 	  logger.info("Deleting API "+id);
 
@@ -115,6 +117,36 @@ public class ApiController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
 
     APIService.delete(api.get());
+
+		return (repository.findAll());
+	}
+
+	@PutMapping(value = "/mapping/{id}/enable", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<APIEntity> enableAPI(@PathVariable("id") String id) {
+
+    Optional<APIEntity> api = repository.findById(id);
+
+    if (!api.isPresent())
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
+
+	  logger.info("Enabling API "+api.get().getName());
+
+    APIService.setEnabled(api.get(), true);
+
+		return (repository.findAll());
+	}
+
+	@PutMapping(value = "/mapping/{id}/disable", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<APIEntity> disableAPI(@PathVariable("id") String id) {
+
+    Optional<APIEntity> api = repository.findById(id);
+
+    if (!api.isPresent())
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
+
+	  logger.info("Disabling API "+api.get().getName());
+
+    APIService.setEnabled(api.get(), false);
 
 		return (repository.findAll());
 	}
@@ -138,12 +170,7 @@ public class ApiController {
       throw new ResponseStatusException(result.getStatus(), result.getMessage());
 */
     APIResult result = APIService.execute(name, null, request);
-/*
-    Session session = sessionService.getSession(request);
 
-    if (session != null && !session.getWebApplication())
-      sessionService.deleteSession(request);
-*/
     if (result.getCode() != 0)
       throw new ResponseStatusException(result.getStatus(), result.getMessage());
 
@@ -160,46 +187,11 @@ public class ApiController {
 	  logger.info("Executing API "+name);
 
     APIResult result = APIService.execute(name, data, request);
-/*
-    Session session = sessionService.getSession(request);
 
-    if (session != null && !session.getWebApplication())
-      sessionService.deleteSession(request);
-*/
     if (result.getCode() != 0)
       throw new ResponseStatusException(result.getStatus(), result.getMessage());
 
 		return new ResponseEntity<>(result.getResponse(), result.getStatus());
-	}
-
-	@PutMapping(value = "/api/{id}/enable", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<APIEntity> enableAPI(@PathVariable("id") String id) {
-
-    Optional<APIEntity> api = repository.findById(id);
-
-    if (!api.isPresent())
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
-
-	  logger.info("Enabling API "+api.get().getName());
-
-    APIService.setEnabled(api.get(), true);
-
-		return (repository.findAll());
-	}
-
-	@PutMapping(value = "/api/{id}/disable", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<APIEntity> disableAPI(@PathVariable("id") String id) {
-
-    Optional<APIEntity> api = repository.findById(id);
-
-    if (!api.isPresent())
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
-
-	  logger.info("Disabling API "+api.get().getName());
-
-    APIService.setEnabled(api.get(), false);
-
-		return (repository.findAll());
 	}
 
 }

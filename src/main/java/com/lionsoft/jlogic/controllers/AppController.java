@@ -176,7 +176,7 @@ public class AppController {
   /**
    * Create API
    */
-	@RequestMapping("/api/create")
+	@RequestMapping("/mapping/create")
 	public String createApi(HttpServletRequest request, Model model) {
 
 	  Optional<User> user = userRepository.findByUsername(request.getUserPrincipal().getName());
@@ -192,7 +192,7 @@ public class AppController {
   /**
    * Update API
    */
-	@RequestMapping("/api/{id}/edit")
+	@RequestMapping("/mapping/{id}/edit")
 	public String editApi(HttpServletRequest request, Model model, @PathVariable("id") String id) {
 
 	  Optional<APIEntity> api = APIService.findById(id);
