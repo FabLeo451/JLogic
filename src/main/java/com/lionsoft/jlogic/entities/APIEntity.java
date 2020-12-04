@@ -26,6 +26,12 @@ public class APIEntity {
      
     @Column(name="name")
     private String name;
+     
+    @Column(name="path")
+    private String path;
+     
+    @Column(name="method")
+    private String method;
     
     @Column(name="update_time")
     private Date updateTime;
@@ -52,6 +58,8 @@ public class APIEntity {
       setUpdateTime(new Date());
       setId(id);
       setName(name);
+      setMethod("GET");
+      setPath("/");
       setEnabled(enabled);
     }
      
@@ -76,6 +84,22 @@ public class APIEntity {
     
     public void setName(String name) {
       this.name = name;
+    }
+    
+    public String getPath() {
+      return (path);
+    }
+    
+    public void setPath(String path) {
+      this.path = path;
+    }
+    
+    public String getMethod() {
+      return (method);
+    }
+    
+    public void setMethod(String method) {
+      this.method = method;
     }
     
     public Date getUpdateTime() {

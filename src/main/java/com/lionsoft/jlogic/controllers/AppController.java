@@ -182,7 +182,7 @@ public class AppController {
 	  Optional<User> user = userRepository.findByUsername(request.getUserPrincipal().getName());
 
 	  model.addAttribute("title", "Create API");
-	  model.addAttribute("id", "-1");
+	  model.addAttribute("api", new APIEntity(null, "New API", true));
 	  model.addAttribute("creating", true);
 	  model.addAttribute("updating", false);
 	  model.addAttribute("programs", catalogService.getPrograms());
@@ -201,8 +201,9 @@ public class AppController {
 	    return "/apipanel";
 
 	  model.addAttribute("title", "Edit API");
-	  model.addAttribute("id", id);
-	  model.addAttribute("name", api.get().getName());
+	  //model.addAttribute("id", id);
+	  //model.addAttribute("name", api.get().getName());
+	  model.addAttribute("api", api.get());
 	  model.addAttribute("program", api.get().getBlueprint().getProgram());
 	  model.addAttribute("blueprint", api.get().getBlueprint());
 	  model.addAttribute("creating", false);

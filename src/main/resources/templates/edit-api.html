@@ -36,10 +36,25 @@
   </header>
 
   <div class="w3-container" style="margin-right:60%;">
-    <input id="apiId" type="hidden" th:value="${id}">
+    <input th:if="${creating}" id="apiId" type="hidden">
+    <input th:if="${updating}" id="apiId" type="hidden" th:value="${api.id}">
 
     Name
-    <input id="apiName" class="w3-input w3-border w3-round" type="text" th:value="${name}">
+    <!--input th:if="${creating}" id="apiName" class="w3-input w3-border w3-round" type="text"-->
+    <input id="apiName" class="w3-input w3-border w3-round" type="text" th:value="${api.name}">
+    <br>
+
+    Method
+    <select id="method" class="w3-select">
+      <option value="POST" th:selected="${api.method == 'POST'}">POST (Create)</option>
+      <option value="GET" th:selected="${api.method == 'GET'}">GET (Read)</option>
+      <option value="PUT" th:selected="${api.method == 'PUT'}">PUT (Update)</option>
+      <option value="DELETE" th:selected="${api.method == 'DELETE'}">DELETE (Delete)</option>
+    </select>
+    <br><br>
+
+    Path
+    <input id="path" class="w3-input w3-border w3-round" type="text" th:value="${api.path}">
     <br>
     
     Program

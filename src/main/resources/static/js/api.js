@@ -250,6 +250,7 @@ function programChanged(event) {
 function validateAPI() {
   var apiName = document.getElementById("apiName").value.trim();
   var progamId = document.getElementById("program").value;
+  var path = document.getElementById("path").value;
 
   if (apiName == "" || apiName == null) {
     dialogError ("Missing API name.");
@@ -263,6 +264,8 @@ function validateAPI() {
   
   var api = {"name": apiName, 
              "blueprint": {"id": document.getElementById("blueprint").value}, 
+             "method": document.getElementById("method").value, 
+             "path": path, 
              "enabled": true
             };
             
