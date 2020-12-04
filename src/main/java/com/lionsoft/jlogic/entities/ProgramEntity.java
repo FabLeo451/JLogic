@@ -20,9 +20,9 @@ import javax.persistence.CollectionTable;
 
 import java.io.*;
 import java.util.*;
-import java.util.Date;
+/*import java.util.Date;
 import java.util.List;
-import java.util.Properties;
+import java.util.Properties;*/
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1069,7 +1069,7 @@ public class ProgramEntity {
 	  f = new File(getMyDir()+"/MANIFEST.MF");
 	  f.delete();
 	}
-
+/*
 	Object[] getParams(Method m, JSONObject jdata) {
 	  Object[] args = null;
 	  int len = jdata.size();
@@ -1084,9 +1084,10 @@ public class ProgramEntity {
 
 	    Class types[] = m.getParameterTypes();
 
-	    /*for (int j = 0; j < types.length; j++)
-        System.out.println("param #" + j + " " + types[j]);*/
+	    \/*for (int j = 0; j < types.length; j++)
+        System.out.println("param #" + j + " " + types[j]);*\/
 
+      // Scan method parameters
       for (int j = 0; j < parameters.length; j++) {
         Parameter p = parameters[j];
         //System.out.println(p.toString());
@@ -1131,13 +1132,81 @@ public class ProgramEntity {
           else if (obj instanceof Double)
             args[j] = (Double) obj;
 
-          System.out.println("args[ "+j+"] = "+args[j]);
+          System.out.println("args["+j+"] = "+args[j]);
         }
       }
 	  }
 
 	  return args;
 	}
+*/
+
+	Object[] getParams(Method m, Map<String, Object> actualParams) {
+	  Object[] args = null;
+	  int len = actualParams.size();
+	  System.out.println("Input length: "+len);
+
+    Parameter[] parameters = m.getParameters();
+
+    System.out.println("Method "+m.getName()+" has "+parameters.length+" parameters");
+
+    if (parameters.length > 0) {
+	    args = new Object[parameters.length];
+
+	    Class types[] = m.getParameterTypes();
+
+	    /*for (int j = 0; j < types.length; j++)
+        System.out.println("param #" + j + " " + types[j]);*/
+
+      // Scan method parameters
+      for (int j = 0; j < parameters.length; j++) {
+        Parameter p = parameters[j];
+        //System.out.println(p.toString());
+        System.out.println(p.getName()+" "+types[j]+" Type:"+types[j].getName()+" isArray:"+types[j].isArray()+" Modifiers: "+p.getModifiers()+" "+Modifier.toString(p.getModifiers()));
+
+        if (types[j].isArray()) {
+          Object[] oa = (Object[]) actualParams.get(p.getName());
+          int size = oa.length;
+          System.out.println("Array of "+size);
+          
+          Object[] objArray = null;
+
+          if (types[j].getName().equals("[Ljava.lang.String;"))
+            objArray = new String[size];
+          else if (types[j].getName().equals("[Ljava.lang.Integer;"))
+            objArray = new Integer[size];
+          else if (types[j].getName().equals("[Ljava.lang.Boolean;"))
+            objArray = new Boolean[size];
+          else if (types[j].getName().equals("[Ljava.lang.Double;"))
+            objArray = new Double[size];  
+            
+          for (int k=0; k<size; k++) {
+            if (types[j].getName().equals("[Ljava.lang.String;"))
+              objArray[k] = (String) oa[k];
+            else if (types[j].getName().equals("[Ljava.lang.Integer;"))
+              objArray[k] = (Integer) ((Long) oa[k]).intValue();
+            else if (types[j].getName().equals("[Ljava.lang.Boolean;"))
+              objArray[k] = (Boolean) oa[k];
+            else if (types[j].getName().equals("[Ljava.lang.Double;"))
+              objArray[k] = (Double) oa[k];
+          }
+
+          args[j] = objArray;
+        } else {
+          if (types[j].getName().equals("java.lang.Integer"))
+            args[j] = ((Long) actualParams.get(p.getName())).intValue();
+          else
+            args[j] = actualParams.get(p.getName());
+
+        }
+        
+        System.out.println("args["+j+"] = "+args[j]);
+      }
+	  }
+
+	  return args;
+	}
+//////////////////////////////////////////////////////////////////
 
 /*
   private static <E extends Enum> E[] getEnumValues(Class<E> enumClass)
@@ -1182,11 +1251,11 @@ public class ProgramEntity {
     return clUrls;
 	}
 
-	public boolean run(String methodName, String data) {
-	  return (run(methodName, data, getName(), null));
+	public boolean run(String methodName, /*String data*/Map<String, Object> actualParams) {
+	  return (run(methodName, actualParams, getName(), null));
 	}
 
-	public boolean run(String methodName, String data, String logName, HttpServletRequest request) {
+	public boolean run(String methodName, /*String data*/Map<String, Object> actualParams, String logName, HttpServletRequest request) {
 	  //System.setProperty("user.dir", getClassesDir());
 	  setResult(ProgramEntity.SUCCESS, "OK");
 
@@ -1295,7 +1364,7 @@ public class ProgramEntity {
         if (method != null) {
           Object[] params = null;
 
-
+/*
           if (data != null) {
             JSONParser jsonParser = new JSONParser();
             JSONObject jdata;
@@ -1312,6 +1381,9 @@ public class ProgramEntity {
               return false;
             }
           }
+*/
+          if (actualParams != null)
+            params = getParams(method, actualParams);
 
           Method _getCode = cls.getMethod("_getCode");
           Method _log = cls.getMethod("_log", String.class);
@@ -1362,12 +1434,12 @@ public class ProgramEntity {
           }
           finally {
             _event.invoke(programInstance, eventEnd, null);
-          }
 
-          System.out.flush();
-          System.err.flush();
-          System.setErr(oldErr);
-          System.setOut(oldOut);
+            System.out.flush();
+            System.err.flush();
+            System.setErr(oldErr);
+            System.setOut(oldOut);
+          }
 
           output = baos.toString();
 

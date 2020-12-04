@@ -11,11 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.Optional;
-import java.util.Date;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.*;
  
 @Entity
 @Table(name="API")
@@ -59,7 +57,7 @@ public class APIEntity {
       setId(id);
       setName(name);
       setMethod("GET");
-      setPath("/");
+      setPath("foo");
       setEnabled(enabled);
     }
      
@@ -134,9 +132,42 @@ public class APIEntity {
     public void setBlueprint(BlueprintEntity blueprint) {
       this.blueprint = blueprint;
     }
-    /*
-    @JsonProperty
-    public String getBlueprintId() {
-        return blueprint != null ? blueprint.getId() : null;
-    }*/
+    
+    public Map<String, String> mapURI(String uri) {
+      Map<String, String> map = new HashMap();
+      
+      if (path.endsWith("/") && !uri.endsWith("/"))
+        uri += "/";
+      
+      if (!path.endsWith("/") && uri.endsWith("/"))
+        path += "/";
+        
+      //System.out.println("path = "+path);
+      //System.out.println("uri  = "+uri);
+      
+      String[] partsApi = path.split("/");
+      String[] parts = uri.split("/");
+      
+      if (partsApi.length != parts.length)
+        return null;
+      
+      for (int i=0; i<partsApi.length; i++) {
+        boolean isParameter = partsApi[i].substring(0,1).equals("{");
+        
+        //System.out.println("["+i+"] "+partsApi[i]+" = "+parts[i]);
+        
+        if (isParameter) {
+          String paramName = partsApi[i].substring(1).replace("}", "");
+          String ParamValue = parts[i];
+          
+          map.put(paramName, ParamValue);
+          //System.out.println(paramName+" = "+ParamValue);
+        } else {
+          if (!parts[i].equals(partsApi[i]))
+            return null;
+        }
+      }
+      
+      return(map);
+    }
 }

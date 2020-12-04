@@ -2,11 +2,18 @@ package com.lionsoft.jlogic;
 
 import org.springframework.boot.system.ApplicationHome;
 import java.io.*;
+/*
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
+*/
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -15,10 +22,7 @@ import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.UUID;
-import java.util.Optional;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 
@@ -88,9 +92,90 @@ public class APIService {
 	}
 
   /**
+   * Execute the API with the given name
+   */
+  /*public APIResult execute(String name, String data, HttpServletRequest request) {
+    APIResult result = new APIResult();
+
+    Optional<APIEntity> api = repository.findByName(name);
+
+    if (!api.isPresent()) {
+      result.setResult(404, HttpStatus.NOT_FOUND, "API '"+name+"' not found");
+      return(result);
+    }
+
+	  result = execute(api.get(), data, request);
+
+    return(result);
+  }*/
+
+  /**
+   * Search API by method and URI
+   */
+  public APIEntity searchByMethodAndURI(String method, String uri) {
+    List<APIEntity> list = findAll();
+    APIEntity apiFound = null;
+
+    for (APIEntity api : list) {
+      // Check method
+      if (!api.getMethod().equals(method))
+        continue;
+        
+      // Check URI
+      if (api.mapURI(uri) == null)
+        continue;
+        
+      apiFound = api;
+      break;
+    }
+
+    return apiFound;
+  }
+
+  /**
+   * Execute the API with the given method and URI (string to be parsed)
+   */
+   
+  public APIResult executeWithData(String method, String uri, String data, HttpServletRequest request) {
+    APIResult result = new APIResult();
+    JSONParser jsonParser = new JSONParser();
+    JSONObject jdata;
+
+    try {
+      logger.info("Parsing data...");
+      jdata = (JSONObject) jsonParser.parse(data);
+
+      return (execute(method, uri, (Map)jdata, request));
+
+    } catch (ParseException e) {
+      result.setResult(1, HttpStatus.BAD_REQUEST, e.getMessage());
+      return(result);
+    }
+  }
+
+  /**
+   * Execute the API with the given method and URI (mapped parameters)
+   */
+  public APIResult execute(String method, String uri, Map<String, Object> actual, HttpServletRequest request) {
+    APIResult result = new APIResult();
+    APIEntity api = searchByMethodAndURI(method, uri);
+    
+    if (api == null) {
+      result.setResult(404, HttpStatus.NOT_FOUND, "Mapping not found");
+      return(result);
+    }
+    
+    logger.info("Executing API "+api.getName());
+
+	  result = execute(api, actual, request);
+
+    return(result);
+  }
+
+  /**
    * Execute the blueprint associated to APIEntity api
    */
-  public APIResult execute(APIEntity api, String data, HttpServletRequest request) {
+  public APIResult execute(APIEntity api, /*String data*/Map<String, Object> actual, HttpServletRequest request) {
     APIResult result = new APIResult();
 
     if (!api.getEnabled()) {
@@ -105,7 +190,7 @@ public class APIService {
 
     // Execute
 
-    if (/*program.run(method, data, api.getName(), request)*/programService.run(program, method, data, api.getName(), request)) {
+    if (programService.run(program, method, actual, api.getName(), request)) {
       result.setResponse(program.getHTTPResponse());
       result.setResult(program.getResult(), HttpStatus.OK, "Success");
     } else {
@@ -129,21 +214,4 @@ public class APIService {
     return result;
   }
 
-  /**
-   * Execute the API with the given name
-   */
-  public APIResult execute(String name, String data, HttpServletRequest request) {
-    APIResult result = new APIResult();
-
-    Optional<APIEntity> api = repository.findByName(name);
-
-    if (!api.isPresent()) {
-      result.setResult(404, HttpStatus.NOT_FOUND, "API '"+name+"' not found");
-      return(result);
-    }
-
-	  result = execute(api.get(), data, request);
-
-    return(result);
-  }
 }

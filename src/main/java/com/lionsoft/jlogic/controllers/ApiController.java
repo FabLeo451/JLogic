@@ -154,22 +154,13 @@ public class ApiController {
   /**
    * Execute an API on GET /api/{name}
    */
-	@GetMapping(value = "/api/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> executeGET(HttpServletRequest request, @PathVariable("name") String name) {
-    logger.info("Executing API "+name);
-
-/*
-    Optional<APIEntity> api = repository.findByName(name);
-
-    if (!api.isPresent())
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
-
-	  APIResult result = APIService.execute(api.get(), null, request);
-
-    if (result.getCode() != 0)
-      throw new ResponseStatusException(result.getStatus(), result.getMessage());
-*/
-    APIResult result = APIService.execute(name, null, request);
+	@GetMapping(value = "/api/**", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> executeGET(HttpServletRequest request) {
+    logger.info("Executing API "+request.getRequestURI());
+    
+    String uri = request.getRequestURI().replaceAll("^/api/", "");
+    
+    APIResult result = APIService.execute("GET", uri, null, request);
 
     if (result.getCode() != 0)
       throw new ResponseStatusException(result.getStatus(), result.getMessage());
@@ -180,6 +171,7 @@ public class ApiController {
   /**
    * Execute an API on POST /api/{name}
    */
+   /*
   @PostMapping(value = "/api/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> executePOST(HttpServletRequest request,
                                             @PathVariable("name") String name,
@@ -192,6 +184,6 @@ public class ApiController {
       throw new ResponseStatusException(result.getStatus(), result.getMessage());
 
 		return new ResponseEntity<>(result.getResponse(), result.getStatus());
-	}
+	}*/
 
 }
