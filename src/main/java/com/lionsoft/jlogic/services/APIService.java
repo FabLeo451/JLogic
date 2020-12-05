@@ -112,7 +112,7 @@ public class APIService {
   /**
    * Search API by method and URI
    */
-  public APIEntity searchByMethodAndURI(String method, String uri) {
+  public Optional<APIEntity> searchByMethodAndURI(String method, String uri) {
     List<APIEntity> list = findAll();
     APIEntity apiFound = null;
 
@@ -129,7 +129,7 @@ public class APIService {
       break;
     }
 
-    return apiFound;
+    return Optional.ofNullable(apiFound);
   }
 
   /**
@@ -161,12 +161,14 @@ public class APIService {
     Map<String, Object> params = new HashMap<>();
     
     // Search matching api
-    APIEntity api = searchByMethodAndURI(method, uri);
+    Optional<APIEntity> apiOpt = searchByMethodAndURI(method, uri);
     
-    if (api == null) {
+    if (!apiOpt.isPresent()) {
       result.setResult(404, HttpStatus.NOT_FOUND, "Mapping not found");
       return(result);
     }
+    
+    APIEntity api = apiOpt.get();
     
     // Add data
     if (actual != null) {

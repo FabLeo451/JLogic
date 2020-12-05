@@ -60,15 +60,20 @@ public class ApiController {
 		return (APIService.findAll());
 	}
 
+  /**
+   * Create mapping
+   */
 	@PostMapping(value = "/mapping", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> create(@RequestBody APIEntity api) {
 	  logger.info("Creating API "+api.getName());
 
-    Optional<APIEntity> apiCheck = repository.findByName(api.getName());
+    // Check mapping
+    Optional<APIEntity> apiOpt = APIService.searchByMethodAndURI(api.getMethod(), api.getPath());
 
-    if (apiCheck.isPresent())
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Existing API");
+    if (apiOpt.isPresent())
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mapping already present");
 
+    // Check blueprint
     Optional<BlueprintEntity> blueprint = blueprintService.findById(api.getBlueprint().getId());
 
     if (!blueprint.isPresent())
@@ -80,21 +85,26 @@ public class ApiController {
 
 		return (repository.findAll());
 	}
-
+	
+  /**
+   * Update mapping
+   */
 	@PutMapping(value = "/mapping/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> update(@PathVariable("id") String id, @RequestBody APIEntity api) {
     logger.info("Updating API "+api.getName());
 
-    Optional<APIEntity> apiCheck = repository.findById(id);
+    Optional<APIEntity> apiOpt = repository.findById(id);
 
-    if (!apiCheck.isPresent())
+    if (!apiOpt.isPresent())
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
 
-    apiCheck = repository.findByName(api.getName());
+    // Check mapping
+    apiOpt = APIService.searchByMethodAndURI(api.getMethod(), api.getPath());
 
-    if (apiCheck.isPresent() && (!apiCheck.get().getId().equals(id)))
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Existing API with same name");
+    if (apiOpt.isPresent() && apiOpt.get().getId() != id)
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mapping already present");
 
+    // Check blueprint
     Optional<BlueprintEntity> blueprint = blueprintService.findById(api.getBlueprint().getId());
 
     if (!blueprint.isPresent())
