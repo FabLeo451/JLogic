@@ -1351,7 +1351,7 @@ class Blueprint {
   }
 
 	addArrayUnique(a, x) {
-    if (!a.includes(x)) {
+    if (x && !a.includes(x)) {
 			console.log ("import "+x);
 			a.push(x);
     }
@@ -1392,50 +1392,50 @@ class Blueprint {
     /* Input */
     jo.input = [];
 
-    var input = '"input": [', /*k = 0,*/ value;
+    //var input = '"input": [', /*k = 0,*/ value;
 
     // Check if returns a value
     //if (!this.returns())
       jo.input.push({ "type": "Exec",  "label": "" });
 
     if (this.entryPointNode) {
-    for (var i=0; i<this.entryPointNode.connectors.length; i++) {
-      if (!this.entryPointNode.connectors[i].exec) {
-          //input += (this.returns() ? '' : ', ');
+      for (var i=0; i<this.entryPointNode.connectors.length; i++) {
+        if (!this.entryPointNode.connectors[i].exec) {
+            //input += (this.returns() ? '' : ', ');
 
-        //input += this.entryPointNode.connectors[i].toString();
-        var jconn = this.entryPointNode.connectors[i].toJSON();
-        jconn.value = this.entryPointNode.connectors[i].getDefaultValue();
+          //input += this.entryPointNode.connectors[i].toString();
+          var jconn = this.entryPointNode.connectors[i].toJSON();
+          jconn.value = this.entryPointNode.connectors[i].getDefaultValue();
 
-        jo.input.push(jconn);
-        //k ++;
+          jo.input.push(jconn);
+          //k ++;
+        }
       }
-    }
     }
 
     /* Output */
     jo.output = [];
 
     if (this.returnNode) {
-    if (true/*!this.returns()*/) {
-      var jexec = { "type": "Exec", "label": ""};
-      jo.output.push(jexec);
-    }
-
-    for (var i=0; i<this.returnNode.connectors.length; i++) {
-      if (!this.returnNode.connectors[i].exec) {
-        var jconn = this.returnNode.connectors[i].toJSON();
-
-        jconn.java = { "references": {"type": this.returnNode.connectors[i].getDataType().name, "name":"out_"+i }};
-
-        if (jconn.hasOwnProperty('value'))
-          delete jconn.value;
-
-        //console.log (jconn);
-
-        jo.output.push(jconn);
+      if (true/*!this.returns()*/) {
+        var jexec = { "type": "Exec", "label": ""};
+        jo.output.push(jexec);
       }
-    }
+
+      for (var i=0; i<this.returnNode.connectors.length; i++) {
+        if (!this.returnNode.connectors[i].exec) {
+          var jconn = this.returnNode.connectors[i].toJSON();
+
+          jconn.java = { "references": {"type": this.returnNode.connectors[i].getDataType().name, "name":"out_"+i }};
+
+          if (jconn.hasOwnProperty('value'))
+            delete jconn.value;
+
+          //console.log (jconn);
+
+          jo.output.push(jconn);
+        }
+      }
     }
 
     /* Nodes */
@@ -1450,7 +1450,7 @@ class Blueprint {
           this.addArrayUnique(jo.import, node.import[k]);
       }
     }
-
+    
     /* Edges */
     jo.edges = [];
 
