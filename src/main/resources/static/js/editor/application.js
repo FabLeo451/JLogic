@@ -1293,7 +1293,7 @@ function appAddInOut(paramType, target)
 
 function appAddVariable(v)
 {
-  var tabId, /*prefix,*/ rowPrefix;
+  var tabId, rowPrefix;
   var table, cbBeginRename, cbEndRename, cbDelete, cbTypeChanged, initialize='';
   var types = blueprint.getTypes();
 
@@ -1306,8 +1306,9 @@ function appAddVariable(v)
   cbDelete = v.isGlobal() ? 'deleteGlobalVariable' : 'deleteVariableCallback';
   //cbTypeChanged = v.isGlobal() ? 'globalVariableTypeChanged' : 'variableTypeChanged';
   cbTypeChanged = 'variableTypeChanged';
-  initialize = v.isGlobal() ? '' : `<br><button class="btnApp" onclick="setInitialValue('`+v.id+`');" style="background-color:seagreen;">Initialize</button>`;
+  //initialize = v.isGlobal() ? '' : `<br><button class="btnApp" onclick="setInitialValue('`+v.id+`');" style="background-color:seagreen;">Initialize</button>`;
   var deleteButton = `<i class="icon i-times w3-text-gray w3-hover-text-red" onclick="`+cbDelete+`('`+v.id+`');" style="cursor:pointer;" title="Delete"></i>`;
+  var editButton = "";//`<i class="icon i-edit w3-text-gray" onclick="editVariable('`+v.id+`');" style="cursor:pointer;" title="Edit"></i>`;
 
   table = document.getElementById(tabId);
   tr.setAttribute('id', rowPrefix+v.id);
@@ -1336,17 +1337,17 @@ function appAddVariable(v)
 
     var htmlRow = `
        <td class="tdVars" valign="top">
-          <i id="i_`+v.id+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i>
+          <i class="icon ellipsis-v" style="color:silver;padding-right:4px;"></i><i id="i_`+v.id+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i>
        </td>
        <td class="tdVars">
           <input id="input_`+v.id+`" class="inputConnector" _varid=`+v.id+` style="width:12em; margin-bottom:3px;" value="`+v.name+`" name="varName" onfocus="`+cbBeginRename+`(event)" onblur="`+cbEndRename+`(event);"  ondragstart="return false;" ondrop="return false;">
 
         <br>
         `+combo+`
-        `+initialize+`
+        `/*+initialize*/+`
        </td>
        <td class="tdVars" valign="top">
-         `+deleteButton+`
+         `+editButton+` `+deleteButton+`
        </td>
      `;
 
@@ -1485,8 +1486,6 @@ function deleteVariableCallback(id)
 
   v.element.parentElement.removeChild(v.element);
   blueprint.deleteVariable (v);
-  //vElem.parentElement.removeChild(vElem);
-  //setStatus (BPEditStatus.MODIFIED);
   cbModified();
 }
 
@@ -1518,7 +1517,7 @@ function setVariableType(v, type) {
   updVar.reset();
   updateVariableColor ('i_'+v.id, type);
 }
-
+/*
 function setInitialValue(id) {
   var type = null;
   var v = blueprint.getVariable (id);
@@ -1564,6 +1563,32 @@ function setInitialValue(id) {
     dialog.create(type, v.getName(), v.get(), 0);
 
   }
+}
+*/
+
+function editVariable(id) {
+  var type = null;
+  var v = blueprint.getVariable (id);
+
+    beginEdit();
+
+    var dialog = new Dialog ();
+    dialog.callbackOK = function (dialog) {
+        dialog.destroy();
+        endEdit();
+        //console.log ('New value '+v.get());
+
+        //setStatus (BPEditStatus.MODIFIED);
+        cbModified ();
+    }
+    dialog.callbackCancel = function (dialog) { dialog.destroy(); endEdit(); };
+		dialog.setWidthMode(DialogWidthMode.MIN);
+    dialog.create('Edit variable');
+
+    var content = dialog.getContentElement ();
+
+    content.innerHTML = `
+                        `;
 }
 
 function appClearVariables ()
