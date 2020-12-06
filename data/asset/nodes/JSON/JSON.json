@@ -1,6 +1,6 @@
 {
   "types": [
-    { "id":200, "name":"JSONObject", "color":"lightslategray", "init":"new JSONObject()" },
+    { "id":200, "name":"JSONObject", "color":"lightslategray", "init":"new JSONObject()", "jar":"lib/json-simple-1.1.1.jar", "import":"org.json.simple.*" },
     { "id":201, "name":"JSONArray", "color":"lightslategray", "init":"new JSONArray()" }
   ],
   "nodes": [

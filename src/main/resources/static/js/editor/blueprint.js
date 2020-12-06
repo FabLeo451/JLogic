@@ -256,6 +256,7 @@ class Blueprint {
       t.init = types[i].hasOwnProperty("init") ? types[i].init : null;
       t.import = types[i].hasOwnProperty("import") ? types[i].import: null;
       t.classpath = types[i].hasOwnProperty("classpath") ? types[i].classpath: null;
+      t.jar = types[i].hasOwnProperty("jar") ? types[i].jar: null;
       //t.t_html_input_type = types[i]["html_input_type"];
       this.types.push (t);
       //console.log ("Added type "+t.name+" "+t.color + " "+t.exec);
@@ -1373,6 +1374,7 @@ class Blueprint {
     jo.types = [];
     jo.import = [];
     jo.classpath = [];
+    jo.jar = [];
 
     //console.log (this.variables);
 
@@ -1388,6 +1390,9 @@ class Blueprint {
 
 			if (t.hasOwnProperty("classpath"))
         this.addArrayUnique(jo.classpath, t.classpath);
+
+			if (t.hasOwnProperty("jar"))
+        this.addArrayUnique(jo.jar, t.jar);
 
       jo.variables.push(jv);
 
@@ -1466,6 +1471,11 @@ class Blueprint {
 			if (node.classpath) {
 				for (var k=0; k<node.classpath.length; k++)
           this.addArrayUnique(jo.classpath, node.classpath[k].replace("{path}", path));
+      }      
+      
+			if (node.jar) {
+				for (var k=0; k<node.jar.length; k++)
+          this.addArrayUnique(jo.jar, node.jar[k].replace("{path}", path));
       }      
     }
     

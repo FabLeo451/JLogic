@@ -97,6 +97,7 @@ class BPType {
 
     this.import = null;
     this.classpath = null;
+    this.jar = null;
   }
 }
 
