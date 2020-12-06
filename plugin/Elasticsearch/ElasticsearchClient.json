@@ -1,6 +1,6 @@
 {
   "types": [
-    { "id":300, "name":"ElasticsearchClient", "color":"lightslategray", "import":"com.lionsoft.elasticsearch.ElasticsearchClient" }
+    { "id":300, "name":"ElasticsearchClient", "color":"lightslategray", "import":"com.lionsoft.elasticsearch.ElasticsearchClient", "classpath":"plugin/Elasticsearch/ElasticsearchClient.jar" }
   ],
   "nodes": [
     {

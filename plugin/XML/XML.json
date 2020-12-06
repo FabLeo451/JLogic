@@ -1,8 +1,8 @@
 {
   "types": [
-    { "name":"Document", "color":"lightslategray", "init":"new Document()" },
-    { "name":"Node", "color":"lightslategray" },
-    { "name":"NodeList", "color":"lightslategray" }
+    { "name":"Document", "color":"lightslategray", "init":"new Document()", "import":"org.w3c.dom.Document" },
+    { "name":"Node", "color":"lightslategray", "import":"org.w3c.dom.Node" },
+    { "name":"NodeList", "color":"lightslategray", "import":"org.w3c.dom.NodeList" }
   ],
   "nodes": [
     {

@@ -274,9 +274,13 @@ public class BlueprintEntity {
 
       try {
         jcontent = (JSONObject) jsonParser.parse(content);
+        
+        // First check global classpath
+        if (jcontent.containsKey("classpath")) {
+          addDependency(classPathList, (JSONArray) jcontent.get("classpath"), "");
+        }
 
         // Get dependencies from every node
-
         JSONArray jnodes = (JSONArray) jcontent.get("nodes");
 
         for (int i=0; i<jnodes.size(); i++) {

@@ -94,7 +94,9 @@ class BPType {
     this.name = "Generic type";
     this.color = "green";
     this.exec = false;
-    //this.t_html_input_type = "number";
+
+    this.import = null;
+    this.classpath = null;
   }
 }
 

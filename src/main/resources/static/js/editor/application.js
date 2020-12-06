@@ -226,16 +226,15 @@ function onNameChanged() {
   blueprint.onModified ();
 }
 
-function checkGlobals() {
-  var updated = false;
+function findAndDeleteNextWrongGlobal() {
+  // Find global variables present in the blueprint but not in the program
+  var index, found;
 
-  // Find global variables present in the blueprint and not in the program
-  var del = [];
-  var found;
   for (var b=0; b<_jbp.variables.length; b++) {
     if (_jbp.variables[b].global) {
-      found = false;
 
+      // Check if it's in the program
+      found = false;
       for (var p=0; p<program.variables.length; p++) {
         if (_jbp.variables[b].id == program.variables[p].id) {
           found = true;
@@ -244,24 +243,33 @@ function checkGlobals() {
       }
 
       if (!found) {
-        bpConsole.append ("Blueprint global variable '"+_jbp.variables[b].name+"' not in program.", BPConsoleTextType.WARNING);
-        del.push(b);
+        var v = _jbp.variables[b];
+
+        if (!v.referenced) {
+          bpConsole.append ("Blueprint global variable '"+v.name+"' not in program and will be removed.", BPConsoleTextType.WARNING);
+          _jbp.variables.splice(b, 1);
+          return true;
+        }
+        else {
+          bpConsole.append ("Variable '"+v.name+"' should be removed but is used in blueprint", BPConsoleTextType.WARNING);
+        }
       }
     }
   }
+  
+  return false;
+}
 
-  // Delete global variables fonud
-  for (var i=0; i<del.length; i++) {
-    var v = _jbp.variables[del[i]];
-
-    if (!v.referenced) {
-      bpConsole.append ("Removing "+v.name, BPConsoleTextType.WARNING);
-      _jbp.variables.splice(del[i], 1);
+function checkGlobals() {
+  var updated = false;
+  
+  while(true) {
+    var deleted = findAndDeleteNextWrongGlobal();
+    
+    if (deleted)
       updated = true;
-    }
-    else {
-      bpConsole.append ("Variable '"+v.name+"' should be removed but is used in blueprint", BPConsoleTextType.WARNING);
-    }
+    else
+      break;
   }
 
   // Add program variables not present in the blueprint yet and update exsising
@@ -271,7 +279,7 @@ function checkGlobals() {
     //console.log("Checking program variable:");
     //console.log(pv);
 
-	  found = false;
+	  var found = false;
     for (var k=0; k<_jbp.variables.length; k++) {
       if (!_jbp.variables[k].global)
         continue;
@@ -292,7 +300,7 @@ function checkGlobals() {
 		if (!found) {
       bpConsole.append('Found new global variable <b>'+pv.name+'</b>', BPConsoleTextType.WARNING);
       _jbp.variables.push(pv);
-      //updated = true;
+      updated = true;
     }
   }
 
