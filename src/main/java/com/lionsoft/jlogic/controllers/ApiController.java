@@ -162,6 +162,27 @@ public class ApiController {
 	}
 
   /**
+   * Tail log
+   */
+	@GetMapping(value = "/mapping/{id}/tail"/*, produces = MediaType.APPLICATION_JSON_VALUE*/)
+	public ResponseEntity<String> tailLog(@PathVariable("id") String id,
+	                                      @RequestParam(value = "lines", defaultValue = "30") Integer lines) {
+    String buffer = null;
+    Optional<APIEntity> api = repository.findById(id);
+
+    if (!api.isPresent())
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
+
+    //try {
+      buffer = APIService.tail(api.get(), lines);
+    /*} catch (NumberFormatException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "lines should be a number");
+    }*/
+
+		return (new ResponseEntity<>(buffer, HttpStatus.OK));
+	}
+
+  /**
    * Execute an API on GET /api/...
    */
 	@GetMapping(value = "/api/**", produces = MediaType.APPLICATION_JSON_VALUE)
