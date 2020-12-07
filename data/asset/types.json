@@ -2,12 +2,12 @@
 "types": [
         { "id":-1, "name":"Any", "color":"gray" },
         { "id":0, "name":"Exec", "color":"SteelBlue", "exec":true },
-        { "id":1, "name":"Integer", "color":"green" },
-        { "id":2, "name":"Double", "color":"darkorange" },
+        { "id":1, "name":"Integer", "color":"green", "init":"0" },
+        { "id":2, "name":"Double", "color":"darkorange", "init":"0" },
         { "id":3, "name":"String", "color":"mediumpurple" },
-        { "id":4, "name":"Boolean", "color":"firebrick" },
+        { "id":4, "name":"Boolean", "color":"firebrick", "init":"Boolean.TRUE" },
         { "id":5, "name":"Object", "color":"darkgreen" },
-        { "id":6, "name":"Long", "color":"darkkhaki" },
+        { "id":6, "name":"Long", "color":"darkkhaki", "init":"0L" },
         { "id":7, "name":"Byte", "color":"brown" }
       ]
 }

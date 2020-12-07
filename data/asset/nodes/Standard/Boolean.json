@@ -1,0 +1,43 @@
+[
+  {
+    "name": "AND",
+    "type": 5,
+    "version": 1,
+    "inner_text": "AND",
+    "java": "in{0} && in{1}",
+    "input": [
+      { "type": "Boolean", "label": "", "value": true },
+      { "type": "Boolean", "label": "", "value": true }
+    ],
+    "output": [
+      { "type": "Boolean", "label": "" }
+    ]
+  },
+  {
+    "name": "OR",
+    "type": 5,
+    "version": 1,
+    "inner_text": "OR",
+    "java": "in{0} || in{1}",
+    "input": [
+      { "type": "Boolean", "label": "", "value": true },
+      { "type": "Boolean", "label": "", "value": true }
+    ],
+    "output": [
+      { "type": "Boolean", "label": "" }
+    ]
+  },
+  {
+    "name": "NOT",
+    "type": 5,
+    "version": 1,
+    "inner_text": "NOT",
+    "java": "!in{0}",
+    "input": [
+      { "type": "Boolean", "label": "", "value": true }
+    ],
+    "output": [
+      { "type": "Boolean", "label": "" }
+    ]
+  }
+]

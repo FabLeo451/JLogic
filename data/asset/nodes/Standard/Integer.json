@@ -16,6 +16,36 @@
     ]
   },
   {
+    "name": "Increase integer",
+    "type": 4,
+    "version": 1,
+    "java":"in{1} += in{2};",
+    "input": [
+      { "type": "Exec", "label": "" },
+      { "type": "Integer", "label": "Integer" },
+      { "type": "Integer", "label": "Increment", "value": 1 }
+    ],
+    "output": [
+      { "type": "Exec", "label": "" },
+      { "type": "Integer", "label": "", "java": {"references": {"input":1}} }
+    ]
+  },
+  {
+    "name": "Decrease integer",
+    "type": 4,
+    "version": 1,
+    "java":"in{1} -= in{2};",
+    "input": [
+      { "type": "Exec", "label": "" },
+      { "type": "Integer", "label": "Integer" },
+      { "type": "Integer", "label": "Decrement", "value": 1 }
+    ],
+    "output": [
+      { "type": "Exec", "label": "" },
+      { "type": "Integer", "label": "", "java": {"references": {"input":1}} }
+    ]
+  },
+  {
     "name": "Integer less than",
     "type": 5,
     "version": 1,
@@ -35,6 +65,20 @@
     "version": 1,
     "inner_text": ">",
     "symbol": ">",
+    "input": [
+      { "type": "Integer", "label": "", "value": 0 },
+      { "type": "Integer", "label": "", "value": 0 },
+    ],
+    "output": [
+      { "type": "Boolean", "label": "" }
+    ]
+  },
+  {
+    "name": "Integer equals",
+    "type": 5,
+    "version": 1,
+    "inner_text": "==",
+    "symbol": "==",
     "input": [
       { "type": "Integer", "label": "", "value": 0 },
       { "type": "Integer", "label": "", "value": 0 },

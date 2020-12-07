@@ -8,7 +8,7 @@
     { "type": "Integer", "label": "", "value":0 }
   ],
   "output": [
-    { "pinType": 0, "dataType": 1, "label": "Default" }
+    { "pinType": "Exec", "dataType": "Integer", "label": "Default" }
   ],
-  "addOutput": { "pinType": 0, "dataType": 1, "label": "Case", "value":0 }
+  "addOutput": { "pinType": "Exec", "dataType": "Integer", "label": "Case", "value":0 }
 }
