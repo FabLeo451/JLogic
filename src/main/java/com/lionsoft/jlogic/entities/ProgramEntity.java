@@ -334,6 +334,10 @@ public class ProgramEntity {
 		this.output = s;
 	}
 
+	public void appendOutput(String s) {
+		this.output += s;
+	}
+
   @JsonIgnore
 	public String getOutput() {
 		return output;
@@ -723,6 +727,7 @@ public class ProgramEntity {
 	  logger.info ("Compiling "+getName());
 
 	  clean();
+	  setOutput("");
 	  setStatus(ProgramStatus.ERRORS);
 
 	  //System.setProperty("user.dir", getMyDir());
@@ -779,7 +784,7 @@ public class ProgramEntity {
 			    result = false;
 		    }
 
-		    setOutput(output.toString());
+		    appendOutput(output.toString());
 	    }
 	    catch (IOException e) {
 		    setMessage (e.getMessage());

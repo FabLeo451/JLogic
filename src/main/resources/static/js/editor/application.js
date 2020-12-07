@@ -674,10 +674,22 @@ function compileProgram () {
 
   callServer ("POST", "/program/"+_jbp.programId+"/compile", null, function (xhttp) {
       if (xhttp.readyState == 4) {
+        var message="", output;
+      
+        try {
+          var jerr = JSON.parse (xhttp.responseText);
+          message = jerr.message;
+          output = jerr.output;
+        }
+        catch (err) {
+          output = xhttp.responseText;
+        }
+            
         if (xhttp.status == 200) {
           //console.log(xhttp.responseText);
           var jo = JSON.parse(xhttp.responseText);
 
+          bpConsole.append (output);
           bpConsole.append ("<i class=\"icon i-check w3-text-green\"></i> Program successfully compiled", BPConsoleTextType.SUCCESS);
           setProgramStatus (ProgramStatus.COMPILED);
           document.getElementById('bp-title').innerHTML = document.getElementById('bpName').value;
@@ -688,15 +700,8 @@ function compileProgram () {
           else if (xhttp.status == 0)
             bpConsole.append ("Can't connect to server", BPConsoleTextType.ERROR);
           else {
-            try {
-              var jerr = JSON.parse (xhttp.responseText);
-              bpConsole.append (jerr.message, BPConsoleTextType.ERROR);
-              bpConsole.append (jerr.output, BPConsoleTextType.ERROR);
-            }
-            catch (err) {
-              bpConsole.append ("Error "+xhttp.status+": "+xhttp.responseText, BPConsoleTextType.ERROR);
-            }
-
+              bpConsole.append (message, BPConsoleTextType.ERROR);
+              bpConsole.append (output, BPConsoleTextType.ERROR);
           }
 
           setProgramStatus (ProgramStatus.ERRORS);
