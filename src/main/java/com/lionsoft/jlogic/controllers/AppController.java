@@ -213,7 +213,27 @@ public class AppController {
 	  return "edit-api";
 	}
 
-	@RequestMapping("/blueprint/{id}/edit")
+  /**
+   * View api log
+   */
+	@RequestMapping("/mapping/{id}/view-log")
+	public String viewLog(HttpServletRequest request, Model model, @PathVariable("id") String id) {
+
+	  Optional<APIEntity> api = APIService.findById(id);
+	  
+	  if (!api.isPresent())
+	    return "/apipanel";
+
+	  model.addAttribute("title", "Log");
+	  model.addAttribute("api", api.get());
+	  model.addAttribute("log", APIService.tail(api.get(), 30));
+	  return "view-log";
+	}
+
+  /**
+   * Edit blueprint
+   */
+  @RequestMapping("/blueprint/{id}/edit")
 	public String editBlueprint(Model model, @PathVariable("id") String id) {
 		model.addAttribute("name", buildProperties.getName());
 		model.addAttribute("version", buildProperties.getVersion());
@@ -221,7 +241,10 @@ public class AppController {
 
     return "edit"; 
   }
-
+  
+  /**
+   * Edit properties
+   */
 	@RequestMapping("/edit-properties")
 	public String getGlobalProperties(Model model) {
 	  model.addAttribute("title", "Properties");

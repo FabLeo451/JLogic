@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="utf-8">
+<title th:text="${title}"></title>
+<link rel="stylesheet" href="/css/w3.css">
+<link rel='stylesheet' href='/css/snackbar.css'>
+<link rel='stylesheet' href='/css/main.css'>
+<link rel='stylesheet' href='/css/button.css'>
+<link rel='stylesheet' href='/css/table.css'>
+<link rel='stylesheet' href='/css/modal.css'>
+<link rel='stylesheet' href='/css/tree.css'>
+
+<script src="/js/utils.js"></script>
+<script src="/js/dialog.js"></script>
+<script src="/js/api.js"></script>
+
+</head>
+
+<body>
+<!-- The actual snackbar -->
+<div id="snackbar"></div>
+
+<main>
+<!-- Sidebar/menu -->
+<div w3-include-html="/sidebar" id="sidebar"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:210px;">
+
+  <!-- Header -->
+  <header class="w3-container">
+    <h4 style="color:black"><b><span th:text="${api.name}"></span></b></h4>
+    <hr style="margin:5px">
+  </header>
+
+  <div class="w3-container" style="margin-right:60%;">
+    <pre id="log" th:text="${log}"/>
+  </div>
+</div>
+
+</main>
+
+  <script th:inline="javascript">
+    includeHTML();
+  </script>
+
+</body>
+
+</html>

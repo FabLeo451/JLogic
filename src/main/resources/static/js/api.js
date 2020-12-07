@@ -42,7 +42,7 @@ function refreshTable () {
 
         g_apiList = ordered;
 
-        var header = ['API', 'Method', 'Path', 'Program', 'Blueprint', 'Enabled', 'Modified', null];
+        var header = ['API', 'Method', 'Path', 'Program', 'Blueprint', 'Enabled', 'Modified', null, null];
         //var fields = ['name', 'blueprint_id', 'enabled', 'modified'];
 
         var tr = document.createElement('tr');
@@ -73,12 +73,9 @@ function refreshTable () {
             tr.classList.add ('tr1');
             tr.setAttribute('id', rowId);
 
-            //for (var i = 0; i < fields.length; i++) {
               // API name
               td = document.createElement('td');
               td.classList.add('td1');
-              //td.classList.add('w3-padding');
-              //td.innerHTML = `<a target="Javascript:void(0);" onclick="editAPI (`+index+`)" style="cursor:pointer;"><strong>`+value["name"]+`</strong> <i class="icon i-pen w3-text-gray" title="Edit"></a>`;
               td.innerHTML = `<a href="/mapping/`+value.id+`/edit" style="cursor:pointer;"><strong>`+value["name"]+`</strong></a>`;
               tr.appendChild(td);
 
@@ -123,17 +120,22 @@ function refreshTable () {
 
               tr.appendChild(td);
 
+              // Modified
               td = document.createElement('td');
               td.classList.add('td1');
-              //td.classList.add('w3-padding');
               td.appendChild(document.createTextNode(secondsToString(Date.parse(value.updateTime) / 1000)));
               tr.appendChild(td);
+              
+              // View log
+              td = document.createElement('td');
+              td.classList.add('td1');
+              td.innerHTML = `<a href="/mapping/`+value.id+`/view-log" style="cursor:pointer;">Log</a>`;
+              tr.appendChild(td);
 
+              // Delete
               td = document.createElement ('td');
               td.classList.add ('td1');
               td.setAttribute ('id', buttonsId);
-              //console.log (value);
-              //td.innerHTML = '<button class="btnApp" onclick="deleteAPI ('+value.id+')"><i class="icon i-trash-alt"></i> Delete</button>';
               td.innerHTML = `<a target="Javascript:void(0);" onclick="deleteAPI ('`+value.id+`', '`+value.name+`')" style="cursor:pointer;"><i class="icon i-trash-alt w3-text-gray w3-hover-text-red"></i></a>`;
               tr.appendChild (td);
 
