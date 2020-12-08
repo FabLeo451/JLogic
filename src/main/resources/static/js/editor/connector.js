@@ -484,7 +484,7 @@ class Connector {
       }
     }
     else {
-      this.element.style.paddingLeft = "15px";
+      //this.element.style.paddingLeft = "15px";
 	    this.element.style.textAlign = "right";
       this.element.appendChild(this.label);
 

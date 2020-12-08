@@ -312,13 +312,12 @@ main {
 }
 
 .n-text {
-  /*position: relative;*/
   opacity: 0.2;
   font-size: 25px;
   font-weight: bold;
-  /*width: 100%;*/
   text-align: center;
-  /*z-index: 0;*/
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 #status {
