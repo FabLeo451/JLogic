@@ -642,4 +642,22 @@ public class ProgramController {
     
     return (tree.equals("0") ? null : catalogService.getPrograms());
 	}
+	
+	/**
+   * Clone program
+   */
+	@PostMapping(value = "/program/{id}/clone", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<ProgramEntity> clone(HttpServletRequest request,
+	                                 @PathVariable("id") String id,
+	                                 @RequestParam(value = "tree", defaultValue = "false") Boolean tree) {
+	  Optional<ProgramEntity> program = programService.findById(id);
+
+	  if (!program.isPresent())
+	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found: "+id);
+    
+    if (programService.clone(program.get()) == null)
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to clone program.");
+    
+    return (tree ? catalogService.getPrograms() : null);
+	}
 }

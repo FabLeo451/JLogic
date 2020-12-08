@@ -738,7 +738,7 @@ public class ProgramService {
     
     return true;
   }
-  
+/*  
   public JSONObject loadJsonFile(String filename) {
     JSONObject jo = null;
     
@@ -760,7 +760,7 @@ public class ProgramService {
     }  
     
     return jo;
-  }
+  }*/
 
 	/**
 	 * Import program from file
@@ -774,7 +774,7 @@ public class ProgramService {
 
     if (unpack(zipFile, unzippedDir)) {
       // Load info file
-      JSONObject jinfo = loadJsonFile(unzippedDir+"/info.json");
+      JSONObject jinfo = Utils.loadJsonFile(unzippedDir+"/info.json");
       
       if (jinfo != null) {
         // Create new program
@@ -823,5 +823,36 @@ public class ProgramService {
     }
             
 	  return program;
+	}
+
+	public ProgramEntity clone(ProgramEntity program) {
+	  ProgramEntity clone = null;
+	  String cloneName = "Clone of "+program.getName();
+
+    logger.info("Creating program "+cloneName);
+
+    clone = createEmpty(cloneName);
+
+    if (clone == null) {
+      logger.error("Can't create program "+cloneName);
+      return null;
+    }
+
+    // Import blueprints
+    for (BlueprintEntity sourceBP: program.getBlueprints()) {
+      BlueprintEntity b = importBlueprintFile(clone, sourceBP.getFilename());
+      b.setInternalId(sourceBP.getInternalId());
+    }
+    
+    // Copy propertes file
+    try {
+      Path propsFrom = Paths.get(program.getMyDir()+"/Program.properties");
+      Path propsTo = Paths.get(clone.getMyDir()+"/Program.properties");
+      Files.copy(propsFrom, propsTo, StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+      logger.error(e.getMessage());
+    }
+
+	  return(clone);
 	}
 }

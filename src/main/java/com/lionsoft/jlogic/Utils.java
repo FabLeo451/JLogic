@@ -6,6 +6,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 
 import java.util.*;
+import java.io.*;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 
 public class Utils {
 
@@ -38,5 +43,31 @@ public class Utils {
     }
     
     return(map);
+  }
+  
+  /**
+   * Load a JSONObject from a file
+   */
+  static JSONObject loadJsonFile(String filename) {
+    JSONObject jo = null;
+    
+    try {
+      String content = new String (Files.readAllBytes(Paths.get(filename)));
+
+      try {
+        JSONParser jsonParser = new JSONParser();
+        jo = (JSONObject) jsonParser.parse(content);
+      }
+      catch (ParseException e) {
+        e.printStackTrace();
+        return null;
+      }
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }  
+    
+    return jo;
   }
 }
