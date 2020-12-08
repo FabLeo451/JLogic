@@ -73,6 +73,7 @@ function createProgramMenu(event) {
     {
         'items': [
           //{'icon': '<i class="icon i-project-diagram"></i>', 'item':'Add blueprint',  action: () => addBlueprint(id) },
+          {'icon': '<i class="icon i-clone"></i>', 'item': 'Clone',  action: () => cloneProgram(id) },
           {'icon': '<i class="icon i-archive"></i>', 'item': 'Create JAR',  action: () => createJAR(id) },
           {'icon': '<i class="icon i-project-diagram"></i>', 'item': 'Import blueprint file',  action: () => importBlueprint(id) },
           {'icon': '<i class="icon i-sliders-h"></i>', 'item': 'Edit properties',  action: () => window.location = '/program/'+id+'/edit-properties' },
@@ -468,6 +469,11 @@ function createProgram (parentId) {
       callServer ("PUT", resource, JSON.stringify(data), myCallback);
     }
   );
+}
+
+function cloneProgram (programId) {
+  dialogWorking = dialogMessage ('Working', 'Cloning program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
+  callServer ("POST", '/program/'+programId+'/clone?tree=1', null, myCallback);
 }
 
 function createJAR (programId) {
