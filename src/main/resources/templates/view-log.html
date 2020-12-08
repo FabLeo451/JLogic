@@ -11,6 +11,7 @@
 <link rel='stylesheet' href='/css/table.css'>
 <link rel='stylesheet' href='/css/modal.css'>
 <link rel='stylesheet' href='/css/tree.css'>
+<link rel='stylesheet' href='/css/log.css'>
 
 <script src="/js/utils.js"></script>
 <script src="/js/dialog.js"></script>
@@ -22,21 +23,23 @@
 <!-- The actual snackbar -->
 <div id="snackbar"></div>
 
-<main>
+<main style="height:100%;">
 <!-- Sidebar/menu -->
 <div w3-include-html="/sidebar" id="sidebar"></div>
 
 <!-- !PAGE CONTENT! -->
-<div class="w3-main" style="margin-left:210px;">
+<div class="w3-main" style="margin-left:210px;height:100%;">
 
   <!-- Header -->
   <header class="w3-container">
-    <h4 style="color:black"><b><span th:text="${api.name}"></span></b></h4>
+    <h4 style="color:black"><b>Log: <span th:text="${api.name}"></span></b></h4>
     <hr style="margin:5px">
   </header>
 
-  <div class="w3-container" style="margin-right:60%;">
-    <pre id="log" th:text="${log}"/>
+  <div class="w3-container" style="height:100%;">
+    <div class="w3-panel log-window" style="height:100%;">
+      <pre class="log-text" th:text="${log}"/>
+    </div>
   </div>
 </div>
 
