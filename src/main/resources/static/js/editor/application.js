@@ -1330,6 +1330,7 @@ function appAddVariable(v)
   var combo = '';
 
   //if (!v.isGlobal()) {
+
     combo = '<select _varid='+v.id+' _global='+v.global+' onchange="'+cbTypeChanged+'(event);" class="select-css">';
     for (var i=0; i<types.length; i++) {
       if (!types[i].exec) {
