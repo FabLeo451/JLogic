@@ -1317,7 +1317,7 @@ function appAddVariable(v)
   // Entire row
   var varRow = document.createElement('div');
   varRow.classList.add ('variable');
-  varRow.classList.add ('w3-round-small');
+  varRow.classList.add ('w3-round');
   varRow.setAttribute('_varid', v.id);
   varRow.ondragstart = dragVariable;
   varRow.draggable = true;
