@@ -1308,107 +1308,28 @@ function appAddInOut(paramType, target)
 
 function appAddVariable(v)
 {
-  var tabId, rowPrefix;
-  var table, cbBeginRename, cbEndRename, cbDelete, cbTypeChanged, initialize='';
-  //var types = blueprint.getTypes();
+  var cbDelete = v.isGlobal() ? 'deleteGlobalVariable' : 'deleteVariableCallback';
+  var deleteButton = `<div class="w3-right" style="padding-left:0.5em;"><i class="icon i-times w3-text-gray w3-hover-text-red" onclick="`+cbDelete+`('`+v.id+`');" style="cursor:pointer;" title="Delete"></i></div>`;
+  var editButton = `<div class="w3-right" style="padding-left:0.5em;"><i class="icon i-edit w3-text-gray" onclick="editVariable('`+v.id+`');" style="cursor:pointer;" title="Edit"></i></div>`;
 
-  var tr = document.createElement('tr');
+	var color = blueprint.getType(v.getType()).color;
 
-  tabId = v.isGlobal() ? "tab_global_variables" : 'tab_variables';
-  //rowPrefix = 'row_';
-  cbBeginRename = 'beginRename';
-  cbEndRename = 'endRenameVariable';
-  cbDelete = v.isGlobal() ? 'deleteGlobalVariable' : 'deleteVariableCallback';
-  //cbTypeChanged = v.isGlobal() ? 'globalVariableTypeChanged' : 'variableTypeChanged';
-  cbTypeChanged = 'variableTypeChanged';
-  //initialize = v.isGlobal() ? '' : `<br><button class="btnApp" onclick="setInitialValue('`+v.id+`');" style="background-color:seagreen;">Initialize</button>`;
-  var deleteButton = `<i class="icon i-times w3-text-gray w3-hover-text-red" onclick="`+cbDelete+`('`+v.id+`');" style="cursor:pointer;" title="Delete"></i>`;
-  var editButton = `<i class="icon i-edit w3-text-gray" onclick="editVariable('`+v.id+`');" style="cursor:pointer;" title="Edit"></i>`;
+  // Entire row
+  var varRow = document.createElement('div');
+  varRow.classList.add ('variable');
+  varRow.classList.add ('w3-round-small');
+  varRow.setAttribute('_varid', v.id);
+  varRow.ondragstart = dragVariable;
+  varRow.draggable = true;
+  varRow.innerHTML = `<i class="icon ellipsis-v" style="color:silver;padding-right:4px;"></i>
+                       <i id="i_`+v.id+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i> `+v.getName()+`
+                      `+deleteButton+` `+editButton;    
+	
+	v.element = varRow;
+  document.getElementById(v.isGlobal() ? 'global_vars' : 'local_vars').appendChild(varRow);
 
-  table = document.getElementById(tabId);
-  //tr.setAttribute('id', rowPrefix+v.id);
-  tr.setAttribute('_varid', v.id);
-
-/*
-  var color, type_id;
-  var combo = '';
-
-  //if (!v.isGlobal()) {
-
-    combo = '<select _varid='+v.id+' _global='+v.global+' onchange="'+cbTypeChanged+'(event);" class="select-css">';
-    for (var i=0; i<types.length; i++) {
-      if (!types[i].exec) {
-        var selected = '';
-
-        if (types[i].name == v.type) {
-          selected = ' selected="selected"';
-          color = types[i].color;
-          type_id = types[i].name;
-        }
-
-        combo += '<option value="'+types[i].name+'" '+selected+'>'+types[i].name+'</option>';
-
-      }
-    }
-    combo += '</select>';
-  //}
-*/
-		var color = blueprint.getType(v.getType()).color;
-
-    var htmlRow = `
-       <td class="tdVars" valign="top">
-          <i class="icon ellipsis-v" style="color:silver;padding-right:4px;"></i><i id="i_`+v.id+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i>
-       </td>
-       <td class="tdVars">
-          <!--input id="input_`+v.id+`" class="inputConnector" _varid=`+v.id+` style="width:12em; margin-bottom:3px;" value="`+v.name+`" name="varName" onfocus="`+cbBeginRename+`(event)" onblur="`+cbEndRename+`(event);"  ondragstart="return false;" ondrop="return false;"-->
-        `+v.name+`
-        <br>
-        `/*+combo*/+`
-        `/*+initialize*/+`
-       </td>
-       <td class="tdVars" valign="top">
-         `+editButton+` `+deleteButton+`
-       </td>
-     `;
-
-    tr.innerHTML = htmlRow;
-    //table.appendChild(tr);
-
-    //var inElem = document.getElementById('input_'+v.id);
-    //setInputFilter(inElem, function(value) { return /^[a-zA-Z0-9_-]*$/.test(value); });
-
-    /* Variables can be dragged into blueprint */
-    tr.classList.add ('trVars');
-    tr.title = 'Drag into blueprint';
-    //var v = document.getElementById('i_'+targetId);
-    /*tr.ondragstart = dragVariable;
-    tr.draggable = true;
-    v.element = tr;*/
-    
-    // Icon and name (draggable)
-    var varElem = document.createElement('div'); 
-    varElem.style.display = "inline-block";
-    varElem.setAttribute('_varid', v.id);
-    varElem.ondragstart = dragVariable;
-    varElem.draggable = true;
-    varElem.innerHTML = `<i class="icon ellipsis-v" style="color:silver;padding-right:4px;"></i><i id="i_`+v.id+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i> `+v.getName();
-
-    // Controls
-    var varCtrl = document.createElement('div');
-    varCtrl.classList.add ('w3-right');
-    varCtrl.style.display = "inline-block";
-    varCtrl.innerHTML = editButton+' '+deleteButton;
-
-    // Entire row
-    var varItem = document.createElement('div'); 
-		varItem.appendChild(varElem);
-		varItem.appendChild(varCtrl);
-		
-		v.element = varElem;
-    document.getElementById(v.isGlobal() ? 'global_vars' : 'local_vars').appendChild(varItem);
-
-    setStatus (BPEditStatus.MODIFIED);
-    cbModified ();
+  setStatus (BPEditStatus.MODIFIED);
+  cbModified ();
 }
 
 /* addInputCallback() - Triggered by button */
