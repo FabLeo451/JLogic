@@ -1310,7 +1310,7 @@ function appAddVariable(v)
 {
   var tabId, rowPrefix;
   var table, cbBeginRename, cbEndRename, cbDelete, cbTypeChanged, initialize='';
-  var types = blueprint.getTypes();
+  //var types = blueprint.getTypes();
 
   var tr = document.createElement('tr');
 
@@ -1329,6 +1329,7 @@ function appAddVariable(v)
   //tr.setAttribute('id', rowPrefix+v.id);
   tr.setAttribute('_varid', v.id);
 
+/*
   var color, type_id;
   var combo = '';
 
@@ -1351,6 +1352,8 @@ function appAddVariable(v)
     }
     combo += '</select>';
   //}
+*/
+		var color = blueprint.getType(v.getType()).color;
 
     var htmlRow = `
        <td class="tdVars" valign="top">
@@ -1381,6 +1384,14 @@ function appAddVariable(v)
     tr.ondragstart = dragVariable;
     tr.draggable = true;
     v.element = tr;
+
+    var varItem = document.createElement('div'); // Entire row
+    var varElem = document.createElement('div'); // Icon and name (draggable)
+
+    varElem.innerHTML = `<i class="icon ellipsis-v" style="color:silver;padding-right:4px;"></i><i id="i_`+v.id+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i> `+v.getName();
+
+		varItem.appendChild(varElem);
+    document.getElementById(v.isGlobal() ? 'global_vars' : 'local_vars').appendChild(varItem);
 
     setStatus (BPEditStatus.MODIFIED);
     cbModified ();
