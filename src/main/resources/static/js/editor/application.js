@@ -1372,7 +1372,7 @@ function appAddVariable(v)
      `;
 
     tr.innerHTML = htmlRow;
-    table.appendChild(tr);
+    //table.appendChild(tr);
 
     //var inElem = document.getElementById('input_'+v.id);
     //setInputFilter(inElem, function(value) { return /^[a-zA-Z0-9_-]*$/.test(value); });
@@ -1381,16 +1381,30 @@ function appAddVariable(v)
     tr.classList.add ('trVars');
     tr.title = 'Drag into blueprint';
     //var v = document.getElementById('i_'+targetId);
-    tr.ondragstart = dragVariable;
+    /*tr.ondragstart = dragVariable;
     tr.draggable = true;
-    v.element = tr;
-
-    var varItem = document.createElement('div'); // Entire row
-    var varElem = document.createElement('div'); // Icon and name (draggable)
-
+    v.element = tr;*/
+    
+    // Icon and name (draggable)
+    var varElem = document.createElement('div'); 
+    varElem.style.display = "inline-block";
+    varElem.setAttribute('_varid', v.id);
+    varElem.ondragstart = dragVariable;
+    varElem.draggable = true;
     varElem.innerHTML = `<i class="icon ellipsis-v" style="color:silver;padding-right:4px;"></i><i id="i_`+v.id+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i> `+v.getName();
 
+    // Controls
+    var varCtrl = document.createElement('div');
+    varCtrl.classList.add ('w3-right');
+    varCtrl.style.display = "inline-block";
+    varCtrl.innerHTML = editButton+' '+deleteButton;
+
+    // Entire row
+    var varItem = document.createElement('div'); 
 		varItem.appendChild(varElem);
+		varItem.appendChild(varCtrl);
+		
+		v.element = varElem;
     document.getElementById(v.isGlobal() ? 'global_vars' : 'local_vars').appendChild(varItem);
 
     setStatus (BPEditStatus.MODIFIED);
@@ -1648,10 +1662,10 @@ function editVariable(id) {
 
 function appClearVariables ()
 {
-  var table = document.getElementById("tab_global_variables");
+  var table = document.getElementById("global_vars");
   table.innerHTML = "";
 
-  var table = document.getElementById("tab_variables");
+  var table = document.getElementById("local_vars");
   table.innerHTML = "";
 }
 
