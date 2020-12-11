@@ -344,7 +344,7 @@ function appStart () {
               console.error("Global variable "+v.getName()+" exists");
           }
           else
-            console.error("Variable "+varId+" not found");
+            console.error("Variable "+jdata.id+" not found");
         }
       } catch (err) {
         console.error(err.message);
@@ -377,7 +377,7 @@ function appStart () {
               console.error("Local variable "+v.getName()+" exists");
           }
           else
-            console.error("Variable "+varId+" not found");
+            console.error("Variable "+jdata.id+" not found");
         }
       } catch (err) {
         console.error(err.message);
@@ -1123,7 +1123,9 @@ function createMenu (id) {
 
 function dragVariable(ev) {
   //ev.dataTransfer.setData("text", ev.target.id.replace ('row_', ''));
-  var id=ev.target.id.replace('row_', '');
+  //var id=ev.target.id.replace('row_', '');
+  console.log(ev.target);
+  var id = ev.target.getAttribute('_varid');
   ev.dataTransfer.setData("data", '{ "tag":"VARIABLE", "id":"'+id+'"}');
 }
 
@@ -1313,7 +1315,7 @@ function appAddVariable(v)
   var tr = document.createElement('tr');
 
   tabId = v.isGlobal() ? "tab_global_variables" : 'tab_variables';
-  rowPrefix = 'row_';
+  //rowPrefix = 'row_';
   cbBeginRename = 'beginRename';
   cbEndRename = 'endRenameVariable';
   cbDelete = v.isGlobal() ? 'deleteGlobalVariable' : 'deleteVariableCallback';
@@ -1324,7 +1326,8 @@ function appAddVariable(v)
   var editButton = `<i class="icon i-edit w3-text-gray" onclick="editVariable('`+v.id+`');" style="cursor:pointer;" title="Edit"></i>`;
 
   table = document.getElementById(tabId);
-  tr.setAttribute('id', rowPrefix+v.id);
+  //tr.setAttribute('id', rowPrefix+v.id);
+  tr.setAttribute('_varid', v.id);
 
   var color, type_id;
   var combo = '';

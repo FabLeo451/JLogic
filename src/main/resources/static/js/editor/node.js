@@ -444,7 +444,7 @@ class NodeBase {
 	createOutputContainer () {
 	  this.rightColumn = document.createElement('div');
 	  this.rightColumn.classList.add('column');
-	  this.rightColumn.classList.add('outcol');
+	  this.rightColumn.classList.add('column-out');
     this.rightColumn.classList.add('w3-right');
 	  this.row.appendChild(this.rightColumn);
 	}
@@ -518,6 +518,7 @@ class Node extends NodeBase {
 	    /* Input container */
 	    this.leftColumn = document.createElement('div');
 	    this.leftColumn.classList.add('column');
+	    this.leftColumn.classList.add('column-in');
 	    this.row.appendChild(this.leftColumn);
 	  }
 
@@ -530,7 +531,7 @@ class Node extends NodeBase {
 	  /* Output container */
 	  this.rightColumn = document.createElement('div');
 	  this.rightColumn.classList.add('column');
-	  this.rightColumn.classList.add('outcol');
+	  this.rightColumn.classList.add('column-out');
 	  this.rightColumn.classList.add('w3-right');
     /*this.rightColumn.style.cssFloat = 'right';*/
 	  this.row.appendChild(this.rightColumn);

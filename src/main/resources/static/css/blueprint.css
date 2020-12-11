@@ -306,9 +306,18 @@ main {
   min-width:20px;
   vertical-align: top;
 }
-
+/*
 .outcol {
   vertical-align: top;
+}*/
+
+.column-in {
+  margin-right: 5px;
+}
+
+.column-out {
+  vertical-align: top;
+  margin-left: 5px;
 }
 
 .n-text {
