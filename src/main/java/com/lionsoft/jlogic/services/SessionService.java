@@ -45,8 +45,8 @@ public class SessionService {
   /*public static List<Session> getList() { // DEPRECATED
     return list;
   }*/
-
-  public static List<Object> getSessions() {
+/*
+  public static List<Object> getSessions_deprecated() {
     List<Object> list = new ArrayList<Object>();
 
     for (Map.Entry<String, HttpSession> entry : sessions.entrySet()) {
@@ -64,6 +64,24 @@ public class SessionService {
         info.put("programUnit", s.getAttribute("programUnit"));
         info.put("remoteAddress", s.getAttribute("remoteAddress"));
         list.add(info);
+      } catch (IllegalStateException e) {
+        // Can occur on already invalidated sessions
+      }
+    }
+
+    return list;
+  }
+*/
+  public static List<Session> getSessions() {
+    List<Session> list = new ArrayList<Session>();
+
+    for (Map.Entry<String, HttpSession> entry : sessions.entrySet()) {
+      String id = entry.getKey();
+      HttpSession hs = (HttpSession)entry.getValue();
+      Session s = new Session(hs);
+
+      try {
+        list.add(s);
       } catch (IllegalStateException e) {
         // Can occur on already invalidated sessions
       }

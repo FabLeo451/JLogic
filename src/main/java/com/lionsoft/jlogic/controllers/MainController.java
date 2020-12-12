@@ -347,11 +347,19 @@ public class MainController {
 
     return l;
   }*/
-
+/*
   @GetMapping(value="/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<Object> getSessions2() {
+  public List<Object> getSessions() {
     //SessionsUtils sessionUtils = new SessionsUtils();
     List<Object> sessions = sessionService.getSessions();
+
+    return sessions;
+  }
+*/
+  @GetMapping(value="/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<Session> getSessions() {
+    //SessionsUtils sessionUtils = new SessionsUtils();
+    List<Session> sessions = sessionService.getSessions();
 
     return sessions;
   }

@@ -268,6 +268,7 @@ public class AppController {
 	@RequestMapping("/view-sessions")
 	public String getSessions(Model model) {
 	  model.addAttribute("sessions", sessionService.getSessions());
+	  model.addAttribute("byLoginTime", Comparator.comparing(Session::getLoginTime));
     return "view-sessions";
   }
 

@@ -59,13 +59,13 @@
       <!--TABLE-->
       <table class="table1">
         <tr><th class="th1">Client&nbsp;IP</th><th class="th1" /></th><th class="th1">User</th><th class="th1">Login&nbsp;time</th><th class="th1">Status</th><th class="th1">Executing</th><th class="th1">Agent</th><tr>
-        <tr th:each="s : ${sessions}">
+        <tr th:each="s : ${#lists.sort(sessions, byLoginTime)}">
             <td class="td1" th:text="${s.remoteAddress}"></td>
             <td class="td1" th:th:switch="${s.webApplication}">
               <span th:case="true"><i class="icon i-laptop w3-text-gray" title="Web application"></i></span>
             </td>
             <td class="td1" th:text="${s.user}"></td>
-            <td class="td1" th:text="${s.creationTime}"></td>
+            <td class="td1" th:text="${s.loginTime}"></td>
             <td class="td1" th:text="${s.status}"></td>
             <td class="td1" th:text="${s.programUnit}"></td>
             <td class="td1" th:text="${s.agent}"></td>
