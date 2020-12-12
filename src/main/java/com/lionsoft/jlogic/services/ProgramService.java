@@ -236,12 +236,14 @@ public class ProgramService {
     boolean result = false;
 
     //Session session = sessionService.getSession(request);
+    sessionService.setActive(request, true);
     sessionService.setProgramUnit(request, program.getName()+"."+methodName);
 
     result = program.run(methodName, actual, logName, request);
 
     //session.setStatus(Session.ACTIVE);
     sessionService.setProgramUnit(request, "");
+    sessionService.setActive(request, false);
 
     return(result);
   }

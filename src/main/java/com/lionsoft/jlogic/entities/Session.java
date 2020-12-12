@@ -28,13 +28,18 @@ public class Session {
 
   public Session(HttpSession s) {
     id = s.getId();
-    status = (String) s.getAttribute("status");
-    loginTime = new Date(s.getCreationTime());
-    user = (String) s.getAttribute("user");
-    agent = (String) s.getAttribute("agent");
-    isWebApplication = (boolean) (s.getAttribute("webApplication") != null ? s.getAttribute("webApplication") : false);
-    programUnit = (String) s.getAttribute("programUnit");
-    remoteAddress = (String) s.getAttribute("remoteAddress");
+    
+    try {
+      status = (String) s.getAttribute("status");
+      loginTime = new Date(s.getCreationTime());
+      user = (String) s.getAttribute("user");
+      agent = (String) s.getAttribute("agent");
+      isWebApplication = (boolean) (s.getAttribute("webApplication") != null ? s.getAttribute("webApplication") : false);
+      programUnit = (String) s.getAttribute("programUnit");
+      remoteAddress = (String) s.getAttribute("remoteAddress");
+    } catch (IllegalStateException e) {
+      // Can occur on already invalidated sessions
+    }
   }
 
   public Session(HttpServletRequest request) {

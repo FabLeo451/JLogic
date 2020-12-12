@@ -199,6 +199,14 @@ public class SessionService {
       httpSession.invalidate();
     }
   }
+
+  public void setActive(HttpServletRequest request, boolean active) {
+    HttpSession httpSession = request.getSession(false);
+
+    if (httpSession != null) {
+      httpSession.setAttribute("status", active ? "ACTIVE" : "IDLE");
+    }
+  }
 /*
   public Session getSession(HttpServletRequest request) {
     Session session = null;
