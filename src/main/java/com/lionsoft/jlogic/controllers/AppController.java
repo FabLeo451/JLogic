@@ -266,7 +266,10 @@ public class AppController {
 	}
 
 	@RequestMapping("/view-sessions")
-	public String getSessions() { return "view-sessions";	}
+	public String getSessions(Model model) {
+	  model.addAttribute("sessions", sessionService.getSessions());
+    return "view-sessions";
+  }
 
 	@RequestMapping("/metrics")
 	public String viewMetrics(Model model) {

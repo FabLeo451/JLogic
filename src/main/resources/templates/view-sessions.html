@@ -16,6 +16,8 @@
 <script src="js/utils.js"></script>
 <!--script src="js/server.js"></script-->
 <script src="js/sessions.js"></script>
+<script src="/js/jquery-latest.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
 
 </head>
 
@@ -52,9 +54,23 @@
   </header>
 
   <div class="w3-container">
-    <button class="btnApp w3-right" onclick="refreshSessions ();"><i class="icon i-refresh"></i> Refresh</button>
-    <div id="sessions" class="w3-container w3-stretch">
+    <button class="btnApp w3-right" onclick="refreshSessions();"><i class="icon i-refresh"></i> Refresh</button>
+    <div id="sessions" class="w3-container w3-stretch" th:fragment="list">
       <!--TABLE-->
+      <table class="table1">
+        <tr><th class="th1">Client&nbsp;IP</th><th class="th1" /></th><th class="th1">User</th><th class="th1">Login&nbsp;time</th><th class="th1">Status</th><th class="th1">Executing</th><th class="th1">Agent</th><tr>
+        <tr th:each="s : ${sessions}">
+            <td class="td1" th:text="${s.remoteAddress}"></td>
+            <td class="td1" th:th:switch="${s.webApplication}">
+              <span th:case="true"><i class="icon i-laptop w3-text-gray" title="Web application"></i></span>
+            </td>
+            <td class="td1" th:text="${s.user}"></td>
+            <td class="td1" th:text="${s.creationTime}"></td>
+            <td class="td1" th:text="${s.status}"></td>
+            <td class="td1" th:text="${s.programUnit}"></td>
+            <td class="td1" th:text="${s.agent}"></td>
+        </tr>
+      </table>
     <div>
   </div>
 
@@ -62,9 +78,31 @@
 
 </main>
 
-  <script>
+  <script th:inline="javascript">
   includeHTML();
-  refreshSessions ();
+  //refreshSessions ();
+  
+  function refreshSessions() {
+  /*
+    callServer ("GET", "/sessions", null, function (xhttp) {
+        if (xhttp.readyState == 4) {
+          if (xhttp.status == 200) {
+            //jcatalog = JSON.parse(xhttp.responseText);
+            $('.list').html(xhttp.responseText);
+          }
+          else {
+            console.log(xhttp.statusText);
+          }
+        }
+      }
+    			
+    		}
+    );*/
+    $.get("/sessions").done(function(fragment) { // get from controller
+        $("#sessions").replaceWith(fragment); // update snippet of page
+    });
+
+  }
   </script>
 
 </body>
