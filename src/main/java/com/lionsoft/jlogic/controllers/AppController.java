@@ -271,6 +271,12 @@ public class AppController {
     return "view-sessions";
   }
 
+	@RequestMapping("/view-sessions-upd")
+	public String getSessionsUpd(Model model) {
+	  model.addAttribute("sessions", sessionService.getSessions());
+    return "view-sessions :: #sessions";
+  }
+
 	@RequestMapping("/metrics")
 	public String viewMetrics(Model model) {
 	  long mb = 1024L * 1024L;
