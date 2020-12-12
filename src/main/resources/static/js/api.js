@@ -2,7 +2,6 @@
 
 var title="API";
 var g_apiList;
-var jcatalog = null, jindex = null;
 var dialogWorking;
 
 function searchCatalog(jroot, id) {
@@ -170,29 +169,6 @@ function refreshAPIs () {
   document.getElementById("api-table").innerHTML =  '<div class="loader"></div>Refreshing...';
   callServer ("GET", "/mapping", null, refreshAPICallback);
 };
-
-function loadCatalog () {
-  var d = dialogMessage (title, 'Getting catalog...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-
-  callServer ("GET", "/catalog", null, function (xhttp) {
-      if (xhttp.readyState == 4) {
-        d.destroy();
-
-        if (xhttp.status == 200) {
-          jcatalog = JSON.parse(xhttp.responseText);
-          jindex = jcatalog['_index'];
-          console.log("Catalog OK");
-
-          refreshAPIs();
-        }
-        else {
-          showSnacknar(BPResult.ERROR, xhttp.statusText);
-        }
-      }
-    }
-  );
-
-}
 
 class API {
   constructor() {
