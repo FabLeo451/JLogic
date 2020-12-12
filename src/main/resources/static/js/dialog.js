@@ -16,7 +16,8 @@ const DialogButtons = {
 
 const DialogWidthMode = {
   DEFAULT: 0,
-  MIN: 1
+  MIN: 1,
+  MIN30: 2
 }
 
 class Dialog {
@@ -166,6 +167,11 @@ class Dialog {
       case DialogWidthMode.MIN:
         if (this.windowElem)
           this.windowElem.style.minWidth = '40%';
+        break;
+        
+      case DialogWidthMode.MIN30:
+        if (this.windowElem)
+          this.windowElem.style.minWidth = '30%';
         break;
         
       default:

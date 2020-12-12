@@ -1547,12 +1547,12 @@ function editVariable(id) {
         //cbModified ();
     }
     dialog.callbackCancel = function (dialog) { dialog.destroy(); endEdit(); };
-		dialog.setWidthMode(DialogWidthMode.MIN);
+		//dialog.setWidthMode(DialogWidthMode.MIN30);
     dialog.create('Edit variable');
 
     var content = dialog.getContentElement ();
     
-    var combo = '<select _varid='+v.id+' _global='+v.global+' onchange="variableTypeChanged(event);" class="select-css">';
+    var combo = '<select _varid='+v.id+' _global='+v.global+' onchange="variableTypeChanged(event);" class="w3-select">';
     
     for (var i=0; i<types.length; i++) {
       if (!types[i].exec) {
@@ -1571,9 +1571,10 @@ function editVariable(id) {
     combo += '</select>';
 
     content.innerHTML = `
-      Name <input class="w3-input" _varid=`+v.id+` value="`+v.name+`" onfocus="beginRename(event)" onblur="endRenameVariable(event);">
-      <br>
-      Type `+combo+`
+      <table>
+        <tr><td>Name</td><td><input class="w3-input" _varid=`+v.id+` value="`+v.name+`" onfocus="beginRename(event)" onblur="endRenameVariable(event);"></td></tr>
+        <tr><td>Type</td><td>`+combo+`</td></tr>
+      </table>
     `;
     
     // TODO
