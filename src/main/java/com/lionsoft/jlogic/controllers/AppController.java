@@ -275,6 +275,7 @@ public class AppController {
 	@RequestMapping("/view-sessions-upd")
 	public String getSessionsUpd(Model model) {
 	  model.addAttribute("sessions", sessionService.getSessions());
+	  model.addAttribute("byLoginTime", Comparator.comparing(Session::getLoginTime));
     return "view-sessions :: #sessions";
   }
 
