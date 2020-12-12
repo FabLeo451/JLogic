@@ -1149,11 +1149,11 @@ public class ProgramEntity {
 	Object[] getParams(Method m, Map<String, Object> actualParams) {
 	  Object[] args = null;
 	  int len = actualParams.size();
-	  System.out.println("Input length: "+len);
+	  logger.info("Input actual parameters: "+len);
 
     Parameter[] parameters = m.getParameters();
 
-    System.out.println("Method "+m.getName()+" has "+parameters.length+" parameters");
+    logger.info("Method "+m.getName()+" has "+parameters.length+" parameters");
 
     if (parameters.length > 0) {
 	    args = new Object[parameters.length];
@@ -1167,12 +1167,18 @@ public class ProgramEntity {
       for (int j = 0; j < parameters.length; j++) {
         Parameter p = parameters[j];
         //System.out.println(p.toString());
-        System.out.println(p.getName()+" "+types[j]+" Type:"+types[j].getName()+" isArray:"+types[j].isArray()+" Modifiers: "+p.getModifiers()+" "+Modifier.toString(p.getModifiers()));
+        //System.out.println(p.getName()+" "+types[j]+" Type:"+types[j].getName()+" isArray:"+types[j].isArray()+" Modifiers: "+p.getModifiers()+" "+Modifier.toString(p.getModifiers()));
 
         if (types[j].isArray()) {
           Object[] oa = (Object[]) actualParams.get(p.getName());
+          
+          if (oa == null) {
+            logger.warn("Input not found for parameter "+p.getName());
+            continue;
+          }
+          
           int size = oa.length;
-          System.out.println("Array of "+size);
+          //System.out.println("Array of "+size);
           
           Object[] objArray = null;
 
