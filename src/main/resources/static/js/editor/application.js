@@ -1537,7 +1537,7 @@ function editVariable(id) {
     beginEdit();
 
     var dialog = new Dialog ();
-    dialog.setButtons(DialogButtons.OK);
+    dialog.setButtons(DialogButtons.CLOSE);
     dialog.callbackOK = function (dialog) {
         dialog.destroy();
         endEdit();

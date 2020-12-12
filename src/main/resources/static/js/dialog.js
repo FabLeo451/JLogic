@@ -10,7 +10,8 @@ const DialogButtons = {
   OK: 1,
   OK_CANCEL: 2,
   YES_NO: 3,
-  STOP: 4
+  STOP: 4,
+  CLOSE: 5
 }
 
 const DialogWidthMode = {
@@ -88,6 +89,10 @@ class Dialog {
         
       case DialogButtons.STOP:
         textOK = 'Stop';
+        break;
+        
+      case DialogButtons.CLOSE:
+        textOK = 'Close';
         break;
         
       default:
@@ -526,20 +531,6 @@ class DialogChooseBlueprint extends Dialog {
   create (jindex) {
     super.create("Choose blueprint");
     
-    //this.windowElem.style.height = "60%";
-    
-    /* Create tree */
-    /*
-    var treeElem = document.createElement('ul');
-    treeElem.classList.add('tree');
-    treeElem.style.height = "100%";
-    
-    var jtree = jcatalog["_tree"];
-    
-    if (jtree) {
-      addToTree (jcatalog, treeElem, jtree);
-    }*/
-    
     var selectElem = document.createElement('select');
     selectElem.classList.add('w3-select');
     selectElem.setAttribute('id', 'select-bp');
@@ -550,13 +541,6 @@ class DialogChooseBlueprint extends Dialog {
       optionElem.value = jindex[key].id;
       selectElem.appendChild(optionElem);
     }
-/* 
-    for (var i in jindex) {
-      var optionElem = document.createElement('option');
-      optionElem.innerHTML = jindex[i].name;
-      optionElem.value = i;
-      selectElem.appendChild(optionElem);
-    }*/
     
     this.contentElem.innerHTML = `
       <div id="container" class="w3-container w3-padding w3-transparent" style="overflow:auto; background:white; border: 1px solid lightgrey; height:100%">
@@ -565,24 +549,11 @@ class DialogChooseBlueprint extends Dialog {
         </div>
       </div>
     `;
-    
-    //this.contentElem.style.height = "70%";
-    document.getElementById("combo").appendChild(selectElem);
-    /*
-    var toggler = document.getElementsByClassName("caret");
-    var i;
 
-    for (i = 0; i < toggler.length; i++) {
-      toggler[i].addEventListener("click", function() {
-        this.parentElement.querySelector(".nested").classList.toggle("expanded");
-        this.classList.toggle("caret-down");
-      });
-    }*/
-  
+    document.getElementById("combo").appendChild(selectElem);
   }
   
   getSelected () {
-    //var selected = document.querySelector('.tree-item-selected');
     var selected = document.getElementById("select-bp").value;
     
     return (selected);
