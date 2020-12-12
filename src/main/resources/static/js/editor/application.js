@@ -1311,7 +1311,7 @@ function appAddVariable(v)
   var cbDelete = v.isGlobal() ? 'deleteGlobalVariable' : 'deleteVariableCallback';
   var deleteButton = `<div class="w3-right" style="padding-left:0.5em;"><i class="icon i-times w3-text-gray w3-hover-text-red" onclick="`+cbDelete+`('`+v.id+`');" style="cursor:pointer;" title="Delete"></i></div>`;
   var editButton = `<div class="w3-right" style="padding-left:0.5em;"><i class="icon i-edit w3-text-gray" onclick="editVariable('`+v.id+`');" style="cursor:pointer;" title="Edit"></i></div>`;
-
+  var array = v.getArray() == 0 ? '' : '<i class="icon ellipsis-h" style="color:darkgray"></i>';
 	var color = blueprint.getType(v.getType()).color;
 
   // Entire row
@@ -1322,7 +1322,7 @@ function appAddVariable(v)
   varRow.ondragstart = dragVariable;
   varRow.draggable = true;
   varRow.innerHTML = `<i class="icon ellipsis-v" style="color:silver;padding-right:4px;"></i>
-                       <i id="i_`+v.id+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i> `+v.getName()+`
+                       <i id="i_`+v.id+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i> `+v.getName()+` `+array+`
                       `+deleteButton+` `+editButton;    
 	
 	v.element = varRow;
@@ -1465,12 +1465,32 @@ function variableTypeChanged(ev) {
       }
     );
 
-    // Restore value
+    // Restore control value
     ev.target.value = v.type;
     return;
   }
 
   setVariableType(v, ev.target.value);
+  cbModified();
+}
+
+function variableArrayChanged(ev) {
+  var id = ev.target.getAttribute('_varid');
+  var v = blueprint.getVariable (id);
+
+  if (v.referenced) {
+    dialogMessage ("Blueprint", "You cannot change the array type of a referenced variable.", DialogButtons.OK, DialogIcon.WARNING, function (dialog) {
+        dialog.destroy();
+      }
+    );
+
+    // Restore control value
+    ev.target.checked = v.getArray() > 0 ? 1 : 0;
+    return;
+  }
+
+  v.setArray(ev.target.checked ? 1 : 0);
+  appRefreshVariables();
   cbModified();
 }
 
@@ -1480,54 +1500,6 @@ function setVariableType(v, type) {
   updVar.reset();
   updateVariableColor ('i_'+v.id, type);
 }
-/*
-function setInitialValue(id) {
-  var type = null;
-  var v = blueprint.getVariable (id);
-
-  console.log ('var type = '+v.getType());
-
-  switch (v.getType()) {
-    case "Boolean":
-    case "Integer":
-    case "Double":
-    case "String":
-      type = v.getType();
-      break;
-
-    default:
-      //console.error ('Unknown variable type: '+v.getType());
-      break;
-  }
-
-
-  if (type) {
-    beginEdit();
-
-    var dialog = new DialogData ();
-
-    dialog.callbackOK = function (dialog) {
-      if (dialog.checkData()) {
-        //console.log ('Seting value '+dialog.getData());
-        v.set(dialog.getData());
-        //console.log (v.toString());
-        dialog.destroy();
-        endEdit();
-        //console.log ('New value '+v.get());
-
-        //setStatus (BPEditStatus.MODIFIED);
-        cbModified ();
-      }
-      else
-        dialog.showError('Invalid data');
-    }
-
-    dialog.callbackCancel = function (dialog) { dialog.destroy(); endEdit(); };
-    dialog.create(type, v.getName(), v.get(), 0);
-
-  }
-}
-*/
 
 function editVariable(id) {
   var type = null;
@@ -1574,6 +1546,7 @@ function editVariable(id) {
       <table>
         <tr><td>Name</td><td><input class="w3-input" _varid=`+v.id+` value="`+v.name+`" onfocus="beginRename(event)" onblur="endRenameVariable(event);"></td></tr>
         <tr><td>Type</td><td>`+combo+`</td></tr>
+        <tr><td>Array</td><td><input class="w3-check" type="checkbox" id="array" _varid=`+v.id+` name="array" value="0" onclick="variableArrayChanged(event);" `+(v.getArray() > 0 ? 'checked' : '')+`></td></tr>
       </table>
     `;
     

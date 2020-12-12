@@ -166,6 +166,9 @@ class Variable {
   isGlobal() {
     return this.global;
   }
+  
+  getArray() { return this.dimensions; }
+  setArray(a) { this.dimensions = a; }
 
   fromJSON(jo) {
     this.id = jo.id;
