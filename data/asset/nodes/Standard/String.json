@@ -30,13 +30,30 @@
       "type": 5,
       "version": 1,
       "inner_text": "==",
-      "java": "in{0}.equals(in{1})",
+      "java": "(in{3} ? in{0}.equalsIgnoreCase(in{1}) : in{0}.equals(in{1}))",
       "input": [
         { "type": "String", "label": "String 1", "value":"" },
-        { "type": "String", "label": "String 2", "value":"" }
+        { "type": "String", "label": "String 2", "value":"" },
+        { "type": "Boolean", "label": "Case insesitive", "value":false }
       ],
       "output": [
         { "type": "Boolean", "label": "" }
+      ]
+    },
+    {
+      "name": "String Compare",
+      "type": 4,
+      "version": 1,
+      "java":"if (in{1}.compareTo(in{2}) > 0) { exec{0} } else if (in{1}.compareTo(in{2}) == 0) { exec{1} } else { exec{2} }",
+      "input": [
+        { "type": "Exec", "label": "" },
+        { "type": "String", "label": "A", "value": "" },
+        { "type": "String", "label": "B", "value": "" }
+      ],
+      "output": [
+        { "type": "Exec", "label": ">" },
+        { "type": "Exec", "label": "==" },
+        { "type": "Exec", "label": "<" }
       ]
     },
     {

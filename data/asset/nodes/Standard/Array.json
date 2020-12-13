@@ -15,6 +15,23 @@
     ]
   },
   {
+    "name": "Array Set",
+    "icon": "<i class=\"icon i-ellipsis-h\"></i>",
+    "type": 4,
+    "version": 1,
+    "java": "in{1}[in{2}] = in{3};",
+    "input": [
+      { "type": "Exec", "label": "" },
+      { "type": "Any", "label": "Array", "dimensions":1 },
+      { "type": "Integer", "label": "Index", "value":0 },
+      { "type": "Any", "label": "Value" }
+    ],
+    "output": [
+      { "type": "Exec", "label": "" },
+      { "type": "Any", "label": "Array", "dimensions":1, "java": {"references": {"input":1}} }
+    ]
+  },
+  {
     "name": "Array Length",
     "type": 5,
     "version": 1,
