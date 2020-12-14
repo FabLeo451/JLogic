@@ -98,7 +98,7 @@ function appRefreshVariables() {
   var vars = blueprint.getVariables();
   
   for (var i=0; i<vars.length; i++) {
-    console.log("Adding variable to app: "+vars[i].getName());
+    //console.log("Adding variable to app: "+vars[i].getName());
     appAddVariable(vars[i]);
   }
 }
@@ -432,9 +432,7 @@ function appStart () {
 
                 appLoadBlueprint (_jbp);
                 setStatus (updated ? BPEditStatus.MODIFIED : BPEditStatus.SUBMITTED);
-                showSnacknar(BPResult.SUCCESS, 'Blueprint '+_jbp["name"]+' loaded', 2000);
 
-                console.log ('[application] [appStart] Setting callbacks');
                 blueprint.setCallbackBeginModify(cbBeginModify);
                 blueprint.setCallbackModified(cbModified);
                 blueprint.setCallbackError(cbError);
@@ -465,6 +463,7 @@ function appStart () {
 
                 dialog.destroy();
 
+                showSnacknar(BPResult.SUCCESS, 'Blueprint '+_jbp["name"]+' loaded', 2000);
                 bpConsole.append("Ready.");
               }
               else
@@ -1513,10 +1512,6 @@ function editVariable(id) {
     dialog.callbackOK = function (dialog) {
         dialog.destroy();
         endEdit();
-        //console.log ('New value '+v.get());
-
-        //setStatus (BPEditStatus.MODIFIED);
-        //cbModified ();
     }
     dialog.callbackCancel = function (dialog) { dialog.destroy(); endEdit(); };
 		//dialog.setWidthMode(DialogWidthMode.MIN30);
@@ -1530,14 +1525,10 @@ function editVariable(id) {
       if (!types[i].exec) {
         var selected = '';
 
-        if (types[i].name == v.type) {
+        if (types[i].name == v.type)
           selected = ' selected="selected"';
-          //color = types[i].color;
-          //type_id = types[i].name;
-        }
 
         combo += '<option value="'+types[i].name+'" '+selected+'>'+types[i].name+'</option>';
-
       }
     }
     combo += '</select>';

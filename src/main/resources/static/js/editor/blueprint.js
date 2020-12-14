@@ -245,22 +245,23 @@ class Blueprint {
     this.asset = a;
 
     /* Store data types */
-    var types = a["types"];
+    var types = a.types;
 
     for (var i=0; i<types.length; i++) {
       var t = new BPType();
-      t.id = types[i]["id"];
-      t.name = types[i]["name"];
-      t.color = types[i]["color"];
-      t.exec = types[i]["exec"] != null ? types[i]["exec"] : false;
+      t.id = types[i].id;
+      t.name = types[i].name;
+      t.color = types[i].color;
+      t.exec = types[i].hasOwnProperty("exec") ? types[i].exec : false;
       t.init = types[i].hasOwnProperty("init") ? types[i].init : null;
       t.import = types[i].hasOwnProperty("import") ? types[i].import: null;
       t.classpath = types[i].hasOwnProperty("classpath") ? types[i].classpath: null;
       t.jar = types[i].hasOwnProperty("jar") ? types[i].jar: null;
-      //t.t_html_input_type = types[i]["html_input_type"];
       this.types.push (t);
       //console.log ("Added type "+t.name+" "+t.color + " "+t.exec);
     }
+
+    this.types.sort(function(a, b) { return a.name.localeCompare(b.name, undefined, { sensitivity: 'accent' }) });
 
     /* Store node types */
     var nodeTypes = a["node_types"];
@@ -553,7 +554,7 @@ class Blueprint {
   }
 
   addNodeFromJson (j, preserveId = true) {
-    console.log ("Adding node "+j.type+" "+j.name);
+    //console.log ("Adding node "+j.type+" "+j.name);
 
     var node = this.createNodeInstance (j.type);
     node.createFromJson(j, preserveId);
@@ -570,7 +571,7 @@ class Blueprint {
 
     this.onModified ();
 
-    console.log("Created "+node.toString())
+    //console.log("Created "+node.toString())
 
     return (node);
   }
