@@ -247,6 +247,7 @@ legend {
 .i-th:before { content: "\f00a" }
 .ellipsis-h:before { content: "\f141" }
 .ellipsis-v:before { content: "\f142" }
+.grip-lines-vertical:before { content: "\f7a5" }
 .i-square:before { content: "\f0c8" }
 .i-file:before { content: "\f15b" }
 .i-file-upload:before { content: "\f574" }

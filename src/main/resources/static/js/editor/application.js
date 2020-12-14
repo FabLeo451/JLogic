@@ -1321,7 +1321,7 @@ function appAddVariable(v)
   varRow.setAttribute('_varid', v.id);
   varRow.ondragstart = dragVariable;
   varRow.draggable = true;
-  varRow.innerHTML = `<i class="icon ellipsis-v" style="color:silver;padding-right:4px;"></i>
+  varRow.innerHTML = `<i class="icon grip-lines-vertical" style="color:silver;padding-right:4px;"></i>
                        <i id="i_`+v.id+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i> `+v.getName()+` `+array+`
                       `+deleteButton+` `+editButton;    
 	
