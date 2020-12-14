@@ -1519,7 +1519,7 @@ function editVariable(id) {
 
     var content = dialog.getContentElement ();
     
-    var combo = '<select _varid='+v.id+' _global='+v.global+' onchange="variableTypeChanged(event);" class="w3-select">';
+    var combo = '<select id="ctrlTypes" _varid='+v.id+' _global='+v.global+' onchange="variableTypeChanged(event);" class="w3-select">';
     
     for (var i=0; i<types.length; i++) {
       if (!types[i].exec) {
@@ -1537,9 +1537,14 @@ function editVariable(id) {
       <table>
         <tr><td>Name</td><td><input class="w3-input" _varid=`+v.id+` value="`+v.name+`" onfocus="beginRename(event)" onblur="endRenameVariable(event);"></td></tr>
         <tr><td>Type</td><td>`+combo+`</td></tr>
-        <tr><td>Array</td><td><input class="w3-check" type="checkbox" id="array" _varid=`+v.id+` name="array" value="0" onclick="variableArrayChanged(event);" `+(v.getArray() > 0 ? 'checked' : '')+`></td></tr>
+        <tr><td>Array</td><td><input id="ctrlArray" class="w3-check" type="checkbox" _varid=`+v.id+` name="array" value="0" onclick="variableArrayChanged(event);" `+(v.getArray() > 0 ? 'checked' : '')+`></td></tr>
       </table>
     `;
+
+    if (v.referenced) {
+      document.getElementById("ctrlTypes").disabled = true;
+      document.getElementById("ctrlArray").disabled = true;
+    }
     
     // TODO
     //var inElem = document.getElementById('input_'+v.id);
