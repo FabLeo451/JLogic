@@ -98,7 +98,7 @@ function appRefreshVariables() {
   var vars = blueprint.getVariables();
   
   for (var i=0; i<vars.length; i++) {
-    console.log("Adding variable to app: "+vars[i].getName());
+    //console.log("Adding variable to app: "+vars[i].getName());
     appAddVariable(vars[i]);
   }
 }
@@ -432,9 +432,7 @@ function appStart () {
 
                 appLoadBlueprint (_jbp);
                 setStatus (updated ? BPEditStatus.MODIFIED : BPEditStatus.SUBMITTED);
-                showSnacknar(BPResult.SUCCESS, 'Blueprint '+_jbp["name"]+' loaded', 2000);
 
-                console.log ('[application] [appStart] Setting callbacks');
                 blueprint.setCallbackBeginModify(cbBeginModify);
                 blueprint.setCallbackModified(cbModified);
                 blueprint.setCallbackError(cbError);
@@ -465,6 +463,7 @@ function appStart () {
 
                 dialog.destroy();
 
+                showSnacknar(BPResult.SUCCESS, 'Blueprint '+_jbp["name"]+' loaded', 2000);
                 bpConsole.append("Ready.");
               }
               else
@@ -1321,7 +1320,7 @@ function appAddVariable(v)
   varRow.setAttribute('_varid', v.id);
   varRow.ondragstart = dragVariable;
   varRow.draggable = true;
-  varRow.innerHTML = `<i class="icon ellipsis-v" style="color:silver;padding-right:4px;"></i>
+  varRow.innerHTML = `<i class="icon grip-lines-vertical" style="color:silver;padding-right:4px;"></i>
                        <i id="i_`+v.id+`" class="icon i-circle" style="color:`+color+`; padding-right:4px"></i> `+v.getName()+` `+array+`
                       `+deleteButton+` `+editButton;    
 	
@@ -1513,10 +1512,6 @@ function editVariable(id) {
     dialog.callbackOK = function (dialog) {
         dialog.destroy();
         endEdit();
-        //console.log ('New value '+v.get());
-
-        //setStatus (BPEditStatus.MODIFIED);
-        //cbModified ();
     }
     dialog.callbackCancel = function (dialog) { dialog.destroy(); endEdit(); };
 		//dialog.setWidthMode(DialogWidthMode.MIN30);
@@ -1524,20 +1519,16 @@ function editVariable(id) {
 
     var content = dialog.getContentElement ();
     
-    var combo = '<select _varid='+v.id+' _global='+v.global+' onchange="variableTypeChanged(event);" class="w3-select">';
+    var combo = '<select id="ctrlTypes" _varid='+v.id+' _global='+v.global+' onchange="variableTypeChanged(event);" class="w3-select">';
     
     for (var i=0; i<types.length; i++) {
       if (!types[i].exec) {
         var selected = '';
 
-        if (types[i].name == v.type) {
+        if (types[i].name == v.type)
           selected = ' selected="selected"';
-          //color = types[i].color;
-          //type_id = types[i].name;
-        }
 
         combo += '<option value="'+types[i].name+'" '+selected+'>'+types[i].name+'</option>';
-
       }
     }
     combo += '</select>';
@@ -1546,9 +1537,14 @@ function editVariable(id) {
       <table>
         <tr><td>Name</td><td><input class="w3-input" _varid=`+v.id+` value="`+v.name+`" onfocus="beginRename(event)" onblur="endRenameVariable(event);"></td></tr>
         <tr><td>Type</td><td>`+combo+`</td></tr>
-        <tr><td>Array</td><td><input class="w3-check" type="checkbox" id="array" _varid=`+v.id+` name="array" value="0" onclick="variableArrayChanged(event);" `+(v.getArray() > 0 ? 'checked' : '')+`></td></tr>
+        <tr><td>Array</td><td><input id="ctrlArray" class="w3-check" type="checkbox" _varid=`+v.id+` name="array" value="0" onclick="variableArrayChanged(event);" `+(v.getArray() > 0 ? 'checked' : '')+`></td></tr>
       </table>
     `;
+
+    if (v.referenced) {
+      document.getElementById("ctrlTypes").disabled = true;
+      document.getElementById("ctrlArray").disabled = true;
+    }
     
     // TODO
     //var inElem = document.getElementById('input_'+v.id);
