@@ -171,22 +171,34 @@ public class AppController {
 	public String getBlueprints(Model model) { return "bp";	}
 
 	@RequestMapping("/apipanel")
-	public String getApiPanel() { return "api";	}
+	public String getApiPanel(Model model,
+                              @RequestParam(value = "id", required=false) String id) {
+        String resource = "view-apis";
+        
+        model.addAttribute("apis", APIService.findAll());
+        model.addAttribute("byName", Comparator.comparing(APIEntity::getName));
+        
+        if (id != null)
+          resource += " :: #"+id;
+          
+        //System.out.println("resource = " + resource);
+        
+        return resource;
+    }
 
-  /**
-   * Create API
-   */
+    /**
+     * Create API
+     */
 	@RequestMapping("/mapping/create")
 	public String createApi(HttpServletRequest request, Model model) {
+        Optional<User> user = userRepository.findByUsername(request.getUserPrincipal().getName());
 
-	  Optional<User> user = userRepository.findByUsername(request.getUserPrincipal().getName());
-
-	  model.addAttribute("title", "Create API");
-	  model.addAttribute("api", new APIEntity(null, "New API", true));
-	  model.addAttribute("creating", true);
-	  model.addAttribute("updating", false);
-	  model.addAttribute("programs", catalogService.getPrograms());
-	  return "edit-api";
+        model.addAttribute("title", "Create API");
+        model.addAttribute("api", new APIEntity(null, "New API", true));
+        model.addAttribute("creating", true);
+        model.addAttribute("updating", false);
+        model.addAttribute("programs", catalogService.getPrograms());
+        return "edit-api";
 	}
 
   /**

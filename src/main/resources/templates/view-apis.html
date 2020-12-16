@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>APIs</title>
+<link rel="stylesheet" href="/css/w3.css">
+<link rel='stylesheet' href='/css/snackbar.css'>
+<link rel='stylesheet' href='/css/main.css'>
+<link rel='stylesheet' href='/css/button.css'>
+<link rel='stylesheet' href='/css/table.css'>
+<link rel='stylesheet' href='/css/modal.css'>
+<link rel='stylesheet' href='/css/tree.css'>
+
+<script src="/jsBlueprints"></script>
+<script>
+/**SERVER_DATA**/
+/**_blueprints**/
+</script>
+
+<script src="/js/utils.js"></script>
+<script src="/js/dialog.js"></script>
+<script src="/js/editor/globals.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/jquery-latest.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+
+</head>
+
+<body>
+<!-- The actual snackbar -->
+<div id="snackbar"></div>
+
+<main>
+
+<!-- Top container -->
+<!--div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+  <div class="w3-bar-item w3-right"><i class="icon i-project-diagram" style="color:darkslategray; min-width: 2em;"></i><span class="title"></span>&nbsp;<span class="version"/></div>
+</div-->
+
+<!--div w3-include-html="header.htm" id="header"></div-->
+
+<!-- Sidebar/menu -->
+  <div w3-include-html="sidebar" id="sidebar">
+    <!--script>include('sidebar', 'sidebar.htm');</script-->
+  </div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:210px;">
+
+  <!-- Header -->
+  <header class="w3-container">
+    <h4 style="color:black"><b>APIs</b></h4>
+    <hr style="margin:5px">
+  </header>
+
+  <div class="w3-container">
+    <!--button class="btnApp" onclick="createAPI();"><i class="icon i-add"></i> New API</button-->
+    <button class="btnApp" onclick="window.location = '/mapping/create';"><i class="icon i-add"></i> New API</button>
+    
+    <!--button class="btnApp w3-right" onclick="refreshBlueprints ();"><i class="icon i-refresh"></i> Refresh</button-->
+    <!--div id="api-table" class="w3-container w3-stretch">
+    </div-->
+    <div id="apis" class="w3-container w3-stretch">
+      <table class="table1">
+        <tr><th class="th1">API</th><th class="th1">Method</th><th class="th1">Path</th><th class="th1">Program</th><th class="th1">Blueprint</th><th class="th1">Enabled</th><th class="th1">Modified</th><th class="th1" /><th class="th1" /><tr>
+        <tr th:each="api : ${#lists.sort(apis, byName)}">
+            <td class="td1">
+                <strong><a th:text="${api.name}" th:href="@{${'/mapping/'+api.id+'/edit'}}" style="cursor:pointer;">`+value["name"]+`</a></strong>
+            </td>
+            <td class="td1" th:text="${api.method}">Method</td>
+            <td class="td1" th:text="${api.path}">Path</td>
+            <td class="td1" th:text="${api.blueprint.program.name}">Program</td>
+            <td class="td1">
+                <a th:text="${api.blueprint.name}" th:href="@{${'/blueprint/'+api.blueprint.id+'/edit'}}" target="_blank" style="cursor:pointer;" title="Open blueprint"></a>
+            </td>
+            <td class="td1">
+                <i th:if="${api.enabled} == true" class="icon i-check w3-text-green" style="cursor:pointer;" th:attr="onclick=|enableAPI('${api.id}', '${api.name}', false)|" title="Disable"></i>
+                <i th:if="${api.enabled} == false" class="icon i-ban w3-text-red" style="cursor:pointer;" th:attr="onclick=|enableAPI('${api.id}', '${api.name}', true)|" title="Enable"></i>
+            </td>
+            <td class="td1" th:text="${api.updateTime}"></td>
+            <td class="td1">
+                <a th:href="@{${'/mapping/'+api.id+'/view-log'}}" style="cursor:pointer;">Log</a>
+            </td>
+            <td class="td1">
+                <i th:attr="onclick=|deleteAPI('${api.id}', '${api.name}')|" style="cursor:pointer;" class="icon i-trash-alt w3-text-gray w3-hover-text-red"></i>
+            </td>
+        </tr>
+      </table>
+    <div>
+  </div>
+
+</div>
+
+</main>
+
+  <script>
+  //document.title = __SERVER.application_name;
+  includeHTML();
+  //loadCatalog();
+  //refreshAPIs();
+  </script>
+
+</body>
+
+</html>

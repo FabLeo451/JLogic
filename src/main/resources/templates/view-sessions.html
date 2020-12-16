@@ -58,7 +58,7 @@
     <div id="sessions" class="w3-container w3-stretch" th:fragment="list">
       <!--TABLE-->
       <table class="table1">
-        <tr><th class="th1">Client&nbsp;IP</th><th class="th1" /></th><th class="th1">User</th><th class="th1">Login&nbsp;time</th><th class="th1">Status</th><th class="th1">Executing</th><th class="th1">Agent</th><tr>
+        <tr><th class="th1">Client&nbsp;IP</th><th class="th1" /><th class="th1">User</th><th class="th1">Login&nbsp;time</th><th class="th1">Status</th><th class="th1">Executing</th><th class="th1">Agent</th><tr>
         <tr th:each="s : ${#lists.sort(sessions, byLoginTime)}">
             <td class="td1" th:text="${s.remoteAddress}">1.2.3.4</td>
             <td class="td1" th:switch="${s.webApplication}">
@@ -71,7 +71,7 @@
             <td class="td1" th:text="${s.agent}">Chrome</td>
         </tr>
       </table>
-    <div>
+    </div>
   </div>
 
 </div>

@@ -23,9 +23,11 @@ function searchCatalog(jroot, id) {
 
   return (null);
 }
-
+  /*
 function refreshTable () {
-  console.log ('Refreshing table...');
+    console.log ('Refreshing table...');
+ 
+
   var index;
 
         document.getElementById("api-table").innerHTML = "";
@@ -33,7 +35,7 @@ function refreshTable () {
         table.classList.add('table1');
         table.setAttribute('id', 'myTable');
 
-        /* Order keys */
+        // Order keys
         const ordered = {};
         Object.keys(g_apiList).sort().forEach(function(key) {
           ordered[key] = g_apiList[key];
@@ -147,8 +149,10 @@ function refreshTable () {
         }
 
         document.getElementById('api-table').appendChild(table);
+        
 }
-
+*/
+/*
 function refreshAPICallback (xhttp) {
   if (xhttp.readyState == 4) { // Request finished and response is ready
     if (xhttp.status == 200) {
@@ -163,11 +167,18 @@ function refreshAPICallback (xhttp) {
   else  { // Processing request
     //document.getElementById('api-table').innerHTML = "Getting data...";
   }
-}
-
+}*/
+/*
 function refreshAPIs () {
+
   document.getElementById("api-table").innerHTML =  '<div class="loader"></div>Refreshing...';
   callServer ("GET", "/mapping", null, refreshAPICallback);
+};
+*/
+function refreshTable() {
+    $.get("/apipanel?id=apis").done(function(fragment) { // get from controller
+        $("#apis").replaceWith(fragment); // update snippet of page
+    });
 };
 
 class API {

@@ -33,27 +33,27 @@ import java.security.Principal;
 @Service
 public class APIService {
 
-  @Autowired
-  APIRepository repository;
+    @Autowired
+    APIRepository repository;
 
-  @Autowired
-  BlueprintService blueprintService;
+    @Autowired
+    BlueprintService blueprintService;
 
-  @Autowired
-  ProgramService programService;
+    @Autowired
+    ProgramService programService;
 
-  ApplicationHome home = new ApplicationHome(APIService.class);
-  Logger logger = LoggerFactory.getLogger(APIService.class);
+    ApplicationHome home = new ApplicationHome(APIService.class);
+    Logger logger = LoggerFactory.getLogger(APIService.class);
 
 	public APIService() {
 	}
 
 	public List<APIEntity> findAll() {
-	  return (repository.findAll());
+        return (repository.findAll());
 	}
 
 	public Optional<APIEntity> findById (String id) {
-    return (repository.findById(id));
+        return (repository.findById(id));
 	}
 
 	public String getLogDirectory() {
@@ -61,38 +61,37 @@ public class APIService {
 	}
 	
 	public APIEntity create (APIEntity api) {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-	  api.setId(UUID.randomUUID().toString());
-    api.setUpdateTime(new Date());
-    api.setOwner(((User) auth.getPrincipal()).getUsername());
+        api.setId(UUID.randomUUID().toString());
+        api.setUpdateTime(new Date());
+        api.setOwner(((User) auth.getPrincipal()).getUsername());
 
-    api = repository.saveAndFlush(api);
+        api = repository.saveAndFlush(api);
 
-    return api;
+        return api;
 	}
 
 	public APIEntity update (APIEntity api) {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-    api.setUpdateTime(new Date());
-    api.setOwner(((User) auth.getPrincipal()).getUsername());
+        api.setUpdateTime(new Date());
+        api.setOwner(((User) auth.getPrincipal()).getUsername());
 
-    api = repository.saveAndFlush(api);
+        api = repository.saveAndFlush(api);
 
-    return api;
+        return api;
 	}
 
 	public void delete (APIEntity api) {
-    repository.delete(api);
+        repository.delete(api);
 	}
 
 	public APIEntity setEnabled(APIEntity api, boolean enabled) {
+        api.setEnabled(enabled);
+        api = repository.saveAndFlush(api);
 
-    api.setEnabled(enabled);
-    api = repository.saveAndFlush(api);
-
-    return api;
+        return api;
 	}
 
   /**
