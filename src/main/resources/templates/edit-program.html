@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="utf-8">
+<title th:text="${title}"></title>
+<link rel="stylesheet" href="/css/w3.css">
+<link rel='stylesheet' href='/css/snackbar.css'>
+<link rel='stylesheet' href='/css/main.css'>
+<link rel='stylesheet' href='/css/button.css'>
+<link rel='stylesheet' href='/css/table.css'>
+<link rel='stylesheet' href='/css/modal.css'>
+<link rel='stylesheet' href='/css/tree.css'>
+
+<script src="/js/utils.js"></script>
+<script src="/js/dialog.js"></script>
+<script src="/js/api.js"></script>
+
+</head>
+
+<body>
+<!-- The actual snackbar -->
+<div id="snackbar"></div>
+
+<main>
+<!-- Sidebar/menu -->
+<div w3-include-html="/sidebar" id="sidebar"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:210px;">
+
+  <!-- Header -->
+  <header class="w3-container">
+    <h4 style="color:black"><b>Edit program</b></h4>
+    <hr style="margin:5px">
+  </header>
+
+  <div class="w3-container" style="margin-right:60%;">
+    <input th:if="${creating}" id="programId" type="hidden">
+    <input th:if="${updating}" id="programId" type="hidden" th:value="${program.id}">
+
+    Name
+    <input id="programName" class="w3-input w3-border w3-round" type="text" th:value="${program.name}">
+    <br>
+
+    Blueprint
+    <br><br>
+
+    <button th:if="${creating}" class="w3-button w3-round-medium w3-green" onclick="createAPI();">Create</button>
+    <button th:if="${updating}" class="w3-button w3-round-medium w3-green" onclick="updateAPI();">Update</button>
+    <button class="w3-button w3-round-medium w3-green" onclick="window.location = '/apipanel';">Cancel</button>
+    <br><br>
+
+    <div id="response"></div>
+  </div>
+</div>
+
+</main>
+
+  <script th:inline="javascript">
+  includeHTML();
+  </script>
+
+</body>
+
+</html>
