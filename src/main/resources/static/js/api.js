@@ -23,158 +23,7 @@ function searchCatalog(jroot, id) {
 
   return (null);
 }
-  /*
-function refreshTable () {
-    console.log ('Refreshing table...');
- 
 
-  var index;
-
-        document.getElementById("api-table").innerHTML = "";
-        var table = document.createElement('table');
-        table.classList.add('table1');
-        table.setAttribute('id', 'myTable');
-
-        // Order keys
-        const ordered = {};
-        Object.keys(g_apiList).sort().forEach(function(key) {
-          ordered[key] = g_apiList[key];
-        });
-
-        g_apiList = ordered;
-
-        var header = ['API', 'Method', 'Path', 'Program', 'Blueprint', 'Enabled', 'Modified', null, null];
-        //var fields = ['name', 'blueprint_id', 'enabled', 'modified'];
-
-        var tr = document.createElement('tr');
-
-        for (var i = 0; i < header.length; i++) {
-            var th = document.createElement('th');
-            th.classList.add('th1');
-            //th.classList.add('w3-padding');
-            th.innerHTML = header[i];
-            tr.appendChild(th);
-        }
-
-        table.appendChild(tr);
-
-        var td, tr, key, value, i=0, rowId, valueId, buttonsId;
-
-        //console.log (data);
-
-          for (index in g_apiList) {
-            //if (key == "_index")
-            //  continue;
-
-            value = g_apiList[index];
-            rowId = 'tr'+i;
-            valueId = 'value_'+i;
-            buttonsId = 'btns_'+i;
-            tr = document.createElement('tr');
-            tr.classList.add ('tr1');
-            tr.setAttribute('id', rowId);
-
-              // API name
-              td = document.createElement('td');
-              td.classList.add('td1');
-              td.innerHTML = `<a href="/mapping/`+value.id+`/edit" style="cursor:pointer;"><strong>`+value["name"]+`</strong></a>`;
-              tr.appendChild(td);
-
-              // Method
-              td = document.createElement('td');
-              td.classList.add('td1');
-              td.innerHTML = value.method;
-              tr.appendChild(td);
-
-              // Path
-              td = document.createElement('td');
-              td.classList.add('td1');
-              td.innerHTML = value.path;
-              tr.appendChild(td);
-
-              // Program
-              td = document.createElement('td');
-              td.classList.add('td1');
-              td.innerHTML = value.blueprint ? value.blueprint.programName : '';
-              tr.appendChild(td);
-
-              // Blueprint
-              td = document.createElement('td');
-              td.classList.add('td1');
-              var bp = value.blueprint; //searchCatalog (jcatalog, value["blueprintId"]); //_blueprints[value["blueprintId"]];
-              var bpName = bp ?
-                           '<a href="/blueprint/'+bp.id+'/edit" target="_blank" style="cursor:pointer;">'+bp.name+' <i class="icon i-external-link-alt w3-text-gray" title="Open blueprint"></a>' :
-                           '<div class="w3-text-red">Not found</div>';
-              td.innerHTML = bpName;
-              tr.appendChild(td);
-
-              // Enabled
-              td = document.createElement('td');
-              td.classList.add('td1');
-
-              if (value.enabled) {
-                td.innerHTML = `<i class="icon i-check w3-text-green" style="cursor:pointer;" onclick="enableAPI('`+value.id+`', '`+value.name+`', false);" title="Disable"></i>`;
-              }
-              else {
-                td.innerHTML = `<i class="icon i-ban w3-text-red" style="cursor:pointer;" onclick="enableAPI('`+value.id+`', '`+value.name+`', true);" title="Enable"></i>`;
-              }
-
-              tr.appendChild(td);
-
-              // Modified
-              td = document.createElement('td');
-              td.classList.add('td1');
-              td.appendChild(document.createTextNode(secondsToString(Date.parse(value.updateTime) / 1000)));
-              tr.appendChild(td);
-              
-              // View log
-              td = document.createElement('td');
-              td.classList.add('td1');
-              td.innerHTML = `<a href="/mapping/`+value.id+`/view-log" style="cursor:pointer;">Log</a>`;
-              tr.appendChild(td);
-
-              // Delete
-              td = document.createElement ('td');
-              td.classList.add ('td1');
-              td.setAttribute ('id', buttonsId);
-              td.innerHTML = `<a target="Javascript:void(0);" onclick="deleteAPI ('`+value.id+`', '`+value.name+`')" style="cursor:pointer;"><i class="icon i-trash-alt w3-text-gray w3-hover-text-red"></i></a>`;
-              tr.appendChild (td);
-
-              //console.log (typeof value);
-
-            table.appendChild(tr);
-
-            i ++;
-          //}
-        }
-
-        document.getElementById('api-table').appendChild(table);
-        
-}
-*/
-/*
-function refreshAPICallback (xhttp) {
-  if (xhttp.readyState == 4) { // Request finished and response is ready
-    if (xhttp.status == 200) {
-      g_apiList = JSON.parse(xhttp.responseText);
-      refreshTable ();
-    }
-    else {
-      //document.getElementById('api-table').innerHTML = 'Error '+xhttp.status+' '+xhttp.statusText;
-      dialogError ("Unable to get data from server.");
-    }
-  }
-  else  { // Processing request
-    //document.getElementById('api-table').innerHTML = "Getting data...";
-  }
-}*/
-/*
-function refreshAPIs () {
-
-  document.getElementById("api-table").innerHTML =  '<div class="loader"></div>Refreshing...';
-  callServer ("GET", "/mapping", null, refreshAPICallback);
-};
-*/
 function refreshTable() {
     $.get("/apipanel?id=apis").done(function(fragment) { // get from controller
         $("#apis").replaceWith(fragment); // update snippet of page
@@ -243,6 +92,7 @@ function validateAPI() {
   var apiName = document.getElementById("apiName").value.trim();
   var progamId = document.getElementById("program").value;
   var path = document.getElementById("path").value;
+  var enabled = document.getElementById("enabled").value;
 
   if (apiName == "" || apiName == null) {
     dialogError ("Missing API name.");
@@ -263,7 +113,7 @@ function validateAPI() {
              "blueprint": {"id": document.getElementById("blueprint").value}, 
              "method": document.getElementById("method").value, 
              "path": path, 
-             "enabled": true
+             "enabled": enabled
             };
             
   return api;

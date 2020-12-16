@@ -38,6 +38,9 @@
   <div class="w3-container" style="margin-right:60%;">
     <input th:if="${creating}" id="apiId" type="hidden">
     <input th:if="${updating}" id="apiId" type="hidden" th:value="${api.id}">
+    
+    <input th:if="${creating}" id="enabled" type="hidden" th:value="true">
+    <input th:if="${updating}" id="enabled" type="hidden" th:value="${api.enabled}">
 
     Name
     <!--input th:if="${creating}" id="apiName" class="w3-input w3-border w3-round" type="text"-->

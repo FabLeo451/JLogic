@@ -34,21 +34,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 @RestController
 public class ApiController {
 
-  public String apiExecPrefix = "/api";
+    public String apiExecPrefix = "/api";
 
-  @Autowired
-  APIRepository repository;
+    @Autowired
+    APIRepository repository;
 
-  @Autowired
-  APIService APIService;
+    @Autowired
+    APIService APIService;
 
-  @Autowired
-  BlueprintService blueprintService;
+    @Autowired
+    BlueprintService blueprintService;
 
-  @Autowired
-  SessionService sessionService;
+    @Autowired
+    SessionService sessionService;
 
-  Logger logger = LoggerFactory.getLogger(ApiController.class);
+    Logger logger = LoggerFactory.getLogger(ApiController.class);
 
 	@GetMapping(value = "/mapping", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> get() {
@@ -60,75 +60,75 @@ public class ApiController {
 		return (APIService.findAll());
 	}
 
-  /**
-   * Create mapping
-   */
+    /**
+     * Create mapping
+     */
 	@PostMapping(value = "/mapping", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> create(@RequestBody APIEntity api) {
-	  logger.info("Creating API "+api.getName());
+        logger.info("Creating API "+api.getName());
 
-    // Check mapping
-    Optional<APIEntity> apiOpt = APIService.searchByMethodAndURI(api.getMethod(), api.getPath());
+        // Check mapping
+        Optional<APIEntity> apiOpt = APIService.searchByMethodAndURI(api.getMethod(), api.getPath());
 
-    if (apiOpt.isPresent())
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mapping already present");
+        if (apiOpt.isPresent())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mapping already present");
 
-    // Check blueprint
-    Optional<BlueprintEntity> blueprint = blueprintService.findById(api.getBlueprint().getId());
+        // Check blueprint
+        Optional<BlueprintEntity> blueprint = blueprintService.findById(api.getBlueprint().getId());
 
-    if (!blueprint.isPresent())
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Blueprint not found: "+api.getBlueprint().getId());
+        if (!blueprint.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Blueprint not found: "+api.getBlueprint().getId());
 
-    //api.setBlueprint(blueprint.get());
+        //api.setBlueprint(blueprint.get());
 
-    APIService.create(api);
+        APIService.create(api);
 
 		return (repository.findAll());
 	}
 	
-  /**
-   * Update mapping
-   */
+    /**
+     * Update mapping
+     */
 	@PutMapping(value = "/mapping/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> update(@PathVariable("id") String id, @RequestBody APIEntity api) {
-    logger.info("Updating API "+api.getName());
+        logger.info("Updating API "+api.getName());
 
-    Optional<APIEntity> apiOpt = repository.findById(id);
+        Optional<APIEntity> apiOpt = repository.findById(id);
 
-    if (!apiOpt.isPresent())
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
+        if (!apiOpt.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
 
-    // Check mapping
-    apiOpt = APIService.searchByMethodAndURI(api.getMethod(), api.getPath());
+        // Check mapping
+        apiOpt = APIService.searchByMethodAndURI(api.getMethod(), api.getPath());
 
-    if (apiOpt.isPresent() && apiOpt.get().getId() != id)
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mapping already present");
+        if (apiOpt.isPresent() && apiOpt.get().getId() != id)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mapping already present");
 
-    // Check blueprint
-    Optional<BlueprintEntity> blueprint = blueprintService.findById(api.getBlueprint().getId());
+        // Check blueprint
+        Optional<BlueprintEntity> blueprint = blueprintService.findById(api.getBlueprint().getId());
 
-    if (!blueprint.isPresent())
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Blueprint not found: "+api.getBlueprint().getId());
+        if (!blueprint.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Blueprint not found: "+api.getBlueprint().getId());
 
-    //api.setBlueprint(blueprint.get());
+        //api.setBlueprint(blueprint.get());
 
-    APIService.update(api);
+        APIService.update(api);
 
-		return (repository.findAll());
+        return (repository.findAll());
 	}
 
 	@DeleteMapping(value = "/mapping/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<APIEntity> delete(@PathVariable("id") String id) {
-	  logger.info("Deleting API "+id);
+        logger.info("Deleting API "+id);
 
-    Optional<APIEntity> api = repository.findById(id);
+        Optional<APIEntity> api = repository.findById(id);
 
-    if (!api.isPresent())
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
+        if (!api.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "API not found");
 
-    APIService.delete(api.get());
+        APIService.delete(api.get());
 
-		return (repository.findAll());
+        return (repository.findAll());
 	}
 
 	@PutMapping(value = "/mapping/{id}/enable", produces = MediaType.APPLICATION_JSON_VALUE)
