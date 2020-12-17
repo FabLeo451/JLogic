@@ -174,18 +174,37 @@ public class AppController {
      * Edit program
      */
 	@RequestMapping("/program/{id}/edit")
-    public String editProgram(HttpServletRequest request, Model model, @PathVariable("id") String id) {
+    public String editProgram(HttpServletRequest request, 
+                              Model model, 
+                              @PathVariable("id") String id,
+                              @RequestParam(value = "element", required=false) String element) {
+        String resource = "edit-program";
         Optional<ProgramEntity> program = programService.findById(id);
 
         if (!program.isPresent())
             return "bp";
+        
+        /*
+         * Clone blueprint list to avoid
+         * org.hibernate.LazyInitializationException: failed to lazily initialize a collection, could not initialize proxy - no Session
+         */
+        List<BlueprintEntity> blueprints = new ArrayList<BlueprintEntity>(program.get().getBlueprints());
+            
+        //System.out.println("Program " + program.get().getName() + " has " + blueprints.size() + " blueprints");
 
         model.addAttribute("title", "Edit program");
         model.addAttribute("program", program.get());
+        model.addAttribute("blueprints", blueprints);
         model.addAttribute("creating", false);
         model.addAttribute("updating", true);
+        model.addAttribute("byName", Comparator.comparing(BlueprintEntity::getName));
         
-        return "edit-program";
+        if (element != null)
+          resource += " :: #"+element;
+          
+        //System.out.println("resource = " + resource);
+
+        return resource;
 	}
 
 	@RequestMapping("/apipanel")
