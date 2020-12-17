@@ -170,6 +170,24 @@ public class AppController {
 	@RequestMapping("/bp")
 	public String getBlueprints(Model model) { return "bp";	}
 
+    /**
+     * Edit program
+     */
+	@RequestMapping("/program/{id}/edit")
+    public String editProgram(HttpServletRequest request, Model model, @PathVariable("id") String id) {
+        Optional<ProgramEntity> program = programService.findById(id);
+
+        if (!program.isPresent())
+            return "bp";
+
+        model.addAttribute("title", "Edit program");
+        model.addAttribute("program", program.get());
+        model.addAttribute("creating", false);
+        model.addAttribute("updating", true);
+        
+        return "edit-program";
+	}
+
 	@RequestMapping("/apipanel")
 	public String getApiPanel(Model model,
                               @RequestParam(value = "id", required=false) String id) {
@@ -242,16 +260,16 @@ public class AppController {
 	  return "view-log";
 	}
 
-  /**
-   * Edit blueprint
-   */
-  @RequestMapping("/blueprint/{id}/edit")
-	public String editBlueprint(Model model, @PathVariable("id") String id) {
-		model.addAttribute("name", buildProperties.getName());
-		model.addAttribute("version", buildProperties.getVersion());
-    model.addAttribute("copyright", COPYRIGHT);
+    /**
+     * Edit blueprint
+     */
+    @RequestMapping("/blueprint/{id}/edit")
+    public String editBlueprint(Model model, @PathVariable("id") String id) {
+        model.addAttribute("name", buildProperties.getName());
+        model.addAttribute("version", buildProperties.getVersion());
+        model.addAttribute("copyright", COPYRIGHT);
 
-    return "edit"; 
+        return "edit"; 
   }
   
   /**

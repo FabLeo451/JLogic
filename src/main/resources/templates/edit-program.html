@@ -3,7 +3,7 @@
                 xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="utf-8">
-<title th:text="${title}"></title>
+<title th:text="${program.name}"></title>
 <link rel="stylesheet" href="/css/w3.css">
 <link rel='stylesheet' href='/css/snackbar.css'>
 <link rel='stylesheet' href='/css/main.css'>
@@ -14,7 +14,7 @@
 
 <script src="/js/utils.js"></script>
 <script src="/js/dialog.js"></script>
-<script src="/js/api.js"></script>
+<script src="/js/catalog.js"></script>
 
 </head>
 
@@ -35,20 +35,28 @@
     <hr style="margin:5px">
   </header>
 
-  <div class="w3-container" style="margin-right:60%;">
+  <div class="w3-container">
     <input th:if="${creating}" id="programId" type="hidden">
     <input th:if="${updating}" id="programId" type="hidden" th:value="${program.id}">
 
     Name
-    <input id="programName" class="w3-input w3-border w3-round" type="text" th:value="${program.name}">
+    <div class="w3-row">
+        <div class="w3-third">
+            <input id="programName" class="w3-input w3-border w3-round" type="text" th:value="${program.name}" th:attr="oninput=|nameChanged()|"> 
+        </div>
+        <div id="renameCtrl" class="w3-third" style="visibility: hidden;">
+            <i th:attr="onclick=|revertName('${program.name}')|" style="cursor:pointer;" class="icon i-revert w3-text-gray w3-margin-left w3-margin-right" title="Revert"></i>
+            <button th:if="${updating}" class="w3-button w3-round-medium w3-green" onclick="renameProgram();">Rename</button>
+        </div>
+    </div>
     <br>
 
     Blueprint
     <br><br>
 
-    <button th:if="${creating}" class="w3-button w3-round-medium w3-green" onclick="createAPI();">Create</button>
+    <!--button th:if="${creating}" class="w3-button w3-round-medium w3-green" onclick="createAPI();">Create</button>
     <button th:if="${updating}" class="w3-button w3-round-medium w3-green" onclick="updateAPI();">Update</button>
-    <button class="w3-button w3-round-medium w3-green" onclick="window.location = '/apipanel';">Cancel</button>
+    <button class="w3-button w3-round-medium w3-green" onclick="window.location = '/apipanel';">Cancel</button-->
     <br><br>
 
     <div id="response"></div>

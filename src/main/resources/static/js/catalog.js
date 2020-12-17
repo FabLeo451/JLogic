@@ -77,7 +77,7 @@ function createProgramMenu(event) {
           {'icon': '<i class="icon i-archive"></i>', 'item': 'Create JAR',  action: () => createJAR(id) },
           {'icon': '<i class="icon i-project-diagram"></i>', 'item': 'Import blueprint file',  action: () => importBlueprint(id) },
           {'icon': '<i class="icon i-sliders-h"></i>', 'item': 'Edit properties',  action: () => window.location = '/program/'+id+'/edit-properties' },
-          {'icon': '<i class="icon i-edit"></i>',   'item': 'Rename',  action: () => renameProgram(id, name) },
+          {'icon': '<i class="icon i-edit"></i>',   'item': 'Rename',  action: () => renameProgram_deprecated(id, name) },
           {'icon': '<i class="icon i-download"></i>',   'item': 'Export',  action: () => exportProgram(id) },
           {'item': 'separator' },
           {'icon': '<i class="icon i-trash-alt"></i>',  'item': 'Delete',  action: () => deleteProgram(id, name) }
@@ -486,12 +486,50 @@ function downloadJAR (programId) {
   document.getElementById('my_iframe').src = '/program/'+programId+'/jar';
 }
 
-function renameProgram (programId, programName) {
+function renameProgram_deprecated (programId, programName) {
   editFolderDialog ('Rename program', programName, function (data) {
       dialogWorking = dialogMessage ('Working', 'Renaming program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
       callServer ("PUT", '/program/'+programId+'/rename/'+data.name+'?tree=1', null, myCallback);
     }
   );
+}
+
+function renameProgram() {
+    var name = document.getElementById("programName").value;
+    var programId = document.getElementById("programId").value;
+    
+    if (name == "")
+        return;
+        
+    dialogWorking = dialogMessage ('Working', 'Renaming program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
+    callServer ("PUT", '/program/'+programId+'/rename/'+name, null, function (xhttp) {
+          if (xhttp.readyState == 4) {
+            dialogWorking.destroy();
+            
+            if (xhttp.status == 200) {
+              resetNameCtrl();
+            }
+            else {
+              dialogError (xhttp.statusText);
+            }
+          }
+        }
+    );
+}
+
+function nameChanged() {
+    document.getElementById("renameCtrl").style.visibility = "visible";
+    document.getElementById("programName").style.backgroundColor = "yellow";
+}
+
+function resetNameCtrl() {
+    document.getElementById("renameCtrl").style.visibility = "hidden";
+    document.getElementById("programName").style.backgroundColor = "initial";
+}
+
+function revertName(name) {
+    document.getElementById("programName").value = name;
+    resetNameCtrl();
 }
 
 function deleteProgram (id, name) {
