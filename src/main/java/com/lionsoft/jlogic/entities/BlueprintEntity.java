@@ -69,7 +69,7 @@ public class BlueprintEntity {
     @Column(name="type")
     private BlueprintType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="program_id")
     private ProgramEntity program;
 
