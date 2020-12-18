@@ -524,7 +524,7 @@ function nameChanged() {
 
 function resetNameCtrl() {
     document.getElementById("renameCtrl").style.visibility = "hidden";
-    document.getElementById("programName").style.backgroundColor = "initial";
+    document.getElementById("programName").style.backgroundColor = "white";
 }
 
 function revertName(name) {

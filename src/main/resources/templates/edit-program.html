@@ -21,8 +21,13 @@
 </head>
 
 <body>
+<input id="file-dialog" type="file" name="Import" style="display: none;" />
+
 <!-- The actual snackbar -->
 <div id="snackbar"></div>
+
+<!-- For file downloading -->
+<iframe id="my_iframe" style="display:none;" download></iframe>
 
 <main>
 <!-- Sidebar/menu -->
@@ -40,23 +45,50 @@
   <div class="w3-container">
     <input th:if="${creating}" id="programId" type="hidden">
     <input th:if="${updating}" id="programId" type="hidden" th:value="${program.id}">
+    
+    <button class="btnApp" th:attr="onclick=|createJAR('${program.id}')|"><i class="icon i-archive"></i> Create JAR</button>
+    <button class="btnApp" th:attr="onclick=|exportProgram('${program.id}')|"><i class="icon i-download"></i> Export</button>
 
-    Name
-    <div class="w3-row">
-        <div class="w3-third">
-            <input id="programName" class="w3-input w3-border w3-round" type="text" th:value="${program.name}" th:attr="oninput=|nameChanged()|"> 
+    <div class="w3-panel w3-round w3-light-grey w3-border">
+        <table class="w3-table">
+            <tr>
+                <td style="vertical-align: middle;">Name</td>
+                <td>
+                    <div class="w3-row">
+                        <div class="w3-third">
+                            <input id="programName" class="w3-input w3-border w3-round" type="text" th:value="${program.name}" th:attr="oninput=|nameChanged()|"> 
+                        </div>
+                        <div id="renameCtrl" class="w3-third" style="visibility: hidden;">
+                            <i th:attr="onclick=|revertName('${program.name}')|" style="cursor:pointer;" class="icon i-revert w3-text-gray w3-margin-left w3-margin-right" title="Revert"></i>
+                            <button th:if="${updating}" class="w3-button w3-round-medium w3-green" onclick="renameProgram();">Rename</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td>
+                    
+    <!--td th:switch="${#lists.size(teacher.courses)}">
+        <span th:case="'0'">NO COURSES YET!</span>
+        <span th:case="'1'" th:text="${teacher.courses[0]}"></span>
+        <div th:case="*">
+            <div th:each="course:${teacher.courses}" th:text="${course}"/>
         </div>
-        <div id="renameCtrl" class="w3-third" style="visibility: hidden;">
-            <i th:attr="onclick=|revertName('${program.name}')|" style="cursor:pointer;" class="icon i-revert w3-text-gray w3-margin-left w3-margin-right" title="Revert"></i>
-            <button th:if="${updating}" class="w3-button w3-round-medium w3-green" onclick="renameProgram();">Rename</button>
-        </div>
+    </td-->
+                    <span th:if="${program.status.name() == 'READY'}"><i class="icon i-clock w3-text-green"></i></span>
+                    <span th:if="${program.status.name() == 'COMPILED'}"><i class="icon i-check w3-text-green"></i></span>
+                    <span th:if="${program.status.name() == 'ERRORS'}"><i class="icon i-exclamation-triangle w3-text-red"></i></span>
+                    <span th:text="${program.status}"></span>
+                </td>
+            </tr>
+        </table>
     </div>
-    <br>
 
     <!-- Blueprints -->
-    <div class="w3-panel w3-round w3-light-grey">
+    <div class="w3-panel w3-round w3-light-grey w3-border">
       <h6 style="border-bottom: 1px dotted grey">Blueprints</h6> 
-      <table class="w3-table w3-bordered">
+      <table class="w3-table">
         <tr th:each="b : ${#lists.sort(blueprints, byName)}">
             <td>
                 <a th:text="${b.name}" th:href="@{${'/blueprint/'+b.id+'/edit'}}" target="_blank" style="cursor:pointer;" title="Open blueprint"></a>
