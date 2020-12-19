@@ -86,6 +86,19 @@ function hideContextMenu(evt) {
     document.removeEventListener('click', hideContextMenu);
 }
 
+/**
+ * Refresh an element in Edit program page
+ */
+function refreshProgramData(id) {
+    console.log("Refreshing "+id+"...");
+    
+    var programId = document.getElementById("programId").value;
+
+    $.get("/program/"+programId+"/edit?element="+id).done(function(fragment) { // get from controller
+        $("#"+id).replaceWith(fragment); // update snippet of page
+    });
+}
+
 function refreshPrograms() {
     //console.log("Refreshing Catalog...");
 
@@ -165,17 +178,17 @@ function processResponse(xhttp) {
   }
 }
 
-function blueprintCallback(xhttp) {
-    if (xhttp.readyState == 4) {
-        if (processResponse(xhttp))
-            refreshBlueprints();
-    }
-}
-
 function catalogCallback(xhttp) {
     if (xhttp.readyState == 4) {
         if (processResponse(xhttp))
             refreshPrograms();
+    }
+}
+
+function blueprintCallback(xhttp) {
+    if (xhttp.readyState == 4) {
+        if (processResponse(xhttp))
+            refreshBlueprints();
     }
 }
 
@@ -266,7 +279,13 @@ function cloneProgram (programId) {
 
 function createJAR (programId) {
   dialogWorking = dialogMessage ('Working', 'Creating JAR with all dependencies.<br>This will take a while...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-  callServer ("POST", '/program/'+programId+'/jar', null, blueprintCallback);
+  callServer ("POST", '/program/'+programId+'/jar', null, function(xhttp) {
+        if (xhttp.readyState == 4) {
+            if (processResponse(xhttp))
+                refreshProgramData("programStatus");
+        }
+    }
+  );
 }
 
 function downloadJAR (programId) {
