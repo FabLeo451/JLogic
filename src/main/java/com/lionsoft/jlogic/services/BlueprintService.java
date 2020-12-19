@@ -291,6 +291,7 @@ public class BlueprintService {
   }
 
   public void delete (BlueprintEntity blueprint) {
+    logger.info("Deleting "+blueprint.toString());
     repository.delete(blueprint);
     //blueprint.getProgram().updateIndex(blueprint, null);
     File file = new File(getFilename(blueprint));

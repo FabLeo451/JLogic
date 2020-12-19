@@ -75,24 +75,23 @@ public class BlueprintController {
     return (new ResponseEntity<>(result, HttpStatus.OK));
 	}
 
-  // DELETE /blueprint/{id}
-	@DeleteMapping(value = "/blueprint/{blueprintId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<ProgramEntity> delete(@PathVariable("blueprintId") String blueprintId,
-	                                     @RequestParam(value = "tree", defaultValue = "0") String tree) {
-	  Optional<BlueprintEntity> blueprint = blueprintService.findById(blueprintId);
+    // DELETE /blueprint/{id}
+    @DeleteMapping(value = "/blueprint/{blueprintId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ProgramEntity> delete(@PathVariable("blueprintId") String blueprintId,
+                                      @RequestParam(value = "tree", defaultValue = "0") String tree) {
+        Optional<BlueprintEntity> blueprint = blueprintService.findById(blueprintId);
 
-	  if (blueprint.isPresent()) {
-	    if (blueprint.get().getType() == BlueprintType.MAIN || blueprint.get().getType() == BlueprintType.EVENTS)
-	      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Can't delete this blueprint");
+        if (blueprint.isPresent()) {
+            if (blueprint.get().getType() == BlueprintType.MAIN || blueprint.get().getType() == BlueprintType.EVENTS)
+              throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Can't delete this blueprint");
 
-      blueprintService.delete(blueprint.get());
+            blueprintService.delete(blueprint.get());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
-	  } else {
-	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-	  }
-
-    return (tree.equals("0") ? null : catalogService.getPrograms());
-	}
+        return (tree.equals("0") ? null : catalogService.getPrograms());
+    }
 
 	// PUT /blueprint/{blueprintId}
 	@PutMapping(value = "/blueprint/{blueprintId}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -187,20 +187,18 @@ public class ProgramService {
   }
 
 	public boolean delete (ProgramEntity program) {
+        for (BlueprintEntity b: program.getBlueprints())
+            blueprintService.delete(b);
 
-    for (BlueprintEntity b: program.getBlueprints())
-      blueprintService.delete(b);
+        repository.delete(program);
 
-    repository.delete(program);
+        File programDir = new File(program.getMyDir());
 
-    File programDir = new File(program.getMyDir());
+        if (deleteDirectory(programDir)) {
+          return true;
+        }
 
-    if (deleteDirectory(programDir)) {
-
-      return true;
-    }
-
-    return false;
+        return false;
 	}
 
 	public Optional<ProgramEntity> findById (String programId) {
