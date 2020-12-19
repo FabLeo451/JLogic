@@ -47,6 +47,7 @@
     <input th:if="${updating}" id="programId" type="hidden" th:value="${program.id}">
     
     <button class="btnApp" th:attr="onclick=|createJAR('${program.id}')|"><i class="icon i-archive"></i> Create JAR</button>
+    <button class="btnApp" th:attr="onclick=|window.location = '/program/${program.id}/edit-properties'|"><i class="icon i-sliders-h"></i> Properties</button>
     <button class="btnApp" th:attr="onclick=|exportProgram('${program.id}')|"><i class="icon i-download"></i> Export</button>
 
     <div class="w3-panel w3-round w3-light-grey w3-border">
@@ -68,14 +69,6 @@
             <tr>
                 <td>Status</td>
                 <td>
-                    
-    <!--td th:switch="${#lists.size(teacher.courses)}">
-        <span th:case="'0'">NO COURSES YET!</span>
-        <span th:case="'1'" th:text="${teacher.courses[0]}"></span>
-        <div th:case="*">
-            <div th:each="course:${teacher.courses}" th:text="${course}"/>
-        </div>
-    </td-->
                     <span th:if="${program.status.name() == 'READY'}"><i class="icon i-clock w3-text-green"></i></span>
                     <span th:if="${program.status.name() == 'COMPILED'}"><i class="icon i-check w3-text-green"></i></span>
                     <span th:if="${program.status.name() == 'ERRORS'}"><i class="icon i-exclamation-triangle w3-text-red"></i></span>

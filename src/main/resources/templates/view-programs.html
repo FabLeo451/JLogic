@@ -19,6 +19,9 @@
 <script src="/js/utils.js"></script>
 <script src="/js/dialog.js"></script>
 <script src="/js/catalog.js"></script>
+<script src="/js/jquery-latest.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+
 
 <!--link rel='stylesheet' href='/css/context-menu.css'>
 <script src="/js/context-menu.js"></script-->
@@ -56,48 +59,60 @@
   </header>
 
   <div class="w3-container">
-    <button class="btnApp" onclick="createProgram ();"><i class="icon i-add"></i> New</button>
-    <button class="btnApp" onclick="importProgram ();"><i class="icon i-upload"></i> Import</button>
+    <button class="btnApp" onclick="createProgram();"><i class="icon i-add"></i> New</button>
+    <button class="btnApp" onclick="importProgram();"><i class="icon i-upload"></i> Import</button>
     <!--button class="btnApp" onclick="createFolder (null);"><i class="icon i-folder"></i> Create folder</button-->
-    <button class="btnApp w3-right" onclick="refreshCatalog ();"><i class="icon i-refresh"></i> Refresh</button>
-    <div id="catalog"></div>
+    <button class="btnApp w3-right" onclick="refreshCatalog();"><i class="icon i-refresh"></i> Refresh</button>
+    <!--div id="catalog"></div-->
+    
+    <div id="programs" class="w3-container w3-stretch">
+      <table class="table1">
+        <tr><th class="th1">Program</th><th class="th1">Status</th><th class="th1">Updated</th><th class="th1" /><tr>
+        <tr th:each="p : ${#lists.sort(programs, byName)}">
+            <td class="td1">
+                <strong><a th:text="${p.name}" th:href="@{${'/program/'+p.id+'/edit'}}" style="cursor:pointer;">Name</a></strong>
+            </td>
+            <td class="td1" th:switch="${p.status.name()}">
+                <span th:case="'READY'"><i class="icon i-clock w3-text-green"></i></span>
+                <span th:case="'COMPILED'"><i class="icon i-check w3-text-green"></i></span>
+                <span th:case="'ERRORS'"><i class="icon i-exclamation-triangle w3-text-red"></i></span>
+                <span th:text="${p.status}"></span>
+            </td>
+            <td class="td1" th:text="${p.updateTime}"></td>
+            <td class="td1">
+                <div class="w3-right" th:id="${p.id}" th:name="${p.name}" onclick="createProgramMenu(event);" style="cursor:pointer;">
+                    <i class="icon ellipsis-v" style="color:grey;"></i>
+                </div>
+            </td>
+        </tr>
+      </table>
+    <div>
+  </div>
+
+</div>
+
+</main>
+
+</body>
+
   </div>
 
 </div>
 
   <script>
-  //document.title = __SERVER.system.application_name;
   includeHTML();
-  //document.getElementById('file-dialog').addEventListener('change', readFile, false);
-/*
-  function hideContextMenu () {
-    if (contextMenu)
-      contextMenu.remove ();
-  }*/
-/*
-  const menu = new ContextMenu(
-  {
-    'theme': 'default',
-      'items': [
-        {'icon': 'i-folder', 'name': 'Add subfolder',  action: () => console.log('clicked jquery')  },
-        {'icon': 'download', 'name': 'Script',  action: () => console.log('clicked script')  },
-        {'icon': 'trash',    'name': 'Net', action: () => console.log('clicked net') },
-      ]
-  }
-);*/
-  //document.addEventListener('contextmenu', openContextMenu, false);
 
-function openContextMenu(evt){
-    evt.preventDefault();
-    const time = menu.isOpen() ? 100 : 0;
+    function openContextMenu(evt){
+        evt.preventDefault();
+        const time = menu.isOpen() ? 100 : 0;
 
-    menu.hide();
-    setTimeout(() => { menu.show(evt.pageX, evt.pageY) }, time);
-    document.addEventListener('click', hideContextMenu, false);
-}
+        menu.hide();
+        setTimeout(() => { menu.show(evt.pageX, evt.pageY) }, time);
+        document.addEventListener('click', hideContextMenu, false);
+    }
 
 
-  refreshCatalog ();
+  //refreshCatalog ();
   </script>
 
 </body>

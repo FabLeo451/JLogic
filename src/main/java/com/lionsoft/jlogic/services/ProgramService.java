@@ -55,51 +55,54 @@ import java.util.zip.ZipEntry;
 @Service
 public class ProgramService {
 
-  final static int SUCCESS = 0;
-  final static int ERROR = 1;
+    final static int SUCCESS = 0;
+    final static int ERROR = 1;
 
-  @Autowired
-  ProgramRepository repository;
+    @Autowired
+    ProgramRepository repository;
 
-  @Autowired
-  BlueprintService blueprintService;
+    @Autowired
+    BlueprintService blueprintService;
 
-  @Autowired
-  SessionService sessionService;
-  
-  @Autowired
-  BuildProperties buildProperties;
+    @Autowired
+    SessionService sessionService;
 
-	Logger logger = LoggerFactory.getLogger(ProgramService.class);
-	ApplicationHome home = new ApplicationHome(ProgramService.class);
+    @Autowired
+    BuildProperties buildProperties;
 
-  int code = 0;
-  String message;
+    Logger logger = LoggerFactory.getLogger(ProgramService.class);
+    ApplicationHome home = new ApplicationHome(ProgramService.class);
+
+    int code = 0;
+    String message;
 
 	public ProgramService() {
-
 	}
 
-  public int getCode() {
-    return code;
-  }
+	public List<ProgramEntity> findAll() {
+        return (repository.findAll());
+	}
 
-  public void setCode(int c) {
-    code = c;
-  }
+    public int getCode() {
+        return code;
+    }
 
-  public String getMessage() {
-    return message;
-  }
+    public void setCode(int c) {
+        code = c;
+    }
 
-  public void setMessage(String m) {
-    message = m;
-  }
+    public String getMessage() {
+        return message;
+    }
 
-  public void setResult(int c, String m) {
-    setCode(c);
-    setMessage(m);
-  }
+    public void setMessage(String m) {
+        message = m;
+    }
+
+    public void setResult(int c, String m) {
+        setCode(c);
+        setMessage(m);
+    }
 
 	public String getProgramBaseDirectory() {
 		return home.getDir()+"/../data/program";

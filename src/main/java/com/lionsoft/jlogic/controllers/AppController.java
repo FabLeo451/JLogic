@@ -167,8 +167,21 @@ public class AppController {
 	  return "redirect:/login?logout";
 	}
 
-	@RequestMapping("/bp")
-	public String getBlueprints(Model model) { return "bp";	}
+	@RequestMapping("/view-programs")
+	public String getBlueprints(Model model,
+                                @RequestParam(value = "element", required=false) String element) { 
+        String resource = "view-programs";
+
+        model.addAttribute("programs", programService.findAll());
+        model.addAttribute("byName", Comparator.comparing(ProgramEntity::getName));
+        
+        if (element != null)
+          resource += " :: #"+element;
+          
+        //System.out.println("resource = " + resource);
+
+        return resource;
+    }
 
     /**
      * Edit program
