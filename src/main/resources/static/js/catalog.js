@@ -86,7 +86,7 @@ function hideContextMenu(evt) {
     document.removeEventListener('click', hideContextMenu);
 }
 
-function refreshCatalog() {
+function refreshPrograms() {
     //console.log("Refreshing Catalog...");
 
     $.get("/view-programs?element=programs").done(function(fragment) { // get from controller
@@ -94,7 +94,17 @@ function refreshCatalog() {
     });
 }
 
-function myCallback (xhttp) {
+function refreshBlueprints() {
+    console.log("Refreshing blueprints...");
+
+    var programId = document.getElementById("programId").value;
+    
+    $.get("/program/"+programId+"/edit?element=blueprints").done(function(fragment) {
+        $("#blueprints").replaceWith(fragment);
+    });
+}
+
+function processResponse(xhttp) {
 
   if (xhttp.readyState == 4) {
     if (dialogWorking)
@@ -114,24 +124,25 @@ function myCallback (xhttp) {
       }
     }
     catch (err) {
-      console.error(err.message);
+      //console.error(err.message);
     }
 
     if (xhttp.status == 200) {
 
-      if (jresponse) {
-        if (jresponse.hasOwnProperty('message')) {
-          showSnacknar(BPResult.SUCCESS, message, 2000);
-        }
-        else {
-          showSnacknar(BPResult.SUCCESS, "Success", 2000);
+        if (jresponse) {
+            if (jresponse.hasOwnProperty('message')) {
+              showSnacknar(BPResult.SUCCESS, message, 2000);
+            }
+            else {
+              showSnacknar(BPResult.SUCCESS, "Success", 2000);
 
-          // Update catalog tree
-          jsonResponse = jresponse;
-          //refreshTable ();
-          refreshCatalog();
+              // Update catalog tree
+              //jsonResponse = jresponse;
+              //refreshBlueprints();
+            }
         }
-      }
+      
+        return true;
     }
     else {
       if (jresponse) {
@@ -146,10 +157,26 @@ function myCallback (xhttp) {
       else
         showSnacknar(BPResult.ERROR, 'Failed: '+xhttp.status, 2000);
     }
+    
+    return false;
   }
   else {
     //showSnacknar(BPResult.ERROR, "Can't delete package");
   }
+}
+
+function blueprintCallback(xhttp) {
+    if (xhttp.readyState == 4) {
+        if (processResponse(xhttp))
+            refreshBlueprints();
+    }
+}
+
+function catalogCallback(xhttp) {
+    if (xhttp.readyState == 4) {
+        if (processResponse(xhttp))
+            refreshPrograms();
+    }
 }
 
 function editFolderDialog (title, folderName, cbFun) {
@@ -195,7 +222,7 @@ function editFolderDialog (title, folderName, cbFun) {
 function renameFolder (folderId, folderName) {
   editFolderDialog ('Rename folder', folderName, function (data) {
       dialogWorking = dialogMessage ('Working', 'Renaming folder...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("PUT", '/folder/'+folderId+'/rename/'+data.name+'?tree=1', null, myCallback);
+      callServer ("PUT", '/folder/'+folderId+'/rename/'+data.name+'?tree=1', null, blueprintCallback);
     }
   );
 }
@@ -204,21 +231,21 @@ function createFolder (parentId) {
   editFolderDialog ('Create folder', 'New folder', function (data) {
       var resource = parentId == null ? "/folder" : "/folder/parent/"+parentId;
       dialogWorking = dialogMessage ('Working', 'Creating folder...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("PUT", resource, JSON.stringify(data), myCallback);
+      callServer ("PUT", resource, JSON.stringify(data), blueprintCallback);
     }
   );
 }
 
 function moveFolder (id, parentId) {
   dialogWorking = dialogMessage ('Working', 'Moving folder...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-  callServer ("PUT", "/folder/"+id+"/move/"+parentId+"?tree=1", null, myCallback);
+  callServer ("PUT", "/folder/"+id+"/move/"+parentId+"?tree=1", null, blueprintCallback);
 }
 
 function deleteFolder (id, name) {
   dialogMessage ("Confirm", "Delete folder "+name+"?", DialogButtons.YES_NO, DialogIcon.QUESTION, function (dialog) {
       dialog.destroy();
       dialogWorking = dialogMessage ('Working', 'Deleting folder...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("DELETE", "/folder/"+id, null, myCallback);
+      callServer ("DELETE", "/folder/"+id, null, blueprintCallback);
     }
   );
 }
@@ -227,34 +254,34 @@ function createProgram (parentId) {
   editFolderDialog ('Create program', 'New program', function (data) {
       var resource = parentId == null ? "/program" : "/program/parent/"+parentId;
       dialogWorking = dialogMessage ('Working', 'Creating program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("PUT", resource, JSON.stringify(data), myCallback);
+      callServer ("PUT", resource, JSON.stringify(data), blueprintCallback);
     }
   );
 }
 
 function cloneProgram (programId) {
   dialogWorking = dialogMessage ('Working', 'Cloning program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-  callServer ("POST", '/program/'+programId+'/clone?tree=1', null, myCallback);
+  callServer ("POST", '/program/'+programId+'/clone?tree=1', null, catalogCallback);
 }
 
 function createJAR (programId) {
   dialogWorking = dialogMessage ('Working', 'Creating JAR with all dependencies.<br>This will take a while...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-  callServer ("POST", '/program/'+programId+'/jar', null, myCallback);
+  callServer ("POST", '/program/'+programId+'/jar', null, blueprintCallback);
 }
 
 function downloadJAR (programId) {
   console.log("Downloading JAR...");
   document.getElementById('my_iframe').src = '/program/'+programId+'/jar';
 }
-
+/*
 function renameProgram_deprecated (programId, programName) {
   editFolderDialog ('Rename program', programName, function (data) {
       dialogWorking = dialogMessage ('Working', 'Renaming program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("PUT", '/program/'+programId+'/rename/'+data.name+'?tree=1', null, myCallback);
+      callServer ("PUT", '/program/'+programId+'/rename/'+data.name+'?tree=1', null, blueprintCallback);
     }
   );
 }
-
+*/
 function renameProgram() {
     var name = document.getElementById("programName").value;
     var programId = document.getElementById("programId").value;
@@ -297,12 +324,12 @@ function deleteProgram (id, name) {
   dialogMessage ("Confirm", "Delete program "+name+"?", DialogButtons.YES_NO, DialogIcon.QUESTION, function (dialog) {
       dialog.destroy();
       dialogWorking = dialogMessage ('Working', 'Deleting program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("DELETE", "/program/"+id, null, myCallback);
+      callServer ("DELETE", "/program/"+id, null, catalogCallback);
     }
   );
 }
 
-function addBlueprintCallback(xhttp) {
+function addBlueprint_Callback(xhttp) {
 
   if (xhttp.readyState == 4) {
     var jresponse = null;
@@ -316,7 +343,7 @@ function addBlueprintCallback(xhttp) {
 
     if (xhttp.status == 200) {
       window.open("/blueprint/"+jresponse.id+"/edit");
-      refreshCatalog();
+      refreshBlueprints();
     }
     else {
         var jresponse = JSON.parse(xhttp.responseText);
@@ -335,16 +362,16 @@ function addBlueprint (programId) {
   editFolderDialog ('Add blueprint', 'New blueprint', function (data) {
       var resource = "/program/"+programId+"/blueprint/"+data.name+"?tree=1";
       dialogWorking = dialogMessage ('Working', 'Adding blueprint...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("PUT", resource, null, addBlueprintCallback);
+      callServer ("PUT", resource, null, addBlueprint_Callback);
     }
   );
 }
 
-function deleteBlueprint (id, name) {
+function deleteBlueprint(id, name) {
   dialogMessage ("Confirm", "Delete blueprint "+name+"?", DialogButtons.YES_NO, DialogIcon.QUESTION, function (dialog) {
       dialog.destroy();
       dialogWorking = dialogMessage ('Working', 'Deleting blueprint...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("DELETE", "/blueprint/"+id+"?tree=1", null, myCallback);
+      callServer ("DELETE", "/blueprint/"+id+"?tree=1", null, blueprintCallback);
     }
   );
 }
@@ -365,7 +392,7 @@ function importBlueprint (programId) {
       var contents = e.target.result;
       
       dialogWorking = dialogMessage ('Working', 'Importing ...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("PUT", '/program/'+programId+'/import/blueprint?tree=1', contents, myCallback);
+      callServer ("PUT", '/program/'+programId+'/import/blueprint?tree=1', contents, blueprintCallback);
   
       /* Reset so 'changed' event triggers again */
       document.getElementById('file-dialog').value="";
@@ -382,7 +409,7 @@ function importBlueprint (programId) {
  */
 function cloneBlueprint (id, name) {
   dialogWorking = dialogMessage ('Working', 'Cloning blueprint '+name+'...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-  callServer ("PUT", "/blueprint/"+id+"/clone?tree=1", null, myCallback);
+  callServer ("PUT", "/blueprint/"+id+"/clone", null, blueprintCallback);
 }
 
 /**
@@ -414,10 +441,10 @@ function importProgram () {
       var contents = e.target.result;
       
       dialogWorking = dialogMessage ('Working', 'Importing program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      //callServer ("POST", '/program/import?tree=1', contents, myCallback);
+      //callServer ("POST", '/program/import?tree=1', contents, blueprintCallback);
       var xhttp = new XMLHttpRequest();
       
-      xhttp.onreadystatechange = function() { myCallback(this); }
+      xhttp.onreadystatechange = function() { catalogCallback(this); }
       xhttp.open("POST", '/program/import?tree=1', true);
       xhttp.setRequestHeader ("Content-Type", "application/octet-stream");
       //xhttp.setRequestHeader ('Client', detectBrowser()/*+'/'+navigator.appVersion*/+' ('+detectPlatform()+')');   

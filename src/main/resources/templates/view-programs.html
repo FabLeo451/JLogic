@@ -68,7 +68,7 @@
     <div id="programs" class="w3-container w3-stretch">
       <table class="table1">
         <tr><th class="th1">Program</th><th class="th1">Status</th><th class="th1">Updated</th><th class="th1" /><tr>
-        <tr th:each="p : ${#lists.sort(programs, byName)}">
+        <tr class="tr1" th:each="p : ${#lists.sort(programs, byName)}">
             <td class="td1">
                 <strong><a th:text="${p.name}" th:href="@{${'/program/'+p.id+'/edit'}}" style="cursor:pointer;">Name</a></strong>
             </td>
@@ -80,8 +80,13 @@
             </td>
             <td class="td1" th:text="${p.updateTime}"></td>
             <td class="td1">
-                <div class="w3-right" th:id="${p.id}" th:name="${p.name}" onclick="createProgramMenu(event);" style="cursor:pointer;">
+                <!--div class="w3-right" th:id="${p.id}" th:name="${p.name}" onclick="createProgramMenu(event);" style="cursor:pointer;">
                     <i class="icon ellipsis-v" style="color:grey;"></i>
+                </div-->
+                <div class="w3-right">
+                    <i class="icon i-clone w3-text-gray" style="margin-left:0.5em; cursor:pointer;" th:attr="onclick=|cloneProgram('${p.id}')|" title="Clone program"></i>
+                    <i class="icon i-download w3-text-gray" style="margin-left:0.5em; cursor:pointer;" th:attr="onclick=|exportProgram('${p.id}')|" title="Export program"></i>
+                    <i class="icon i-trash-alt w3-text-gray" style="margin-left:0.5em; cursor:pointer;" th:attr="onclick=|deleteProgram('${p.id}', '${p.name}')|" title="Delete program"></i>
                 </div>
             </td>
         </tr>

@@ -82,22 +82,23 @@
     <button class="btnApp" th:attr="onclick=|addBlueprint('${program.id}')|"><i class="icon i-add"></i> New blueprint</button>
     <button class="btnApp" th:attr="onclick=|importBlueprint('${program.id}')|"><i class="icon i-upload"></i> Import blueprint</button>
     
-    <table class="table1">
-        <tr><th class="th1">Blueprint</th><th class="th1">Modified</th><th class="th1" /><tr>
-        <tr class="tr1" th:each="b : ${#lists.sort(blueprints, byName)}">
-            <td class="td1">
-                <i class="icon i-project-diagram w3-text-blue-gray" style="width:1.5em;"></i> <strong><a th:text="${b.name}" th:href="@{${'/blueprint/'+b.id+'/edit'}}" target="_blank" style="cursor:pointer;" title="Open blueprint"></a></strong>
-            </td>
-            <td class="td1" th:text="${b.updateTime}"></td>
-            <td class="td1">
-                <div th:if="${b.type.name() == 'GENERIC'}" class="w3-right">
-                    <i class="icon i-clone w3-text-gray" style="margin-left:`+marginLeft+`; cursor:pointer;" th:attr="onclick=|cloneBlueprint('${b.id}', '${b.name}')|" title="Clone blueprint"></i>
-                    <i class="icon i-trash-alt w3-text-gray" style="margin-left:`+marginLeft+`; cursor:pointer;" th:attr="onclick=|deleteBlueprint('${b.id}', '${b.name}')|" title="Delete blueprint"></i>
-                </div>
-                <!--i th:attr="onclick=|deleteAPI('${api.id}', '${api.name}')|" style="cursor:pointer;" class="icon i-trash-alt w3-text-gray w3-hover-text-red"></i-->
-            </td>
-        </tr>
-    </table>
+    <div id="blueprints">
+        <table class="table1">
+            <tr><th class="th1">Blueprint</th><th class="th1">Modified</th><th class="th1" /><tr>
+            <tr class="tr1" th:each="b : ${#lists.sort(blueprints, byName)}">
+                <td class="td1">
+                    <i class="icon i-project-diagram w3-text-blue-gray" style="width:1.5em;"></i> <strong><a th:text="${b.name}" th:href="@{${'/blueprint/'+b.id+'/edit'}}" target="_blank" style="cursor:pointer;" title="Open blueprint"></a></strong>
+                </td>
+                <td class="td1" th:text="${b.updateTime}"></td>
+                <td class="td1">
+                    <div th:if="${b.type.name() == 'GENERIC'}" class="w3-right">
+                        <i class="icon i-clone w3-text-gray" style="margin-left:0.5em; cursor:pointer;" th:attr="onclick=|cloneBlueprint('${b.id}', '${b.name}')|" title="Clone blueprint"></i>
+                        <i class="icon i-trash-alt w3-text-gray" style="margin-left:0.5em; cursor:pointer;" th:attr="onclick=|deleteBlueprint('${b.id}', '${b.name}')|" title="Delete blueprint"></i>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
 
     <!--button th:if="${creating}" class="w3-button w3-round-medium w3-green" onclick="createAPI();">Create</button>
     <button th:if="${updating}" class="w3-button w3-round-medium w3-green" onclick="updateAPI();">Update</button>
