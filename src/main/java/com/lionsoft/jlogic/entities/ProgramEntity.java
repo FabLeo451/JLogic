@@ -102,7 +102,7 @@ public class ProgramEntity {
     private String parentId;
 
     @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "program")
     private List<BlueprintEntity> blueprints = new ArrayList<BlueprintEntity>();
 
