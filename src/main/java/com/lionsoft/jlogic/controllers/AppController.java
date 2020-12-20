@@ -281,15 +281,15 @@ public class AppController {
 	@RequestMapping("/mapping/{id}/view-log")
 	public String viewLog(HttpServletRequest request, Model model, @PathVariable("id") String id) {
 
-	  Optional<APIEntity> api = APIService.findById(id);
-	  
-	  if (!api.isPresent())
-	    return "/apipanel";
+        Optional<APIEntity> api = APIService.findById(id);
 
-	  model.addAttribute("title", "Log");
-	  model.addAttribute("api", api.get());
-	  model.addAttribute("log", APIService.tail(api.get(), 30));
-	  return "view-log";
+        if (!api.isPresent())
+            return "/apipanel";
+
+        model.addAttribute("title", "Log");
+        model.addAttribute("api", api.get());
+        model.addAttribute("log", APIService.tail(api.get(), 30));
+        return "view-log";
 	}
 
     /**
@@ -327,19 +327,27 @@ public class AppController {
 	  return page;
 	}
 
-	@RequestMapping("/view-sessions")
-	public String getSessions(Model model) {
-	  model.addAttribute("sessions", sessionService.getSessions());
-	  model.addAttribute("byLoginTime", Comparator.comparing(Session::getLoginTime));
-    return "view-sessions";
-  }
+    @RequestMapping("/view-sessions")
+    public String getSessions(Model model, @RequestParam(value = "element", required=false) String element) {
+        String resource = "view-sessions";
 
-	@RequestMapping("/view-sessions-upd")
-	public String getSessionsUpd(Model model) {
-	  model.addAttribute("sessions", sessionService.getSessions());
-	  model.addAttribute("byLoginTime", Comparator.comparing(Session::getLoginTime));
+        model.addAttribute("sessions", sessionService.getSessions());
+        model.addAttribute("byLoginTime", Comparator.comparing(Session::getLoginTime));
+        
+        if (element != null)
+          resource += " :: #"+element;
+          
+        //System.out.println("resource = " + resource);
+
+        return resource;
+    }
+/*
+    @RequestMapping("/view-sessions-upd")
+    public String getSessionsUpd(Model model) {
+    model.addAttribute("sessions", sessionService.getSessions());
+    model.addAttribute("byLoginTime", Comparator.comparing(Session::getLoginTime));
     return "view-sessions :: #sessions";
-  }
+    }*/
 
 	@RequestMapping("/metrics")
 	public String viewMetrics(Model model) {
