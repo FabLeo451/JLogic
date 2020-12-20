@@ -65,7 +65,7 @@
         <tr><th class="th1">API</th><th class="th1">Method</th><th class="th1">Path</th><th class="th1">Program</th><th class="th1">Blueprint</th><th class="th1">Enabled</th><th class="th1">Modified</th><th class="th1" /><th class="th1" /><tr>
         <tr th:each="api : ${#lists.sort(apis, byName)}">
             <td class="td1">
-                <strong><a th:text="${api.name}" th:href="@{${'/mapping/'+api.id+'/edit'}}" style="cursor:pointer;">`+value["name"]+`</a></strong>
+                <a th:text="${api.name}" th:href="@{${'/mapping/'+api.id+'/edit'}}" style="cursor:pointer;">`+value["name"]+`</a>
             </td>
             <td class="td1" th:text="${api.method}">Method</td>
             <td class="td1" th:text="${api.path}">Path</td>

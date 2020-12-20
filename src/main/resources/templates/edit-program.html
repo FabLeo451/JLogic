@@ -96,7 +96,7 @@
             <tr><th class="th1">Blueprint</th><th class="th1">Modified</th><th class="th1" /><tr>
             <tr class="tr1" th:each="b : ${#lists.sort(blueprints, byName)}">
                 <td class="td1">
-                    <i class="icon i-project-diagram w3-text-blue-gray" style="width:1.5em;"></i> <strong><a th:text="${b.name}" th:href="@{${'/blueprint/'+b.id+'/edit'}}" target="_blank" style="cursor:pointer;" title="Open blueprint"></a></strong>
+                    <i class="icon i-project-diagram w3-text-blue-gray" style="width:1.5em;"></i> <a th:text="${b.name}" th:href="@{${'/blueprint/'+b.id+'/edit'}}" target="_blank" style="cursor:pointer;" title="Open blueprint"></a>
                 </td>
                 <td class="td1" th:text="${b.updateTime}"></td>
                 <td class="td1">
