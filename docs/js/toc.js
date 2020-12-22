@@ -1,9 +1,4 @@
 function buildTOC(container, jsections, prefix, depth) {
-    if (!container) {
-        container = document.getElementById("toc");
-        container.innerHTML = "<b>Table of contents</b><br><br>";
-    }
-
     if (!depth)
         depth = 0;
 
@@ -29,7 +24,7 @@ function buildTOC(container, jsections, prefix, depth) {
 }
 
 function toc(id) {
-    jexample = [
+    jtoc = [
         { "title": "Nodes and connectors", "url":"nodes.html"},
         { "title": "Blueprints", "url":"blueprints.html", "children": [
                 { "title": "The Main blueprint", "url":"blueprints.html#main"},
@@ -40,5 +35,5 @@ function toc(id) {
         { "title": "Flow control", "url":"flow.html"}
     ];
     
-    buildTOC(document.getElementById(id ? id : "toc"), jexample);
+    buildTOC(document.getElementById(id ? id : "toc"), jtoc);
 }
