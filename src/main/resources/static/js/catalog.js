@@ -100,7 +100,7 @@ function refreshProgramData(id) {
 }
 
 function refreshPrograms() {
-    //console.log("Refreshing Catalog...");
+    //console.log("Refreshing programs...");
 
     $.get("/view-programs?element=programs").done(function(fragment) { // get from controller
         $("#programs").replaceWith(fragment); // update snippet of page
@@ -267,7 +267,7 @@ function createProgram (parentId) {
   editFolderDialog ('Create program', 'New program', function (data) {
       var resource = parentId == null ? "/program" : "/program/parent/"+parentId;
       dialogWorking = dialogMessage ('Working', 'Creating program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("PUT", resource, JSON.stringify(data), blueprintCallback);
+      callServer ("PUT", resource, JSON.stringify(data), catalogCallback);
     }
   );
 }
