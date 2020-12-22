@@ -1,6 +1,8 @@
 function buildTOC(container, jsections, prefix, depth) {
-    if (!container)
+    if (!container) {
         container = document.getElementById("toc");
+        container.innerHTML = "<b>Table of contents</b><br><br>";
+    }
 
     if (!depth)
         depth = 0;
