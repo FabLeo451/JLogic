@@ -24,10 +24,22 @@
 
   <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:15%; margin-right:10%">    
     <h3 class="w3-myFont">Nodes and connectors</h3>
-    A node is a an object that executes a defined task.<br>
-    Nodes have input connectors and output connectors.<br>
-    Blue connectors <img src="img/pin-exec.png"> control the execution flow, while circular connectors like <img src="img/pin-bool.png"> are for passing data between nodes.<br>
-    Data connectors with three dots (like in <img src="img/pin-array.png">) are arrays.
+    
+    <p>
+        A node is a an object that executes a defined task.<br>
+        Nodes have input connectors and output connectors.<br>
+        Blue connectors <img src="img/pin-exec.png"> control the execution flow, while circular connectors like <img src="img/pin-bool.png"> are for passing data between nodes.<br>
+        Data connectors with three dots (like in <img src="img/pin-array.png">) are arrays.
+    </p>
+        
+    <p>
+        In the example below, execution starts on the "Entry point" node and continues on the "Print" node that has an input parameter "Object".
+        The actual value of the input parameter is the element with index 1 of the array "input".
+        <br>
+        <img src="img/main.png">
+    </p>
+    
+    
   </div>
   
   <script>
