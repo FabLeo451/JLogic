@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>JLogic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo">
+<link rel="stylesheet" href="/css/jlogic.css">
+<link rel="stylesheet" href="/css/toc.css">
+
+<script src="/js/utils.js"></script>
+<script src="/js/toc.js"></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <div w3-include-html="header.html"></div>
+  
+  <!-- Table of contents -->
+  <div id="toc" class="toc"></div>
+
+  <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:10%; margin-right:10%">    
+    <h3 class="w3-myFont">Blueprints</h3>
+    Blueprints are graphs of nodes properly connected to produce some result or effect.<br>
+    Every blueprint has at least two nodes:<br>
+    <br>
+    &bull; <b>Entry point</b> where execution begins.<br>
+    &bull; <b>Return</b> where execution ends.<br>
+    <br>
+    Example: a very simple blueprint that calculates the area of a circle given the radius as input:<br>
+    Area = &pi; * Radius * Radius<br>
+    <div class="w3-panel"><img src="/img/bp-sample.jpg"></div>
+  </div>
+  
+  <script>
+    includeHTML();
+    toc();
+  </script>
+  
+</body>
+</html>
+

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>JLogic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo">
+<link rel="stylesheet" href="/css/jlogic.css">
+<link rel="stylesheet" href="/css/toc.css">
+
+<script src="/js/utils.js"></script>
+<script src="/js/toc.js"></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <div w3-include-html="header.html"></div>
+  
+  <!-- Table of contents -->
+  <div id="toc" class="toc"></div>
+
+  <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:10%; margin-right:10%">    
+    <h3 class="w3-myFont">Flow control</h3>
+
+    <h4 class="w3-myFont">Branch</h4>
+    <div class="w3-panel"><img src="/img/node-branch.png"></div>
+    The <b>Branch</b> node executes the <i>True</i> branch or the <i>False</i> branch depending on the input boolean value <i>Condition</i>.
+
+    <h4 class="w3-myFont">For Loop</h4>
+    <div class="w3-panel"><img src="/img/node-for.png"></div>
+    The <b>For Loop</b> node runs an iteration for each index between <i>Form</i> and <i>To</i>.<br>
+    Once the loop has finished, execution continues on the <i>Completed</i> branch.
+
+    <h4 class="w3-myFont">While Loop</h4>
+    <div class="w3-panel"><img src="/img/node-while.png"></div>
+    The <b>While Loop</b> node triggers an iteration while the input <i>Condition</i> remains true.<br>
+    If <i>Condition</i> is false, execution continues on the <i>Completed</i> branch.
+
+    <h4 class="w3-myFont">Sequence</h4>
+    <div class="w3-panel"><img src="/img/node-sequence.png"></div>
+    The <b>Sequence</b> node triggers a series of events in order.
+
+    <h4 class="w3-myFont">Switch Integer</h4>
+    <div class="w3-panel"><img src="/img/node-switch.png"></div>
+    The <b>Switch Integer</b> node accepts an integer as input and sends the execution flow out of the matching output.<br>
+    If none matches, execution continues on the <i>Default</i> output.
+  </div>
+  
+  <script>
+    includeHTML();
+    toc();
+  </script>
+  
+</body>
+</html>
+
