@@ -34,8 +34,8 @@ function toc(id) {
                 { "title": "The Event blueprint", "url":"blueprints.html#events"}
             ]
         },
-        { "title": "Programs", "url":"tutorial/programs.html"},
-        { "title": "Flow control", "url":"tutorial/flow.html"}
+        { "title": "Programs", "url":"programs.html"},
+        { "title": "Flow control", "url":"flow.html"}
     ];
     
     buildTOC(document.getElementById(id ? id : "toc"), jexample);
