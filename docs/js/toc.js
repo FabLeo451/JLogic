@@ -29,9 +29,9 @@ function buildTOC(container, jsections, prefix, depth) {
 function toc(id) {
     jexample = [
         { "title": "Nodes and connectors", "url":"nodes.html"},
-        { "title": "Blueprints", "url":"tutorial/blueprints.html", "children": [
-                { "title": "The Main blueprint", "url":"tutorial/blueprints.html#main"},
-                { "title": "The Event blueprint", "url":"tutorial/blueprints.html"}
+        { "title": "Blueprints", "url":"blueprints.html", "children": [
+                { "title": "The Main blueprint", "url":"blueprints.html#main"},
+                { "title": "The Event blueprint", "url":"blueprints.html#events"}
             ]
         },
         { "title": "Programs", "url":"tutorial/programs.html"},
