@@ -28,9 +28,9 @@
     <h3 class="w3-myFont">Lab 1: Creating programs</h3>
 
     Let's create a classic "Hello world" program to have a look at the basic functions.<br>
-    Click on <img src="img/nav-programs.png"> in the navigation bar to access the catalog where you can manage programs and blueprints.<br>
+    Click on <img src="img/labs/nav-programs.png"> in the navigation bar to access the catalog where you can manage programs and blueprints.<br>
 
-    Click the <img src="img/new-program.png"> button to create a new program. Name it as you want (or leave "New program").<br>
+    Click the <img src="img/labs/new-program.png"> button to create a new program. Name it as you want (or leave "New program").<br>
     Expand the program item and you'll see there are two predefined blueprints: "Main" and "Events".<br>
     Left click on "Main" item.<br>
 
@@ -39,19 +39,19 @@
     To add more nodes right-click on a blank point of the grid and a selector will appear.<br>
     A search field helps to find a specific node.
     Search "Print String" node and select it.
-    <div class="w3-panel"><img src="img/node-selector.png"></div>
+    <div class="w3-panel"><img src="img/labs/node-selector.png"></div>
 
     Now that the new node is inside the editor click on the text field and type "Hello world!" in the dialog window being opened. Then click "OK".<br>
     Blue connectors control the execution flow, while other connectors are for passing data between nodes.<br>
     To link two connectors left-click on the first and track the edge onto the second, then release.<br>
     Connect nodes as in the picture:
-    <div class="w3-panel"><img src="img/bp-hello.png"></div>
+    <div class="w3-panel"><img src="img/labs/bp-hello.png"></div>
 
-    Compile the program by clicking the <img src="img/compile.png"> button on the toolbar.<br>
+    Compile the program by clicking the <img src="img/labs/compile.png"> button on the toolbar.<br>
     You will see the result in the console.<br>
 
     Let's test the blueprint.<br>
-    Click on the <img src="img/run.png">  button of the toolbar and then on the "OK" button of the Run dialog.<br>
+    Click on the <img src="img/labs/run.png">  button of the toolbar and then on the "OK" button of the Run dialog.<br>
     You should see:<br>
     <div class="w3-code notranslate">
     Launching program...<br>
@@ -64,8 +64,8 @@
     Go back to the catalog panel and refresh.<br>
     The status of the program is now "Compiled".
     Click on the dots and select "Create JAR".
-    <div class="w3-panel"><img src="img/bp-menu-jar.png"></div>
-    Wait until the popup with the spinning wheel disappears and you'll see a download button on the program row: <img src="img/download-jar.png"><br>
+    <div class="w3-panel"><img src="img/labs/bp-menu-jar.png"></div>
+    Wait until the popup with the spinning wheel disappears and you'll see a download button on the program row: <img src="img/labs/download-jar.png"><br>
     Click on it and save the JAR file wherever you want.<br>
     Open a Linux terminal and move into the directory where the file has been saved.<br>
     Execute the JAR:
@@ -85,21 +85,21 @@
     <h3 class="w3-myFont">Lab 2: Creating REST APIs</h3>
 
     In this exercise we will create an HTTP end point that executes a blueprint and returns a JSON response.<br>
-    Click the <img src="img/new-blueprint.png"> button to create a new blueprint.<br>
+    Click the <img src="img/labs/new-blueprint.png"> button to create a new blueprint.<br>
 
     Name it "BPLab" and click OK.<br>
     The blueprint editor for BPLab will open.<br>
     Create a JSON object and add a string item called "message".<br>
     Then set the object as the HTTP response.<br>
     The blueprint should be as shown in the following picture:<br>
-    <div class="w3-panel"><img src="img/bp-http.png"></div>
+    <div class="w3-panel"><img src="img/labs/bp-http.png"></div>
 
-    Compile the program by clicking <img src="img/compile.png"> and close the editor tab.<br>
-    Click on <img src="img/nav-apis.png"> in the navigation bar to access the API management.<br>
-    Click on <img src="img/new-api.png"> button.<br>
+    Compile the program by clicking <img src="img/labs/compile.png"> and close the editor tab.<br>
+    Click on <img src="img/labs/nav-apis.png"> in the navigation bar to access the API management.<br>
+    Click on <img src="img/labs/new-api.png"> button.<br>
     Here you create an API and bind it to a blueprint of a given program.<br>
     Name the API "lab", select the program we created and the blueprint "BPLab". Then hit "OK".<br>
-    <div class="w3-card w3-margin" style="width:40%"><img src="img/create-api.png" style="width:100%"></div>
+    <div class="w3-card w3-margin" style="width:40%"><img src="img/labs/create-api.png" style="width:100%"></div>
 
     Now make a GET request to <a href="https://localhost:8443/api/lab">https://localhost:8443/api/lab</a><br>
     This will execute the blueprint that is linked to the API "lab", and the response will be returned to the client.
