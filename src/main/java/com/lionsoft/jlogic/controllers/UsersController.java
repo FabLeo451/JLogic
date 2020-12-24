@@ -35,10 +35,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @RestController
 public class UsersController {
 
-  Logger logger = LoggerFactory.getLogger(UsersController.class);
+    Logger logger = LoggerFactory.getLogger(UsersController.class);
   
 	@Autowired
 	private UserRepository userRepository;
+  
+	@Autowired
+	private UserService userService;
   
 	// GET /users
 	@GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -129,31 +132,57 @@ public class UsersController {
   // Current user updates his own profile
 	@PutMapping(value = "/password", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> chabgePassword(HttpServletRequest request, @RequestBody User user) {
-	  logger.info("Updating password of user "+request.getUserPrincipal().getName());
-	  
-	  Optional<User> userDB;
-    userDB = userRepository.findByUsername(request.getUserPrincipal().getName());
+        logger.info("Updating password of user "+request.getUserPrincipal().getName());
 
-    if (user.getPassword() == null)
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing password");
-      
-    // Password remais the same
-    userDB.get().setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-		userRepository.save(userDB.get());
-		  	  
-		return new ResponseEntity<>("", HttpStatus.OK);
+        Optional<User> userDB = userRepository.findByUsername(request.getUserPrincipal().getName());
+
+        if (user.getPassword() == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing password");
+
+        // Password remais the same
+        userDB.get().setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        userRepository.save(userDB.get());
+              
+        return new ResponseEntity<>("", HttpStatus.OK);
 	}
 	
-	// DELETE /user/{id}
-	@DeleteMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<User> delete(@PathVariable("id") Long id) {
-	  logger.info("Deleting user "+id);
-	  
-	  Optional<User> userDB = userRepository.findById(id);
+	/**
+     * Lock user
+     */
+	@PostMapping(value = "/user/{id}/lock", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> lock(@PathVariable("id") Long id) {
+        Optional<User> user = userRepository.findById(id);
 
-    if (userDB.isPresent() && !userDB.get().getReserved())
-      userRepository.deleteById(id);
+        if (!user.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: "+id);
 
-		return userRepository.findAll();
+        if (user.get().getReserved())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User "+user.get().getUsername()+" is reserved");
+        
+        logger.info("Locking user "+user.get().getUsername());
+        
+        userService.setLocked(user.get(), true);
+
+        return new ResponseEntity<>("", HttpStatus.OK);
+	}
+	
+	/**
+     * Unlock user
+     */
+	@PostMapping(value = "/user/{id}/unlock", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> unlock(@PathVariable("id") Long id) {
+        Optional<User> user = userRepository.findById(id);
+
+        if (!user.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: "+id);
+
+        if (user.get().getReserved())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User "+user.get().getUsername()+" is reserved");
+        
+        logger.info("Unlocking user "+user.get().getUsername());
+        
+        userService.setLocked(user.get(), false);
+
+        return new ResponseEntity<>("", HttpStatus.OK);
 	}
 }

@@ -115,30 +115,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	  auth.authenticationProvider(authenticationProvider());
 	}
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  @Bean
-  public DaoAuthenticationProvider authenticationProvider(){
-      DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-      provider.setPasswordEncoder(passwordEncoder);
-      provider.setUserDetailsService(userDetailsService);
-      return provider;
-  }
-  @Bean
-  SessionRegistry sessionRegistry() {
-      return new SessionRegistryImpl();
-  }
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setUserDetailsService(userDetailsService);
+        return provider;
+    }
+    
+    @Bean
+    SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
 
-  @Bean
-  public static ServletListenerRegistrationBean httpSessionEventPublisher() {	//(5)
-      return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
-  }
+    @Bean
+    public static ServletListenerRegistrationBean httpSessionEventPublisher() {	//(5)
+        return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
+    }
 
-  @Bean
-  public LogoutSuccessHandler logoutSuccessHandler() {
-      return new CustomLogoutSuccessHandler();
-  }
+    @Bean
+    public LogoutSuccessHandler logoutSuccessHandler() {
+        return new CustomLogoutSuccessHandler();
+    }
 }

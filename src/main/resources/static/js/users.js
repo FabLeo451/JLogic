@@ -60,12 +60,12 @@ function refreshTable () {
     tr.appendChild(td);
 
     // Lock
-    var locked = user.hasOwnProperty('locked') ? user.locked : false;
+    var locked = user.hasOwnProperty('accountNonLocked') ? !user.accountNonLocked : false;
     td = document.createElement('td');
     td.classList.add ('td1');
     
     if (!user.hasOwnProperty('reserved') || !user.reserved)
-      td.innerHTML = locked ? `<i class="icon i-lock" style="color:goldenrod;cursor:pointer;" onclick="lockUser('`+user.id+`', '`+user.username+`', false);" title="Lock"></i>` : `<i class="icon i-lock-open" style="color:gray;cursor:pointer;" onclick="lockUser('`+user.id+`', '`+user.username+`', true);" title="Unlock"></i>`;
+      td.innerHTML = locked ? `<i class="icon i-lock" style="color:goldenrod;cursor:pointer;" onclick="lockUser('`+user.id+`', '`+user.username+`', false);" title="Unlock"></i>` : `<i class="icon i-lock-open" style="color:gray;cursor:pointer;" onclick="lockUser('`+user.id+`', '`+user.username+`', true);" title="Lock"></i>`;
       
     tr.appendChild(td);
 

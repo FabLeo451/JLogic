@@ -46,8 +46,9 @@
       </div>
     </center>
     <br>
-    <div th:if="${param.error}" class="w3-text-red">
-        Invalid username and password.
+    <div class="w3-text-red" th:if="${param.error}"
+                             th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}">
+        <span th:text="${errorMsg}">Wrong input!</span>
     </div>
     <div th:if="${param.logout}">
         Logged out.

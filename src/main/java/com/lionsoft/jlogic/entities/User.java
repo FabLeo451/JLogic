@@ -94,6 +94,10 @@ public class User implements UserDetails {
         return accountNonLocked;
     }
 
+    public void setLocked(boolean locked) {
+        accountNonLocked = !locked;
+    }
+    
     @Override
     public boolean isCredentialsNonExpired() {
         return credentialsNonExpired;
@@ -124,67 +128,67 @@ public class User implements UserDetails {
         return authorities;
     }
 
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public void setFirstName(String x) {
-    firstName = x;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(String x) {
-    lastName = x;
-  }
-
-  public Date getCreationTime() {
-    return creationTime;
-  }
-  
-  public void setReserved(boolean flag) {
-    reserved = flag;
-  }
-
-  public boolean getReserved() {
-    return reserved;
-  }
-
-  public void setRoleSet(int id) {
-    roleSetId = id;
-  
-    switch (id) {
-      case ROLE_SET_ADMIN:
-        grantAuthority(Role.ADMIN);
-        grantAuthority(Role.EDITOR);
-        grantAuthority(Role.VIEWER);
-        grantAuthority(Role.USER);
-        break;
-        
-      case ROLE_SET_EDITOR:
-        grantAuthority(Role.EDITOR);
-        grantAuthority(Role.VIEWER);
-        grantAuthority(Role.USER);
-        break;
-        
-      case ROLE_SET_VIEWER:
-        grantAuthority(Role.VIEWER);
-        break;
-        
-      case ROLE_SET_USER:
-        grantAuthority(Role.USER);
-        break;
-        
-      default:
-        grantAuthority(Role.VIEWER);
-        break;
+    public String getFirstName() {
+        return firstName;
     }
-  }
 
-  public int getRoleSet() {
-    return roleSetId;
-  }
+    public void setFirstName(String x) {
+        firstName = x;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String x) {
+        lastName = x;
+    }
+
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    public void setReserved(boolean flag) {
+        reserved = flag;
+    }
+
+    public boolean getReserved() {
+        return reserved;
+    }
+
+    public void setRoleSet(int id) {
+        roleSetId = id;
+
+        switch (id) {
+          case ROLE_SET_ADMIN:
+            grantAuthority(Role.ADMIN);
+            grantAuthority(Role.EDITOR);
+            grantAuthority(Role.VIEWER);
+            grantAuthority(Role.USER);
+            break;
+            
+          case ROLE_SET_EDITOR:
+            grantAuthority(Role.EDITOR);
+            grantAuthority(Role.VIEWER);
+            grantAuthority(Role.USER);
+            break;
+            
+          case ROLE_SET_VIEWER:
+            grantAuthority(Role.VIEWER);
+            break;
+            
+          case ROLE_SET_USER:
+            grantAuthority(Role.USER);
+            break;
+            
+          default:
+            grantAuthority(Role.VIEWER);
+            break;
+        }
+    }
+
+    public int getRoleSet() {
+        return roleSetId;
+    }
 
 }
