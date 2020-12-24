@@ -304,28 +304,29 @@ public class AppController {
         return "edit"; 
   }
   
-  /**
-   * Edit properties
-   */
-	@RequestMapping("/edit-properties")
-	public String getGlobalProperties(Model model) {
-	  model.addAttribute("title", "Properties");
-	  return "edit-properties";
-	}
+    /**
+     * Edit properties
+     */
+    @RequestMapping("/edit-properties")
+    public String getGlobalProperties(Model model) {
+        model.addAttribute("globals", true);
+        return "edit-properties";
+    }
 
-	@RequestMapping("/program/{id}/edit-properties")
-	public String getProgramProperties(Model model, @PathVariable("id") String id) {
-	  String page = "edit-properties";
-	  Optional<ProgramEntity> program = programService.findById(id);
+    @RequestMapping("/program/{id}/edit-properties")
+    public String getProgramProperties(Model model, @PathVariable("id") String id) {
+        String page = "edit-properties";
+        Optional<ProgramEntity> program = programService.findById(id);
 
-	  if (program.isPresent()) {
-	    model.addAttribute("title", "Properties of program "+program.get().getName());
-	  } else {
-	    page = "not-found";
-	  }
+        if (program.isPresent()) {
+            model.addAttribute("globals", false);
+            model.addAttribute("program", program.get());
+        } else {
+            page = "not-found";
+        }
 
-	  return page;
-	}
+        return page;
+    }
 
     @RequestMapping("/view-sessions")
     public String getSessions(Model model, @RequestParam(value = "element", required=false) String element) {

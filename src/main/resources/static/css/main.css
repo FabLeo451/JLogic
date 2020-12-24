@@ -256,8 +256,12 @@ legend {
 .i-square:before { content: "\f0c8" }
 .i-file:before { content: "\f15b" }
 .i-file-upload:before { content: "\f574" }
+
 .i-caret-right:before { content: "\f0da" }
 .i-caret-down:before { content: "\f0d7" }
+.i-chevron-right:before { content: "\f054" }
+.i-angle-right:before { content: "\f105" }
+
 .i-external-link-square-alt:before { content: "\f360" }
 .i-external-link-alt:before { content: "\f35d" }
 .i-spinner:before { content: "\f110" }

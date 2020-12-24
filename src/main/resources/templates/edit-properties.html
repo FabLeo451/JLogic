@@ -98,7 +98,12 @@
 
   <!-- Header -->
   <header class="w3-container">
-    <div class="page-title"><span th:text="${title}"></span></div>
+    <div th:if="${globals}" class="page-title">Global properties</div>
+    <div th:unless="${globals}" class="page-title">
+        <a href="/view-programs">Programs</a> <i class="icon i-angle-right"></i> 
+        <a th:href="@{/program/{id}/edit/(id=${program.id})}"><span th:text="${program.name}"></span></a> <i class="icon i-angle-right"></i> 
+        Properties
+    </div>
     <hr style="margin:5px">
   </header>
 
