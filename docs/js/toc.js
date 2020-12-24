@@ -7,7 +7,7 @@ function buildTOC(container, jsections, prefix, depth) {
         
     prefix = prefix ? prefix : '';
         
-    t = 1;
+    var t = 1;
         
     for (var i=0; i<jsections.length; i++) {
         elem = document.createElement('div');
@@ -25,6 +25,11 @@ function buildTOC(container, jsections, prefix, depth) {
 
 function toc(id) {
     jtoc = [
+        { "title": "Getting started", "url":"getting-started.html", "children": [
+            { "title": "Requirements", "url":"getting-started.html#requirements" },
+            { "title": "Starting server", "url":"getting-started.html#start" }
+            ]
+        },
         { "title": "Nodes and connectors", "url":"nodes.html"},
         { "title": "Blueprints", "url":"blueprints.html", "children": [
                 { "title": "The Main blueprint", "url":"blueprints.html#main"},

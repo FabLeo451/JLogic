@@ -26,7 +26,7 @@
 
     <!------------------------------------------------------------------------------->
 
-    <div class="w3-center w3-margin w3-text-gray">Copyright &copy; 2020 Fabio Leone</div>  </div>
+    <div w3-include-html="footer.html"></div>
   </div>
 
   <script>
@@ -59,6 +59,7 @@
                                   <tr><td>Downloads:</td><td>`+jrelease.assets[0].download_count+`</td><tr>
                                   <tr><td>Production ready:</td><td>`+(jrelease.prerelease ? '<span class="w3-text-orange">No</span>' : '<span class="w3-text-green">Yes</span>')+`</td><tr>
                                 </table>
+                                </br>
                                `;
 
               listElem.appendChild(item);
@@ -69,7 +70,7 @@
           }
         }
         else if (xhttp.readyState == 3) { // Processing request
-          //listElem.innerHTML = "Getting data...";
+          listElem.innerHTML = '<i class="fas fa-spinner w3-spin"></i> Loading...';
         }
         else {
           listElem.innerHTML = xhttp.statusText;
