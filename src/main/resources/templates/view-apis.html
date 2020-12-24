@@ -55,7 +55,7 @@
 
   <div class="w3-container">
     <!--button class="btnApp" onclick="createAPI();"><i class="icon i-add"></i> New API</button-->
-    <button class="btnApp" onclick="window.location = '/mapping/create';"><i class="icon i-add"></i> New API</button>
+    <button sec:authorize="hasAuthority('EDITOR')" class="btnApp" onclick="window.location = '/mapping/create';"><i class="icon i-add"></i> New API</button>
     
     <!--button class="btnApp w3-right" onclick="refreshBlueprints ();"><i class="icon i-refresh"></i> Refresh</button-->
     <!--div id="api-table" class="w3-container w3-stretch">
@@ -65,7 +65,8 @@
         <tr><th class="th1">API</th><th class="th1">Method</th><th class="th1">Path</th><th class="th1">Program</th><th class="th1">Blueprint</th><th class="th1">Enabled</th><th class="th1">Modified</th><th class="th1" /><th class="th1" /><tr>
         <tr th:each="api : ${#lists.sort(apis, byName)}">
             <td class="td1">
-                <a th:text="${api.name}" th:href="@{${'/mapping/'+api.id+'/edit'}}" style="cursor:pointer;">`+value["name"]+`</a>
+                <a sec:authorize="hasAuthority('EDITOR')" th:text="${api.name}" th:href="@{${'/mapping/'+api.id+'/edit'}}" style="cursor:pointer;"></a>
+                <span sec:authorize="!hasAuthority('EDITOR')" th:text="${api.name}"></span>
             </td>
             <td class="td1" th:text="${api.method}">Method</td>
             <td class="td1" th:text="${api.path}">Path</td>
@@ -74,15 +75,21 @@
                 <a th:text="${api.blueprint.name}" th:href="@{${'/blueprint/'+api.blueprint.id+'/edit'}}" target="_blank" style="cursor:pointer;" title="Open blueprint"></a>
             </td>
             <td class="td1">
-                <i th:if="${api.enabled} == true" class="icon i-check w3-text-green" style="cursor:pointer;" th:attr="onclick=|enableAPI('${api.id}', '${api.name}', false)|" title="Disable"></i>
-                <i th:if="${api.enabled} == false" class="icon i-ban w3-text-red" style="cursor:pointer;" th:attr="onclick=|enableAPI('${api.id}', '${api.name}', true)|" title="Enable"></i>
+                <div  sec:authorize="hasAuthority('EDITOR')">
+                    <i th:if="${api.enabled} == true" class="icon i-check w3-text-green" style="cursor:pointer;" th:attr="onclick=|enableAPI('${api.id}', '${api.name}', false)|" title="Disable"></i>
+                    <i th:if="${api.enabled} == false" class="icon i-ban w3-text-red" style="cursor:pointer;" th:attr="onclick=|enableAPI('${api.id}', '${api.name}', true)|" title="Enable"></i>
+                </div>
+                <div  sec:authorize="!hasAuthority('EDITOR')">
+                    <i th:if="${api.enabled} == true" class="icon i-check w3-text-green"></i>
+                    <i th:if="${api.enabled} == false" class="icon i-ban w3-text-red"></i>
+                </div>
             </td>
             <td class="td1" th:text="${api.updateTime}"></td>
             <td class="td1">
                 <a th:href="@{${'/mapping/'+api.id+'/view-log'}}" style="cursor:pointer;">Log</a>
             </td>
             <td class="td1">
-                <i th:attr="onclick=|deleteAPI('${api.id}', '${api.name}')|" style="cursor:pointer;" class="icon i-trash-alt w3-text-gray w3-hover-text-red"></i>
+                <i sec:authorize="hasAuthority('EDITOR')" th:attr="onclick=|deleteAPI('${api.id}', '${api.name}')|" style="cursor:pointer;" class="icon i-trash-alt w3-text-gray w3-hover-text-red"></i>
             </td>
         </tr>
       </table>

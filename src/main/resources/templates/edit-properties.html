@@ -108,7 +108,7 @@
   </header>
 
   <div class="w3-container">
-    <button class="btnApp" onclick="addString();"><i class="icon i-add"></i> Add property</button>
+    <button sec:authorize="hasAuthority('EDITOR')" class="btnApp" onclick="addString();"><i class="icon i-add"></i> Add property</button>
     <!--div class="dropdown">
       <button class="btnApp dropbtn" onclick="toggleButton();">Add data <i class="icon i-caret-down dropbtn"></i></button>
       <div id="myDropdown" class="dropdown-content">
@@ -121,9 +121,9 @@
       </div>
     </div-->
 
-    <button class="btnApp" onclick="importData ();"><i class="icon i-upload"></i> Import</button>
+    <button sec:authorize="hasAuthority('EDITOR')" class="btnApp" onclick="importData ();"><i class="icon i-upload"></i> Import</button>
     <button class="btnApp" onclick="exportData ();"><i class="icon i-download"></i> Export</button>
-    <button class="btnApp" onclick="deleteSelected ();"><i class="icon i-trash-alt"></i> Delete</button>
+    <button sec:authorize="hasAuthority('EDITOR')" class="btnApp" onclick="deleteSelected ();"><i class="icon i-trash-alt"></i> Delete</button>
 
     <button class="btnApp w3-right" onclick="refreshData ();"><i class="icon i-refresh"></i> Reload</button>
     <input class="w3-input w3-border w3-margin-top w3-margin-bottom" type="text" id="myInput" onkeyup="searchData()" style="font-family:Arial, myWebFonts; font-style: normal; font-weight: normal; text-decoration: inherit;" placeholder="&#xf002;" title="Type in a name">

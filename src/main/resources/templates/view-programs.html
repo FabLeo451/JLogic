@@ -60,8 +60,8 @@
   </header>
 
   <div class="w3-container">
-    <button class="btnApp" onclick="createProgram();"><i class="icon i-add"></i> New</button>
-    <button class="btnApp" onclick="importProgram();"><i class="icon i-upload"></i> Import</button>
+    <button class="btnApp" sec:authorize="hasAuthority('EDITOR')" onclick="createProgram();"><i class="icon i-add"></i> New</button>
+    <button class="btnApp" sec:authorize="hasAuthority('EDITOR')" onclick="importProgram();"><i class="icon i-upload"></i> Import</button>
     <!--button class="btnApp" onclick="createFolder (null);"><i class="icon i-folder"></i> Create folder</button-->
     <button class="btnApp w3-right" onclick="refreshPrograms();"><i class="icon i-refresh"></i> Refresh</button>
     <!--div id="catalog"></div-->
@@ -85,9 +85,9 @@
                     <i class="icon ellipsis-v" style="color:grey;"></i>
                 </div-->
                 <div class="w3-right">
-                    <i class="icon i-clone w3-text-gray" style="margin-left:0.5em; cursor:pointer;" th:attr="onclick=|cloneProgram('${p.id}')|" title="Clone program"></i>
+                    <i sec:authorize="hasAuthority('EDITOR')" class="icon i-clone w3-text-gray" style="margin-left:0.5em; cursor:pointer;" th:attr="onclick=|cloneProgram('${p.id}')|" title="Clone program"></i>
                     <i class="icon i-download w3-text-gray" style="margin-left:0.5em; cursor:pointer;" th:attr="onclick=|exportProgram('${p.id}')|" title="Export program"></i>
-                    <i class="icon i-trash-alt w3-text-gray" style="margin-left:0.5em; cursor:pointer;" th:attr="onclick=|deleteProgram('${p.id}', '${p.name}')|" title="Delete program"></i>
+                    <i sec:authorize="hasAuthority('EDITOR')" class="icon i-trash-alt w3-text-gray" style="margin-left:0.5em; cursor:pointer;" th:attr="onclick=|deleteProgram('${p.id}', '${p.name}')|" title="Delete program"></i>
                 </div>
             </td>
         </tr>

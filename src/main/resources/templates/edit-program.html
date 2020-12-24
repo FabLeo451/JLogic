@@ -80,7 +80,7 @@
             <tr>
                 <td style="vertical-align: middle;">JAR</td>
                 <td>
-                    <button class="btnApp" th:attr="onclick=|createJAR('${program.id}')|"><i class="icon i-archive"></i> Create</button>
+                    <button sec:authorize="hasAuthority('EDITOR')" class="btnApp" th:attr="onclick=|createJAR('${program.id}')|"><i class="icon i-archive"></i> Create</button>
                     <button class="btnApp" th:if="${program.jar}" th:attr="onclick=|downloadJAR('${program.id}')|"><i class="icon i-download"></i> Download</button>
                 </td>
             </tr>
@@ -88,8 +88,8 @@
     </div>
 
     <!-- Blueprints -->
-    <button class="btnApp" th:attr="onclick=|addBlueprint('${program.id}')|"><i class="icon i-add"></i> New blueprint</button>
-    <button class="btnApp" th:attr="onclick=|importBlueprint('${program.id}')|"><i class="icon i-upload"></i> Import blueprint</button>
+    <button sec:authorize="hasAuthority('EDITOR')" class="btnApp" th:attr="onclick=|addBlueprint('${program.id}')|"><i class="icon i-add"></i> New blueprint</button>
+    <button sec:authorize="hasAuthority('EDITOR')" class="btnApp" th:attr="onclick=|importBlueprint('${program.id}')|"><i class="icon i-upload"></i> Import blueprint</button>
     
     <div id="blueprints">
         <table class="table1">

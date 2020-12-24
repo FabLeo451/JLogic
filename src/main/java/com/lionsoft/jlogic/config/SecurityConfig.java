@@ -64,11 +64,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 				.antMatchers(HttpMethod.POST, "/program/**", "/properties/**").hasAuthority("EDITOR")
 				.antMatchers(HttpMethod.PUT, "/properties/**").hasAuthority("EDITOR")
-        .anyRequest().authenticated()
-				.and()
-        .formLogin().loginPage("/login").defaultSuccessUrl("/perform_login").permitAll()
-				.and()
-			  .logout().invalidateHttpSession(true)/*.logoutUrl("/logout")*/.logoutSuccessUrl("/login?logout").deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler());
+                .anyRequest().authenticated()
+                .and()
+                .formLogin().loginPage("/login").defaultSuccessUrl("/perform_login").permitAll()
+                .and()
+                .logout().invalidateHttpSession(true)/*.logoutUrl("/logout")*/.logoutSuccessUrl("/login?logout").deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler());
 
     http
       .sessionManagement()
