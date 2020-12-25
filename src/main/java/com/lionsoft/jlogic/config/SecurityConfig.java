@@ -51,6 +51,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+        logger.info("Max number of sessions: "+maxSessions);
+
         http.headers().frameOptions().disable();
 
         http
@@ -81,19 +83,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                              /*.logoutSuccessHandler(logoutSuccessHandler()\/*new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)*\/)*/
                              .permitAll();
 
-        logger.info("Max number of sessions: "+maxSessions);
 
         http
             .sessionManagement()
             .maximumSessions(maxSessions)
-            .maxSessionsPreventsLogin(true)
-            .sessionRegistry(sessionRegistry())
+            .maxSessionsPreventsLogin(false)
+            .sessionRegistry(sessionRegistry());
             //.expiredUrl("/login?expired");
-            .expiredUrl("/expired");
-        /*
-        http.sessionManagement()
-          .expiredUrl("/login?expired")
-        .invalidSessionUrl("/login?expired");*/
+            //.expiredUrl("/expired");
+            //.and()
+            //.invalidSessionUrl("/expired");
 	}
 
 	@Autowired

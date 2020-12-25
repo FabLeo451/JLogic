@@ -43,82 +43,82 @@ class Menu {
 
 @Controller
 public class AppController {
-  Logger logger = LoggerFactory.getLogger(AppController.class);
+    Logger logger = LoggerFactory.getLogger(AppController.class);
 
-  @Autowired
-  BuildProperties buildProperties;
+    @Autowired
+    BuildProperties buildProperties;
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-  @Autowired
-  ProgramService programService;
+    @Autowired
+    ProgramService programService;
 
-  @Autowired
-  APIService APIService;
+    @Autowired
+    APIService APIService;
 
-  @Autowired
-  SessionService sessionService;
+    @Autowired
+    SessionService sessionService;
 
-  @Autowired
-  CatalogService catalogService;
+    @Autowired
+    CatalogService catalogService;
 
-  public String COPYRIGHT = "Copyright (c) 2020 Fabio Leone";
+    public String COPYRIGHT = "Copyright (c) 2020,2021 Fabio Leone";
 
-	@RequestMapping("/home")
-	public String home(HttpServletRequest request, Model model) {
+    @RequestMapping("/home")
+    public String home(HttpServletRequest request, Model model) {
 
-		model.addAttribute("name", buildProperties.getName());
-		model.addAttribute("version", buildProperties.getVersion());
-		model.addAttribute("buildTime", buildProperties.getTime().toString());
-		model.addAttribute("copyright", COPYRIGHT);
+        model.addAttribute("name", buildProperties.getName());
+        model.addAttribute("version", buildProperties.getVersion());
+        model.addAttribute("buildTime", buildProperties.getTime().toString());
+        model.addAttribute("copyright", COPYRIGHT);
 
-		// JRE info
-		model.addAttribute("java_class_path", System.getProperty("java.class.path"));
-		model.addAttribute("java_home", System.getProperty("java.home"));
-		model.addAttribute("java_vendor", System.getProperty("java.vendor"));
-		model.addAttribute("java_vendor_url", System.getProperty("java.vendor.url"));
-		model.addAttribute("java_version", System.getProperty("java.version"));
+        // JRE info
+        model.addAttribute("java_class_path", System.getProperty("java.class.path"));
+        model.addAttribute("java_home", System.getProperty("java.home"));
+        model.addAttribute("java_vendor", System.getProperty("java.vendor"));
+        model.addAttribute("java_vendor_url", System.getProperty("java.vendor.url"));
+        model.addAttribute("java_version", System.getProperty("java.version"));
 
-		// OS info
-		model.addAttribute("os", System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
+        // OS info
+        model.addAttribute("os", System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
 
-    try {
-      InetAddress addr;
-      addr = InetAddress.getLocalHost();
-      model.addAttribute("nodeName", addr.getHostName());
-    } catch (UnknownHostException ex) {
-        logger.error("Hostname can not be resolved");
+        try {
+            InetAddress addr;
+            addr = InetAddress.getLocalHost();
+            model.addAttribute("nodeName", addr.getHostName());
+        } catch (UnknownHostException ex) {
+            logger.error("Hostname can not be resolved");
+        }
+
+        return "home";
     }
-
-	  return "home";
-	}
 
 	@RequestMapping("/sidebar")
 	public String sidebar(Model model) {
 		model.addAttribute("name", buildProperties.getName());
 		model.addAttribute("version", buildProperties.getVersion());
 
-    try {
-      InetAddress addr;
-      addr = InetAddress.getLocalHost();
-      model.addAttribute("nodeName", addr.getHostName());
-    } catch (UnknownHostException ex) {
-        logger.error("Hostname can not be resolved");
-    }
-    /*
-    List<Menu> items = new ArrayList<Menu>();
-    items.add(new Menu("/home",            "<i class=\"icon i-home\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Home"));
-    items.add(new Menu("/bp",              "<i class=\"icon i-project-diagram\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Blueprints"));
-    items.add(new Menu("/apipanel",        "<i class=\"icon i-cube\" style=\"color:lightslategray; min-width: 1.5em;\"></i> APIs"));
-    items.add(new Menu("/edit-properties", "<i class=\"icon i-sliders-h\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Properties"));
-    items.add(new Menu("/sessions",        "<i class=\"icon i-list\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Sessions"));
-    items.add(new Menu("/stats",           "<i class=\"icon i-chart-bar\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Analytics"));
-    items.add(new Menu("/users",           "<i class=\"icon i-users\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Users"));
+        try {
+          InetAddress addr;
+          addr = InetAddress.getLocalHost();
+          model.addAttribute("nodeName", addr.getHostName());
+        } catch (UnknownHostException ex) {
+            logger.error("Hostname can not be resolved");
+        }
+        /*
+        List<Menu> items = new ArrayList<Menu>();
+        items.add(new Menu("/home",            "<i class=\"icon i-home\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Home"));
+        items.add(new Menu("/bp",              "<i class=\"icon i-project-diagram\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Blueprints"));
+        items.add(new Menu("/apipanel",        "<i class=\"icon i-cube\" style=\"color:lightslategray; min-width: 1.5em;\"></i> APIs"));
+        items.add(new Menu("/edit-properties", "<i class=\"icon i-sliders-h\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Properties"));
+        items.add(new Menu("/sessions",        "<i class=\"icon i-list\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Sessions"));
+        items.add(new Menu("/stats",           "<i class=\"icon i-chart-bar\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Analytics"));
+        items.add(new Menu("/users",           "<i class=\"icon i-users\" style=\"color:lightslategray; min-width: 1.5em;\"></i> Users"));
 
-    model.addAttribute("items", items);
-    */
-	  return "sidebar";
+        model.addAttribute("items", items);
+        */
+          return "sidebar";
 	}
 
     @RequestMapping("/favicon")
@@ -132,28 +132,27 @@ public class AppController {
 
     @RequestMapping("/perform_login")
     public String perform_login(HttpServletRequest request, Model model) {
-        // DEPRECATED ///////////////////////////////
-        /*Session session = sessionService.getSession(request);
-
-        if (session != null)
-          session.setWebApplication(true);*/
-        // NEW ///////////////////////////////
         HttpSession httpSession = request.getSession(false);
+        
         if (httpSession != null) {
           httpSession.setAttribute("webApplication", true);
+          
+          String username = request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown";
+          logger.info(username+" logged in ("+httpSession.getId()+")");
         }
 
         //logger.warn("Redirecting to /home");
 
         return "redirect:/home";
     }
-
+/*
     @RequestMapping("/expired")
     public String expired(HttpServletRequest request, Model model) {
-        logger.warn("Expired: "+request.getSession(false).getId());
+        logger.warn("Session expired: "+request.getSession(false).getId());
         sessionService.deleteSession(request);
         return "redirect:/login?expired";
     }
+    */
 /*
 	@PostMapping("/logout")
 	public String perform_logout(HttpServletRequest request, HttpServletResponse response) {

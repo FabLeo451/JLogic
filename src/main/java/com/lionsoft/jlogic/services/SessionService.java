@@ -26,9 +26,11 @@ public class SessionService {
 
   private static ReadWriteLock rwLock = new ReentrantReadWriteLock();
   //private static List<Session> list = new ArrayList<Session>(); // DEPRECATED
-  private static Map<String, HttpSession> sessions; // NEW
+  
+  // Current sessions
+  private static Map<String, HttpSession> sessions;
 
-  // Register all request for statistics
+  // All historical requests for statistics
   private static List<Request> requests = new ArrayList<Request>();
 
   private SessionService() {
@@ -90,7 +92,7 @@ public class SessionService {
     return list;
   }
   
-  public static HttpSession getSessions(String id) {
+  public static HttpSession getSession(String id) {
     return sessions.get(id);
   }
 
