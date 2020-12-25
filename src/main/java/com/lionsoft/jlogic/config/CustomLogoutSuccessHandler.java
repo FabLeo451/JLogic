@@ -21,9 +21,13 @@ public class CustomLogoutSuccessHandler extends
       HttpServletResponse response,
       Authentication authentication)
       throws IOException, ServletException {
+        /*
+        String username = request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown";
 
-        logger.info("Logged out "+(request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown")+" "+request.getSession().getId());
+        logger.info(username+" "+request.getSession(false).getId()+" logged out");
         sessionService.deleteSession(request.getSession().getId());
+        */
+        
         response.sendRedirect("/login?logout");
         //super.onLogoutSuccess(request, response, authentication);
     }

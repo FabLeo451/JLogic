@@ -121,51 +121,56 @@ public class AppController {
 	  return "sidebar";
 	}
 
-	@RequestMapping("/favicon")
-	public String favicon() { return "favicon.ico";	}
+    @RequestMapping("/favicon")
+    public String favicon() { return "favicon.ico";	}
 
-	@RequestMapping("/login")
-	public String login(HttpServletRequest request, Model model) {
-		model.addAttribute("name", buildProperties.getName());
-    return "login";
-  }
-
-	@RequestMapping("/perform_login")
-	public String perform_login(HttpServletRequest request, Model model) {
-    // DEPRECATED ///////////////////////////////
-    /*Session session = sessionService.getSession(request);
-
-    if (session != null)
-      session.setWebApplication(true);*/
-    // NEW ///////////////////////////////
-    HttpSession httpSession = request.getSession(false);
-    if (httpSession != null) {
-      httpSession.setAttribute("webApplication", true);
+    @RequestMapping("/login")
+    public String login(HttpServletRequest request, Model model) {
+        model.addAttribute("name", buildProperties.getName());
+        return "login";
     }
 
-    //logger.warn("Redirecting to /home");
+    @RequestMapping("/perform_login")
+    public String perform_login(HttpServletRequest request, Model model) {
+        // DEPRECATED ///////////////////////////////
+        /*Session session = sessionService.getSession(request);
 
-    return "redirect:/home";
-  }
+        if (session != null)
+          session.setWebApplication(true);*/
+        // NEW ///////////////////////////////
+        HttpSession httpSession = request.getSession(false);
+        if (httpSession != null) {
+          httpSession.setAttribute("webApplication", true);
+        }
 
-	@RequestMapping("/expired")
-	public String expired(HttpServletRequest request, Model model) {
-    logger.warn("Expired: "+request.getSession(false).getId());
-    sessionService.deleteSession(request);
-    return "redirect:/login?expired";
-  }
+        //logger.warn("Redirecting to /home");
 
+        return "redirect:/home";
+    }
+
+    @RequestMapping("/expired")
+    public String expired(HttpServletRequest request, Model model) {
+        logger.warn("Expired: "+request.getSession(false).getId());
+        sessionService.deleteSession(request);
+        return "redirect:/login?expired";
+    }
+/*
 	@PostMapping("/logout")
 	public String perform_logout(HttpServletRequest request, HttpServletResponse response) {
-	  logger.info("Logging out "+(request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown")+" "+request.getSession().getId());
+        String username = request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown";
+        logger.info(username+" requested log out");
+        \/*
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        
         if (auth != null) {
             logger.info("Logged out "+(request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown")+" "+request.getSession().getId());
             sessionService.deleteSession(request);
             new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
-	  return "redirect:/login?logout";
+        }*\/
+        
+        return "redirect:/login?logout";
 	}
+*/
 
 	@RequestMapping("/view-programs")
 	public String getBlueprints(Model model,
@@ -256,23 +261,23 @@ public class AppController {
    */
 	@RequestMapping("/mapping/{id}/edit")
 	public String editApi(HttpServletRequest request, Model model, @PathVariable("id") String id) {
+        Optional<APIEntity> api = APIService.findById(id);
 
-	  Optional<APIEntity> api = APIService.findById(id);
-	  
-	  if (!api.isPresent())
-	    return "/apipanel";
+        if (!api.isPresent())
+            return "/apipanel";
 
-	  model.addAttribute("title", "Edit API");
-	  //model.addAttribute("id", id);
-	  //model.addAttribute("name", api.get().getName());
-	  model.addAttribute("api", api.get());
-	  model.addAttribute("program", api.get().getBlueprint().getProgram());
-	  model.addAttribute("blueprint", api.get().getBlueprint());
-	  model.addAttribute("creating", false);
-	  model.addAttribute("updating", true);
-	  model.addAttribute("programs", catalogService.getPrograms());
-	  model.addAttribute("blueprints", api.get().getBlueprint().getProgram().getBlueprints());
-	  return "edit-api";
+        model.addAttribute("title", "Edit API");
+        //model.addAttribute("id", id);
+        //model.addAttribute("name", api.get().getName());
+        model.addAttribute("api", api.get());
+        model.addAttribute("program", api.get().getBlueprint().getProgram());
+        model.addAttribute("blueprint", api.get().getBlueprint());
+        model.addAttribute("creating", false);
+        model.addAttribute("updating", true);
+        model.addAttribute("programs", catalogService.getPrograms());
+        model.addAttribute("blueprints", api.get().getBlueprint().getProgram().getBlueprints());
+        
+        return "edit-api";
 	}
 
   /**

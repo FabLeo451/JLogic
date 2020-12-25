@@ -89,6 +89,10 @@ public class SessionService {
 
     return list;
   }
+  
+  public static HttpSession getSessions(String id) {
+    return sessions.get(id);
+  }
 
   public static void addRequest(HttpServletRequest request) {
     Lock writeLock = rwLock.writeLock();
