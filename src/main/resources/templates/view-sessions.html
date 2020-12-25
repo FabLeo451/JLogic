@@ -63,6 +63,7 @@
             <th class="th1">User</th>
             <th class="th1">Start&nbsp;time</th>
             <th class="th1">Status</th>
+            <th class="th1">Request</th>
             <th class="th1">Executing</th>
             <th class="th1">Agent</th>
         <tr>
@@ -74,6 +75,7 @@
             <td class="td1" th:text="${r.user}">John</td>
             <td class="td1" th:text="${r.timestamp}">Wed Dec 16 19:31:06 CET 2020</td>
             <td class="td1" th:text="${r.status}">ACTIVE</td>
+            <td class="td1" th:text="${r.requestURI}"></td>
             <td class="td1" th:text="${r.programUnit}"></td>
             <td class="td1" th:text="${r.agent}">Chrome</td>
         </tr>
