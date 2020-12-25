@@ -19,23 +19,23 @@ public class Session {
   private Date loginTime;
   //private long lastAccessedTime = 0;
   private String user = null;
-  private String status;
-  private String agent = null;
+  //private String status;
+  //private String agent = null;
   private String requestURI = null;
   private String remoteAddress = null;
-  private String programUnit;
+  //private String programUnit;
   private boolean isWebApplication = false;
 
   public Session(HttpSession s) {
     id = s.getId();
     
     try {
-      status = (String) s.getAttribute("status");
+      //status = (String) s.getAttribute("status");
       loginTime = new Date(s.getCreationTime());
       user = (String) s.getAttribute("user");
-      agent = (String) s.getAttribute("agent");
+      //agent = (String) s.getAttribute("agent");
       isWebApplication = (boolean) (s.getAttribute("webApplication") != null ? s.getAttribute("webApplication") : false);
-      programUnit = (String) s.getAttribute("programUnit");
+      //programUnit = (String) s.getAttribute("programUnit");
       remoteAddress = (String) s.getAttribute("remoteAddress");
     } catch (IllegalStateException e) {
       // Can occur on already invalidated sessions
@@ -48,7 +48,7 @@ public class Session {
     id = session.getId();
     loginTime = new Date(session.getCreationTime());
     requestURI = request.getRequestURI();
-    programUnit = "";
+    //programUnit = "";
     update(request);
   }
 
@@ -57,6 +57,8 @@ public class Session {
 
     //lastAccessedTime = session.getLastAccessedTime();
     user = request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown";
+    
+    /*
     status = "ACTIVE";
 
     agent = request.getHeader("User-Agent");
@@ -82,7 +84,7 @@ public class Session {
         agent = bwrName+"/"+bwrVersion+" "+osName;
       }
     }
-
+*/
     remoteAddress = request.getRemoteAddr();
   }
 
@@ -101,7 +103,7 @@ public class Session {
   public String getUser() {
     return user;
   }
-
+/*
   public void setStatus(String s) {
     status = s;
   }
@@ -113,7 +115,7 @@ public class Session {
   public String getAgent() {
     return agent;
   }
-
+*/
   public String getRequestURI() {
     return requestURI;
   }
@@ -121,7 +123,7 @@ public class Session {
   public String getRemoteAddress() {
     return remoteAddress;
   }
-
+/*
   public String getProgramUnit() {
     return programUnit;
   }
@@ -129,7 +131,7 @@ public class Session {
   public void setProgramUnit(String pu) {
     this.programUnit = pu;
   }
-
+*/
   public boolean getWebApplication() {
     return isWebApplication;
   }

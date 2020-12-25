@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-        logger.info("Max number of sessions: "+maxSessions);
+        logger.info("Max number of sessions per user: "+maxSessions);
 
         http.headers().frameOptions().disable();
 

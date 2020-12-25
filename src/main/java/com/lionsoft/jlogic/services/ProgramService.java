@@ -250,123 +250,108 @@ public class ProgramService {
     }
 
 	public Variable addVariable (ProgramEntity program, Variable v) {
-	  if (program.hasVariable(v.getName()))
-	    return null;
+        if (program.hasVariable(v.getName()))
+            return null;
 
-	  if (!v.isValid()) {
-			// Check id
-      if (v.getId() == null)
-        v.setId(UUID.randomUUID());
+        if (!v.isValid()) {
+            // Check id
+            if (v.getId() == null)
+                v.setId(UUID.randomUUID());
 
-	    // Check name
-	    if (v.getName() == null) {
-	      int i=1;
-	      String name;
+            // Check name
+            if (v.getName() == null) {
+                int i=1;
+                String name;
 
-	      while (true) {
-	        name ="Variable_"+i;
+                while (true) {
+                    name ="Variable_"+i;
 
-	        if (!program.hasVariable(name)) {
-	          v.setName(name);
-	          break;
-	        }
+                    if (!program.hasVariable(name)) {
+                        v.setName(name);
+                        break;
+                    }
 
-	        i ++;
-	      }
-	    }
+                    i ++;
+                }
+            }
 
-	    if (v.getType() == null)
-	      v.setType("Integer");
-	  }
+            if (v.getType() == null)
+                v.setType("Integer");
+        }
 
-    Variable newVar = program.addVariable(v);
-    repository.save(program);
-    repository.refresh(program);
+        Variable newVar = program.addVariable(v);
+        repository.save(program);
+        repository.refresh(program);
 
-    logger.info("Created "+v.toString());
+        logger.info("Created "+v.toString());
 
-	  return newVar;
+        return newVar;
 	}
 
 	public boolean updateVariable (ProgramEntity program, Variable v) {
-	  Variable pv = program.getVariable(v.getId());
+        Variable pv = program.getVariable(v.getId());
 
-	  if (pv != null && v.isValid() /*&& !program.variableIsReferenced(pv)*/) {
-	    pv.set(v);
-	    repository.save(program);
-	    repository.refresh(program);
-	    logger.info("Updated "+v.toString());
-	    return (true);
-	  }
+        if (pv != null && v.isValid() /*&& !program.variableIsReferenced(pv)*/) {
+            pv.set(v);
+            repository.save(program);
+            repository.refresh(program);
+            logger.info("Updated "+v.toString());
+            return (true);
+        }
 
-	  return false;
+        return false;
 	}
 
 	public boolean deleteVariable (ProgramEntity program, Variable v) {
-    if (v != null && program.variableIsReferenced(v)) {
-      setMessage("used in one or more blueprints.");
-      return false;
-    }
+        if (v != null && program.variableIsReferenced(v)) {
+            setMessage("used in one or more blueprints.");
+            return false;
+        }
 
-	  if (program.deleteVariable(v)) {
-	    repository.save(program);
-	    //System.out.println(program.getVariables());
-	    return (true);
-	  }
+        if (program.deleteVariable(v)) {
+            repository.save(program);
+            //System.out.println(program.getVariables());
+            return (true);
+        }
 
-    //setMessage("Can't delete variable "+pv.getName());
+        //setMessage("Can't delete variable "+pv.getName());
 
-	  return false;	
+        return false;
 	}
 
 	public boolean deleteVariable (ProgramEntity program, String name) {
-    Variable pv = program.getVariable(name);
-/*
-    if (pv != null && program.variableIsReferenced(pv)) {
-      setMessage("used in one or more blueprints.");
-      return false;
-    }
-
-	  if (program.deleteVariable(name)) {
-	    repository.save(program);
-	    //System.out.println(program.getVariables());
-	    return (true);
-	  }
-
-    //setMessage("Can't delete variable "+pv.getName());
-
-	  return false;*/
-	  return(deleteVariable(program, pv));
+        Variable pv = program.getVariable(name);
+        return(deleteVariable(program, pv));
 	}
 
 	public boolean renameVariable (ProgramEntity program, String oldName, String newName) {
-	  Variable pv = program.getVariable(oldName);
+        Variable pv = program.getVariable(oldName);
 
-	  if (pv != null && program.getVariable(newName) == null) {
-	    pv.setName(newName);
-	    repository.save(program);
-	    return (true);
-	  }
+        if (pv != null && program.getVariable(newName) == null) {
+            pv.setName(newName);
+            repository.save(program);
+            return (true);
+        }
 
-	  return false;
+        return false;
 	}
 
-  public JSONObject getIndex(ProgramEntity program) {
-    if (compiled(program))
-      return(getIndexFromClass(program));
-    else
-      return(getIndexFromFiles(program));
-  }
-  
-  public JSONObject getIndexFromFiles(ProgramEntity program) {
-    JSONObject jindex = new JSONObject();
-    
-    for (BlueprintEntity b: program.getBlueprints()) {
-      jindex.put(b.getId(), blueprintService.getSpec(b));
+    public JSONObject getIndex(ProgramEntity program) {
+        if (compiled(program))
+            return(getIndexFromClass(program));
+        else
+            return(getIndexFromFiles(program));
     }
-    
-    return(jindex);
-  }
+
+    public JSONObject getIndexFromFiles(ProgramEntity program) {
+        JSONObject jindex = new JSONObject();
+
+        for (BlueprintEntity b: program.getBlueprints()) {
+            jindex.put(b.getId(), blueprintService.getSpec(b));
+        }
+
+        return(jindex);
+    }
   
   public JSONObject getIndexFromClass(ProgramEntity program) {
     JSONObject jprogram = new JSONObject();
