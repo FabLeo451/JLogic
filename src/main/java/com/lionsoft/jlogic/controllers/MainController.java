@@ -298,70 +298,20 @@ public class MainController {
 
     return "_blueprints = "+content+";\n";
   }
-/*
-  @GetMapping("/jsDynamic")
-  public String getJSDyn() {
-    SystemInfo systemInfo = new SystemInfo();
-    PackageInfo packageInfo = new PackageInfo(buildProperties);
 
-    JSONArray jmenu = new JSONArray(
-      //"{ \"href\":\"%s\", \"icon\":\"%s\", \"label\":\"%s\" }"+
-      "[{ \"href\":\"/home\", \"icon\":\"i-home\", \"label\":\"Home\" },"+
-      "{ \"href\":\"/bp\", \"icon\":\"i-project-diagram\", \"label\":\"Blueprints\" },"+
-      "{ \"href\":\"/apipanel\", \"icon\":\"i-cube\", \"label\":\"APIs\" },"+
-      "{ \"href\":\"/edit-properties\", \"icon\":\"i-sliders-h\", \"label\":\"Properties\" },"+
-      "{ \"href\":\"/view-sessions\", \"icon\":\"i-sign-in-alt\", \"label\":\"Sessions\" },"+
-      "{ \"href\":\"/stats\", \"icon\":\"i-chart-bar\", \"label\":\"Analytics\" },"+
-      "{ \"href\":\"/users\", \"icon\":\"i-users\", \"label\":\"Users\" }"+
-      "]");
-
-    JSONObject jo = new JSONObject();
-
-    JSONObject jsystem = new JSONObject();
-    jsystem.put("nodename", systemInfo.getNodeName());
-
-    JSONObject jpackage = new JSONObject();
-    jpackage.put("application_name", packageInfo.getName());
-    jpackage.put("package", packageInfo.getName());
-    jpackage.put("version", packageInfo.getVersion());
-
-    jo.put("system", jsystem);
-    jo.put("package", jpackage);
-    jo.put("menu", jmenu);
-    jo.put("auth", new JSONObject("{\"enabled\":false, \"username\": \"Anonymous\"}"));
-    jo.put("ssl", Boolean.FALSE);
-
-    return "__SERVER = "+jo.toString()+";\n";
-  }
-*/
-/*
-  @Bean
-  SessionRegistry sessionRegistry() {
-      return new SessionRegistryImpl();
-  }*/
-/*
-  @GetMapping(value="/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<Session> getSessions() {
-    //SessionsUtils sessionUtils = new SessionsUtils();
-    List<Session> l = sessionService.getList();
-
-    return l;
-  }*/
-/*
-  @GetMapping(value="/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<Object> getSessions() {
-    //SessionsUtils sessionUtils = new SessionsUtils();
-    List<Object> sessions = sessionService.getSessions();
-
-    return sessions;
-  }
-*/
   @GetMapping(value="/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<Session> getSessions() {
     //SessionsUtils sessionUtils = new SessionsUtils();
     List<Session> sessions = sessionService.getSessions();
 
     return sessions;
+  }
+  
+  @GetMapping(value="/top", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<Request> getTOP() {
+    List<Request> top = sessionService.getTOP();
+
+    return top;
   }
 
   @GetMapping(value="/stats", produces = MediaType.APPLICATION_JSON_VALUE)

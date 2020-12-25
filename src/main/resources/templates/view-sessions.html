@@ -54,21 +54,28 @@
   </header>
 
   <div class="w3-container">
-    <button class="btnApp w3-right" onclick="refreshSessions();"><i class="icon i-refresh"></i> Refresh</button>
-    <div id="sessions" class="w3-container w3-stretch">
-      <!--TABLE-->
+    <button class="btnApp w3-right" onclick="refreshTOP();"><i class="icon i-refresh"></i> Refresh</button>
+    <div id="top" class="w3-container w3-stretch">
       <table class="table1">
-        <tr><th class="th1">Client&nbsp;IP</th><th class="th1" /><th class="th1">User</th><th class="th1">Login&nbsp;time</th><th class="th1">Status</th><th class="th1">Executing</th><th class="th1">Agent</th><tr>
-        <tr th:if="${sessions != null}" th:each="s : ${#lists.sort(sessions, byLoginTime)}">
-            <td class="td1" th:text="${s.remoteAddress}">1.2.3.4</td>
-            <td class="td1" th:switch="${s.webApplication}">
+        <tr>
+            <th class="th1">Client&nbsp;IP</th>
+            <!--th class="th1" /-->
+            <th class="th1">User</th>
+            <th class="th1">Start&nbsp;time</th>
+            <th class="th1">Status</th>
+            <th class="th1">Executing</th>
+            <th class="th1">Agent</th>
+        <tr>
+        <tr th:if="${top != null}" th:each="r : ${#lists.sort(top, byTimestamp)}">
+            <td class="td1" th:text="${r.remoteAddress}">1.2.3.4</td>
+            <!--td class="td1" th:switch="${s.webApplication}">
               <span th:case="true"><i class="icon i-laptop w3-text-gray" title="Web application"></i></span>
-            </td>
-            <td class="td1" th:text="${s.user}">John</td>
-            <td class="td1" th:text="${s.loginTime}">Wed Dec 16 19:31:06 CET 2020</td>
-            <td class="td1" th:text="${s.status}">ACTIVE</td>
-            <td class="td1" th:text="${s.programUnit}"></td>
-            <td class="td1" th:text="${s.agent}">Chrome</td>
+            </td-->
+            <td class="td1" th:text="${r.user}">John</td>
+            <td class="td1" th:text="${r.timestamp}">Wed Dec 16 19:31:06 CET 2020</td>
+            <td class="td1" th:text="${r.status}">ACTIVE</td>
+            <td class="td1" th:text="${r.programUnit}"></td>
+            <td class="td1" th:text="${r.agent}">Chrome</td>
         </tr>
       </table>
     </div>
@@ -82,24 +89,9 @@
   includeHTML();
   //refreshSessions ();
   
-  function refreshSessions() {
-  /*
-    callServer ("GET", "/sessions", null, function (xhttp) {
-        if (xhttp.readyState == 4) {
-          if (xhttp.status == 200) {
-            //jcatalog = JSON.parse(xhttp.responseText);
-            $('.list').html(xhttp.responseText);
-          }
-          else {
-            console.log(xhttp.statusText);
-          }
-        }
-      }
-    			
-    		}
-    );*/
-    $.get("/view-sessions?element=sessions").done(function(fragment) { // get from controller
-        $("#sessions").replaceWith(fragment); // update snippet of page
+  function refreshTOP() {
+    $.get("/view-sessions?element=top").done(function(fragment) { // get from controller
+        $("#top").replaceWith(fragment); // update snippet of page
     });
 
   }

@@ -152,42 +152,42 @@ public class ProgramService {
 	}
 
 	public ProgramEntity create(String name) {
-	  ProgramEntity program = createEmpty(name);
+        ProgramEntity program = createEmpty(name);
 
-    if (program == null)
-      return null;
-      
-    //logger.info("Creating index for "+program.getName());
-    //program.createIndex();
-      
-    logger.info("Adding properties to "+program.getName());
-    program.createProperties();
+        if (program == null)
+            return null;
 
-    logger.info("Adding default blueprints to "+program.getName());
-    BlueprintEntity main = blueprintService.create(program, BlueprintType.MAIN, "Main");
-    BlueprintEntity events = blueprintService.create(program, BlueprintType.EVENTS, "Events");
+        //logger.info("Creating index for "+program.getName());
+        //program.createIndex();
 
-    repository.refresh(program);
+        logger.info("Adding properties to "+program.getName());
+        program.createProperties();
 
-    return program;
+        logger.info("Adding default blueprints to "+program.getName());
+        BlueprintEntity main = blueprintService.create(program, BlueprintType.MAIN, "Main");
+        BlueprintEntity events = blueprintService.create(program, BlueprintType.EVENTS, "Events");
+
+        repository.refresh(program);
+
+        return program;
 	}
 
-  boolean deleteDirectory(File directoryToBeDeleted) {
-    File[] allContents = directoryToBeDeleted.listFiles();
+    boolean deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
 
-    if (allContents != null) {
-      for (File file : allContents) {
-        //deleteDirectory(file);
-        file.delete();
-      }
+        if (allContents != null) {
+            for (File file : allContents) {
+                //deleteDirectory(file);
+                file.delete();
+            }
+        }
+        return directoryToBeDeleted.delete();
     }
-    return directoryToBeDeleted.delete();
-  }
 
-  boolean deleteDirectory(String d) {
-    File dir = new File(d);
-    return(deleteDirectory(dir));
-  }
+    boolean deleteDirectory(String d) {
+        File dir = new File(d);
+        return(deleteDirectory(dir));
+    }
 
 	public boolean delete (ProgramEntity program) {
         for (BlueprintEntity b: program.getBlueprints())
@@ -204,50 +204,50 @@ public class ProgramService {
         return false;
 	}
 
-	public Optional<ProgramEntity> findById (String programId) {
-    return (repository.findById(programId));
-	}
+    public Optional<ProgramEntity> findById (String programId) {
+        return (repository.findById(programId));
+    }
 
-	public void rename (ProgramEntity program, String name) {
-	  program.setName(name);
-	  repository.save(program);
-	}
+    public void rename (ProgramEntity program, String name) {
+        program.setName(name);
+        repository.save(program);
+    }
 
-	public boolean compile (ProgramEntity program) {
-	  boolean result = program.compile();
-	  repository.save(program);
-	  repository.refresh(program);
-	  return (result);
-	}
+    public boolean compile (ProgramEntity program) {
+        boolean result = program.compile();
+        repository.save(program);
+        repository.refresh(program);
+        return (result);
+    }
 
 	public boolean run(ProgramEntity program, String methodName, String data, String logName, HttpServletRequest request) {
-    try {
-      logger.info("Parsing data...");
-      Map<String, Object> map = Utils.jsonToMap(data);
-      
-      return (run(program, methodName, map, logName, request));
+        try {
+            logger.info("Parsing data...");
+            Map<String, Object> map = Utils.jsonToMap(data);
 
-    } catch (ParseException e) {
-      setResult(ProgramEntity.BAD_INPUT, e.getMessage());
-      return false;
-    }
+            return (run(program, methodName, map, logName, request));
+
+        } catch (ParseException e) {
+            setResult(ProgramEntity.BAD_INPUT, e.getMessage());
+          return false;
+        }
 	}
 	
-  public boolean run(ProgramEntity program, String methodName, Map<String, Object> actual, String logName, HttpServletRequest request) {
-    boolean result = false;
+    public boolean run(ProgramEntity program, String methodName, Map<String, Object> actual, String logName, HttpServletRequest request) {
+        boolean result = false;
 
-    //Session session = sessionService.getSession(request);
-    sessionService.setActive(request, true);
-    sessionService.setProgramUnit(request, program.getName()+"."+methodName);
+        //sessionService.setActive(request, true);
+        sessionService.setProgramUnit(request, program.getName()+"."+methodName);
+        sessionService.setCurrentActive(true);
 
-    result = program.run(methodName, actual, logName, request);
+        result = program.run(methodName, actual, logName, request);
 
-    //session.setStatus(Session.ACTIVE);
-    sessionService.setProgramUnit(request, "");
-    sessionService.setActive(request, false);
+        sessionService.setProgramUnit(request, "");
+        //sessionService.setActive(request, false);
+        sessionService.setCurrentActive(false);
 
-    return(result);
-  }
+        return(result);
+    }
 
 	public Variable addVariable (ProgramEntity program, Variable v) {
 	  if (program.hasVariable(v.getName()))
@@ -520,121 +520,121 @@ public class ProgramService {
 	 * Import a bluerint
 	 */
 	public BlueprintEntity importBlueprint(ProgramEntity program, String content) {
-	  BlueprintEntity blueprint = null;
-	  
-	  setResult(SUCCESS, "");
+        BlueprintEntity blueprint = null;
 
-    try {
-      JSONParser jsonParser = new JSONParser();
-      JSONObject jbp = (JSONObject) jsonParser.parse(content);
+        setResult(SUCCESS, "");
 
-      String name = (String) jbp.get("name");
-      String type = (String) jbp.get("type");
-      //int internalId = ((Long) jbp.get("internalId")).intValue();
-      
-      logger.info("Creating blueprint "+name);
-      blueprint = blueprintService.create(program, /*BlueprintType.GENERIC*/BlueprintType.valueOf(type), name);
+        try {
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jbp = (JSONObject) jsonParser.parse(content);
 
-      logger.info("Updating "+blueprint.toString());
-      Code code = blueprintService.update(blueprint, content);
-      
-      if (code != Code.SUCCESS) {
-        logger.error("Unable to update importing blueprint "+name);
+            String name = (String) jbp.get("name");
+            String type = (String) jbp.get("type");
+            //int internalId = ((Long) jbp.get("internalId")).intValue();
+
+            logger.info("Creating blueprint "+name);
+            blueprint = blueprintService.create(program, /*BlueprintType.GENERIC*/BlueprintType.valueOf(type), name);
+
+            logger.info("Updating "+blueprint.toString());
+            Code code = blueprintService.update(blueprint, content);
+
+            if (code != Code.SUCCESS) {
+                logger.error("Unable to update importing blueprint "+name);
+                return null;
+            }
+
+            logger.info("Refreshing program "+program.getName());
+            repository.refresh(program);
+
+            return(blueprint);
+
+        } catch (ParseException e) {
+            setResult(1, e.getMessage());
+        }
+          
         return null;
-      }
-      
-      logger.info("Refreshing program "+program.getName());
-      repository.refresh(program);
-      
-      return(blueprint);
-      
-    } catch (ParseException e) {
-      setResult(1, e.getMessage());
-    }
-      	  
-	  return null;
 	}
 	
 	public BlueprintEntity importBlueprintFile(ProgramEntity program, String filename) {
-    try {
-      String content = new String (Files.readAllBytes(Paths.get(filename)));
-      return(importBlueprint(program, content));
-    }
-    catch (IOException e) {
-      logger.error(e.getMessage());
-    }
-    
-    return null;
+        try {
+            String content = new String (Files.readAllBytes(Paths.get(filename)));
+            return(importBlueprint(program, content));
+        }
+        catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+        
+        return null;
 	}
 	
 	/**
 	 * Pack program into a given zip file
 	 */
 	public boolean pack(ProgramEntity program, String packFilename) {
-	  List<String> srcFiles = new ArrayList<String>();
+        List<String> srcFiles = new ArrayList<String>();
 	  
-	  logger.info("Packing "+program.getName()+" into "+packFilename);
+        logger.info("Packing "+program.getName()+" into "+packFilename);
       
-    JSONObject jinfo = new JSONObject();
-    jinfo.put("name", program.getName());
-    jinfo.put("fromVersion", buildProperties.getVersion());
-    jinfo.put("exportTime", (new Date()).toString());
-	  
-	  JSONArray jbpa = new JSONArray();
-	  
-    for (BlueprintEntity b: program.getBlueprints()) {
-      //System.out.println(b.getFilename());
-      srcFiles.add(b.getFilename());
-      
-      JSONObject jbp = new JSONObject();
-      jbp.put("internalId", b.getInternalId());
-      jbp.put("name", b.getBaseFilename());
-      jbpa.add(jbp);
-    }
-    
-    jinfo.put("blueprints", jbpa);
-    
-    srcFiles.add(program.getMyDir()+"/Program.properties");
-    
-    try {
-      FileOutputStream fos = new FileOutputStream(packFilename);
-      ZipOutputStream zipOut = new ZipOutputStream(fos);
-      
-      // Pack program files
-      for (String srcFile : srcFiles) {
-        //logger.info("Packing "+srcFile);
-        
-        File fileToZip = new File(srcFile);
-        FileInputStream fis = new FileInputStream(fileToZip);
-        ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
-        zipOut.putNextEntry(zipEntry);
+        JSONObject jinfo = new JSONObject();
+        jinfo.put("name", program.getName());
+        jinfo.put("fromVersion", buildProperties.getVersion());
+        jinfo.put("exportTime", (new Date()).toString());
 
-        byte[] bytes = new byte[1024];
-        int length;
-        while((length = fis.read(bytes)) >= 0) {
-            zipOut.write(bytes, 0, length);
+        JSONArray jbpa = new JSONArray();
+
+        for (BlueprintEntity b: program.getBlueprints()) {
+            //System.out.println(b.getFilename());
+            srcFiles.add(b.getFilename());
+
+            JSONObject jbp = new JSONObject();
+            jbp.put("internalId", b.getInternalId());
+            jbp.put("name", b.getBaseFilename());
+            jbpa.add(jbp);
         }
-        fis.close();
-      }
-      
-      // Pack info file
-      ZipEntry zipEntry = new ZipEntry("info.json");
-      zipOut.putNextEntry(zipEntry);
-      zipOut.write(jinfo.toString().getBytes("UTF-8"), 
-                   0, 
-                   jinfo.toString().getBytes("UTF-8").length);
-      
-      zipOut.close();
-      fos.close();
-    } catch (FileNotFoundException e) {
-        e.printStackTrace();
-        return false;
-    } catch (IOException e) {
-        e.printStackTrace();
-        return false;    
-    }
-              
-	  return true;
+
+        jinfo.put("blueprints", jbpa);
+
+        srcFiles.add(program.getMyDir()+"/Program.properties");
+    
+        try {
+            FileOutputStream fos = new FileOutputStream(packFilename);
+            ZipOutputStream zipOut = new ZipOutputStream(fos);
+
+            // Pack program files
+            for (String srcFile : srcFiles) {
+                //logger.info("Packing "+srcFile);
+
+                File fileToZip = new File(srcFile);
+                FileInputStream fis = new FileInputStream(fileToZip);
+                ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+                zipOut.putNextEntry(zipEntry);
+
+                byte[] bytes = new byte[1024];
+                int length;
+                while((length = fis.read(bytes)) >= 0) {
+                    zipOut.write(bytes, 0, length);
+                }
+                fis.close();
+            }
+
+            // Pack info file
+            ZipEntry zipEntry = new ZipEntry("info.json");
+            zipOut.putNextEntry(zipEntry);
+            zipOut.write(jinfo.toString().getBytes("UTF-8"), 
+                       0, 
+                       jinfo.toString().getBytes("UTF-8").length);
+
+            zipOut.close();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;    
+        }
+                  
+        return true;
 	}
 	
 	/**
@@ -651,11 +651,11 @@ public class ProgramService {
 	}
 
 	
-  public Optional<String> getExtensionByStringHandling(String filename) {
-	    return Optional.ofNullable(filename)
-	      .filter(f -> f.contains("."))
-	      .map(f -> f.substring(filename.lastIndexOf(".") + 1));
-	}
+    public Optional<String> getExtensionByStringHandling(String filename) {
+        return Optional.ofNullable(filename)
+          .filter(f -> f.contains("."))
+          .map(f -> f.substring(filename.lastIndexOf(".") + 1));
+    }
 
 	/**
 	 * This method guards against writing files to the file system outside of the target folder. 
@@ -741,29 +741,6 @@ public class ProgramService {
     
     return true;
   }
-/*  
-  public JSONObject loadJsonFile(String filename) {
-    JSONObject jo = null;
-    
-    try {
-      String content = new String (Files.readAllBytes(Paths.get(filename)));
-
-      try {
-        JSONParser jsonParser = new JSONParser();
-        jo = (JSONObject) jsonParser.parse(content);
-      }
-      catch (ParseException e) {
-        logger.error("Unable to parse json file "+filename+": "+e.getMessage());
-        return null;
-      }
-    }
-    catch (IOException e) {
-      logger.error(e.getMessage());
-      return null;
-    }  
-    
-    return jo;
-  }*/
 
 	/**
 	 * Import program from file

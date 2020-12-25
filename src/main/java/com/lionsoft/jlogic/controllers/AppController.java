@@ -279,9 +279,9 @@ public class AppController {
         return "edit-api";
 	}
 
-  /**
-   * View api log
-   */
+    /**
+     * View api log
+     */
 	@RequestMapping("/mapping/{id}/view-log")
 	public String viewLog(HttpServletRequest request, Model model, @PathVariable("id") String id) {
 
@@ -336,8 +336,10 @@ public class AppController {
     public String getSessions(Model model, @RequestParam(value = "element", required=false) String element) {
         String resource = "view-sessions";
 
-        model.addAttribute("sessions", sessionService.getSessions());
-        model.addAttribute("byLoginTime", Comparator.comparing(Session::getLoginTime));
+        //model.addAttribute("sessions", sessionService.getSessions());
+        //model.addAttribute("byLoginTime", Comparator.comparing(Session::getLoginTime));
+        model.addAttribute("top", sessionService.getTOP());
+        model.addAttribute("byTimestamp", Comparator.comparing(Request::getTimestamp));
         
         if (element != null)
           resource += " :: #"+element;
