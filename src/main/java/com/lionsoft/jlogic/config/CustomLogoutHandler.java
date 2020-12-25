@@ -21,10 +21,13 @@ public class CustomLogoutHandler implements LogoutHandler {
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         HttpSession httpSessions = request.getSession(false);
-        String id = httpSessions.getId();
-        String username = (String) httpSessions.getAttribute("user");
+        
+        if (httpSessions != null) {
+            String id = httpSessions.getId();
+            String username = (String) httpSessions.getAttribute("user");
 
-        logger.info(username+" "+id+" logging out");
-        // sessionService.deleteSession(id); Deleted in LogoutListener
+            logger.info(username+" "+id+" logging out");
+            // sessionService.deleteSession(id); Deleted in LogoutListener
+        }
     }
 }

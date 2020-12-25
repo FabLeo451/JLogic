@@ -46,12 +46,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserRepository userRepository;
  
-    @Value("${maxSessions}")
-    private int maxSessions;
+    //@Value("${maxSessions}")
+    //private int maxSessions;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-        logger.info("Max number of sessions: "+maxSessions);
+        //logger.info("Max number of sessions: "+maxSessions);
 
         http.headers().frameOptions().disable();
 
@@ -86,8 +86,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
             .sessionManagement()
-            .maximumSessions(maxSessions)
-            .maxSessionsPreventsLogin(false)
+            //.maximumSessions(maxSessions) // Not working
+            .maxSessionsPreventsLogin(true)
             .sessionRegistry(sessionRegistry());
             //.expiredUrl("/login?expired");
             //.expiredUrl("/expired");
@@ -147,7 +147,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public static ServletListenerRegistrationBean httpSessionEventPublisher() {	//(5)
+    public static ServletListenerRegistrationBean httpSessionEventPublisher() {
         return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
     }
 
