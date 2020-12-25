@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.slf4j.Logger;
@@ -28,58 +29,64 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  static Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+    static Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
-  @Autowired
-  private SessionRegistry sessionRegistry;
+    @Autowired
+    private SessionRegistry sessionRegistry;
 
-  @Autowired
-  private UserDetailsService userDetailsService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
-  @Autowired
-  PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private UserRepository userRepository;
+    
+    @Value("${maxSessions}")
+    private int maxSessions;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-	  http.headers().frameOptions().disable();
+        http.headers().frameOptions().disable();
 
-	  http
-	    .csrf().disable()
-	    .httpBasic().and()
-			.authorizeRequests()
-				.antMatchers("/css/**", "/js/**", "/webfonts/*", "/img/**").permitAll()
-				.antMatchers("/home", "/sessions").hasAuthority("VIEWER")
-				.antMatchers("/users").hasAuthority("ADMIN")
-				// Users
-				.antMatchers("/users", "/user/create", "/user/*/edit").hasAuthority("ADMIN")
-				.antMatchers("/user/edit").authenticated()
-				.antMatchers(HttpMethod.POST, "/user").hasAuthority("ADMIN")
-				.antMatchers(HttpMethod.DELETE, "/user/**").hasAuthority("ADMIN")
-				.antMatchers(HttpMethod.PUT, "/me").authenticated()
-				.antMatchers(HttpMethod.PUT, "/user/*").hasAuthority("ADMIN")
-				.antMatchers(HttpMethod.PUT, "/user/*").hasAuthority("ADMIN")
+        http
+            .csrf().disable()
+            .httpBasic().and()
+                .authorizeRequests()
+                    .antMatchers("/css/**", "/js/**", "/webfonts/*", "/img/**").permitAll()
+                    .antMatchers("/home", "/sessions").hasAuthority("VIEWER")
+                    .antMatchers("/users").hasAuthority("ADMIN")
+                    // Users
+                    .antMatchers("/users", "/user/create", "/user/*/edit").hasAuthority("ADMIN")
+                    .antMatchers("/user/edit").authenticated()
+                    .antMatchers(HttpMethod.POST, "/user").hasAuthority("ADMIN")
+                    .antMatchers(HttpMethod.DELETE, "/user/**").hasAuthority("ADMIN")
+                    .antMatchers(HttpMethod.PUT, "/me").authenticated()
+                    .antMatchers(HttpMethod.PUT, "/user/*").hasAuthority("ADMIN")
+                    .antMatchers(HttpMethod.PUT, "/user/*").hasAuthority("ADMIN")
 
-				.antMatchers(HttpMethod.POST, "/program/**", "/properties/**").hasAuthority("EDITOR")
-				.antMatchers(HttpMethod.PUT, "/properties/**").hasAuthority("EDITOR")
-                .anyRequest().authenticated()
-                .and()
-                .formLogin().loginPage("/login").defaultSuccessUrl("/perform_login").permitAll()
-                .and()
-                .logout().invalidateHttpSession(true)/*.logoutUrl("/logout")*/.logoutSuccessUrl("/login?logout").deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler());
+                    .antMatchers(HttpMethod.POST, "/program/**", "/properties/**").hasAuthority("EDITOR")
+                    .antMatchers(HttpMethod.PUT, "/properties/**").hasAuthority("EDITOR")
+                    .anyRequest().authenticated()
+                    .and()
+                    .formLogin().loginPage("/login").defaultSuccessUrl("/perform_login").permitAll()
+                    .and()
+                    .logout().invalidateHttpSession(true)/*.logoutUrl("/logout")*/.logoutSuccessUrl("/login?logout").deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler());
 
-    http
-      .sessionManagement()
-      .maximumSessions(100)
-      .sessionRegistry(sessionRegistry())
-      //.expiredUrl("/login?expired");
-      .expiredUrl("/expired");
-/*
-    http.sessionManagement()
-      .expiredUrl("/login?expired")
-      .invalidSessionUrl("/login?expired");*/
+        logger.info("Max number of sessions: "+maxSessions);
+
+        http
+            .sessionManagement()
+            .maximumSessions(maxSessions)
+            .maxSessionsPreventsLogin(true)
+            .sessionRegistry(sessionRegistry())
+            //.expiredUrl("/login?expired");
+            .expiredUrl("/expired");
+        /*
+        http.sessionManagement()
+          .expiredUrl("/login?expired")
+        .invalidSessionUrl("/login?expired");*/
 	}
 
 	@Autowired
