@@ -19,6 +19,7 @@ public class Request {
     private String remoteAddress = null;
     private RequestStatus status = RequestStatus.IDLE;
     private String programUnit;
+    private String clientId;
 
     private String sessionId;
     private long threadId;
@@ -107,6 +108,14 @@ public class Request {
 
     public void setProgramUnit(String pu) {
         this.programUnit = pu;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String id) {
+        this.clientId = id;
     }
     
     public String toString() {

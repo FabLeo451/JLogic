@@ -8,14 +8,15 @@
 <link rel='stylesheet' href='css/button.css'>
 <link rel='stylesheet' href='css/table.css'>
 <link rel='stylesheet' href='css/sidebar.css'>
+<link rel='stylesheet' href='/css/modal.css'>
 
 <script>
 /**SERVER_DATA**/
 </script>
 
-<script src="js/utils.js"></script>
-<!--script src="js/server.js"></script-->
-<script src="js/sessions.js"></script>
+<script src="/js/utils.js"></script>
+<script src="/js/dialog.js"></script>
+<!--script src="js/sessions.js"></script-->
 <script src="/js/jquery-latest.min.js"></script>
 <script src="/js/jquery-ui.min.js"></script>
 
@@ -66,6 +67,7 @@
             <th class="th1">Request</th>
             <th class="th1">Executing</th>
             <th class="th1">Agent</th>
+            <th class="th1" />
         <tr>
         <tr th:if="${top != null}" th:each="r : ${#lists.sort(top, byTimestamp)}">
             <td class="td1" th:text="${r.remoteAddress}">1.2.3.4</td>
@@ -77,7 +79,10 @@
             <td class="td1" th:text="${r.status}">ACTIVE</td>
             <td class="td1" th:text="${r.requestURI}"></td>
             <td class="td1" th:text="${r.programUnit}"></td>
-            <td class="td1" th:text="${r.agent}">Chrome</td>
+            <td class="td1" th:text="${r.agent}">Agent</td>
+            <td class="td1">
+              <i sec:authorize="hasAuthority('ADMIN')" class="icon i-times w3-text-red" style="margin-left:0.5em; cursor:pointer;" th:attr="onclick=|stop(${r.threadId}, '${r.sessionId}')|" title="Stop process"></i>
+            </td>
         </tr>
       </table>
     </div>
@@ -95,8 +100,25 @@
     $.get("/view-sessions?element=top").done(function(fragment) { // get from controller
         $("#top").replaceWith(fragment); // update snippet of page
     });
-
   }
+  
+  function stop(threadId, sessionId) {
+    callServer ("POST", '/stop/'+threadId+'/session/'+sessionId, null, function (xhttp) {
+          if (xhttp.readyState == 4) {
+            //dialogWorking.destroy();
+            
+            if (xhttp.status == 200) {
+              refreshTOP();
+            }
+            else {
+              //console.log(xhttp);
+              dialogError(getMessage(xhttp.response));
+            }
+          }
+        }
+    );
+  }
+  
   </script>
 
 </body>

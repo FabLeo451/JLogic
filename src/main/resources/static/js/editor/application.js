@@ -514,10 +514,10 @@ function runCallback (xhttp) {
           //dialog.destroy();
           document.getElementById("_dlg_msg").innerHTML = "Stopping...";
 
-          callServer ("POST", "/blueprint/"+blueprint_id+"/stop?client_id="+__SERVER['client_id'], '', function (xhttp) {
+          callServer ("POST", "/stop/clientId/"+clientId, '', function (xhttp) {
             if (xhttp.readyState == 4) {
               if (xhttp.status == 200) {
-                //dialogRunning.destroy();
+                bpConsole.append ("Blueprint stopped by user.", BPConsoleTextType.WARNING);
               }
               else
                 document.getElementById("_dlg_msg").innerHTML = "Unable to stop blueprint.";
@@ -585,7 +585,7 @@ function run (dialog) {
   
   lastInput = input;
 
-  callServer ("POST", "/program/"+_jbp.programId+"/run/"+blueprint.getName(), input, runCallback);
+  callServer ("POST", "/program/"+_jbp.programId+"/run/"+blueprint.getName()+"?clientId="+clientId, input, runCallback);
   endEdit();
 }
 

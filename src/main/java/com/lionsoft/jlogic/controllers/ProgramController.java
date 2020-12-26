@@ -44,38 +44,41 @@ import java.util.concurrent.locks.*;
 @RestController
 public class ProgramController {
 
-  Logger logger = LoggerFactory.getLogger(ProgramController.class);
-  static ApplicationHome home = new ApplicationHome(ProgramController.class);
+    Logger logger = LoggerFactory.getLogger(ProgramController.class);
+    static ApplicationHome home = new ApplicationHome(ProgramController.class);
 
-  @Autowired
-  ProgramRepository programRepository;
+    @Autowired
+    ProgramRepository programRepository;
 
-  @Autowired
-  ProgramService programService;
+    @Autowired
+    ProgramService programService;
 
-  @Autowired
-  BlueprintService blueprintService;
+    @Autowired
+    BlueprintService blueprintService;
 
-  @Autowired
-  CatalogService catalogService;
+    @Autowired
+    CatalogService catalogService;
 
-	// GET /programs
-	@GetMapping(value = "/programs")
-	public List<ProgramEntity> getPrograms() {
-		return catalogService.getPrograms();
-	}
+    @Autowired
+    SessionService sessionService;
 
-	// GET /program/{id}
-	@GetMapping(value = "/program/{id}")
-	public ProgramEntity get(@PathVariable("id") String id) {
-	  Optional<ProgramEntity> program = programService.findById(id);
+    // GET /programs
+    @GetMapping(value = "/programs")
+    public List<ProgramEntity> getPrograms() {
+        return catalogService.getPrograms();
+    }
 
-	  if (!program.isPresent())
-	    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    // GET /program/{id}
+    @GetMapping(value = "/program/{id}")
+    public ProgramEntity get(@PathVariable("id") String id) {
+        Optional<ProgramEntity> program = programService.findById(id);
 
-		return program.get();
-	}
-/*
+        if (!program.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        return program.get();
+    }
+    /*
   private String createProgram(String parentId, String name) {
 
     logger.info("Creating program "+name);
@@ -95,29 +98,23 @@ public class ProgramController {
 	// PUT /program
 	@PutMapping(value = "/program", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<ProgramEntity> put(@RequestBody String data) {
-	  String response;
-	  JSONObject jo;
-/*
-    try {
-      jo = new JSONObject(data);
-    }
-    catch (JSONException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-    }*/
-    JSONParser jsonParser = new JSONParser();
+        String response;
+        JSONObject jo;
 
-    try {
-      jo = (JSONObject) jsonParser.parse(data);
-    } catch (ParseException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-    }
+        JSONParser jsonParser = new JSONParser();
 
-    //response = createProgram(null, jo.optString("name"));
-    logger.info("Creating program "+ (String) jo.get("name"));
+        try {
+            jo = (JSONObject) jsonParser.parse(data);
+        } catch (ParseException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
 
-	  ProgramEntity program = programService.create( (String) jo.get("name"));
+        //response = createProgram(null, jo.optString("name"));
+        logger.info("Creating program "+ (String) jo.get("name"));
 
-		return (catalogService.getPrograms());
+        ProgramEntity program = programService.create( (String) jo.get("name"));
+
+        return (catalogService.getPrograms());
 	}
 
 	// PUT /program/{programId}/blueprint/{name}
@@ -125,24 +122,24 @@ public class ProgramController {
 	public ResponseEntity<String> addBlueprint(@PathVariable("programId") String programId,
 	                                           @PathVariable("name") String name,
 	                                           @RequestParam(value = "tree", defaultValue = "0") String tree) {
-	  BlueprintEntity blueprint = null;
-	  Optional<ProgramEntity> program = programService.findById(programId);
+        BlueprintEntity blueprint = null;
+        Optional<ProgramEntity> program = programService.findById(programId);
 
-	  if (program.isPresent()) {
-	    blueprint = blueprintService.create(program.get(), BlueprintType.GENERIC, name);
+        if (program.isPresent()) {
+            blueprint = blueprintService.create(program.get(), BlueprintType.GENERIC, name);
 
-	    if (blueprint != null) {
-	      //logger.info("Created "+blueprint.toString());
-	      programRepository.refresh(program.get());
-	    } else {
-	      logger.error("Can't create blueprint "+name);
-	      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't create blueprint "+name);
-	    }
-	  } else {
-	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found: "+programId);
-	  }
+            if (blueprint != null) {
+                //logger.info("Created "+blueprint.toString());
+                programRepository.refresh(program.get());
+            } else {
+                logger.error("Can't create blueprint "+name);
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't create blueprint "+name);
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found: "+programId);
+        }
 
-		return new ResponseEntity<>("{\"id\":\""+blueprint.getId()+"\"}", HttpStatus.OK);
+        return new ResponseEntity<>("{\"id\":\""+blueprint.getId()+"\"}", HttpStatus.OK);
 	}
 	
 	/**
@@ -331,43 +328,51 @@ public class ProgramController {
 	// POST /program/{id}/run/{method}
 	@PostMapping(value = "/program/{id}/run/{method}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> run(HttpServletRequest request,
-                                    @PathVariable("id") String id,
-	                                  @PathVariable("method") String method,
-	                                  @RequestBody String data) {
+                                      @PathVariable("id") String id,
+                                      @PathVariable("method") String method,
+                                      @RequestBody String data,
+                                      @RequestParam(value = "clientId", required=false) String clientId) {
 
-	  String outData = "";
+        String outData = "";
 
-	  Optional<ProgramEntity> program = programService.findById(id);
+        Optional<ProgramEntity> program = programService.findById(id);
 
-	  if (program.isPresent()) {
-	      Optional<BlueprintEntity> blueprint = blueprintService.findByNameAndProgram(method, program.get());
+        if (program.isPresent()) {
+            Optional<BlueprintEntity> blueprint = blueprintService.findByNameAndProgram(method, program.get());
 
-	      if (blueprint.isPresent()) {
-	          if (programService.run(program.get(), blueprint.get().getMethod(), data, null, request)) {
-	            logger.info(program.get().getName()+"."+method+" successfully executed");
-	            outData = program.get().getOutput();
-	          }
-	          else {
-	            logger.error("Blueprint "+program.get().getName()+"."+method+" error: "+program.get().getResult());
-	            outData = program.get().getOutput();
+            if (blueprint.isPresent()) {
+                
+                // clientId is set by the blueprint editor when running blueprints
+                if (clientId != null) {
+                    Request r = sessionService.getCurrentRequest();
+                    r.setClientId(clientId);
+                }
 
-	            switch (program.get().getResult()) {
-	              case ProgramEntity.METHOD_NOT_FOUND:
-	                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Method Not Found");
+                if (programService.run(program.get(), blueprint.get().getMethod(), data, null, request)) {
+                    logger.info(program.get().getName()+"."+method+" successfully executed");
+                    outData = program.get().getOutput();
+                }
+                else {
+                    logger.error("Blueprint "+program.get().getName()+"."+method+" error: "+program.get().getResult());
+                    outData = program.get().getOutput();
 
-	              default:
-	                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, /*program.get().getMessage()*/program.get().getOutput());
-	            }
-	          }
-	      } else {
-	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Method Not Found: "+method);
-	      }
+                    switch (program.get().getResult()) {
+                      case ProgramEntity.METHOD_NOT_FOUND:
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Method Not Found");
 
-	  } else {
-	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
-	  }
+                      default:
+                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, /*program.get().getMessage()*/program.get().getOutput());
+                    }
+                }
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Method Not Found: "+method);
+            }
 
-		return new ResponseEntity<>(outData, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(outData, HttpStatus.OK);
 	}
 
 	// GET /program/{id}/status

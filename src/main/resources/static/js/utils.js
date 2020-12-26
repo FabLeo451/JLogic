@@ -57,49 +57,6 @@ function includeHTML() {
 
           /*remove the attribute, and call this function once more:*/
           elmnt.removeAttribute("w3-include-html");
-     /*
-          var i;
-          var x = document.getElementsByClassName("title");
-          for (i = 0; i < x.length; i++)
-            x[i].innerHTML = __SERVER.package.application_name;
-
-          //document.getElementById('version').innerHTML = __SERVER['version'];
-          x = document.getElementsByClassName("version");
-          for (i = 0; i < x.length; i++)
-            x[i].innerHTML = __SERVER.package.version;
-
-          x = document.getElementsByClassName("nodename");
-          for (i = 0; i < x.length; i++)
-            x[i].innerHTML = __SERVER.system.nodename;
-
-          x = document.getElementsByClassName("username");
-          for (i = 0; i < x.length; i++)
-            x[i].innerHTML = __SERVER.auth.username;
-
-          if (__SERVER.auth.enabled) {
-            var x = document.getElementById("logout_button");
-
-            if (x) {
-              x.innerHTML = `<a target="Javascript:void(0);" onclick="window.location = '/logout';" style="cursor:pointer;"><i class="icon i-sign-out w3-text-gray w3-hover-text-orange"></i></a>`;
-            }
-          }
-
-          //<a href="/bp" class="w3-bar-item w3-button w3-padding"><i class="icon i-project-diagram" style="color:lightslategray; min-width: 1.5em;"></i> Blueprints</a>
-
-          x = document.getElementById("menu");
-
-          for (i=0;i<__SERVER.menu.length; i++) {
-            var item = __SERVER.menu[i];
-            var a = document.createElement('a');
-            a.setAttribute('href', item.href);
-            a.classList.add("w3-bar-item");
-            a.classList.add("w3-button");
-            a.classList.add("w3-padding");
-            a.innerHTML = '<i class="icon '+item.icon+'" style="color:lightslategray; min-width: 1.5em;"></i> '+item.label;
-
-            x.appendChild(a);
-          }
-    */
           includeHTML();
         }
       }
@@ -391,3 +348,19 @@ function lightenColor(color, percent) {
 
   return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (B<255?B<1?0:B:255)*0x100 + (G<255?G<1?0:G:255)).toString(16).slice(1);
 };
+
+function getMessage(text) {
+    try {
+      jo = JSON.parse(text);
+
+      if (jo.hasOwnProperty('message')) {
+        return(jo.message);
+      }
+      else
+        return(text);
+    }
+    catch (err) {
+      return(text);
+    }
+}
+

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.boot.autoconfigure.info.ProjectInfoAutoConfiguration;
 import org.springframework.boot.info.BuildProperties;
+import org.springframework.http.ResponseEntity;
 import java.time.Instant;
 import java.io.FileNotFoundException;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,6 +29,7 @@ import org.json.JSONException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
+import java.lang.*;
 import java.io.*;
 import java.util.stream.Stream;
 import java.util.*;
@@ -281,41 +283,85 @@ public class MainController {
     return "_asset = "+jAsset.toString()+";\n";
   }
 
-  @GetMapping(value="/jsBlueprints", produces = "application/x-javascript")
-  public String getJSBlueprints() {
-    String content = "{}";
-    /*
-    Catalog c = new Catalog(Catalog.BLUEPRINT_CATALOG, Boolean.TRUE);
-    try {
-      c.open();
-      content = c.toString();
-      c.unlock();
+    @GetMapping(value="/jsBlueprints", produces = "application/x-javascript")
+    public String getJSBlueprints() {
+        String content = "{}";
+        /*
+        Catalog c = new Catalog(Catalog.BLUEPRINT_CATALOG, Boolean.TRUE);
+        try {
+          c.open();
+          content = c.toString();
+          c.unlock();
+        }
+        catch (FileNotFoundException e) {
+          //logger.error(e.getMessage());
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }*/
+
+        return "_blueprints = "+content+";\n";
     }
-    catch (FileNotFoundException e) {
-      //logger.error(e.getMessage());
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-    }*/
 
-    return "_blueprints = "+content+";\n";
-  }
+    @GetMapping(value="/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Session> getSessions() {
+        //SessionsUtils sessionUtils = new SessionsUtils();
+        List<Session> sessions = sessionService.getSessions();
 
-  @GetMapping(value="/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<Session> getSessions() {
-    //SessionsUtils sessionUtils = new SessionsUtils();
-    List<Session> sessions = sessionService.getSessions();
+        return sessions;
+    }
 
-    return sessions;
-  }
-  
-  @GetMapping(value="/top", produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<Request> getTOP() {
-    List<Request> top = sessionService.getTOP();
+    @GetMapping(value="/top", produces = MediaType.APPLICATION_JSON_VALUE)
+        public List<Request> getTOP() {
+        List<Request> top = sessionService.getTOP();
 
-    return top;
-  }
+        return top;
+    }
 
-  @GetMapping(value="/stats", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Map<String, Long> getStats() {
-    return sessionService.getStats(DateUtils.addMinutes(new Date(), -10), new Date());
-  }
+    /**
+     * Stop a thread given thread id and session id
+     */
+    @PostMapping(value="/stop/{threadId}/session/{sessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> stop(@PathVariable("threadId") Long threadId, @PathVariable("sessionId") String sessionId) {
+        Request r = sessionService.getRequestById(threadId);
+        
+        if (r == null || !r.getSessionId().equals(sessionId)) {
+            logger.error("Thread "+threadId+"/"+sessionId+" not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Thread not found");
+        }
+        
+        if (sessionService.stop(r))
+            logger.warn("Request "+threadId+" stopped by user");
+        else {
+            logger.error("Can't stop request "+threadId+"/"+sessionId);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't stop thread");
+        }
+            
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+    /**
+     * Stop a thread given client id
+     */
+    @PostMapping(value="/stop/clientId/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> stopClientId(@PathVariable("clientId") String clientId) {
+        Request r = sessionService.getRequestByClientId(clientId);
+        
+        if (r == null) {
+            logger.error("Thread with client id "+clientId+" not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Thread not found");
+        }
+        
+        if (sessionService.stop(r))
+            logger.warn("Request with client id "+clientId+" stopped by user");
+        else {
+            logger.error("Can't stop request with client id "+clientId);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't stop thread");
+        }
+            
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+    @GetMapping(value="/stats", produces = MediaType.APPLICATION_JSON_VALUE)
+        public Map<String, Long> getStats() {
+        return sessionService.getStats(DateUtils.addMinutes(new Date(), -10), new Date());
+    }
 }

@@ -213,26 +213,34 @@ public class ProgramService {
         repository.save(program);
     }
 
-    public boolean compile (ProgramEntity program) {
+    /**
+     * Compile program
+     */
+    public boolean compile(ProgramEntity program) {
         boolean result = program.compile();
         repository.save(program);
         repository.refresh(program);
         return (result);
     }
 
+    /**
+     * Run program with input parameters as string
+     */
 	public boolean run(ProgramEntity program, String methodName, String data, String logName, HttpServletRequest request) {
         try {
             logger.info("Parsing data...");
             Map<String, Object> map = Utils.jsonToMap(data);
 
             return (run(program, methodName, map, logName, request));
-
         } catch (ParseException e) {
             setResult(ProgramEntity.BAD_INPUT, e.getMessage());
-          return false;
+            return false;
         }
 	}
 	
+    /**
+     * Run program with input parameters as Map
+     */
     public boolean run(ProgramEntity program, String methodName, Map<String, Object> actual, String logName, HttpServletRequest request) {
         boolean result = false;
 

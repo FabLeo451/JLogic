@@ -2,6 +2,7 @@ package com.lionsoft.jlogic;
 
 import java.util.*;
 import java.util.stream.*;
+import java.lang.*;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.locks.*;
 import javax.servlet.http.HttpServletRequest;
@@ -194,6 +195,52 @@ public class SessionService {
             web = httpSession.getAttribute("webApplication") != null ? (Boolean) httpSession.getAttribute("webApplication") : false;
 
         return(web);
+    }
+    
+    /**
+     * Search request by thread id
+     */
+    public Request getRequestById(Long id) {
+        return(top.get(id));
+    }
+    
+    /**
+     * Search request by client id
+     */
+    public Request getRequestByClientId(String id) {
+        for (Map.Entry<Long, Request> entry : top.entrySet()) {
+            Long threadId = entry.getKey();
+            Request r = (Request)entry.getValue();
+            
+            if (r.getClientId() != null && r.getClientId().equals(id))
+                return(r);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Return current request
+     */
+    public Request getCurrentRequest() {
+        return(top.get(Thread.currentThread().getId()));
+    }
+    
+    /**
+     * Interrupts the thread of the given request
+     */
+    public boolean stop(Request r) {
+        if (r == null)
+            return false;
+            
+        for (Thread t : Thread.getAllStackTraces().keySet()) {
+            if (t.getId() == r.getThreadId()) {
+                t.interrupt();
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     public static Map<String, Long> getStats(Date from, Date to) {

@@ -42,8 +42,8 @@ class Menu {
 };
 
 @Controller
-public class AppController {
-    Logger logger = LoggerFactory.getLogger(AppController.class);
+public class PageController {
+    Logger logger = LoggerFactory.getLogger(PageController.class);
 
     @Autowired
     BuildProperties buildProperties;
@@ -304,6 +304,7 @@ public class AppController {
         model.addAttribute("name", buildProperties.getName());
         model.addAttribute("version", buildProperties.getVersion());
         model.addAttribute("copyright", COPYRIGHT);
+        model.addAttribute("clientId", UUID.randomUUID().toString());
 
         return "edit"; 
   }
