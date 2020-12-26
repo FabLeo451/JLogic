@@ -7,9 +7,12 @@ jarfile=$name-$version.jar
 source_dir=$name
 destination_dir=.
 
-while getopts "D:" opt; do
+while getopts "hD:" opt; do
   case "$opt" in
     D) destination_dir=$OPTARG
+       ;;
+    h) echo "$0 [-D path]"
+       exit 0
        ;;
     *) echo "Unknown option: $opt"
        exit 1
