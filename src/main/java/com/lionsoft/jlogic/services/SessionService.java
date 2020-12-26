@@ -99,7 +99,7 @@ public class SessionService {
 
             Request r = new Request(request);
             
-            //logger.info(r.toString());
+            logger.trace(r.toString());
             
             // Add to TOP
             top.put(r.getThreadId(), r);
