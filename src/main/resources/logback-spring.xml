@@ -10,7 +10,7 @@
             <!--Formatted output: %d means date, %thread means thread name, %-5level: level shows 5 characters width from the left %msg: log message, %n is a newline -->
 
             <!--withJansi>true</withJansi-->
-            <pattern>%gray(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight(%-5level) %gray([%-16replace(%thread){'https-jsse-',''}]) %cyan(%-42logger{15}) : %msg%n</pattern>
+            <pattern>%gray(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight(%-5level) %gray([%-18replace(%thread){'https-jsse-',''}]) %cyan(%-42logger{15}) : %msg%n</pattern>
         </encoder>
     </appender>
 
