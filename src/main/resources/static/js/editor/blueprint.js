@@ -122,6 +122,8 @@ class Blueprint {
     this.code = 0;
     this.message = null;
     this.programId = null;
+    this.selectionRect = null;
+    this.svg = null;
   }
   
   setMessage(m) {
@@ -140,6 +142,8 @@ class Blueprint {
     this.code = c;
     this.setMessage(m);
   }
+  
+  getSVG() { return this.svg; }
 
   clear () {
     //console.log ("Blueprint.clear");
@@ -319,7 +323,7 @@ class Blueprint {
   setStatus (s) {
     this.status = s;
 
-    if (debug == 1)
+    if (debug)
       this.StatusElement.innerHTML = "Status: "+status_str[s];
   }
 
@@ -507,6 +511,22 @@ class Blueprint {
     this.clearSelection ();
     for (var i=0; i<this.nodes.length; i++) {
       this.addToSelection (this.nodes[i]);
+    }
+  }
+  
+  selectByBox() {
+    for (var i=0; i<this.nodes.length; i++) {
+      var n = this.nodes[i];
+      
+      if (n.getSelected())
+        continue;
+        
+      if (this.selectionRect.contains(n.getPosition())) {
+        //console.log(n.getName());
+        this.selectionRect.add(n);
+      }
+      else
+        this.selectionRect.remove(n);
     }
   }
 
@@ -722,7 +742,7 @@ class Blueprint {
     //this.y = y;
   }
 
-  hideContextMenu () {
+  hideContextMenu() {
     this.contextMenu.remove();
     endEdit();
   }
@@ -734,15 +754,15 @@ class Blueprint {
     return(p);
   }
   */
-  createEdge (p1, p2) {
-    var e = new Edge ();
+  createEdge(p1, p2) {
+    var e = new Edge();
     e.setZoom(this.zoom);
     e.create (this.svg, p1, p2);
     //e.create (this.svg, this.translatePoint(p1), this.translatePoint(p2));
     return (e);
   }
 
-  getConnector (id) {
+  getConnector(id) {
     for (var i=0; i<this.nodes.length; i++) {
       //console.log('Searching connector '+id+' in '+this.nodes[i].getName());
       var c = this.nodes[i].getConnector(id);
@@ -754,7 +774,7 @@ class Blueprint {
     return (null);
   }
 
-  getNode (id) {
+  getNode(id) {
     for (var i=0; i<this.nodes.length; i++) {
       if (this.nodes[i].id == id)
         return (this.nodes[i]);
@@ -1082,7 +1102,7 @@ class Blueprint {
     this.svg.ns = this.svg.namespaceURI;
     this.bpDiv.appendChild(this.svg);
 
-    if (debug == 1) {
+    if (debug) {
       this.StatusElement = document.getElementById('status');
       //this.StatusElement = document.createElement('div');
       //this.StatusElement.id = "status";
@@ -1156,9 +1176,9 @@ class Blueprint {
       this.mouse = { x:ev.offsetX, y:ev.offsetY };
 
       switch (blueprint.getStatus()) {
-        case BPStatus.BP_DRAGGING:
+        /*case BPStatus.BP_DRAGGING:
           blueprint.setStatus(BPStatus.READY);
-          break;
+          break;*/
         default:
           break;
       }
@@ -1167,7 +1187,8 @@ class Blueprint {
     this.bpDiv.oncontextmenu = function(e) {
       e.preventDefault();
 
-      blueprint.onBeginModify ();
+      blueprint.destroySelectionBox();
+      blueprint.onBeginModify();
 
       blueprint.x = e.pageX;
       blueprint.y = e.pageY;
@@ -1175,26 +1196,34 @@ class Blueprint {
     }
 
     this.bpDiv.onmousedown = function(e) {
-      console.log ("[onmousedown] Blueprint");
+      console.log ("Blueprint mouse down");
 
       blueprint.mouse = blueprint.coordsAbsToRel({ x:e.pageX, y:e.pageY });
-            //blueprint.mouse.x *= 1 / blueprint.zoom;
-            //blueprint.mouse.y *= 1 / blueprint.zoom;
-      //e.preventDefault();
 
       switch (e.button) {
-        case 0:
-          blueprint.clearSelection ();
-          break;
-        case 1:
-          //console.log ("Drag");
-          blueprint.setStatus (BPStatus.BP_DRAGGING);
-          this.dragX = e.pageX;
-          this.dragY = e.pageY;
-          break;
+        case 0: // Left
+            if (!event.ctrlKey)
+              blueprint.clearSelection();
+
+            if (blueprint.getStatus() == BPStatus.READY) {
+                // Select by rectangle
+                blueprint.setStatus(BPStatus.SELECTING);
+                blueprint.selectionRect = new Rect(blueprint.getSVG());
+                blueprint.selectionRect.setP0({ x:blueprint.mouse.x, y:blueprint.mouse.y});
+                blueprint.selectionRect.setP1(blueprint.selectionRect.getP0());
+            }
+            else
+              blueprint.destroySelectionBox();
+            break;
+        case 1: // Middle
+            blueprint.destroySelectionBox();
+            blueprint.setStatus(BPStatus.BP_DRAGGING);
+            this.dragX = e.pageX;
+            this.dragY = e.pageY;
+            break;
         default:
-          //console.log ("e.button = "+e.button);
-          break;
+            //console.log ("e.button = "+e.button);
+            break;
       }
 
       blueprint.hideContextMenu ();
@@ -1210,55 +1239,37 @@ class Blueprint {
         case BPStatus.CONNECTING:
           e.preventDefault();
           if (blueprint.currentEdge) {
-            //console.log ("Moving mouse "+e.offsetX+" "+e.offsetY);
-            //var end = this.mouse;
             var end = blueprint.coordsAbsToRel({ x:e.pageX, y:e.pageY });
-            //end.x *= 1 / blueprint.zoom;
-            //end.y *= 1 / blueprint.zoom;
             blueprint.currentEdge.setTrackingPoint (end);
-            //blueprint.currentEdge.redraw();
           }
           break;
 
         case BPStatus.BP_DRAGGING:
-          var dx = this.dragX - e.pageX;
-          var dy = this.dragY - e.pageY;
+            var dx = this.dragX - e.pageX;
+            var dy = this.dragY - e.pageY;
 
-          blueprint.moveDelta (dx, dy);
+            blueprint.moveDelta (dx, dy);
 
-          this.dragX = e.pageX;
-          this.dragY = e.pageY;
-          break;
+            this.dragX = e.pageX;
+            this.dragY = e.pageY;
+            break;
+          
+        case BPStatus.SELECTING:
+            e.preventDefault();
+            blueprint.selectionRect.setP1({ x:blueprint.mouse.x, y:blueprint.mouse.y});
+            blueprint.selectionRect.redraw();
+            blueprint.selectByBox();
+            break;
 
         default:
-          break;
+            break;
       }
     }
-
+/*
     this.bpDiv.onmouseup = function(e) {
-      e.preventDefault();
-      this.mouse = { x:e.offsetX, y:e.offsetY };
-
-      switch (blueprint.getStatus()) {
-        case BPStatus.CONNECTING:
-          if (blueprint.currentEdge) {
-            if (!blueprint.currentEdge.connector1.isConnected ())
-              blueprint.currentEdge.connector1.setFilled (false);
-
-            blueprint.currentEdge.remove();
-            blueprint.setConnectingEdge(null);
-          }
-
-          blueprint.setStatus(BPStatus.READY);
-          break;
-
-        case BPStatus.BP_DRAGGING:
-          blueprint.setStatus(BPStatus.READY);
-          break;
-        default:
-          break;
-      }
-    }
+      //console.log("Mouse up");
+      blueprint.notifyMouseUp(e);
+    }*/
 
     this.bpDiv.onwheel = function(e) {
       //console.log (event.deltaY);
@@ -1280,6 +1291,53 @@ class Blueprint {
       //console.log ("Blueprint lost focus");
     }
 
+  }
+  
+  destroySelectionBox() {
+    if (this.selectionRect)
+      this.selectionRect.destroy();
+      
+    this.selectionRect = null;
+  }
+    
+  notifyMouseUp(e) {
+    console.log("Mouse up");
+    
+    if (blueprint.getStatus() != BPStatus.READY)
+      e.preventDefault();
+      
+    this.mouse = { x:e.offsetX, y:e.offsetY };
+
+    switch (blueprint.getStatus()) {
+      case BPStatus.CONNECTING:
+        if (blueprint.currentEdge) {
+          if (!blueprint.currentEdge.connector1.isConnected ())
+            blueprint.currentEdge.connector1.setFilled (false);
+
+          blueprint.currentEdge.remove();
+          blueprint.setConnectingEdge(null);
+        }
+
+        blueprint.setStatus(BPStatus.READY);
+        break;
+
+      case BPStatus.BP_DRAGGING:
+        blueprint.setStatus(BPStatus.READY);
+        break;
+        
+      case BPStatus.SELECTING:
+        var list = this.selectionRect.getSelection();
+        
+        for (var i=0; i<list.length; i++)
+          this.addToSelection(list[i]);
+
+        this.destroySelectionBox();
+        blueprint.setStatus(BPStatus.READY);
+        break;
+        
+      default:
+        break;
+    }        
   }
 
   setZoom (x) {
@@ -1355,7 +1413,7 @@ class Blueprint {
 
 	addArrayUnique(a, x) {
     if (x && !a.includes(x)) {
-			console.log ("import "+x);
+			//console.log ("import "+x);
 			a.push(x);
     }
   }

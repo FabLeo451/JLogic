@@ -69,7 +69,7 @@ var _jbp = null;
 <!--input id="file-dialog" type="file" name="name"" /-->
 
 
-<main id="main">
+<main id="main" onmouseup="blueprint.notifyMouseUp(event);">
 
   <!-- The Modal -->
   <div id="myModal" class="modal">
@@ -160,8 +160,8 @@ var _jbp = null;
     <div class="bpcontainer">
       <div id="a" class="split">
         <div class="blueprint" style="padding-top:60px;">
-          <div id="status" style="position: absolute; top:0px"></div>
-          <div id="mouse" style="position: absolute; top:20px"></div>
+          <div id="status" style="position: absolute; top:80px"></div>
+          <div id="mouse" style="position: absolute; top:100px"></div>
           <div id="bp-title" class="bp-title"></div>
           <div class="bp-bg"></div>
         </div>

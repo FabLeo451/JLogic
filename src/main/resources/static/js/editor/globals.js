@@ -3,7 +3,7 @@
 var blueprint, blueprint_id;
 var undo;
 var actionsEnabled = true;
-const debug = 0;
+const debug = false;
 var substitutions = []; // used to keep track of original ids replaced by new ones
 
 const MenuID = {
@@ -63,13 +63,14 @@ class BPNodeType {
 
 /* Blueprint status */
 const BPStatus = {
-  READY: 0,
-  CONNECTING: 1,
-  BP_DRAGGING: 2,
-  MOVING_SELECTION: 3
+  READY:            0,
+  CONNECTING:       1,
+  BP_DRAGGING:      2,
+  MOVING_SELECTION: 3,
+  SELECTING:        4 /* Selection box */
 };
 
-const status_str = [ "Ready", "Connecting", "Dragging", "Moving" ];
+const status_str = [ "Ready", "Connecting", "Dragging", "Moving", "Selecting" ];
 
 /* Blueprint events */
 const BPEvent = {
@@ -276,4 +277,79 @@ class Variable {
   toString () {
     return ("Variable [id="+this.id+" name="+this.name+" type="+this.type+" dimensions="+this.dimensions+" global="+this.global+" referenced="+this.referenced+"]");
   }
+}
+
+class Rect {
+    constructor (svg) {
+        this.svg = svg;
+        this.p0 = { x:0, y:0 };
+        this.p1 = { x:0, y:0 };
+        this.elem = document.getElementById("selection-box");
+        this.selection = [];
+    }
+  
+    setP0(p) {
+        this.p0 = { x:p.x, y:p.y };
+    }
+    
+    getP0() { return this.p0; }
+  
+    setP1(p) {
+        this.p1 = { x:p.x, y:p.y };
+    }
+    
+    getP1() { return this.p1; }
+    
+    contains(p) {
+        var x0 = this.p0.x < this.p1.x ? this.p0.x : this.p1.x;
+        var y0 = this.p0.y < this.p1.y ? this.p0.y : this.p1.y;
+        var x1 = this.p0.x < this.p1.x ? this.p1.x : this.p0.x;
+        var y1 = this.p0.y < this.p1.y ? this.p1.y : this.p0.y;
+        
+        return(p.x <= x1 && p.x >= x0 && p.y >= y0 && p.y <= y1);
+    }
+    
+    add(x) {
+         if (x && !this.selection.includes(x))
+            this.selection.push(x);
+    }
+    
+    remove(x) {
+        if (x && !this.selection.includes(x))
+            this.selection.splice(this.selection.indexOf(x), 1);
+    }
+    
+    getSelection() { return this.selection; }
+    
+    redraw() {
+        if (!this.elem) {
+            this.elem = document.createElementNS(this.svg.ns, 'rect');
+            this.elem.setAttributeNS(null, 'id', 'selection-box');
+            this.elem.setAttributeNS(null, 'stroke', 'silver');
+            this.elem.setAttributeNS(null, 'fill', 'silver');
+            this.elem.setAttributeNS(null, 'fill-opacity', '0.3');
+            this.svg.appendChild(this.elem);
+        }
+        
+        var x = this.p0.x < this.p1.x ? this.p0.x : this.p1.x;
+        var y = this.p0.y < this.p1.y ? this.p0.y : this.p1.y;
+        var width = this.p1.x > this.p0.x ? this.p1.x - this.p0.x : this.p0.x - this.p1.x;
+        var height = this.p1.y > this.p0.y ? this.p1.y - this.p0.y : this.p0.y - this.p1.y;
+        
+        this.elem.setAttributeNS(null, 'x', x);
+        this.elem.setAttributeNS(null, 'y', y);
+        this.elem.setAttributeNS(null, 'width', width);
+        this.elem.setAttributeNS(null, 'height', height);
+    }
+    
+    destroy() {
+        if (this.elem) {
+            this.elem.parentElement.removeChild(this.elem);
+            this.elem = null;
+        }
+    }
+    
+    toString() {
+        return("Rect ("+this.p0.x+","+this.p0.y+") ("+this.p1.x+","+this.p1.y+")");
+    }
 }

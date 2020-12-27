@@ -90,6 +90,8 @@ class NodeBase {
   moveDelta (dx, dy) {
     this.moveTo (this.x - dx, this.y - dy);
   }
+  
+  getPosition() { return({x:this.x, y:this.y}); }
 
   setSelected (selected) {
     if (selected) {
