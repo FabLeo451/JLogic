@@ -37,7 +37,8 @@ public class LogoutListener implements ApplicationListener<SessionDestroyedEvent
         HttpSession s = sessionService.getSession(event.getId());
         
         if (s != null) {
-            logger.info(s.getAttribute("user")+" logged out ("+event.getId()+")");
+            //logger.info(s.getAttribute("user")+" logged out ("+event.getId()+")");
+            logger.info("Log out "+(new Session(s).toString()));
             sessionService.deleteSession(event.getId());
         }
     }

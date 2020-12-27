@@ -50,7 +50,7 @@
 
   <!-- Header -->
   <header class="w3-container">
-    <div class="page-title">Sessions</div>
+    <div class="page-title">Table of processes</div>
     <hr style="margin:5px">
   </header>
 
@@ -97,7 +97,7 @@
   //refreshSessions ();
   
   function refreshTOP() {
-    $.get("/view-sessions?element=top").done(function(fragment) { // get from controller
+    $.get("/view-top?element=top").done(function(fragment) { // get from controller
         $("#top").replaceWith(fragment); // update snippet of page
     });
   }

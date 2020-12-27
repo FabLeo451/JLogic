@@ -220,6 +220,13 @@ public class SessionService {
     }
     
     /**
+     * Return current session
+     */
+    public HttpSession getCurrentSession() {
+        return(getSession(getCurrentRequest().getSessionId()));
+    }
+    
+    /**
      * Return current request
      */
     public Request getCurrentRequest() {

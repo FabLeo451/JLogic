@@ -26,7 +26,7 @@ public class CustomLogoutHandler implements LogoutHandler {
             String id = httpSessions.getId();
             String username = (String) httpSessions.getAttribute("user");
 
-            logger.info(username+" "+id+" logging out");
+            //logger.info(username+" "+id+" logging out");
             // sessionService.deleteSession(id); Deleted in LogoutListener
         }
     }

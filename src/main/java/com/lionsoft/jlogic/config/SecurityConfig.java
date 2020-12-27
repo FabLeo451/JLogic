@@ -87,7 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .sessionManagement()
             .maximumSessions(maxSessions) // Not working
-            .maxSessionsPreventsLogin(true)
+            //.maxSessionsPreventsLogin(true)
             .sessionRegistry(sessionRegistry());
             //.expiredUrl("/login?expired");
             //.expiredUrl("/expired");

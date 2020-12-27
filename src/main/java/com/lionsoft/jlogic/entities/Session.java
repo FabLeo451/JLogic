@@ -139,4 +139,8 @@ public class Session {
   public void setWebApplication(boolean wa) {
     isWebApplication = wa;
   }
+  
+  public String toString() {
+      return("User="+user+" Address="+remoteAddress+" SessionId="+id);
+  }
 }

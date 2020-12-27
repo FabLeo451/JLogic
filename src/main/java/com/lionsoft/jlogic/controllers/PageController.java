@@ -138,7 +138,8 @@ public class PageController {
           httpSession.setAttribute("webApplication", true);
           
           String username = request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown";
-          logger.info(username+" logged in ("+httpSession.getId()+")");
+          //logger.info(username+" logged in ("+httpSession.getId()+")");
+          logger.info("Log in "+(new Session(httpSession).toString()));
         }
 
         //logger.warn("Redirecting to /home");
@@ -307,7 +308,7 @@ public class PageController {
         model.addAttribute("clientId", UUID.randomUUID().toString());
 
         return "edit"; 
-  }
+    }
   
     /**
      * Edit properties
@@ -333,9 +334,9 @@ public class PageController {
         return page;
     }
 
-    @RequestMapping("/view-sessions")
+    @RequestMapping("/view-top")
     public String getSessions(Model model, @RequestParam(value = "element", required=false) String element) {
-        String resource = "view-sessions";
+        String resource = "view-top";
 
         //model.addAttribute("sessions", sessionService.getSessions());
         //model.addAttribute("byLoginTime", Comparator.comparing(Session::getLoginTime));
@@ -359,29 +360,29 @@ public class PageController {
 
 	@RequestMapping("/metrics")
 	public String viewMetrics(Model model) {
-	  long mb = 1024L * 1024L;
+        long mb = 1024L * 1024L;
 
 
-	  Long totalMemory = Runtime.getRuntime().totalMemory();
-	  Long freeMemory = Runtime.getRuntime().freeMemory();
+        Long totalMemory = Runtime.getRuntime().totalMemory();
+        Long freeMemory = Runtime.getRuntime().freeMemory();
 
-	  /*
-	  MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
-    Long totalMemory = (double)memoryMXBean.getHeapMemoryUsage().getMax();
-    Long freeMemory = (double)memoryMXBean.getHeapMemoryUsage().getUsed();*/
+        /*
+        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        Long totalMemory = (double)memoryMXBean.getHeapMemoryUsage().getMax();
+        Long freeMemory = (double)memoryMXBean.getHeapMemoryUsage().getUsed();*/
 
-	  double pctUsedMemory = ((double)(totalMemory - freeMemory)/totalMemory) * 100;
+        double pctUsedMemory = ((double)(totalMemory - freeMemory)/totalMemory) * 100;
 
-	  System.out.println(totalMemory);
-	  System.out.println(freeMemory);
-	  System.out.println(pctUsedMemory);
+        /*System.out.println(totalMemory);
+        System.out.println(freeMemory);
+        System.out.println(pctUsedMemory);*/
 
-	  //DecimalFormat decimalFormat = new DecimalFormat("###.##");
-	  model.addAttribute("totalMemory", String.format("%.2f MB", (double) totalMemory / mb));
-	  model.addAttribute("freeMemory", String.format("%.2f MB", (double) freeMemory / mb));
-	  model.addAttribute("pctUsedMemory", String.format("%.2f%%", pctUsedMemory));
+        //DecimalFormat decimalFormat = new DecimalFormat("###.##");
+        model.addAttribute("totalMemory", String.format("%.2f MB", (double) totalMemory / mb));
+        model.addAttribute("freeMemory", String.format("%.2f MB", (double) freeMemory / mb));
+        model.addAttribute("pctUsedMemory", String.format("%.2f%%", pctUsedMemory));
 
-	  return "view-metrics";
+        return "view-metrics";
 	}
 
 	@RequestMapping("/view-users")
@@ -389,55 +390,52 @@ public class PageController {
 
 	@RequestMapping("/user/create")
 	public String createUser(Model model) {
-	  model.addAttribute("title", "Create user");
-	  model.addAttribute("id", 0);
-	  model.addAttribute("creating", true);
-	  model.addAttribute("updating", false);
-	  return "edit-user";
+        model.addAttribute("title", "Create user");
+        model.addAttribute("id", 0);
+        model.addAttribute("creating", true);
+        model.addAttribute("updating", false);
+        return "edit-user";
 	}
 
 	@RequestMapping("/user/edit")
 	public String editUser(HttpServletRequest request, Model model) {
+        Optional<User> user = userRepository.findByUsername(request.getUserPrincipal().getName());
 
-	  Optional<User> user = userRepository.findByUsername(request.getUserPrincipal().getName());
-
-	  model.addAttribute("title", "Edit user");
-	  model.addAttribute("username", user.get().getUsername());
-	  model.addAttribute("firstName", user.get().getFirstName());
-	  model.addAttribute("lastName", user.get().getLastName());
-	  model.addAttribute("roleSet", user.get().getRoleSet());
-	  model.addAttribute("id", "-1");
-	  model.addAttribute("creating", false);
-	  model.addAttribute("updating", true);
-	  model.addAttribute("updating_current_user", true);
-	  return "edit-user";
+        model.addAttribute("title", "Edit user");
+        model.addAttribute("username", user.get().getUsername());
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("roleSet", user.get().getRoleSet());
+        model.addAttribute("id", "-1");
+        model.addAttribute("creating", false);
+        model.addAttribute("updating", true);
+        model.addAttribute("updating_current_user", true);
+        return "edit-user";
 	}
 
 	@RequestMapping("/user/{username}/edit")
 	public String editUser(Model model, @PathVariable("username") String username/*, @RequestParam(value = "username", defaultValue = "0") String username*/) {
+        Optional<User> user = userRepository.findByUsername(username);
 
-	  Optional<User> user = userRepository.findByUsername(username);
-
-	  model.addAttribute("title", "Edit user");
-	  model.addAttribute("username", user.get().getUsername());
-	  model.addAttribute("firstName", user.get().getFirstName());
-	  model.addAttribute("lastName", user.get().getLastName());
-	  model.addAttribute("roleSet", user.get().getRoleSet());
-	  model.addAttribute("id", user.get().getId());
-	  model.addAttribute("creating", false);
-	  model.addAttribute("updating", true);
-	  return "edit-user";
+        model.addAttribute("title", "Edit user");
+        model.addAttribute("username", user.get().getUsername());
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("roleSet", user.get().getRoleSet());
+        model.addAttribute("id", user.get().getId());
+        model.addAttribute("creating", false);
+        model.addAttribute("updating", true);
+        return "edit-user";
 	}
 
 	@RequestMapping("/change-password")
 	public String changePassword(HttpServletRequest request, Model model) {
+        Optional<User> user = userRepository.findByUsername(request.getUserPrincipal().getName());
 
-	  Optional<User> user = userRepository.findByUsername(request.getUserPrincipal().getName());
-
-	  model.addAttribute("title", "Change password of user "+user.get().getUsername());
-	  model.addAttribute("username", user.get().getUsername());
-	  model.addAttribute("id", "-1");
-	  return "change-password";
+        model.addAttribute("title", "Change password of user "+user.get().getUsername());
+        model.addAttribute("username", user.get().getUsername());
+        model.addAttribute("id", "-1");
+        return "change-password";
 	}
 
 }
