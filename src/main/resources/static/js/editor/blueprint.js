@@ -1253,7 +1253,7 @@ class Blueprint {
             var dx = this.dragX - e.pageX;
             var dy = this.dragY - e.pageY;
 
-            blueprint.moveDelta (dx, dy);
+            blueprint.moveDelta(dx, dy);
 
             this.dragX = e.pageX;
             this.dragY = e.pageY;
@@ -1277,14 +1277,16 @@ class Blueprint {
     }*/
 
     this.bpDiv.onwheel = function(e) {
-      //console.log (event.deltaY);
-      if (event.deltaY > 0) {
-        if (blueprint.zoom > 0.4)
-          blueprint.zoomOut();
-      }
-      else {
-        if (blueprint.zoom < 1)
-          blueprint.zoomIn();
+      if (blueprint.getStatus() == BPStatus.READY) {
+        //console.log (event.deltaY);
+        if (event.deltaY > 0) {
+          if (blueprint.zoom > 0.4)
+            blueprint.zoomOut();
+        }
+        else {
+          if (blueprint.zoom < 1)
+            blueprint.zoomIn();
+        }
       }
     }
 
