@@ -284,6 +284,7 @@ class Rect {
         this.svg = svg;
         this.p0 = { x:0, y:0 };
         this.p1 = { x:0, y:0 };
+        //this.origin = { x:0, y:0 };
         this.elem = document.getElementById("selection-box");
         this.selection = [];
     }
@@ -299,7 +300,12 @@ class Rect {
     }
     
     getP1() { return this.p1; }
-    
+/*    
+    setOrigin(p) {
+        this.origin = { x:p.x, y:p.y };
+        console.log("Origin = "+this.origin.x+", "+this.origin.y);
+    }
+*/    
     contains(p) {
         var x0 = this.p0.x < this.p1.x ? this.p0.x : this.p1.x;
         var y0 = this.p0.y < this.p1.y ? this.p0.y : this.p1.y;
@@ -315,7 +321,7 @@ class Rect {
     }
     
     remove(x) {
-        if (x && !this.selection.includes(x))
+        if (x && this.selection.includes(x))
             this.selection.splice(this.selection.indexOf(x), 1);
     }
     

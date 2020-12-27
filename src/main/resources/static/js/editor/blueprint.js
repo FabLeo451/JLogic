@@ -244,6 +244,10 @@ class Blueprint {
 
     this.bgElement.style.backgroundPosition = blueprint.x0+'px '+blueprint.y0+'px';
   }
+  
+  getOrigin() {
+    return({ x:this.x0, y:this.y0 });
+  }
 
   setAsset(a) {
     this.asset = a;
@@ -659,12 +663,12 @@ class Blueprint {
     // If method is missing, leave null. See toString() / toJSON()
     this.method = j.hasOwnProperty("method") ? j.method : null;
 
-    console.log ('[blueprint] [fromJson] Adding nodes');
+    //console.log ('[blueprint] [fromJson] Adding nodes');
 
     for (var i=0; i<nodes.length; i++)
       this.addNodeFromJson(nodes[i]);
 
-    console.log ('[blueprint] [fromJson] Adding edges');
+    //console.log ('[blueprint] [fromJson] Adding edges');
 
     for (var i=0; i<edges.length; i++)
       this.connectByID (edges[i]["from"], edges[i]["to"]);
@@ -674,7 +678,7 @@ class Blueprint {
     else
       this.setOrigin (0, 0);
 
-    console.log ('[blueprint] [fromJson] End');
+    //console.log ('[blueprint] [fromJson] End');
   }
 
   deleteNodeForce (node) {
@@ -909,7 +913,7 @@ class Blueprint {
             y = Math.round (y / g) * g;
             y += this.y0;
 
-            console.log('Snapping to '+x+', '+y);
+            //console.log('Snapping to '+x+', '+y);
 
             this.selection[i].moveTo (x, y);
           }
@@ -1196,7 +1200,7 @@ class Blueprint {
     }
 
     this.bpDiv.onmousedown = function(e) {
-      console.log ("Blueprint mouse down");
+      //console.log ("Blueprint mouse down");
 
       blueprint.mouse = blueprint.coordsAbsToRel({ x:e.pageX, y:e.pageY });
 
@@ -1209,6 +1213,7 @@ class Blueprint {
                 // Select by rectangle
                 blueprint.setStatus(BPStatus.SELECTING);
                 blueprint.selectionRect = new Rect(blueprint.getSVG());
+                //blueprint.selectionRect.setOrigin(blueprint.getOrigin());
                 blueprint.selectionRect.setP0({ x:blueprint.mouse.x, y:blueprint.mouse.y});
                 blueprint.selectionRect.setP1(blueprint.selectionRect.getP0());
             }
@@ -1301,7 +1306,7 @@ class Blueprint {
   }
     
   notifyMouseUp(e) {
-    console.log("Mouse up");
+    //console.log("Mouse up");
     
     if (blueprint.getStatus() != BPStatus.READY)
       e.preventDefault();
@@ -1326,6 +1331,7 @@ class Blueprint {
         break;
         
       case BPStatus.SELECTING:
+        //this.selectionRect.setOrigin({ x:this.x0, y:this.y0 });
         var list = this.selectionRect.getSelection();
         
         for (var i=0; i<list.length; i++)
