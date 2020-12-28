@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>JLogic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo">
+<link rel="stylesheet" href="/JLogic/css/jlogic.css">
+<link rel="stylesheet" href="/JLogic/css/toc.css">
+
+<script src="/JLogic/js/utils.js"></script>
+<script src="/JLogic/js/toc.js"></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <div w3-include-html="/JLogic/header.html"></div>
+  
+  <!-- Table of contents -->
+  <div class="toc w3-myFont">
+      <b>Table of contents</b>
+      <br><br>
+      <div id="toc"></div>
+  </div>
+
+  <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:15%; margin-right:10%">    
+    <h3 class="w3-myFont">Users and roles</h3>
+    <p>
+        A default account <i>admin/admin</i> is created on first start. Other users can be created by user <i>admin</i>.<br>
+        <b>It's recommended that you change the password as soon as possible.</b>
+    <p>
+        Every user has a role that defines permitted and forbidden tasks. The roles are:
+        <ul>
+            <li><i>ADMIN</i> can do anything, included system tasks</li>
+            <li><i>EDITOR</i> can edit objects end execute programs and APIs</li>
+            <li><i>VIEWER</i> can only view blueprints, properties and APIs</li>
+            <li><i>USER</i> can only execute REST APIs</li>
+        </ul>
+    </p>
+    <p>
+        Table below summarise grants for each role:
+        <table class="w3-table">
+            <tr class="w3-border-bottom"><td />                              <td>ADMIN</td><td>EDITOR</td><td>VIEWER</td><td>USER</td></tr>
+            <tr class="w3-border-bottom"><td>Create/modify/delete users</td>        <td><i class="fas fa-check w3-text-green"></i></td><td></td><td></td><td></td></tr>
+            <tr class="w3-border-bottom"><td>Stop threads</td>             <td><i class="fas fa-check w3-text-green"></i></td><td></td><td></td><td></td></tr>
+            <tr class="w3-border-bottom"><td>View blueprints, properties, APIs, metrics</td>       <td><i class="fas fa-check w3-text-green"></i></td><td><i class="fas fa-check w3-text-green"></i></td><td><i class="fas fa-check w3-text-green"></i></td><td></td></tr>
+            <tr class="w3-border-bottom"><td>Create/edit/delete programs, blueprints, properties</td>       <td><i class="fas fa-check w3-text-green"></i></td><td><i class="fas fa-check w3-text-green"></i></td><td></td><td></td></tr>
+            <tr class="w3-border-bottom"><td>Create/edit/delete APIs</td>           <td><i class="fas fa-check w3-text-green"></i></td><td><i class="fas fa-check w3-text-green"></i></td><td></td><td></td></tr>
+            <tr class="w3-border-bottom"><td>Execute blueprints</td>         <td><i class="fas fa-check w3-text-green"></i></td><td><i class="fas fa-check w3-text-green"></i></td><td></td><td></td></tr>
+            <tr class="w3-border-bottom"><td>Execute APIs</td>               <td><i class="fas fa-check w3-text-green"></i></td><td><i class="fas fa-check w3-text-green"></i></td><td></td><td><i class="fas fa-check w3-text-green"></i></td></tr>
+        </table>
+    </p>
+
+    <hr>
+  </div>
+  
+  <script>
+    includeHTML();
+    toc();
+  </script>
+  
+</body>
+</html>
+

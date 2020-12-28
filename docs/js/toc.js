@@ -27,16 +27,20 @@ function toc(id) {
     jtoc = [
         { "title": "Getting started", "url":"getting-started.html", "children": [
             { "title": "Requirements", "url":"getting-started.html#requirements" },
-            { "title": "Starting server", "url":"getting-started.html#start" }
+            { "title": "Starting server", "url":"getting-started.html#start" },
+            { "title": "First access", "url":"getting-started.html#first-access" }
             ]
         },
-        { "title": "Nodes and connectors", "url":"nodes.html"},
+        { "title": "Users and roles", "url":"users-roles.html"},
         { "title": "Blueprints", "url":"blueprints.html", "children": [
-                { "title": "The Main blueprint", "url":"blueprints.html#main"},
-                { "title": "The Event blueprint", "url":"blueprints.html#events"}
+                { "title": "Nodes and connectors", "url":"blueprints.html#nodes-connectors"}
             ]
         },
-        { "title": "Programs", "url":"programs.html"},
+        { "title": "Programs", "url":"programs.html", "children": [
+                { "title": "The <i>Main</i> blueprint", "url":"programs.html#main"},
+                { "title": "The <i>Events</i> blueprint", "url":"programs.html#events"}
+            ]
+        },
         { "title": "Flow control", "url":"flow.html"}
     ];
     

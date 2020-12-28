@@ -29,38 +29,44 @@
   <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:15%; margin-right:10%">    
     <h3 class="w3-myFont">Blueprints</h3>
     <p>
-      Blueprints are graphs of nodes properly connected to produce some result or effect.<br>
+      Blueprints are sets of nodes properly connected to produce some result or effect.<br>
+      Example: a very simple blueprint that calculates the area of a circle given the radius as input:<br>
+      Area = &pi; * Radius * Radius<br>
+      <div class="w3-panel"><img src="img/bp-sample.jpg"></div>
+      
       Every blueprint has at least two nodes:<br>
       <ul>
         <li><i>Entry point</i> where execution begins.</li>
         <li><i>Return</i> where execution ends.</li>
       </ul>
-      Example: a very simple blueprint that calculates the area of a circle given the radius as input:<br>
-      Area = &pi; * Radius * Radius<br>
-      <div class="w3-panel"><img src="img/bp-sample.jpg"></div>
+
     </p>
+    
+    <p id="nodes-connectors">
+        <h4 class="w3-myFont">Nodes and connectors</h4>
+        A node is a an object that executes a defined task.<br>
+        Nodes have input connectors and output connectors.<br>
+        Blue connectors <img src="img/pin-exec.png"> control the execution flow, while circular connectors like <img src="img/pin-bool.png"> are for passing data between nodes.<br>
+        Data connectors with three dots (like in <img src="img/pin-array.png">) are arrays.<br>
+        
+        In the example below, execution starts on the "Entry point" node and continues on the "Print" node that has an input parameter "Object".
+        The actual value of the input parameter is the element with index 1 of the array "input".<br>
+
+        <img src="img/main.png">
+        <br>
+        This is equivalent to a Java function like this:<br>
+        
+        <div class="w3-code">
+            public void f(String[] input) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;System.out.println(input[1]);<br>
+            }
+        </div>
+    </p>
+    
     <p>
-      A blueprint might have an undefined number of input parameter of any type and zero or one return value, just like a Java function.
+      A blueprint might have many input parameter of any type and zero or one return value, just like a Java function.
     </p>
-    <p>
-      Every program has two predefined blueprints: <i>Main</i> and <i>Events</i>.
-    </p>
-  
-    <p id="main">
-      <h4 class="w3-myFont">The Main blueprint</h4>
-      The <i>Main</i> blueprint is where the execution begins when a program is executed. There is a single input parameter which is an array of String, and doesn't return anything.<br>
-      This blueprint is something like the main method in a Java program.
-    </p>
-  
-    <p id="events">
-      <h4 class="w3-myFont">The Events blueprint</h4>
-      The <i>Events</i> blueprint doesn't have a single entry point but has more nodes that are triggered when some events occur:
-      <ul>
-        <li><i>Event Begin</i> is triggered when program starts</li>
-        <li><i>Event Exception</i> is triggered when a critical exception occurs</li>
-        <li><i>Event End</i> is triggered when program ends</li>
-      </ul>
-    </p>
+    <hr>
   </div>
   
   <script>
