@@ -1214,6 +1214,7 @@ class Blueprint {
                 blueprint.setStatus(BPStatus.SELECTING);
                 blueprint.selectionRect = new Rect(blueprint.getSVG());
                 //blueprint.selectionRect.setOrigin(blueprint.getOrigin());
+                blueprint.selectionRect.setZoom(blueprint.getZoom());
                 blueprint.selectionRect.setP0({ x:blueprint.mouse.x, y:blueprint.mouse.y});
                 blueprint.selectionRect.setP1(blueprint.selectionRect.getP0());
             }
@@ -1333,6 +1334,7 @@ class Blueprint {
         break;
         
       case BPStatus.SELECTING:
+        console.log(this.selectionRect.toString());
         //this.selectionRect.setOrigin({ x:this.x0, y:this.y0 });
         var list = this.selectionRect.getSelection();
         
@@ -1365,6 +1367,8 @@ class Blueprint {
 
     this.bgElement.style.backgroundSize = (100 * this.zoom)+'px '+(100 * this.zoom)+'px';
   }
+  
+  getZoom() { return this.zoom; }
 
   zoomIn () {
     this.setZoom (Number(this.zoom) + Number(this.zoomFactor));

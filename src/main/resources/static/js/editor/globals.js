@@ -3,7 +3,7 @@
 var blueprint, blueprint_id;
 var undo;
 var actionsEnabled = true;
-const debug = false;
+const debug = true;
 var substitutions = []; // used to keep track of original ids replaced by new ones
 
 const MenuID = {
@@ -285,6 +285,7 @@ class Rect {
         this.p0 = { x:0, y:0 };
         this.p1 = { x:0, y:0 };
         //this.origin = { x:0, y:0 };
+        this.zoom = 1.0;
         this.elem = document.getElementById("selection-box");
         this.selection = [];
     }
@@ -306,11 +307,21 @@ class Rect {
         console.log("Origin = "+this.origin.x+", "+this.origin.y);
     }
 */    
+    setZoom(z) {
+        this.zoom = z;
+    }
+
     contains(p) {
         var x0 = this.p0.x < this.p1.x ? this.p0.x : this.p1.x;
         var y0 = this.p0.y < this.p1.y ? this.p0.y : this.p1.y;
         var x1 = this.p0.x < this.p1.x ? this.p1.x : this.p0.x;
         var y1 = this.p0.y < this.p1.y ? this.p1.y : this.p0.y;
+        
+        // Transpose to no-zoom coords
+        x0 /= this.zoom;
+        y0 /= this.zoom;
+        x1 /= this.zoom;
+        y1 /= this.zoom;
         
         return(p.x <= x1 && p.x >= x0 && p.y >= y0 && p.y <= y1);
     }
