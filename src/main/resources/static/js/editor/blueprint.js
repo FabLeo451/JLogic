@@ -1334,13 +1334,15 @@ class Blueprint {
         break;
         
       case BPStatus.SELECTING:
-        console.log(this.selectionRect.toString());
-        //this.selectionRect.setOrigin({ x:this.x0, y:this.y0 });
-        var list = this.selectionRect.getSelection();
+        if (this.selectionRect) {
+          console.log(this.selectionRect.toString());
+          //this.selectionRect.setOrigin({ x:this.x0, y:this.y0 });
+          var list = this.selectionRect.getSelection();
+          
+          for (var i=0; i<list.length; i++)
+            this.addToSelection(list[i]);
+        }
         
-        for (var i=0; i<list.length; i++)
-          this.addToSelection(list[i]);
-
         this.destroySelectionBox();
         blueprint.setStatus(BPStatus.READY);
         break;
