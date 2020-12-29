@@ -71,6 +71,7 @@
         <tr><th class="th1">Program</th><th class="th1">Status</th><th class="th1">Updated</th><th class="th1" /><tr>
         <tr class="tr1" th:each="p : ${#lists.sort(programs, byName)}">
             <td class="td1">
+                <i class="icon i-cogs w3-text-blue-gray" style="width:1.5em;"></i>
                 <a th:text="${p.name}" th:href="@{${'/program/'+p.id+'/edit'}}" style="cursor:pointer;">Name</a>
             </td>
             <td class="td1" th:switch="${p.status.name()}">
