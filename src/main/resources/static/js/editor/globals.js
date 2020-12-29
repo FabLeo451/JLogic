@@ -3,7 +3,7 @@
 var blueprint, blueprint_id;
 var undo;
 var actionsEnabled = true;
-const debug = true;
+const debug = false;
 var substitutions = []; // used to keep track of original ids replaced by new ones
 
 const MenuID = {
