@@ -127,6 +127,7 @@ public class PageController {
     @RequestMapping("/login")
     public String login(HttpServletRequest request, Model model) {
         model.addAttribute("name", buildProperties.getName());
+        model.addAttribute("version", buildProperties.getVersion());
         return "login";
     }
 
