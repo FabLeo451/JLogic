@@ -37,4 +37,4 @@ Log in with admin/admin default credentials.
 See https://fableo451.github.io/JLogic/labs.html[labs] to take a tour.
 
 == Documentation
-https://fableo451.github.io/JLogic/tutorial.html[https://fableo451.github.io/JLogic/tutorial/home.html]
+https://fableo451.github.io/JLogic/tutorial/home.html[https://fableo451.github.io/JLogic/tutorial/home.html]
