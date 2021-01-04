@@ -11,24 +11,24 @@
   <!--div class="w3-panel w3-margin">
     <center>
       <img class="logo" src="img/logo.png" width="10%">
-    </center>    
+    </center>
       <!--h3>
         <div style="padding-bottom:1em; border-bottom: 1px dotted grey"><strong><span class="title"/></strong></div>
       </h3-->
       <br>
   </div-->
-  
-  
-  <div class="w3-container" style="margin-top:3em;">
-    <center>
 
-      <div class="w3-container w3-card-4 w3-round w3-padding w3-light-grey w3-left-align" style="width:30%;">
+  <center>
+
+  <div class="w3-container" style="margin-top:3em; width:30%;">
+
+      <div class="w3-container w3-card-4 w3-round w3-padding w3-light-grey w3-left-align">
         <center>
             <img class="logo" src="img/logo.png" width="20%">
             <h3><b th:text="${name}"></b></h3>
             <span th:text="${version}">version</span>
         </center>
-      
+
         <form th:action="@{/login}" method="post">
           <!--b>Login</b-->
           <i class="icon i-user" style="color:slategray;"></i> Username
@@ -39,13 +39,12 @@
           <br>
           <input class="w3-input w3-border w3-round" type="password" name="password"/>
           <br>
-   
+
           <!--button id="btnLogin" type="submit" class="w3-button w3-round-medium w3-right" onclick="login();"><i class="icon i-sign-in"></i> Log in</button-->
           <input type="submit" class="w3-button w3-round-medium w3-green w3-right" value="Log in"/>
         </form>
-  
+
       </div>
-    </center>
     <br>
     <div class="w3-text-red" th:if="${param.error}"
                              th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}">
@@ -58,7 +57,8 @@
         Session expired.
     </div>
   </div>
-  
+</center>
+
 
 </body>
 </html>
