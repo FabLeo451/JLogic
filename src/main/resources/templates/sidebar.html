@@ -21,11 +21,11 @@
     <div class="w3-bar-item"><i class="icon i-server" style="color:slategray; min-width: 1.5em;"></i> <span th:text="${nodeName}"></span></div>
     <div th:fragment="logout" class="w3-bar-item" sec:authorize="isAuthenticated()">
       <i class="icon i-user" style="color:slategray; min-width: 1.5em;"></i> <!--span sec:authentication="name"/--><a href="/user/edit" sec:authentication="name"/>
-      <div id='logout_button' class="w3-right"><a target="javascript:void(0);" th:href="@{/logout}" style="cursor:pointer;"><i class="icon i-sign-out w3-text-gray w3-hover-text-orange"></i></a></div>
+      <div id='logout_button' class="w3-right"><a th:href="@{/logout}" style="cursor:pointer;"><i class="icon i-sign-out w3-text-gray w3-hover-text-orange"></i></a></div>
       <!--div id='logout_button' class="w3-right"><a href="javascript: document.logoutForm.submit()" role="menuitem" style="cursor:pointer;"><i class="icon i-sign-out w3-text-gray w3-hover-text-orange"></i></a></div>
        <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
           <input hidden type="submit" value="Sign Out"/>
-       </form--> 
+       </form-->
 
     </div>
   </div>

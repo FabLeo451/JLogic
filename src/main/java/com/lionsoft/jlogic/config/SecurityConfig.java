@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private UserRepository userRepository;
- 
+
     @Value("${maxSessions}")
     private int maxSessions;
 
@@ -77,10 +77,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                     .formLogin().loginPage("/login").defaultSuccessUrl("/perform_login").permitAll()
                     .and()
-                    .logout().invalidateHttpSession(true)/*.logoutUrl("/logout")*/.logoutSuccessUrl("/login?logout")
+                    .logout().addLogoutHandler(logoutHandler()).invalidateHttpSession(true)/*.logoutUrl("/logout")*/.logoutSuccessUrl("/login?logout")
                              .deleteCookies("JSESSIONID")
-                             .addLogoutHandler(logoutHandler())
-                             /*.logoutSuccessHandler(logoutSuccessHandler()\/*new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)*\/)*/
+                             /*.logoutSuccessHandler(logoutSuccessHandler())*/
                              .permitAll();
 
 
@@ -140,7 +139,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         provider.setUserDetailsService(userDetailsService);
         return provider;
     }
-    
+
     @Bean
     SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
