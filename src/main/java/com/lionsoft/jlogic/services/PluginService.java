@@ -55,6 +55,8 @@ public class PluginService {
       final int OPERATOR = 5;
 
       Method m;
+      String methodName;
+      List<String> outGet = new ArrayList<String>();
 
       JSONObject jplugin = new JSONObject();
       JSONArray jnodes = new JSONArray();
@@ -114,7 +116,9 @@ public class PluginService {
             JSONArray joutput = new JSONArray();
             jnode.put("input", jinput);
             jnode.put("output", joutput);
-            jnode.put("name", method.getName());
+
+            methodName = method.getName();
+            jnode.put("name", methodName);
 
             Class<? extends Annotation> node = nodeAnnotation.annotationType();
 
@@ -175,6 +179,9 @@ public class PluginService {
                   return null;
                 }
 
+                m = out.getMethod("get");
+                outGet.add((String) m.invoke(outAnnotation, (Object[])null));
+
                 JSONObject jreferences = new JSONObject();
                 jreferences.put("variable", varName);
                 jout.put("references", jreferences);
@@ -185,7 +192,33 @@ public class PluginService {
             // Source code
             int nIn = jinput.size();
             int nOut = joutput.size();
+            int start = returnsValue ? 0 : 1;
 
+            System.out.println(methodName+" nIn="+nIn+" nOut="+nOut+" start="+start);
+
+            String java = "", args = "", call = "";
+
+            for (int i=start; i<nIn; i++) {
+              args += i > start ? ", " : "";
+              args += "in{"+i+"}";
+            }
+
+            call = methodName+"("+args+")";
+
+            if (nOut > 0) {
+              call += ";"+System.lineSeparator();
+              java = call;
+
+              for (int i=start; i<nOut; i++) {
+                java += "out{"+i+"} = "+outGet.get(i-1)+"();"+System.lineSeparator();
+              }
+            } else {
+              java = call;
+            }
+
+            jnode.put("java", java);
+
+            // Add node
             jnodes.add(jnode);
           }
         }
