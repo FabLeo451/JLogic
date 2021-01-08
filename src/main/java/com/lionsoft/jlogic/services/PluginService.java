@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpMethod;
-import org.springframework.util.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import org.json.simple.parser.JSONParser;
@@ -37,6 +36,7 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.lang.annotation.Annotation;
 
 @Service
@@ -48,7 +48,7 @@ public class PluginService {
     }
 
     /**
-     * Create JSON specification for plugintemp
+     * Create JSON specification for plugin, given path and file
      */
     public JSONObject specFromClass(Plugin plugin) {
       final int FUNCTION = 4;
@@ -134,12 +134,14 @@ public class PluginService {
 
             for (Parameter p : method.getParameters()) {
               //System.out.println(p.toString());
-              String[] parts = p.getType().toString().split("\\.");
+
+              //String[] parts = p.getType().toString().split("\\.");
 
               JSONObject jparam = new JSONObject();
               jparam.put("label", p.getName());
-              jparam.put("type", parts[parts.length-1].replace(";", ""));
-              jparam.put("dimensions", StringUtils.countOccurrencesOf(p.getType().toString(), "["));
+              //jparam.put("type", parts[parts.length-1].replace(";", ""));
+              jparam.put("type", Utils.getJavaTypeFromString(p.getType().toString()));
+              jparam.put("dimensions", Utils.getJavaArrayFromString(p.getType().toString()));
 
               Annotation paramAnnotation = p.getAnnotation(InAnnotation);
 
@@ -160,8 +162,29 @@ public class PluginService {
                 m = out.getMethod("label");
                 jout.put("label", m.invoke(outAnnotation, (Object[])null));
 
+                m = out.getMethod("variable");
+                String varName = (String) m.invoke(outAnnotation, (Object[])null);
+
+                try {
+                  Field field = c.getDeclaredField(varName);
+                  jout.put("type", Utils.getJavaTypeFromString(field.getType().toString()));
+                  jout.put("dimensions", Utils.getJavaArrayFromString(field.getType().toString()));
+                  //int modifiers = field.getModifiers();
+                } catch (NoSuchFieldException e) {
+                  logger.error("Variable not found: "+varName+": "+e.getMessage());
+                  return null;
+                }
+
+                JSONObject jreferences = new JSONObject();
+                jreferences.put("variable", varName);
+                jout.put("references", jreferences);
+
                 joutput.add(jout);
             }
+
+            // Source code
+            int nIn = jinput.size();
+            int nOut = joutput.size();
 
             jnodes.add(jnode);
           }

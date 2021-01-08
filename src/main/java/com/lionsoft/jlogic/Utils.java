@@ -8,6 +8,7 @@ import org.json.simple.JSONArray;
 
 import java.util.*;
 import java.io.*;
+import org.springframework.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,15 @@ public class Utils {
 	static String getTempDirectory() {
 		return home.getDir()+"/../temp";
 	}
+
+  static String getJavaTypeFromString(String type) {
+    String[] parts = type.split("\\.");
+    return(parts[parts.length-1].replace(";", ""));
+  }
+
+  static int getJavaArrayFromString(String type) {
+    return(StringUtils.countOccurrencesOf(type, "["));
+  }
 
   /**
    * Convert a json string into a Map
