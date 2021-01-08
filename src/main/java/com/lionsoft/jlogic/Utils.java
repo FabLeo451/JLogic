@@ -24,6 +24,18 @@ public class Utils {
   static ApplicationHome home = new ApplicationHome(Utils.class);
   static Logger logger = LoggerFactory.getLogger(Utils.class);
 
+  static String getHomeDir() {
+    File f = new File(home.getDir()+"/..");
+
+    try {
+      return(f.getCanonicalPath());
+    } catch (IOException e) {
+      logger.error(e.getMessage());
+    }
+
+    return (null);
+  }
+
 	static String getTempDirectory() {
 		return home.getDir()+"/../temp";
 	}

@@ -12,6 +12,8 @@ public class Plugin {
 
   private String path;
   private String className;
+  private String name;
+  private String version;
 
   public Plugin() {
   }
@@ -24,7 +26,23 @@ public class Plugin {
     return(path);
   }
 
+  public String getName() {
+    return(name);
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getVersion() {
+    return(version);
+  }
+
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
   public String toString() {
-      return("Plugin [class="+className+"]");
+      return("Plugin [name="+name+" version="+version+" class="+className+"]");
   }
 }

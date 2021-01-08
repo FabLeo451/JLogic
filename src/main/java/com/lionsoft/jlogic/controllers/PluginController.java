@@ -19,9 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.json.simple.JSONObject;
 
 import java.util.concurrent.locks.*;
 
@@ -53,8 +51,8 @@ public class PluginController {
 	public ResponseEntity<String> importFromFile(@RequestBody Plugin plugin) {
 	  logger.info("Importing plugin "+plugin.getClassName());
 
-    pluginService.specFromClass(plugin);
+    JSONObject jplugin = pluginService.specFromClass(plugin);
 
-		return new ResponseEntity<>("", HttpStatus.OK);
+		return new ResponseEntity<>(jplugin.toString(), HttpStatus.OK);
 	}
 }
