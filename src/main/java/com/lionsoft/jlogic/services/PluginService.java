@@ -282,9 +282,9 @@ public class PluginService {
               }
 
               // Following exec
-              int added = 0;
-
               if (nExec > 1) {
+                int added = 0;
+
                 for (int i=0; i<outConn.size(); i++) {
                   if (outConn.get(i).exec) {
                     execAfter += "if ((Boolean) _{node.id}_out["+i+"]) { exec{"+i+"} }";
