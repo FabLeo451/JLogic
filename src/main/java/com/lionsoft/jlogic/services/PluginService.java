@@ -64,7 +64,7 @@ public class PluginService {
     }
 
     /**
-     * Create JSON specification for plugin, given path and file
+     * Create JSON specification for plugin, given path and class file
      */
     public JSONObject specFromClass(Plugin plugin) {
       final int FUNCTION = 4;
@@ -103,10 +103,11 @@ public class PluginService {
         ClassLoader cl = new URLClassLoader(clUrls);
         Class c = cl.loadClass(plugin.getClassName());
 
-        Class PluginAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.Plugin");
-        Class NodeAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.Node");
-        Class InAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.In");
-        Class OutAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.Out");
+        Class PluginAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Plugin");
+        Class NodeAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Node");
+        Class InAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.In");
+        Class OutAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Out");
+        Class TypeAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Type");
 
         // Plugin info
         Annotation pluginAnnotation = c.getAnnotation(PluginAnnotation);
@@ -121,6 +122,33 @@ public class PluginService {
 
         logger.info("Installing plugin "+plugin.toString());
 
+        // Types
+        for (Annotation typeAnnotation : c.getAnnotationsByType(TypeAnnotation)) {
+            JSONObject jtype = new JSONObject();
+
+            Class<? extends Annotation> type = typeAnnotation.annotationType();
+            m = type.getMethod("name");
+            jtype.put("name", m.invoke(typeAnnotation, (Object[])null));
+
+            m = type.getMethod("color");
+            jtype.put("color", m.invoke(typeAnnotation, (Object[])null));
+
+            m = type.getMethod("initStr");
+            if (!((String) m.invoke(typeAnnotation, (Object[])null)).isEmpty())
+              jtype.put("init", m.invoke(typeAnnotation, (Object[])null));
+
+            m = type.getMethod("importLib");
+            if (!((String) m.invoke(typeAnnotation, (Object[])null)).isEmpty())
+              jtype.put("import", m.invoke(typeAnnotation, (Object[])null));
+
+            m = type.getMethod("jar");
+            if (!((String) m.invoke(typeAnnotation, (Object[])null)).isEmpty())
+              jtype.put("jar", m.invoke(typeAnnotation, (Object[])null));
+
+            jtypes.add(jtype);
+        }
+
+        // Nodes
         Method[] methods = c.getMethods();
 
         for (Method method : methods) {
