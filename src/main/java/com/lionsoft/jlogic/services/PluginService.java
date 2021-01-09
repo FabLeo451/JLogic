@@ -42,6 +42,22 @@ import java.lang.annotation.Annotation;
 @Service
 public class PluginService {
 
+    class OutConnector {
+      public String label;
+      public String type;
+      public int array;
+      public boolean exec;
+
+      public OutConnector() {
+        exec = false;
+      }
+
+      public void setExec() {
+        exec = true;
+        type = "Exec";
+      }
+    }
+
     static Logger logger = LoggerFactory.getLogger(PluginService.class);
 
     public PluginService() {
@@ -56,7 +72,9 @@ public class PluginService {
 
       Method m;
       String methodName;
-      List<String> outGet = new ArrayList<String>();
+      //List<String> outGet = new ArrayList<String>();
+      List<OutConnector> outConn = new ArrayList<OutConnector>();
+      int nExec = 0;
 
       JSONObject jplugin = new JSONObject();
       JSONArray jnodes = new JSONArray();
@@ -106,18 +124,24 @@ public class PluginService {
         Method[] methods = c.getMethods();
 
         for (Method method : methods) {
-          boolean returnsValue = !method.getReturnType().equals(Void.TYPE);
+          methodName = method.getName();
 
           Annotation nodeAnnotation = method.getAnnotation(NodeAnnotation);
 
           if (nodeAnnotation != null) {
+            String returnType = Utils.getJavaTypeFromString(method.getReturnType().toString());
+            int returnArray = Utils.getJavaArrayFromString(method.getReturnType().toString());
+
+            boolean multipleOut = method.getReturnType().equals(Void.TYPE) ||
+                                  (returnType.equals("Object") && returnArray == 1);
+
+            //System.out.println(methodName+" multipleOut="+multipleOut+" "+method.getReturnType().toString());
+
             JSONObject jnode = new JSONObject();
             JSONArray jinput = new JSONArray();
             JSONArray joutput = new JSONArray();
             jnode.put("input", jinput);
             jnode.put("output", joutput);
-
-            methodName = method.getName();
             jnode.put("name", methodName);
 
             Class<? extends Annotation> node = nodeAnnotation.annotationType();
@@ -125,17 +149,18 @@ public class PluginService {
             // Name, type etc.
             m = node.getMethod("name");
             jnode.put("name", m.invoke(nodeAnnotation, (Object[])null));
-            jnode.put("type", returnsValue ? OPERATOR : FUNCTION);
+            jnode.put("type", multipleOut ? FUNCTION : OPERATOR);
 
             // Input parameters
-            if (!returnsValue) {
+            if (multipleOut) {
               JSONObject jexec = new JSONObject();
               jexec.put("label", "");
               jexec.put("type", "Exec");
               jinput.add(jexec);
-              joutput.add(jexec);
+              //joutput.add(jexec);
             }
 
+            // Input
             for (Parameter p : method.getParameters()) {
               //System.out.println(p.toString());
 
@@ -150,9 +175,21 @@ public class PluginService {
               Annotation paramAnnotation = p.getAnnotation(InAnnotation);
 
               if (paramAnnotation != null) {
+                boolean b;
+
                 Class<? extends Annotation> bpconnector = paramAnnotation.annotationType();
                 m = bpconnector.getMethod("label");
                 jparam.put("label", m.invoke(paramAnnotation, (Object[])null));
+
+                m = bpconnector.getMethod("single_line");
+                b = (boolean) m.invoke(paramAnnotation, (Object[])null);
+                if (b)
+                  jparam.put("single_line", true);
+
+                m = bpconnector.getMethod("password");
+                b = (boolean) m.invoke(paramAnnotation, (Object[])null);
+                if (b)
+                  jparam.put("password", true);
               }
 
               jinput.add(jparam);
@@ -162,29 +199,54 @@ public class PluginService {
             for (Annotation outAnnotation : method.getAnnotationsByType(OutAnnotation)) {
                 Class<? extends Annotation> out = outAnnotation.annotationType();
 
+                OutConnector conn = new OutConnector();
+
                 JSONObject jout = new JSONObject();
                 m = out.getMethod("label");
-                jout.put("label", m.invoke(outAnnotation, (Object[])null));
+                conn.label = (String) m.invoke(outAnnotation, (Object[])null);
 
-                m = out.getMethod("variable");
-                String varName = (String) m.invoke(outAnnotation, (Object[])null);
+                m = out.getMethod("exec");
 
-                try {
-                  Field field = c.getDeclaredField(varName);
-                  jout.put("type", Utils.getJavaTypeFromString(field.getType().toString()));
-                  jout.put("dimensions", Utils.getJavaArrayFromString(field.getType().toString()));
-                  //int modifiers = field.getModifiers();
-                } catch (NoSuchFieldException e) {
-                  logger.error("Variable not found: "+varName+": "+e.getMessage());
-                  return null;
+                if ((boolean) m.invoke(outAnnotation, (Object[])null)) {
+                  // Exec
+                  conn.setExec();
+                  nExec ++;
+                } else {
+                  // Data
+                  m = out.getMethod("type");
+                  conn.type = (String) m.invoke(outAnnotation, (Object[])null);
+
+                  m = out.getMethod("array");
+                  conn.array = (Integer) m.invoke(outAnnotation, (Object[])null);
+
+                  m = out.getMethod("variable");
+                  String varName = (String) m.invoke(outAnnotation, (Object[])null);
+                  /*
+                  try {
+                    Field field = c.getDeclaredField(varName);
+                    jout.put("type", Utils.getJavaTypeFromString(field.getType().toString()));
+                    jout.put("dimensions", Utils.getJavaArrayFromString(field.getType().toString()));
+                    //int modifiers = field.getModifiers();
+                  } catch (NoSuchFieldException e) {
+                    logger.error("Variable not found: "+varName+": "+e.getMessage());
+                    return null;
+                  }
+
+                  m = out.getMethod("get");
+                  outGet.add((String) m.invoke(outAnnotation, (Object[])null));
+                  */
+                  JSONObject jreferences = new JSONObject();
+                  jreferences.put("variable", varName);
+                  jout.put("references", jreferences);
                 }
 
-                m = out.getMethod("get");
-                outGet.add((String) m.invoke(outAnnotation, (Object[])null));
+                outConn.add(conn);
 
-                JSONObject jreferences = new JSONObject();
-                jreferences.put("variable", varName);
-                jout.put("references", jreferences);
+                jout.put("label", conn.label);
+                jout.put("type", conn.type);
+
+                if (conn.array > 0)
+                  jout.put("array", conn.array);
 
                 joutput.add(jout);
             }
@@ -192,11 +254,12 @@ public class PluginService {
             // Source code
             int nIn = jinput.size();
             int nOut = joutput.size();
-            int start = returnsValue ? 0 : 1;
+            int start = multipleOut ? 1 : 0;
 
-            System.out.println(methodName+" nIn="+nIn+" nOut="+nOut+" start="+start);
+            //System.out.println(methodName+" nIn="+nIn+" nOut="+nOut+" start="+start);
 
-            String java = "", args = "", call = "";
+            String java = ""; // Final source code
+            String retVals = "", call = "", args = "", outVals = "", execAfter = "";
 
             for (int i=start; i<nIn; i++) {
               args += i > start ? ", " : "";
@@ -205,15 +268,37 @@ public class PluginService {
 
             call = methodName+"("+args+")";
 
-            if (nOut > 0) {
-              call += ";"+System.lineSeparator();
+            if (!multipleOut) {
               java = call;
-
-              for (int i=start; i<nOut; i++) {
-                java += "out{"+i+"} = "+outGet.get(i-1)+"();"+System.lineSeparator();
-              }
             } else {
-              java = call;
+              retVals = "Object[] _{node.id}_out = ";
+
+              // Assing output values
+              for (int i=0; i<outConn.size(); i++) {
+                if (outConn.get(i).exec)
+                  continue;
+
+                outVals += "out{"+i+"} = ("+outConn.get(i).type+")_{node.id}_out["+i+"];"+System.lineSeparator();
+              }
+
+              // Following exec
+              int added = 0;
+
+              if (nExec > 1) {
+                for (int i=0; i<outConn.size(); i++) {
+                  if (outConn.get(i).exec) {
+                    execAfter += "if ((Boolean) _{node.id}_out["+i+"]) { exec{"+i+"} }";
+                    added ++;
+
+                    if (added < nExec)
+                      execAfter += " else ";
+                  }
+                }
+              }
+
+              java = retVals + call + ";" + System.lineSeparator() +
+                     outVals + System.lineSeparator() +
+                     execAfter;
             }
 
             jnode.put("java", java);
