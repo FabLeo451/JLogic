@@ -1,6 +1,12 @@
 package com.lionsoft.jlogic;
 
 import org.springframework.boot.system.ApplicationHome;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.util.FileCopyUtils;
+
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.json.simple.JSONObject;
@@ -20,10 +26,15 @@ import java.util.zip.ZipOutputStream;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class Utils {
 
   static ApplicationHome home = new ApplicationHome(Utils.class);
   static Logger logger = LoggerFactory.getLogger(Utils.class);
+
+  //@Autowired
+  //private static ResourceLoader resourceLoader;
 
   static String getHomeDir() {
     File f = new File(home.getDir()+"/..");
@@ -79,6 +90,53 @@ public class Utils {
     }
 
     return(map);
+  }
+
+  static boolean deleteDirectory(File directoryToBeDeleted) {
+      File[] allContents = directoryToBeDeleted.listFiles();
+
+      if (allContents != null) {
+          for (File file : allContents) {
+              deleteDirectory(file);
+              //file.delete();
+          }
+      }
+      return directoryToBeDeleted.delete();
+  }
+
+  static boolean deleteDirectory(String d) {
+      File dir = new File(d);
+      return(deleteDirectory(dir));
+  }
+
+  /**
+   * Load a text file
+   */
+  static String loadTextFile(String filename) {
+    try {
+      String content = new String (Files.readAllBytes(Paths.get(filename)));
+      return content;
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+      //return null;
+    }
+
+    return null;
+  }
+
+  /**
+   * Load a text file from resources
+   */
+  static String loadTextFileFromResources(String filename) {
+    ResourceLoader resourceLoader = new DefaultResourceLoader();
+    Resource resource = resourceLoader.getResource("classpath:"+filename);
+
+    try (Reader reader = new InputStreamReader(resource.getInputStream(), UTF_8)) {
+        return FileCopyUtils.copyToString(reader);
+    } catch (IOException e) {
+        throw new UncheckedIOException(e);
+    }
   }
 
   /**

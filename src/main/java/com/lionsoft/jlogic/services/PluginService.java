@@ -43,19 +43,19 @@ import java.lang.annotation.Annotation;
 public class PluginService {
 
     class OutConnector {
-      public String label;
-      public String type;
-      public int array;
-      public boolean exec;
+        public String label;
+        public String type;
+        public int array;
+        public boolean exec;
 
-      public OutConnector() {
+        public OutConnector() {
         exec = false;
-      }
+        }
 
-      public void setExec() {
+        public void setExec() {
         exec = true;
         type = "Exec";
-      }
+        }
     }
 
     static Logger logger = LoggerFactory.getLogger(PluginService.class);

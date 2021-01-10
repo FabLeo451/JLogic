@@ -116,39 +116,59 @@ public class ProgramService {
 		repository.refresh(program);
 	}
 
-	public boolean compiled(ProgramEntity program) {
-    File f = new File(program.getClassFilename());
-    return(f.exists());
+    public boolean compiled(ProgramEntity program) {
+        File f = new File(program.getClassFilename());
+        return(f.exists());
+	}
+
+    public boolean createPOM(ProgramEntity program) {
+        //File f = new File(program.getClassFilename());
+        //return(f.exists());
+        String pom = Utils.loadTextFileFromResources("pom-template.xml");
+        System.out.println(pom);
+        return true;
 	}
 
 	public ProgramEntity createEmpty(String name) {
-	  ProgramEntity program = new ProgramEntity(UUID.randomUUID().toString(), name);
+        ProgramEntity program = new ProgramEntity(UUID.randomUUID().toString(), name);
 
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-    program.setOwner(((User) auth.getPrincipal()).getUsername());
-    program = repository.save(program);
+        program.setOwner(((User) auth.getPrincipal()).getUsername());
 
-    logger.info("Successfully created "+program.toString());
+        // Create directory tree
+        String progDir = getProgramBaseDirectory()+"/"+program.getId();
 
-    String progDir = getProgramBaseDirectory()+"/"+program.getId();
+        logger.info("Creating project directory "+progDir+" ...");
 
-    File progFile = new File(progDir);
+        if (!new File(progDir).mkdir()) {
+            repository.refresh(program);
+            return null;
+        }
 
-    if (progFile.mkdir()) {
-      //program.createIndex();
-      //program.createProperties();
+        String treeJava = progDir+"/src/main/java/com/lionsoft/"+name;
+        String treeResources = progDir+"/src/main/resources";
 
-      // Create blueprints
-	    //BlueprintEntity main = blueprintService.create(program, BlueprintType.MAIN, "Main");
-	    //BlueprintEntity events = blueprintService.create(program, BlueprintType.EVENTS, "Events");
+        logger.info("Creating project directory tree ...");
 
-	    repository.refresh(program);
+        new File(treeJava).mkdirs();
+        new File(treeResources).mkdirs();
 
-      return program;
-    }
+        // pom
+        logger.info("Creating POM file ...");
 
-    return null;
+        if (!createPOM(program)) {
+            logger.error("Unable to create POM file");
+            return null;
+        }
+
+        // Save program
+        logger.info("Saving program into database..");
+        program = repository.save(program);
+
+        logger.info("Successfully created "+program.toString());
+
+        return program;
 	}
 
 	public ProgramEntity create(String name) {
@@ -172,22 +192,7 @@ public class ProgramService {
         return program;
 	}
 
-    boolean deleteDirectory(File directoryToBeDeleted) {
-        File[] allContents = directoryToBeDeleted.listFiles();
 
-        if (allContents != null) {
-            for (File file : allContents) {
-                //deleteDirectory(file);
-                file.delete();
-            }
-        }
-        return directoryToBeDeleted.delete();
-    }
-
-    boolean deleteDirectory(String d) {
-        File dir = new File(d);
-        return(deleteDirectory(dir));
-    }
 
 	public boolean delete (ProgramEntity program) {
         for (BlueprintEntity b: program.getBlueprints())
@@ -197,7 +202,7 @@ public class ProgramService {
 
         File programDir = new File(program.getMyDir());
 
-        if (deleteDirectory(programDir)) {
+        if (Utils.deleteDirectory(programDir)) {
           return true;
         }
 
@@ -673,93 +678,93 @@ public class ProgramService {
 	 * Import program from file
 	 */
 	public ProgramEntity importProgramFromFile(String importId, String zipFile) {
-	  ProgramEntity program = null;
-	  String unzippedDir = getTempDirectory()+"/"+importId;
+        ProgramEntity program = null;
+        String unzippedDir = getTempDirectory()+"/"+importId;
 
-    // Unpack file
-    logger.info("Unpacking "+zipFile);
+        // Unpack file
+        logger.info("Unpacking "+zipFile);
 
-    if (Utils.unpack(zipFile, unzippedDir)) {
-      // Load info file
-      JSONObject jinfo = Utils.loadJsonFile(unzippedDir+"/info.json");
+        if (Utils.unpack(zipFile, unzippedDir)) {
+            // Load info file
+            JSONObject jinfo = Utils.loadJsonFile(unzippedDir+"/info.json");
 
-      if (jinfo != null) {
-        // Create new program
-        String programName = (String) jinfo.get("name");
-        logger.info("Creating program "+programName);
+            if (jinfo != null) {
+                // Create new program
+                String programName = (String) jinfo.get("name");
+                logger.info("Creating program "+programName);
 
-        program = createEmpty(programName);
+                program = createEmpty(programName);
 
-        if (program != null) {
-          // Import blueprints
-          JSONArray jblueprints = (JSONArray) jinfo.get("blueprints");
+                if (program != null) {
+                    // Import blueprints
+                    JSONArray jblueprints = (JSONArray) jinfo.get("blueprints");
 
-          for (int k=0; k<jblueprints.size(); k++) {
-              JSONObject jbp = (JSONObject) jblueprints.get(k);
+                    for (int k=0; k<jblueprints.size(); k++) {
+                        JSONObject jbp = (JSONObject) jblueprints.get(k);
 
-              int internalId = ((Long) jbp.get("internalId")).intValue();
-              String bpfile = (String) jbp.get("name");
+                        int internalId = ((Long) jbp.get("internalId")).intValue();
+                        String bpfile = (String) jbp.get("name");
 
-              logger.info("Importing "+bpfile);
-              BlueprintEntity b = importBlueprintFile(program, unzippedDir+"/"+bpfile);
-              b.setInternalId(internalId);
-          }
+                        logger.info("Importing "+bpfile);
+                        BlueprintEntity b = importBlueprintFile(program, unzippedDir+"/"+bpfile);
+                        b.setInternalId(internalId);
+                    }
 
-          // Copy propertes file
-          try {
-            Path propsFrom = Paths.get(unzippedDir+"/Program.properties");
-            Path propsTo = Paths.get(program.getMyDir()+"/Program.properties");
-            Files.copy(propsFrom, propsTo, StandardCopyOption.REPLACE_EXISTING);
-          } catch (IOException e) {
-            logger.error(e.getMessage());
-          }
+                    // Copy propertes file
+                    try {
+                        Path propsFrom = Paths.get(unzippedDir+"/Program.properties");
+                        Path propsTo = Paths.get(program.getMyDir()+"/Program.properties");
+                        Files.copy(propsFrom, propsTo, StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException e) {
+                        logger.error(e.getMessage());
+                    }
+                } else {
+                    logger.error("Can't create program");
+                }
+            } else {
+                logger.error("Unable to load info file");
+            }
+
+            logger.info("Deleting temporary dir "+unzippedDir);
+            Utils.deleteDirectory(unzippedDir);
+
+            File file = new File(zipFile);
+            file.delete();
         } else {
-          logger.error("Can't create program");
+            logger.error("Unable to unzip file");
         }
-      } else {
-        logger.error("Unable to load info file");
-      }
 
-      logger.info("Deleting temporary dir "+unzippedDir);
-      deleteDirectory(unzippedDir);
-
-      File file = new File(zipFile);
-      file.delete();
-    } else {
-      logger.error("Unable to unzip file");
-    }
-
-	  return program;
+        return program;
 	}
 
 	public ProgramEntity clone(ProgramEntity program) {
-	  ProgramEntity clone = null;
-	  String cloneName = "Clone of "+program.getName();
+        ProgramEntity clone = null;
+        String cloneName = "Clone of "+program.getName();
 
-    logger.info("Creating program "+cloneName);
+        logger.info("Creating program "+cloneName);
 
-    clone = createEmpty(cloneName);
+        clone = createEmpty(cloneName);
 
-    if (clone == null) {
-      logger.error("Can't create program "+cloneName);
-      return null;
-    }
+        if (clone == null) {
+            logger.error("Can't create program "+cloneName);
+            return null;
+        }
 
-    // Import blueprints
-    for (BlueprintEntity sourceBP: program.getBlueprints()) {
-      BlueprintEntity b = importBlueprintFile(clone, sourceBP.getFilename());
-      b.setInternalId(sourceBP.getInternalId());
-    }
+        // Import blueprints
+        for (BlueprintEntity sourceBP: program.getBlueprints()) {
+            BlueprintEntity b = importBlueprintFile(clone, sourceBP.getFilename());
+            b.setInternalId(sourceBP.getInternalId());
+        }
 
-    // Copy propertes file
-    try {
-      Path propsFrom = Paths.get(program.getMyDir()+"/Program.properties");
-      Path propsTo = Paths.get(clone.getMyDir()+"/Program.properties");
-      Files.copy(propsFrom, propsTo, StandardCopyOption.REPLACE_EXISTING);
-    } catch (IOException e) {
-      logger.error(e.getMessage());
-    }
+        // Copy propertes file
+        try {
+            Path propsFrom = Paths.get(program.getMyDir()+"/Program.properties");
+            Path propsTo = Paths.get(clone.getMyDir()+"/Program.properties");
+            Files.copy(propsFrom, propsTo, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
 
-	  return(clone);
+        return(clone);
 	}
 }
