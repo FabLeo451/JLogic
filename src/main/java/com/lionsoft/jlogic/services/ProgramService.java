@@ -304,8 +304,8 @@ public class ProgramService {
     /**
      * Compile program with Maven
      */
-    public boolean compile(ProgramEntity program) {
-        boolean result = false;
+    public Result compile(ProgramEntity program) {
+        Result result = new Result();
 
         if (program.generateJava()) {
             createPOM(program);
@@ -341,34 +341,32 @@ public class ProgramService {
                 if (exitVal == 0) {
                     program.setBuildTime(new Date());
                     program.setUpdateTime(new Date());
-                    //setMessage ("Successfully compiled "+getName());
+                    program.setStatus(ProgramStatus.COMPILED);
+                    result.setMessage ("Successfully compiled "+program.getName());
 
                     logger.info("Creating classpath file...");
 
                     if (!createCP(program))
                         logger.error("Unable to create classpath file");
-
-                    result = true;
                 } else {
-                    //setMessage ("Compiler error ("+exitVal+"): "+output);
-                    result = false;
+                    result.setResult(exitVal, "Compiler error (code "+exitVal+")");
                 }
 
-                program.setOutput(output.toString());
+                result.setOutput(output.toString());
       	    }
       	    catch (IOException e) {
-      		    //setMessage (e.getMessage());
-      		    //result = false;
+      		    result.setResult(Result.ERROR, e.getMessage());
       	    }
       	    catch (InterruptedException e) {
-      		    //setMessage (e.getMessage());
-      		    //result = false;
+      		    result.setResult(Result.ERROR, e.getMessage());
       	    }
         } else {
-            logger.error("Can't generate source for "+program.getName());
+            result.setResult(Result.ERROR, "Can't generate source for "+program.getName());
         }
 
-        repository.save(program);
+        if (result.success())
+          repository.save(program);
+
         return (result);
     }
 

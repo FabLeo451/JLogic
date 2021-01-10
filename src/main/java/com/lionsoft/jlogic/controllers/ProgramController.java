@@ -199,60 +199,63 @@ public class ProgramController {
 	@PostMapping(value = "/program/{id}/compile", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> compile(@PathVariable("id") String id) {
 
-	  HttpStatus responseStatus = HttpStatus.OK;
-	  JSONObject jresponse = new JSONObject();
+        HttpStatus responseStatus = HttpStatus.OK;
+        JSONObject jresponse = new JSONObject();
 
-	  Optional<ProgramEntity> program = programService.findById(id);
+        Optional<ProgramEntity> program = programService.findById(id);
 
-	  if (program.isPresent()) {
-	      logger.info("Compiling program "+program.get().getName());
+        if (program.isPresent()) {
+            logger.info("Compiling program "+program.get().getName());
 
-        if (programService.compile(program.get())) {
-          logger.info("Successfully compiled "+program.get().getName());
+            Result result = programService.compile(program.get());
+
+            if (result.success()) {
+                logger.info("Successfully compiled "+program.get().getName());
+                jresponse.put("output", "");
+            }
+            else {
+                responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error(result.getMessage());
+                jresponse.put("output", result.getOutput());
+            }
+
+            jresponse.put("status", program.get().getStatus().name());
+            jresponse.put("message", result.getMessage());
+        } else {
+            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(jresponse.toString(), responseStatus);
+	}
+
+	// POST /program/{id}/jar
+	@PostMapping(value = "/program/{id}/jar")
+        public List<ProgramEntity> createJAR(@PathVariable("id") String id) {
+
+        HttpStatus responseStatus = HttpStatus.OK;
+        JSONObject jresponse = new JSONObject();
+
+        Optional<ProgramEntity> program = programService.findById(id);
+
+        if (!program.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found");
+
+        if (program.get().getStatus() != ProgramStatus.COMPILED)
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Program not compiled");
+
+        if (program.get().createJAR()) {
+            logger.info(program.get().getMessage());
         }
         else {
-          responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-          logger.error(program.get().getMessage());
+            logger.error(program.get().getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, program.get().getMessage());
         }
 
         jresponse.put("status", program.get().getStatus().name());
         jresponse.put("message", program.get().getMessage());
         jresponse.put("output", program.get().getOutput());
-	  } else {
-	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
-	  }
 
-	  return new ResponseEntity<>(jresponse.toString(), responseStatus);
-	}
-
-	// POST /program/{id}/jar
-	@PostMapping(value = "/program/{id}/jar")
-	public List<ProgramEntity> createJAR(@PathVariable("id") String id) {
-
-	  HttpStatus responseStatus = HttpStatus.OK;
-	  JSONObject jresponse = new JSONObject();
-
-	  Optional<ProgramEntity> program = programService.findById(id);
-
-	  if (!program.isPresent())
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found");
-
-    if (program.get().getStatus() != ProgramStatus.COMPILED)
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Program not compiled");
-
-    if (program.get().createJAR()) {
-      logger.info(program.get().getMessage());
-    }
-    else {
-      logger.error(program.get().getMessage());
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, program.get().getMessage());
-    }
-
-    jresponse.put("status", program.get().getStatus().name());
-    jresponse.put("message", program.get().getMessage());
-    jresponse.put("output", program.get().getOutput());
-
-		return (catalogService.getPrograms());
+        return (catalogService.getPrograms());
 	}
 
 	// GET /program/{id}/java
