@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.lionsoft</groupId>
 	<artifactId>jlogic</artifactId>
-	<version>0.1.0-alpha-8</version>
+	<version>0.2.0-alpha-1</version>
 	<name>JLogic</name>
 	<description>Visual scripting</description>
 
@@ -176,7 +176,7 @@
             </execution>
         </executions>
 			</plugin>
-			
+
       <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
