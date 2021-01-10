@@ -30,36 +30,38 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Utils {
 
-  static ApplicationHome home = new ApplicationHome(Utils.class);
-  static Logger logger = LoggerFactory.getLogger(Utils.class);
+    static ApplicationHome home = new ApplicationHome(Utils.class);
+    static Logger logger = LoggerFactory.getLogger(Utils.class);
 
-  //@Autowired
-  //private static ResourceLoader resourceLoader;
+    //@Autowired
+    //private static ResourceLoader resourceLoader;
 
-  static String getHomeDir() {
-    File f = new File(home.getDir()+"/..");
+    static String getHomeDir() {
+        File f = new File(home.getDir()+"/..");
 
-    try {
-      return(f.getCanonicalPath());
-    } catch (IOException e) {
-      logger.error(e.getMessage());
+        try {
+              return(f.getCanonicalPath());
+        } catch (IOException e) {
+              logger.error(e.getMessage());
+        }
+
+        return (null);
     }
 
-    return (null);
-  }
+    static String getLibDir() { return getHomeDir()+"/lib"; }
 
-	static String getTempDirectory() {
-		return home.getDir()+"/../temp";
-	}
+    static String getTempDirectory() {
+    	return home.getDir()+"/../temp";
+    }
 
-  static String getJavaTypeFromString(String type) {
-    String[] parts = type.split("\\.");
-    return(parts[parts.length-1].replace(";", ""));
-  }
+    static String getJavaTypeFromString(String type) {
+        String[] parts = type.split("\\.");
+        return(parts[parts.length-1].replace(";", ""));
+    }
 
-  static int getJavaArrayFromString(String type) {
-    return(StringUtils.countOccurrencesOf(type, "["));
-  }
+    static int getJavaArrayFromString(String type) {
+        return(StringUtils.countOccurrencesOf(type, "["));
+    }
 
   /**
    * Convert a json string into a Map
@@ -164,6 +166,16 @@ public class Utils {
 
     return jo;
   }
+
+    /**
+     * Write a string into a files
+     */
+    static void saveFile(String s, String filename) throws IOException {
+        FileWriter file = new FileWriter(filename);
+        file.write(s);
+        file.flush();
+        file.close();
+    }
 
 	/**
 	 * This method guards against writing files to the file system outside of the target folder.

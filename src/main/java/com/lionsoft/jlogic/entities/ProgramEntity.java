@@ -84,6 +84,12 @@ public class ProgramEntity {
     @Column(name="version")
     private String version;
 
+    @Column(name="group_id")
+    private String groupId;
+
+    @Column(name="artifact_id")
+    private String artifactId;
+
     @Enumerated(EnumType.STRING)
     @Column(name="status")
     private ProgramStatus status;
@@ -105,8 +111,8 @@ public class ProgramEntity {
     private String parentId;
 
     @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "program")
+               fetch = FetchType.LAZY,
+               mappedBy = "program")
     private List<BlueprintEntity> blueprints = new ArrayList<BlueprintEntity>();
 
     @OneToMany(mappedBy="program", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -155,12 +161,14 @@ public class ProgramEntity {
     }
 
     public ProgramEntity(String id, String name) {
-      creationTime = new Date();
-      updateTime = creationTime;
-      version = "1.0.0";
-      setId(id);
-      setName(name);
-      setStatus(ProgramStatus.READY);
+        creationTime = new Date();
+        updateTime = creationTime;
+        version = "1.0.0";
+        groupId = "org.jlogic";
+        artifactId = "program";
+        setId(id);
+        setName(name);
+        setStatus(ProgramStatus.READY);
     }
 
     //Setters and getters
@@ -178,33 +186,31 @@ public class ProgramEntity {
         return "ProgramEntity [id=" + id + ", name=" + name + ", status=" + status + "]";
     }
 
-    public String getTag() {
-      return (tag);
+    public String getTag() { return (tag); }
+
+    public String getId() { return (id); }
+    public void setId(String id) { this.id = id; }
+
+    public String getName() { return (name); }
+    public void setName(String name) { this.name = name; }
+
+    public String getVersion() { return (version); }
+    public void setVersion(String version) { this.version = version; }
+
+    public String getGroupId() { return (groupId); }
+    public void setGroupId(String groupId) { this.groupId = groupId; }
+
+    public String getArtifactId() { return (artifactId); }
+    public void setArtifactId(String artifactId) { this.artifactId = artifactId; }
+
+    public String getPackage() { return (groupId+"."+artifactId); }
+    public String getMainClass() { return (groupId+".Program"); }
+
+    public String getSrcDir() {
+        return ("/src/main/java/"+getGroupId().replace(".", "/")+"/"+getArtifactId());
     }
 
-    public String getId() {
-      return (id);
-    }
-
-    public void setId(String id) {
-      this.id = id;
-    }
-
-    public String getName() {
-      return (name);
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getVersion() {
-      return (version);
-    }
-
-    public void setVersion(String version) {
-      this.version = version;
-    }
+    public String getClasspathFile() { return (getMyDir()+"/cp.txt"); }
 
     @JsonIgnore
     public int getHTTPStatus() {
@@ -286,37 +292,37 @@ public class ProgramEntity {
     }*/
 
     @JsonIgnore
-	  public String getHomeDir() {
-	    if (homeDir == null) {
-        File f = new File(home.getDir()+"/..");
+    public String getHomeDir() {
+        if (homeDir == null) {
+            File f = new File(home.getDir()+"/..");
 
-        try {
-          homeDir = f.getCanonicalPath();
-        } catch (IOException e) {
-          logger.error(e.getMessage());
+            try {
+                homeDir = f.getCanonicalPath();
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+            }
         }
-      }
 
-      return (homeDir);
-	  }
+        return (homeDir);
+    }
 
     @JsonIgnore
-	  public String getMyDir() {
-		  //return home.getDir()+"/../data/program/"+getId();
-		  //return(programDir != null ? programDir : home.getDir()+"/../data/program/"+getId());
-		  return(getHomeDir()+"/data/program/"+getId());
-	  }
+    public String getMyDir() {
+        //return home.getDir()+"/../data/program/"+getId();
+        //return(programDir != null ? programDir : home.getDir()+"/../data/program/"+getId());
+        return(getHomeDir()+"/data/program/"+getId());
+    }
 
-  @JsonIgnore
-  public String getJavaFile() {
-	  return getMyDir()+"/Program.java";
-  }
+    @JsonIgnore
+    public String getJavaFile() {
+        return getMyDir()+"/"+getSrcDir()+"/Program.java";
+    }
 
-  @JsonIgnore
-  @Transient
-  public String getJARFilename() {
-	  return getMyDir()+"/"+jarName;
-  }
+    @JsonIgnore
+    @Transient
+    public String getJARFilename() {
+        return getMyDir()+"/"+jarName;
+    }
 /*
 	public String getDefaultDepsFilename() {
 		return getMyDir()+"/default-deps.json";
@@ -326,21 +332,21 @@ public class ProgramEntity {
 		return getMyDir()+"/deps.json";
 	}*/
 
-  @JsonIgnore
-	public String getIndexFilename() {
-		return getMyDir()+"/index.json";
-	}
+    @JsonIgnore
+    public String getIndexFilename() {
+    	return getMyDir()+"/index.json";
+    }
 
-  @JsonIgnore
-	@Transient
-	public String getClassFilename() {
-		return getMyDir()+"/"+className;
-	}
+    @JsonIgnore
+    @Transient
+    public String getClassFilename() {
+    	return getMyDir()+"/"+className;
+    }
 
-  @JsonIgnore
-	public String getLogDir() {
-		return home.getDir()+"/../log";
-	}
+    @JsonIgnore
+    public String getLogDir() {
+    	return home.getDir()+"/../log";
+    }
 
 	public void setOutput(String s) {
 		this.output = s;
@@ -732,7 +738,7 @@ public class ProgramEntity {
 
 	  return result;
 	}
-
+/*
 	public boolean compile() {
 	  boolean result = true;
 
@@ -816,7 +822,7 @@ public class ProgramEntity {
 
 	  return result;
 	}
-
+*/
 	public boolean createManifest(String filename) {
 	  String manifest;
 

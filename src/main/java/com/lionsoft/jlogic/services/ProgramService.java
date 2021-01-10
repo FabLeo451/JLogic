@@ -125,7 +125,21 @@ public class ProgramService {
         //File f = new File(program.getClassFilename());
         //return(f.exists());
         String pom = Utils.loadTextFileFromResources("pom-template.xml");
-        System.out.println(pom);
+        pom = pom.replace("{name}", program.getName())
+                 .replace("{version}", program.getVersion())
+                 .replace("{groupId}", program.getGroupId())
+                 .replace("{artifactId}", program.getArtifactId())
+                 .replace("{standardPath}", Utils.getLibDir()+"/Standard.jar")
+                 .replace("{mainClass}", program.getMainClass());
+        //System.out.println(pom);
+
+        try {
+            Utils.saveFile(pom, program.getMyDir()+"/pom.xml");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            return false;
+        }
+
         return true;
 	}
 
@@ -146,7 +160,7 @@ public class ProgramService {
             return null;
         }
 
-        String treeJava = progDir+"/src/main/java/com/lionsoft/"+name;
+        String treeJava = progDir+"/"+program.getSrcDir();
         String treeResources = progDir+"/src/main/resources";
 
         logger.info("Creating project directory tree ...");
@@ -161,6 +175,9 @@ public class ProgramService {
             logger.error("Unable to create POM file");
             return null;
         }
+
+        // mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+
 
         // Save program
         logger.info("Saving program into database..");
@@ -195,6 +212,8 @@ public class ProgramService {
 
 
 	public boolean delete (ProgramEntity program) {
+        logger.info("Deleting program "+program.getName());
+
         for (BlueprintEntity b: program.getBlueprints())
             blueprintService.delete(b);
 
@@ -219,12 +238,139 @@ public class ProgramService {
     }
 
     /**
-     * Compile program
+     * Compile program with JDK
      */
-    public boolean compile(ProgramEntity program) {
+    /*
+    public boolean compileJDK(ProgramEntity program) {
         boolean result = program.compile();
         repository.save(program);
         repository.refresh(program);
+        return (result);
+    }*/
+
+    /**
+     * Create classpath file
+     */
+    public boolean createCP(ProgramEntity program) {
+        boolean result = false;
+        List<String> args = new ArrayList<String>();
+
+        args.add("mvn");
+        args.add("--batch-mode"); // Disable ansi colors
+        args.add("dependency:build-classpath");
+        args.add("-Dmdep.outputFile="+program.getClasspathFile());
+
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        //processBuilder.inheritIO().command(args);
+        processBuilder.command(args);
+        processBuilder.directory(new File(program.getMyDir()));
+
+        try {
+            Process process = processBuilder.start();
+
+            StringBuilder output = new StringBuilder();
+            BufferedReader outReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader errReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            String line;
+
+            while ((line = outReader.readLine()) != null)
+                output.append(line + "\n");
+
+            while ((line = errReader.readLine()) != null)
+                output.append(line + "\n");
+
+            int exitVal = process.waitFor();
+
+            if (exitVal == 0) {
+                result = true;
+            } else {
+                //setMessage ("Compiler error ("+exitVal+"): "+output);
+                result = false;
+            }
+
+            program.setOutput(output.toString());
+        }
+        catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+        catch (InterruptedException e) {
+            logger.error(e.getMessage());
+        }
+
+        return result;
+    }
+
+    /**
+     * Compile program with Maven
+     */
+    public boolean compile(ProgramEntity program) {
+        boolean result = false;
+
+        logger.info ("Compiling "+program.getName());
+
+        if (program.generateJava()) {
+            createPOM(program);
+
+            List<String> args = new ArrayList<String>();
+
+            args.add("mvn");
+            args.add("--batch-mode"); // Disable ansi colors
+            args.add("compile");
+
+            ProcessBuilder processBuilder = new ProcessBuilder();
+            //processBuilder.inheritIO().command(args);
+            processBuilder.command(args);
+            processBuilder.directory(new File(program.getMyDir()));
+
+            try {
+                Process process = processBuilder.start();
+
+                StringBuilder output = new StringBuilder();
+                BufferedReader outReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                BufferedReader errReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+                String line;
+
+                while ((line = outReader.readLine()) != null)
+                    output.append(line + "\n");
+
+                while ((line = errReader.readLine()) != null)
+                    output.append(line + "\n");
+
+                int exitVal = process.waitFor();
+
+                if (exitVal == 0) {
+                    program.setBuildTime(new Date());
+                    program.setUpdateTime(new Date());
+                    //setMessage ("Successfully compiled "+getName());
+
+                    logger.info("Creating classpath file...");
+
+                    if (!createCP(program))
+                        logger.error("Unable to create classpath file");
+
+                    result = true;
+                } else {
+                    //setMessage ("Compiler error ("+exitVal+"): "+output);
+                    result = false;
+                }
+
+                program.setOutput(output.toString());
+      	    }
+      	    catch (IOException e) {
+      		    //setMessage (e.getMessage());
+      		    //result = false;
+      	    }
+      	    catch (InterruptedException e) {
+      		    //setMessage (e.getMessage());
+      		    //result = false;
+      	    }
+        } else {
+            logger.error("Can't generate source for "+program.getName());
+        }
+
+        repository.save(program);
         return (result);
     }
 
