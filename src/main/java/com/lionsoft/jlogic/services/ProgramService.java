@@ -115,7 +115,7 @@ public class ProgramService {
 	public void refresh(ProgramEntity program) {
 		repository.refresh(program);
 	}
-	
+
 	public boolean compiled(ProgramEntity program) {
     File f = new File(program.getClassFilename());
     return(f.exists());
@@ -237,7 +237,7 @@ public class ProgramService {
             return false;
         }
 	}
-	
+
     /**
      * Run program with input parameters as Map
      */
@@ -360,7 +360,7 @@ public class ProgramService {
 
         return(jindex);
     }
-  
+
   public JSONObject getIndexFromClass(ProgramEntity program) {
     JSONObject jprogram = new JSONObject();
 
@@ -496,7 +496,7 @@ public class ProgramService {
 
     return jprogram;
   }
-  
+
   /**
    * Get blueprint by internal id
    */
@@ -508,7 +508,7 @@ public class ProgramService {
 
     return null;
 	}
-	
+
 	/**
 	 * Import a bluerint
 	 */
@@ -544,10 +544,10 @@ public class ProgramService {
         } catch (ParseException e) {
             setResult(1, e.getMessage());
         }
-          
+
         return null;
 	}
-	
+
 	public BlueprintEntity importBlueprintFile(ProgramEntity program, String filename) {
         try {
             String content = new String (Files.readAllBytes(Paths.get(filename)));
@@ -556,18 +556,18 @@ public class ProgramService {
         catch (IOException e) {
             logger.error(e.getMessage());
         }
-        
+
         return null;
 	}
-	
+
 	/**
 	 * Pack program into a given zip file
 	 */
 	public boolean pack(ProgramEntity program, String packFilename) {
         List<String> srcFiles = new ArrayList<String>();
-	  
+
         logger.info("Packing "+program.getName()+" into "+packFilename);
-      
+
         JSONObject jinfo = new JSONObject();
         jinfo.put("name", program.getName());
         jinfo.put("fromVersion", buildProperties.getVersion());
@@ -588,7 +588,7 @@ public class ProgramService {
         jinfo.put("blueprints", jbpa);
 
         srcFiles.add(program.getMyDir()+"/Program.properties");
-    
+
         try {
             FileOutputStream fos = new FileOutputStream(packFilename);
             ZipOutputStream zipOut = new ZipOutputStream(fos);
@@ -613,8 +613,8 @@ public class ProgramService {
             // Pack info file
             ZipEntry zipEntry = new ZipEntry("info.json");
             zipOut.putNextEntry(zipEntry);
-            zipOut.write(jinfo.toString().getBytes("UTF-8"), 
-                       0, 
+            zipOut.write(jinfo.toString().getBytes("UTF-8"),
+                       0,
                        jinfo.toString().getBytes("UTF-8").length);
 
             zipOut.close();
@@ -624,60 +624,43 @@ public class ProgramService {
             return false;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;    
+            return false;
         }
-                  
+
         return true;
 	}
-	
+
 	/**
 	 * Pack program
 	 */
 	public String pack(ProgramEntity program) {
 	  String packFileBase = program.getName().replaceAll("[ .;]", "_")+".zip";
 	  String packFile = getTempDirectory()+"/"+packFileBase;
-	  
+
 	  if (!pack(program, packFile))
 	    return null;
-	    
+
 	  return packFile;
 	}
 
-	
+
     public Optional<String> getExtensionByStringHandling(String filename) {
         return Optional.ofNullable(filename)
           .filter(f -> f.contains("."))
           .map(f -> f.substring(filename.lastIndexOf(".") + 1));
     }
 
-	/**
-	 * This method guards against writing files to the file system outside of the target folder. 
-	 * This vulnerability is called Zip Slip.
-	 */
-  public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-      File destFile = new File(destinationDir, zipEntry.getName());
-   
-      String destDirPath = destinationDir.getCanonicalPath();
-      String destFilePath = destFile.getCanonicalPath();
-   
-      if (!destFilePath.startsWith(destDirPath + File.separator)) {
-          throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-      }
-   
-      return destFile;
-  }
-  
   /*public String getInfoFromZip(ZipInputStream zis) {
     String info = null;
-    
+
     try {
       ZipEntry zipEntry = zis.getNextEntry();
-      
+
       while (zipEntry != null) {
         if (zipEntry.getName().equals("info.json")) {
           info = "Found";
         }
-        
+
         zipEntry = zis.getNextEntry();
       }
 
@@ -685,55 +668,6 @@ public class ProgramService {
 
     return info;
   }*/
-  
-  public boolean unpack(String zipFile, String targetDir) {
-    File destDir = new File(targetDir);
-    byte[] buffer = new byte[1024];
-    
-    try {
-      ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
-      ZipEntry zipEntry = zis.getNextEntry();
-
-      while (zipEntry != null) {
-         File newFile = newFile(destDir, zipEntry);
-         
-         if (zipEntry.isDirectory()) {
-           if (!newFile.isDirectory() && !newFile.mkdirs()) {
-               logger.error("Failed to create directory " + newFile);
-               return false;
-           }
-         } else {
-           logger.info("Extracting "+zipEntry.getName());
-
-           File parent = newFile.getParentFile();
-           if (!parent.isDirectory() && !parent.mkdirs()) {
-               logger.error("Failed to create directory " + parent);
-           }
-           
-           // write file content
-           FileOutputStream fos = new FileOutputStream(newFile);
-           int len;
-           while ((len = zis.read(buffer)) > 0) {
-               fos.write(buffer, 0, len);
-           }
-           fos.close();
-         }
-         
-         zipEntry = zis.getNextEntry();
-      }
-      
-      zis.closeEntry();
-      zis.close();
-    } catch (FileNotFoundException e) {
-        logger.error(e.getMessage());
-        return false;
-    } catch (IOException e) {
-        logger.error(e.getMessage());
-        return false;
-    }
-    
-    return true;
-  }
 
 	/**
 	 * Import program from file
@@ -741,28 +675,28 @@ public class ProgramService {
 	public ProgramEntity importProgramFromFile(String importId, String zipFile) {
 	  ProgramEntity program = null;
 	  String unzippedDir = getTempDirectory()+"/"+importId;
-    
+
     // Unpack file
     logger.info("Unpacking "+zipFile);
 
-    if (unpack(zipFile, unzippedDir)) {
+    if (Utils.unpack(zipFile, unzippedDir)) {
       // Load info file
       JSONObject jinfo = Utils.loadJsonFile(unzippedDir+"/info.json");
-      
+
       if (jinfo != null) {
         // Create new program
         String programName = (String) jinfo.get("name");
         logger.info("Creating program "+programName);
-        
+
         program = createEmpty(programName);
-        
+
         if (program != null) {
           // Import blueprints
           JSONArray jblueprints = (JSONArray) jinfo.get("blueprints");
-          
+
           for (int k=0; k<jblueprints.size(); k++) {
               JSONObject jbp = (JSONObject) jblueprints.get(k);
-              
+
               int internalId = ((Long) jbp.get("internalId")).intValue();
               String bpfile = (String) jbp.get("name");
 
@@ -770,7 +704,7 @@ public class ProgramService {
               BlueprintEntity b = importBlueprintFile(program, unzippedDir+"/"+bpfile);
               b.setInternalId(internalId);
           }
-          
+
           // Copy propertes file
           try {
             Path propsFrom = Paths.get(unzippedDir+"/Program.properties");
@@ -785,16 +719,16 @@ public class ProgramService {
       } else {
         logger.error("Unable to load info file");
       }
-      
+
       logger.info("Deleting temporary dir "+unzippedDir);
       deleteDirectory(unzippedDir);
-      
+
       File file = new File(zipFile);
       file.delete();
     } else {
       logger.error("Unable to unzip file");
     }
-            
+
 	  return program;
 	}
 
@@ -816,7 +750,7 @@ public class ProgramService {
       BlueprintEntity b = importBlueprintFile(clone, sourceBP.getFilename());
       b.setInternalId(sourceBP.getInternalId());
     }
-    
+
     // Copy propertes file
     try {
       Path propsFrom = Paths.get(program.getMyDir()+"/Program.properties");
