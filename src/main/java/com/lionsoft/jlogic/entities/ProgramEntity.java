@@ -204,7 +204,7 @@ public class ProgramEntity {
     public void setArtifactId(String artifactId) { this.artifactId = artifactId; }
 
     public String getPackage() { return (groupId+"."+artifactId); }
-    public String getMainClass() { return (groupId+".Program"); }
+    public String getMainClass() { return (getPackage()+".Program"); }
 
     public String getSrcDir() {
         return ("/src/main/java/"+getGroupId().replace(".", "/")+"/"+getArtifactId());
@@ -322,7 +322,8 @@ public class ProgramEntity {
     @JsonIgnore
     @Transient
     public String getJARFilename() {
-        return getMyDir()+"/"+jarName;
+        // program-1.0.0-jar-with-dependencies
+        return getMyDir()+"/target/"+artifactId+"-"+version+"-jar-with-dependencies.jar";
     }
 /*
 	public String getDefaultDepsFilename() {
@@ -942,10 +943,10 @@ public class ProgramEntity {
 	}
 
 	public boolean getJar() {
-    File f = new File(getJARFilename());
-    return(f.exists());
+        File f = new File(getJARFilename());
+        return(f.exists());
 	}
-
+/*
 	public boolean createJAR() {
 	  boolean result = true;
 	  String mf = getMyDir()+"/MANIFEST.MF";
@@ -969,7 +970,7 @@ public class ProgramEntity {
     args.add("-cvfm");
     args.add(getJARFilename());
     args.add(mf);
-    //args.add("../"+className/*getClassFilename()*/); // We are in temp directory
+    //args.add("../"+className/*getClassFilename()*\/); // We are in temp directory
 
     // Add all .class files (Program.class and nested classes Program$x)
 
@@ -990,10 +991,10 @@ public class ProgramEntity {
     File tempDirFile = new File(tempDir);
     tempDirFile.mkdir();
 
-    /*if (!tempDirFile.mkdir()) {
+    \/*if (!tempDirFile.mkdir()) {
       logger.error("Can't create "+tempDir);
       return false;
-    }*/
+  }*\/
 
 
     // Unpack dependencies in temp directory
@@ -1065,7 +1066,7 @@ public class ProgramEntity {
 
 	  return result;
 	}
-
+*/
   @JsonIgnore
 	public String getJava() {
 	  String javaCode = null;

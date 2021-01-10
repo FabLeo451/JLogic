@@ -16,6 +16,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <repositories>
+      <repository>
+        <id>jlogic-repo</id>
+        <url>file://{jlogic-repository}</url>
+      </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -28,8 +35,8 @@
             <groupId>com.lionsoft.jlogic</groupId>
             <artifactId>standard</artifactId>
             <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>{standardPath}</systemPath>
+            <!--scope>system</scope>
+            <systemPath>{standardPath}</systemPath-->
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/gnu.getopt/java-getopt -->

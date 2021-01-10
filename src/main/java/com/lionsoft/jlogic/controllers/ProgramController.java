@@ -205,8 +205,6 @@ public class ProgramController {
         Optional<ProgramEntity> program = programService.findById(id);
 
         if (program.isPresent()) {
-            logger.info("Compiling program "+program.get().getName());
-
             Result result = programService.compile(program.get());
 
             if (result.success()) {
@@ -229,9 +227,8 @@ public class ProgramController {
 	}
 
 	// POST /program/{id}/jar
-	@PostMapping(value = "/program/{id}/jar")
-        public List<ProgramEntity> createJAR(@PathVariable("id") String id) {
-
+    @PostMapping(value = "/program/{id}/jar")
+    public List<ProgramEntity> createJAR(@PathVariable("id") String id) {
         HttpStatus responseStatus = HttpStatus.OK;
         JSONObject jresponse = new JSONObject();
 
@@ -243,20 +240,22 @@ public class ProgramController {
         if (program.get().getStatus() != ProgramStatus.COMPILED)
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Program not compiled");
 
-        if (program.get().createJAR()) {
-            logger.info(program.get().getMessage());
+        Result result = programService.createJAR(program.get());
+
+        if (result.success()) {
+            logger.info(result.getMessage());
+            jresponse.put("output", "");
         }
         else {
-            logger.error(program.get().getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, program.get().getMessage());
+            logger.error(result.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, result.getMessage());
         }
 
         jresponse.put("status", program.get().getStatus().name());
-        jresponse.put("message", program.get().getMessage());
-        jresponse.put("output", program.get().getOutput());
+        jresponse.put("message", result.getMessage());
 
         return (catalogService.getPrograms());
-	}
+    }
 
 	// GET /program/{id}/java
 	@GetMapping(value = "/program/{id}/java")

@@ -58,6 +58,9 @@ public class ProgramService {
     final static int SUCCESS = 0;
     final static int ERROR = 1;
 
+    final static int COMPILE = 1;
+    final static int JAR = 2;
+
     @Autowired
     ProgramRepository repository;
 
@@ -129,7 +132,8 @@ public class ProgramService {
                  .replace("{version}", program.getVersion())
                  .replace("{groupId}", program.getGroupId())
                  .replace("{artifactId}", program.getArtifactId())
-                 .replace("{standardPath}", Utils.getLibDir()+"/Standard.jar")
+                 .replace("{jlogic-repository}", Utils.getHomeDir()+"/m2/repository")
+                 //.replace("{standardPath}", Utils.getLibDir()+"/Standard.jar")
                  .replace("{mainClass}", program.getMainClass());
         //System.out.println(pom);
 
@@ -304,7 +308,7 @@ public class ProgramService {
     /**
      * Compile program with Maven
      */
-    public Result compile(ProgramEntity program) {
+    public Result compile(ProgramEntity program, int mode) {
         Result result = new Result();
 
         if (program.generateJava()) {
@@ -315,6 +319,16 @@ public class ProgramService {
             args.add("mvn");
             args.add("--batch-mode"); // Disable ansi colors
             args.add("compile");
+
+            if (mode == JAR)
+                args.add("assembly:single");
+
+            String s = "";
+
+            for (int i=0; i<args.size(); i++)
+                s += args.get(i) + " ";
+
+            logger.info(s);
 
             ProcessBuilder processBuilder = new ProcessBuilder();
             //processBuilder.inheritIO().command(args);
@@ -368,6 +382,22 @@ public class ProgramService {
           repository.save(program);
 
         return (result);
+    }
+
+    /**
+     * Compile program (only class)
+     */
+    public Result compile(ProgramEntity program) {
+        logger.info("Compiling program "+program.getName());
+        return(compile(program, COMPILE));
+    }
+
+    /**
+     * Compile program (only class)
+     */
+    public Result createJAR(ProgramEntity program) {
+        logger.info("Creating jar for "+program.getName());
+        return(compile(program, JAR));
     }
 
     /**
