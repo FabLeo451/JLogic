@@ -307,8 +307,6 @@ public class ProgramService {
     public boolean compile(ProgramEntity program) {
         boolean result = false;
 
-        logger.info ("Compiling "+program.getName());
-
         if (program.generateJava()) {
             createPOM(program);
 

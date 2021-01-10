@@ -141,7 +141,7 @@ public class ProgramController {
 
         return new ResponseEntity<>("{\"id\":\""+blueprint.getId()+"\"}", HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Import a blueprint
 	 * PUT /program/{programId}/import/blueprint
@@ -151,19 +151,19 @@ public class ProgramController {
 	                                           @RequestBody String content,
 	                                           @RequestParam(value = "tree", defaultValue = "0") String tree) {
 	  Optional<ProgramEntity> program = programService.findById(programId);
-	  
+
 	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found: "+programId);
-	    
+
 	  logger.info("Importing blueprint into "+program.get().getName()+"...");
-	    
+
 	  BlueprintEntity blueprint = programService.importBlueprint(program.get(), content);
-	  
+
 	  if (blueprint == null)
 	    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't import blueprint");
-	    
+
 	  logger.info("Successfully imported "+blueprint.toString());
-	  
+
 	  return(tree.equals("0") ? null : catalogService.getPrograms());
 	}
 
@@ -208,7 +208,7 @@ public class ProgramController {
 	      logger.info("Compiling program "+program.get().getName());
 
         if (programService.compile(program.get())) {
-          logger.info(program.get().getMessage());
+          logger.info("Successfully compiled "+program.get().getName());
         }
         else {
           responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -341,7 +341,7 @@ public class ProgramController {
             Optional<BlueprintEntity> blueprint = blueprintService.findByNameAndProgram(method, program.get());
 
             if (blueprint.isPresent()) {
-                
+
                 // clientId is set by the blueprint editor when running blueprints
                 if (clientId != null) {
                     Request r = sessionService.getCurrentRequest();
@@ -400,7 +400,7 @@ public class ProgramController {
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
 
     JSONObject jo = programService.getIndex(program.get());
-    
+
     if (jo == null)
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to get program index.");
 
@@ -567,12 +567,12 @@ public class ProgramController {
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
 
     BlueprintEntity b = programService.getBlueprint(program.get(), internalId);
-    
+
     if (b == null)
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Blueprint not found.");
-      
+
     JSONObject jo = blueprintService.toJSON(b);
-    
+
     if (jo == null)
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't get blueprint json.");
 
@@ -591,13 +591,13 @@ public class ProgramController {
 
     // Pack files
     logger.info("Packing "+program.get().getName());
-    
+
     JSONObject jo = null;
     String packFile = programService.pack(program.get());
-    
+
     if (packFile == null)
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to pack progam for export.");
-      
+
     // Export zip file
     File file = new File(packFile);
     ByteArrayResource resource;
@@ -622,7 +622,7 @@ public class ProgramController {
             .contentType(MediaType.APPLICATION_OCTET_STREAM)
             .body(resource);
 	}
-	
+
 	/**
    * Import program
    */
@@ -631,23 +631,23 @@ public class ProgramController {
 	                                         @RequestParam(value = "tree", defaultValue = "0") String tree) {
     String importId = UUID.randomUUID().toString();
     String zipFile = programService.getTempDirectory()+"/import-"+importId+".zip";
-    
+
     logger.info("Saving zip file to " + zipFile + " ...");
-    
+
     try {
       Files.copy(request.getInputStream(), Paths.get(zipFile));
     } catch (IOException e) {
       logger.error ("Unable to write file "+zipFile);
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
     }
-     
+
     //logger.info("Importing program ...");
-    
+
     ProgramEntity program = programService.importProgramFromFile(importId, zipFile);
-    
+
     return (tree.equals("0") ? null : catalogService.getPrograms());
 	}
-	
+
 	/**
    * Clone program
    */
@@ -659,10 +659,10 @@ public class ProgramController {
 
 	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found: "+id);
-    
+
     if (programService.clone(program.get()) == null)
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to clone program.");
-    
+
     return (tree ? catalogService.getPrograms() : null);
 	}
 }

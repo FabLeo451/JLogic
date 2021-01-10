@@ -211,6 +211,7 @@ public class ProgramEntity {
     }
 
     public String getClasspathFile() { return (getMyDir()+"/cp.txt"); }
+    public String getClassesDir() { return (getMyDir()+"/target/classes"); }
 
     @JsonIgnore
     public int getHTTPStatus() {
@@ -340,7 +341,7 @@ public class ProgramEntity {
     @JsonIgnore
     @Transient
     public String getClassFilename() {
-    	return getMyDir()+"/"+className;
+    	return getClassesDir()+"/"+className;
     }
 
     @JsonIgnore
@@ -471,7 +472,7 @@ public class ProgramEntity {
 
     return newId;
   }
-
+/*
 	public void addClassPath(String cp) {
 	  if (!classPathList.contains(cp))
 		  classPathList.add(getHomeDir() + "/" + cp);
@@ -480,7 +481,7 @@ public class ProgramEntity {
 	public void addJAR(String jar) {
 	  if (!jarList.contains(jar))
 		  jarList.add(getHomeDir() + "/" + jar);
-	}
+	}*/
 	/*
 	public void addDependency(String item) {
 	  if (!dependencies.contains(item))
@@ -490,43 +491,54 @@ public class ProgramEntity {
 	/*public String getClassesDir() {
 		return home.getDir()+"/../classes";
 	}*/
+/*
+    public void loadDeps() {
+        String content;
+        classPathList = new ArrayList<String>();
+        \/*
+        jarList = new ArrayList<String>();
+        JSONParser jsonParser = new JSONParser();
+        JSONArray ja;
 
-	public void loadDeps() {
-	  String content;
-    classPathList = new ArrayList<String>();
-    jarList = new ArrayList<String>();
-    JSONParser jsonParser = new JSONParser();
-    JSONArray ja;
+        classPathList.add(getMyDir());
 
-    classPathList.add(getMyDir());
+        // Default dependencies
+        addClassPath("lib/Standard.jar");
+        addClassPath("lib/java-getopt-1.0.13.jar");
+        addClassPath("lib/log4j-1.2.12.jar");
 
-    // Default dependencies
-    addClassPath("lib/Standard.jar");
-    addClassPath("lib/java-getopt-1.0.13.jar");
-    addClassPath("lib/log4j-1.2.12.jar");
+        addJAR("lib/Standard.jar");
+        addJAR("lib/java-getopt-1.0.13.jar");
+        addJAR("lib/log4j-1.2.12.jar");
 
-    addJAR("lib/Standard.jar");
-    addJAR("lib/java-getopt-1.0.13.jar");
-    addJAR("lib/log4j-1.2.12.jar");
+        // Others
+        for (BlueprintEntity b : blueprints) {
+            //System.out.println("Getting dependencies from "+b.getName());
 
-    // Others
-    for (BlueprintEntity b : blueprints) {
-      //System.out.println("Getting dependencies from "+b.getName());
+            // JARs will be added to JAR list and class path list
+            for (int i=0; i<b.getJARList().size(); i++) {
+                //System.out.println("  "+b.getJARList().get(i));
+                addJAR(b.getJARList().get(i));
+                addClassPath(b.getJARList().get(i));
+            }
 
-      // JARs will be added to JAR list and class path list
-      for (int i=0; i<b.getJARList().size(); i++) {
-        //System.out.println("  "+b.getJARList().get(i));
-        addJAR(b.getJARList().get(i));
-        addClassPath(b.getJARList().get(i));
-      }
+            // Class paths will be added to class path list only
+            for (int i=0; i<b.getClassPath().size(); i++) {
+                //System.out.println("  "+b.getJARList().get(i));
+                addClassPath(b.getClassPath().get(i));
+            }
+        }
+        *\/
+        String cp = Utils.loadTextFile(getClasspathFile());
 
-      // Class paths will be added to class path list only
-      for (int i=0; i<b.getClassPath().size(); i++) {
-        //System.out.println("  "+b.getJARList().get(i));
-        addClassPath(b.getClassPath().get(i));
-      }
+        String[] deps = cp.split(":");
+
+        for (int i=0; i<deps.length; i++) {
+            if (!classPathList.contains(cp))
+      		  classPathList.add(deps[i]);
+        }
     }
-	}
+*/
 /*
   @JsonIgnore
 	public String getBlueprintIndex () {
@@ -943,7 +955,7 @@ public class ProgramEntity {
 	  logger.info("Creating JAR for "+getName());
 	  //logger.debug("Current direcotry: "+System.getProperty("user.dir"));
 
-    loadDeps();
+    /////////////////loadDeps();
 
     if (!createManifest(mf)) {
       logger.error("Can't create manifest file");
@@ -1249,36 +1261,42 @@ public class ProgramEntity {
   }
 */
 
-  /**
-   * Returns an array of dependency urls
-   */
-  @Transient
-  @JsonIgnore
-  public URL[] getURLs() {
-    List<URL> urls = new ArrayList<>();
-    URL[] clUrls = null;
+    /**
+    * Returns an array of dependency urls
+    */
+    @Transient
+    @JsonIgnore
+    public URL[] getURLs() {
+        List<URL> urls = new ArrayList<>();
+        URL[] clUrls = null;
 
-    try {
-	    loadDeps();
+        try {
+            String cp = Utils.loadTextFile(getClasspathFile());
 
-      for (int i = 0; i < classPathList.size(); i++) {
-        System.out.println("Adding classpath "+ classPathList.get(i));
-        File f = new File(classPathList.get(i));
-        urls.add(f.toURI().toURL());
-      }
+            String[] deps = cp.split(":");
 
-      File file = new File(getMyDir());
-      urls.add(file.toURI().toURL());
+            for (int i=0; i<deps.length; i++) {
+                urls.add(new File(deps[i]).toURI().toURL());
+            }
+/*
+            for (int i = 0; i < classPathList.size(); i++) {
+                System.out.println("Adding classpath "+ classPathList.get(i));
+                File f = new File(classPathList.get(i));
+                urls.add(f.toURI().toURL());
+            }
+*/
+            File file = new File(getClassesDir());
+            urls.add(file.toURI().toURL());
 
-      clUrls = new URL[urls.size()];
-      clUrls = urls.toArray(clUrls);
-    } catch (MalformedURLException e) {
-      logger.error("Malformed URL: "+e.getMessage());
-      return null;
+            clUrls = new URL[urls.size()];
+            clUrls = urls.toArray(clUrls);
+        } catch (MalformedURLException e) {
+            logger.error("Malformed URL: "+e.getMessage());
+            return null;
+        }
+
+        return clUrls;
     }
-
-    return clUrls;
-	}
 
 	public boolean run(String methodName, /*String data*/Map<String, Object> actualParams) {
 	  return (run(methodName, actualParams, getName(), null));
@@ -1298,20 +1316,22 @@ public class ProgramEntity {
 
     try {
 	    //System.out.println("Loading dependencies");
-
+/*
 	    loadDeps();
 
-      for (int i = 0; i < classPathList.size(); i++) {
-        System.out.println("Adding classpath "+ classPathList.get(i));
-        File f = new File(classPathList.get(i));
-        urls.add(f.toURI().toURL());
-      }
+        for (int i = 0; i < classPathList.size(); i++) {
+            System.out.println("Adding classpath "+ classPathList.get(i));
+            File f = new File(classPathList.get(i));
+            urls.add(f.toURI().toURL());
+        }
 
-      File file = new File(getMyDir());
-      urls.add(file.toURI().toURL());
+        File file = new File(getClassesDir());
+        urls.add(file.toURI().toURL());
 
-       URL[] clUrls = new URL[urls.size()];
-       clUrls = urls.toArray(clUrls);
+        URL[] clUrls = new URL[urls.size()];
+        clUrls = urls.toArray(clUrls);
+*/
+        URL[] clUrls = getURLs();
 
         // Convert File to a URL
         //URL url = file.toURI().toURL();          // file:/c:/myclasses/
@@ -1319,10 +1339,6 @@ public class ProgramEntity {
 
         // Create a new class loader with the directory
         ClassLoader cl = new URLClassLoader(/*urls*/clUrls);
-
-
-        /*Class clsExitException = cl.loadClass("ExitException");
-        System.out.println("Loaded class : " + clsExitException.getName());*/
 
         // Load in the class; MyClass.class should be located in
         // the directory file:/c:/myclasses/com/mycompany
@@ -1393,24 +1409,6 @@ public class ProgramEntity {
         if (method != null) {
           Object[] params = null;
 
-/*
-          if (data != null) {
-            JSONParser jsonParser = new JSONParser();
-            JSONObject jdata;
-
-            try {
-              logger.info("Parsing data");
-              jdata = (JSONObject) jsonParser.parse(data);
-
-              logger.info("Getting input parameters");
-              params = getParams(method, jdata);
-
-            } catch (ParseException e) {
-              setResult(ProgramEntity.BAD_INPUT, e.getMessage());
-              return false;
-            }
-          }
-*/
           if (actualParams != null)
             params = getParams(method, actualParams);
 
@@ -1490,10 +1488,10 @@ public class ProgramEntity {
         }
 
 
-    } catch (MalformedURLException e) {
+    } /*catch (MalformedURLException e) {
       setResult(ProgramEntity.EXCEPTION, e.getMessage());
       e.printStackTrace();
-    } catch (ClassNotFoundException e) {
+  }*/ catch (ClassNotFoundException e) {
       setResult(ProgramEntity.EXCEPTION, e.getMessage());
       e.printStackTrace();
     } catch (Exception e) {
