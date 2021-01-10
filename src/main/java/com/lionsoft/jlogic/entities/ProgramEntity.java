@@ -81,6 +81,9 @@ public class ProgramEntity {
     @Column(name="name")
     private String name;
 
+    @Column(name="version")
+    private String version;
+
     @Enumerated(EnumType.STRING)
     @Column(name="status")
     private ProgramStatus status;
@@ -154,6 +157,7 @@ public class ProgramEntity {
     public ProgramEntity(String id, String name) {
       creationTime = new Date();
       updateTime = creationTime;
+      version = "1.0.0";
       setId(id);
       setName(name);
       setStatus(ProgramStatus.READY);
@@ -192,6 +196,14 @@ public class ProgramEntity {
 
     public void setName(String name) {
       this.name = name;
+    }
+
+    public String getVersion() {
+      return (version);
+    }
+
+    public void setVersion(String version) {
+      this.version = version;
     }
 
     @JsonIgnore
@@ -406,7 +418,7 @@ public class ProgramEntity {
     for (BlueprintEntity b: bl) {
       if (bpExclude != null && (b.getId() == bpExclude.getId()))
         continue;
-        
+
       if (b.referencesVariable(v))
         return true;
     }
@@ -1171,15 +1183,15 @@ public class ProgramEntity {
 
         if (types[j].isArray()) {
           Object[] oa = (Object[]) actualParams.get(p.getName());
-          
+
           if (oa == null) {
             logger.warn("Input not found for parameter "+p.getName());
             continue;
           }
-          
+
           int size = oa.length;
           //System.out.println("Array of "+size);
-          
+
           Object[] objArray = null;
 
           if (types[j].getName().equals("[Ljava.lang.String;"))
@@ -1189,8 +1201,8 @@ public class ProgramEntity {
           else if (types[j].getName().equals("[Ljava.lang.Boolean;"))
             objArray = new Boolean[size];
           else if (types[j].getName().equals("[Ljava.lang.Double;"))
-            objArray = new Double[size];  
-            
+            objArray = new Double[size];
+
           for (int k=0; k<size; k++) {
             if (types[j].getName().equals("[Ljava.lang.String;"))
               objArray[k] = (String) oa[k];
@@ -1210,7 +1222,7 @@ public class ProgramEntity {
             args[j] = actualParams.get(p.getName());
 
         }
-        
+
         System.out.println("args["+j+"] = "+args[j]);
       }
 	  }
