@@ -49,6 +49,7 @@ public class Utils {
     }
 
     static String getLibDir() { return getHomeDir()+"/lib"; }
+    static String getM2RepositoryDir() { return getHomeDir()+"/m2/repository"; }
 
     static String getTempDirectory() {
     	return home.getDir()+"/../temp";

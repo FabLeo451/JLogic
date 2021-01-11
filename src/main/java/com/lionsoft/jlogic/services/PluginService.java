@@ -89,7 +89,8 @@ public class PluginService {
         URL[] clUrls = null;
 
         // Standard path
-        File f = new File(Utils.getHomeDir()+"/lib/Standard.jar");
+        //File f = new File(Utils.getHomeDir()+"/lib/Standard.jar");
+        File f = new File(Utils.getM2RepositoryDir()+"/com/lionsoft/jlogic/standard/1.0.0/standard.jar");
         urls.add(f.toURI().toURL());
 
         // Plugin path
