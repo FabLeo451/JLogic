@@ -7,6 +7,7 @@ public class Result {
     int code;
     String message;
     String output;
+    Object data;
 
     public Result() {
         code = SUCCESS;
@@ -21,6 +22,9 @@ public class Result {
 
     public String getOutput() { return output; }
     public void setOutput(String output) { this.output = output; }
+
+    public Object getData() { return data; }
+    public void setData(Object data) { this.data = data; }
 
     public void setResult(int code, String message) {
         setCode(code);
