@@ -10,39 +10,36 @@ import eu.bitwalker.useragentutils.*;
 
 public class Plugin {
 
-  private String path;
-  private String className;
-  private String name;
-  private String version;
+    private String groupId;
+    private String artifactId;
+    private String name;
+    private String version;
+    private String path;
+    private String className;
 
-  public Plugin() {
-  }
+    public Plugin() {
+        version = "1.0.0";
+    }
 
-  public String getClassName() {
-    return(className);
-  }
+    public String getGroupId() { return(groupId); }
+    public void setGroupId(String groupId) { this.groupId = groupId; }
 
-  public String getPath() {
-    return(path);
-  }
+    public String getArtifactId() { return(artifactId); }
+    public void setArtifactId(String artifactId) { this.artifactId = artifactId; }
 
-  public String getName() {
-    return(name);
-  }
+    public String getClassName() { return(className); }
+    public void setClassName(String className) { this.className = className; }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setPath(String path) { this.path = path; }
+    public String getPath() { return(path); }
 
-  public String getVersion() {
-    return(version);
-  }
+    public String getName() { return(name); }
+    public void setName(String name) { this.name = name; }
 
-  public void setVersion(String version) {
-    this.version = version;
-  }
+    public String getVersion() { return(version); }
+    public void setVersion(String version) { this.version = version; }
 
-  public String toString() {
-      return("Plugin [name="+name+" version="+version+" class="+className+"]");
-  }
+    public String toString() {
+        return("Plugin [name="+name+" version="+version+" class="+className+"]");
+    }
 }

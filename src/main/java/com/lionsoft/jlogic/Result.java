@@ -31,5 +31,9 @@ public class Result {
         setMessage(message);
     }
 
+    public void setError(String message) {
+        setResult(ERROR, message);
+    }
+
     public boolean success() { return(code == SUCCESS); }
 }
