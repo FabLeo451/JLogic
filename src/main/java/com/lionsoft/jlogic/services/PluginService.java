@@ -66,7 +66,7 @@ public class PluginService {
     /**
      * Create JSON specification for plugin, given path and class file
      */
-    public JSONObject specFromClass(Plugin plugin) {
+    public JSONObject getSpecFromJAR(String classPath, String className) {
       final int FUNCTION = 4;
       final int OPERATOR = 5;
 
@@ -89,20 +89,20 @@ public class PluginService {
         URL[] clUrls = null;
 
         // Standard path
-        //File f = new File(Utils.getHomeDir()+"/lib/Standard.jar");
-        File f = new File(Utils.getM2RepositoryDir()+"/com/lionsoft/jlogic/standard/1.0.0/standard.jar");
-        urls.add(f.toURI().toURL());
+        //File f = new File(Utils.getM2RepositoryDir()+"/com/lionsoft/jlogic/standard/1.0.0/standard.jar");
+        //urls.add(f.toURI().toURL());
 
-        // Plugin path
-        f = new File(plugin.getPath());
-        urls.add(f.toURI().toURL());
+        // Classpath
+        //System.out.println("className = "+className);
+        //System.out.println("classPath = "+classPath);
+        urls.add(new File(classPath).toURI().toURL());
 
         clUrls = new URL[urls.size()];
         clUrls = urls.toArray(clUrls);
 
         //Class c = Class.forName(plugin.getClassName());
         ClassLoader cl = new URLClassLoader(clUrls);
-        Class c = cl.loadClass(plugin.getClassName());
+        Class c = cl.loadClass(className);
 
         Class PluginAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Plugin");
         Class NodeAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Node");
@@ -116,12 +116,12 @@ public class PluginService {
         if (pluginAnnotation != null) {
           Class<? extends Annotation> pluginInfo = pluginAnnotation.annotationType();
           m = pluginInfo.getMethod("name");
-          plugin.setName((String) m.invoke(pluginAnnotation, (Object[])null));
+          //plugin.setName((String) m.invoke(pluginAnnotation, (Object[])null));
           m = pluginInfo.getMethod("version");
-          plugin.setVersion((String) m.invoke(pluginAnnotation, (Object[])null));
+          //plugin.setVersion((String) m.invoke(pluginAnnotation, (Object[])null));
         }
 
-        logger.info("Installing plugin "+plugin.toString());
+        //logger.info("Installing "+plugin.toString());
 
         // Types
         for (Annotation typeAnnotation : c.getAnnotationsByType(TypeAnnotation)) {
@@ -358,7 +358,7 @@ public class PluginService {
 
       return jplugin;
     }
-
+/*
     public boolean importFromPack(String zipFile) {
       String unzippedDir = Utils.getTempDirectory()+"/plugintemp";
 
@@ -370,5 +370,21 @@ public class PluginService {
       }
 
       return true;
+    }
+*/
+    /**
+     * Install a plugin from a local file
+     */
+    public Result install(String jarFile) {
+        Result result = new Result();
+
+        logger.info("Getting plugin specification...");
+        JSONObject jplugin = getSpecFromJAR(jarFile, "org.jlogic.plugin.test.Test");
+
+        if (jplugin == null) {
+            result.setResult(Result.ERROR, "Unable to get plugin specification");
+        }
+
+        return result;
     }
 }

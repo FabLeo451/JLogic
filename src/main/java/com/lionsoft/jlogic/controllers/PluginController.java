@@ -32,27 +32,38 @@ import org.apache.commons.lang3.StringUtils;
 @RestController
 public class PluginController {
 
-  Logger logger = LoggerFactory.getLogger(PluginController.class);
+    Logger logger = LoggerFactory.getLogger(PluginController.class);
 
-  @Autowired
-  PluginService pluginService;
+    @Autowired
+    PluginService pluginService;
 
-/*
-	@GetMapping(value = "/plugin", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Properties> get() {
-	  GlobalProperties gProp = GlobalProperties.getInstance();
-		return new ResponseEntity<>(gProp.getProperties(), HttpStatus.OK);
-	}
-*/
-  /**
-   * Import plugin
-   */
-	@PutMapping(value = "/plugin", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> importFromFile(@RequestBody Plugin plugin) {
-	  logger.info("Importing plugin "+plugin.getClassName());
+    /*
+    @GetMapping(value = "/plugin", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Properties> get() {
+      GlobalProperties gProp = GlobalProperties.getInstance();
+    	return new ResponseEntity<>(gProp.getProperties(), HttpStatus.OK);
+    }
+    */
+    /**
+     * Import plugin
+     */
+    @PutMapping(value = "/plugin", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> importFromFile(@RequestBody Plugin plugin) {
+        logger.info("Importing plugin "+plugin.getClassName());
 
-    JSONObject jplugin = pluginService.specFromClass(plugin);
+        //JSONObject jplugin = pluginService.specFromClass(plugin);
 
-		return new ResponseEntity<>(jplugin.toString(), HttpStatus.OK);
-	}
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
+    /**
+     * Install a plugin from local file
+     */
+    @PostMapping(value = "/plugin/install", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> install(@RequestParam("jar") String jarFile) {
+        logger.info("Installing "+jarFile);
+        Result result = pluginService.install(jarFile);
+
+        return new ResponseEntity<>(result.getMessage(), result.success() ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
