@@ -119,7 +119,7 @@ public class PluginService {
                 Manifest manifest = new Manifest(url.openStream());
                 Attributes attr = manifest.getMainAttributes();
                 className = attr.getValue("Main-Class");
-                logger.info("Main-class = "+className);
+                //logger.info("Main-class = "+className);
 
                 plugin.setName(attr.getValue("Implementation-Title"));
                 plugin.setVersion(attr.getValue("Implementation-Version"));
@@ -514,7 +514,7 @@ public class PluginService {
             return result;
         }
 
-        logger.info(result.getMessage());
+        //logger.info(result.getMessage());
 
         // Install specification
         logger.info("Installing plugin specification...");
