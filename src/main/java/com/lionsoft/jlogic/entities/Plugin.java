@@ -16,6 +16,7 @@ public class Plugin {
     private String version;
     private String path;
     private String className;
+    private String spec;
 
     public Plugin() {
         version = "1.0.0";
@@ -35,6 +36,9 @@ public class Plugin {
 
     public String getName() { return(name); }
     public void setName(String name) { this.name = name; }
+
+    public String getSpec() { return(spec); }
+    public void setSpec(String spec) { this.spec = spec; }
 
     public String getVersion() { return(version); }
     public void setVersion(String version) { this.version = version; }
