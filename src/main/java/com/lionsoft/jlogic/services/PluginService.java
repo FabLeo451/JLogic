@@ -489,10 +489,21 @@ public class PluginService {
 
         logger.info("Creating "+pluginDir);
 
-        if (!new File(pluginDir).mkdir()) {
+        if (!new File(pluginDir).exists() && !new File(pluginDir).mkdir()) {
             result.setError("Unable to create directory for plugin: "+pluginDir);
             return result;
         }
+
+        // Extracting pom.xml
+        /*
+        logger.info("Extracting pom.xml");
+
+        try {
+            Utils.extractFileFromJar(jarFile, "pom.xml", pluginDir+"pom.xml");
+        } catch (IOException e) {
+            result.setError(e.getMessage());
+            return result;
+        }*/
 
         // Install package
         logger.info("Installing jar for "+plugin.toString());
@@ -507,6 +518,15 @@ public class PluginService {
 
         // Install specification
         logger.info("Installing plugin specification...");
+
+        try (FileWriter file = new FileWriter(pluginDir+"/"+plugin.getName()+".json")) {
+            file.write(plugin.getSpec());
+            file.flush();
+            file.close();
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            return(new Result().setError(e.getMessage()));
+        }
 
         return result;
     }

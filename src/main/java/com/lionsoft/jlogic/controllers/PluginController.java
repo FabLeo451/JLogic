@@ -66,6 +66,8 @@ public class PluginController {
 
         if (!result.success())
             logger.error(result.getOutput());
+        else
+            logger.info(result.getMessage());
 
         return new ResponseEntity<>(result.getMessage(),
                                     result.success() ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);

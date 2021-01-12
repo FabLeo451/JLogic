@@ -875,72 +875,7 @@ public class ProgramEntity {
     return directoryToBeDeleted.delete();
   }
 
-  public static void copyStream(InputStream input, OutputStream output)
-       throws IOException
-  {
-      // Reads up to 5M at a time. Try varying this.
-      byte[] buffer = new byte[5*1024*1024];
-      int read;
 
-      while ((read = input.read(buffer)) != -1)
-      {
-          output.write(buffer, 0, read);
-      }
-  }
-
-	public boolean unpackJAR(String jarFile, String destDir) {
-	  java.util.jar.JarFile jar;
-
-	  try {
-      jar = new java.util.jar.JarFile(jarFile);
-    } catch (IOException e) {
-      logger.error(e.getMessage());
-      return false;
-    }
-
-    java.util.Enumeration items = jar.entries();
-
-    while (items.hasMoreElements()) {
-	    java.util.jar.JarEntry file = (java.util.jar.JarEntry) items.nextElement();
-
-      String destFilePath = destDir + java.io.File.separator + file.getName();
-	    java.io.File f = new java.io.File(destFilePath);
-
-	    if (file.isDirectory()) { // if its a directory, create it
-		    f.mkdir();
-		    continue;
-	    }
-
-	    java.io.InputStream is = null;
-	    java.io.OutputStream os = null;
-	    //java.io.FileOutputStream fos = null;
-
-	    try {
-	      is = jar.getInputStream(file); // get the input stream
-        os = Files.newOutputStream(Paths.get(destFilePath));
-        /*
-	      fos = new java.io.FileOutputStream(f);
-
-	      while (is.available() > 0) {  // write contents of 'is' to 'fos'
-		      fos.write(is.read());
-	      }
-
-	      fos.close();
-        */
-
-        copyStream(is, os);
-
-        os.close();
-	      is.close();
-
-      } catch (IOException e) {
-        logger.error(e.getMessage());
-      } finally {
-	    }
-    }
-
-    return true;
-	}
 
 	public boolean getJar() {
         File f = new File(getJARFilename());

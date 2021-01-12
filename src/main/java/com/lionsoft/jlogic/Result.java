@@ -26,13 +26,15 @@ public class Result {
     public Object getData() { return data; }
     public void setData(Object data) { this.data = data; }
 
-    public void setResult(int code, String message) {
+    public Result setResult(int code, String message) {
         setCode(code);
         setMessage(message);
+        return(this);
     }
 
-    public void setError(String message) {
+    public Result setError(String message) {
         setResult(ERROR, message);
+        return(this);
     }
 
     public boolean success() { return(code == SUCCESS); }
