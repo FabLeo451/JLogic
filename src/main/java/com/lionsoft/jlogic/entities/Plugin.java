@@ -10,6 +10,7 @@ import eu.bitwalker.useragentutils.*;
 
 public class Plugin {
 
+    private String jarFile;
     private String groupId;
     private String artifactId;
     private String name;
@@ -21,6 +22,9 @@ public class Plugin {
     public Plugin() {
         version = "1.0.0";
     }
+
+    public String getJarFile() { return(jarFile); }
+    public void setJarFile(String jarFile) { this.jarFile = jarFile; }
 
     public String getGroupId() { return(groupId); }
     public void setGroupId(String groupId) { this.groupId = groupId; }

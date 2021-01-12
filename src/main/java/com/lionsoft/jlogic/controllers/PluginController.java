@@ -64,7 +64,10 @@ public class PluginController {
         logger.info("Installing "+jarFile);
         Result result = pluginService.install(jarFile);
 
-        return new ResponseEntity<>(result.success() ? ((Plugin) result.getData()).toString() : result.getMessage(), 
+        if (!result.success())
+            logger.error(result.getOutput());
+
+        return new ResponseEntity<>(result.getMessage(),
                                     result.success() ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

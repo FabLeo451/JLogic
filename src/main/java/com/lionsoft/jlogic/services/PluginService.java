@@ -70,9 +70,12 @@ public class PluginService {
     /**
      * Create JSON specification for plugin, given path and class file
      */
-    public Result getSpecFromJAR(String classPath) {
+    public Result getSpecFromJAR(String jarFile) {
         final int FUNCTION = 4;
         final int OPERATOR = 5;
+
+        Plugin plugin = new Plugin();
+        plugin.setJarFile(jarFile);
 
         Method m;
         String className;
@@ -89,7 +92,6 @@ public class PluginService {
 
         jplugin.put("types", jtypes);
         jplugin.put("nodes", jnodes);
-        result.setData(jplugin);
 
         try {
             // Set classpath
@@ -103,7 +105,7 @@ public class PluginService {
             // Classpath
             //System.out.println("className = "+className);
             //System.out.println("classPath = "+classPath);
-            urls.add(new File(classPath).toURI().toURL());
+            urls.add(new File(jarFile).toURI().toURL());
 
             clUrls = new URL[urls.size()];
             clUrls = urls.toArray(clUrls);
@@ -118,11 +120,13 @@ public class PluginService {
                 Attributes attr = manifest.getMainAttributes();
                 className = attr.getValue("Main-Class");
                 logger.info("Main-class = "+className);
-                jplugin.put("className", className);
-                jplugin.put("name", attr.getValue("Implementation-Title"));
-                jplugin.put("version", attr.getValue("Implementation-Version"));
-                jplugin.put("groupId", attr.getValue("groupId"));
-                jplugin.put("artifactId", attr.getValue("artifactId"));
+
+                plugin.setName(attr.getValue("Implementation-Title"));
+                plugin.setVersion(attr.getValue("Implementation-Version"));
+                plugin.setClassName(className);
+                plugin.setArtifactId(attr.getValue("artifactId"));
+                plugin.setGroupId(attr.getValue("groupId"));
+
             } catch (IOException e) {
                 result.setError("Error gettin manifest: "+e.getMessage());
                 return result;
@@ -360,6 +364,16 @@ public class PluginService {
                     jnodes.add(jnode);
                 }
             }
+
+            jplugin.put("className", className);
+            jplugin.put("name", plugin.getName());
+            jplugin.put("version", plugin.getVersion());
+            jplugin.put("groupId", plugin.getGroupId());
+            jplugin.put("artifactId", plugin.getArtifactId());
+
+            plugin.setSpec(jplugin.toString());
+            result.setData(plugin);
+
         } catch (ClassNotFoundException e) {
             result.setResult(Result.ERROR, "Class not found: "+e.getMessage());
         } catch (MalformedURLException e) {
@@ -376,26 +390,83 @@ public class PluginService {
 
         return result;
     }
-/*
-    public boolean importFromPack(String zipFile) {
-      String unzippedDir = Utils.getTempDirectory()+"/plugintemp";
 
-      // Unpack file
-      logger.info("Unpacking "+zipFile);
+    /**
+     * Install a jar to Maven private repository
+     */
+    public Result mvnInstall(Plugin plugin) {
+        Result result = new Result();
+        List<String> args = new ArrayList<String>();
 
-      if (Utils.unpack(zipFile, unzippedDir)) {
+        // mvn install:install-file -Dfile=target/test-1.0.0.jar -DgroupId=org.jlogic.plugin
+        //   -DartifactId=test -Dversion=1.0.0 -Dpackaging=jar
+        //   -DlocalRepositoryPath=/media/data/Source/JLogic-all/JLogic/m2/repository
+        //   -DpomFile=pom.xml
+        args.add("mvn");
+        args.add("--batch-mode"); // Disable ansi colors
+        args.add("install:install-file"); // Disable ansi colors
+        args.add("-Dfile="+plugin.getJarFile());
+        args.add("-DgroupId="+plugin.getGroupId());
+        args.add("-DartifactId="+plugin.getArtifactId());
+        args.add("-Dversion="+plugin.getVersion());
+        args.add("-Dpackaging=jar");
+        args.add("-DlocalRepositoryPath="+Utils.getM2RepositoryDir());
+        //args.add("-DpomFile="+Utils.getM2RepositoryDir);
 
-      }
+        String s = "";
 
-      return true;
+        for (int i=0; i<args.size(); i++)
+            s += args.get(i) + " ";
+
+        logger.info(s);
+
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        //processBuilder.inheritIO().command(args);
+        processBuilder.command(args);
+        //processBuilder.directory(new File(program.getMyDir()));
+
+        try {
+            Process process = processBuilder.start();
+
+            StringBuilder output = new StringBuilder();
+            BufferedReader outReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader errReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            String line;
+
+            while ((line = outReader.readLine()) != null)
+                output.append(line + "\n");
+
+            while ((line = errReader.readLine()) != null)
+                output.append(line + "\n");
+
+            int exitVal = process.waitFor();
+
+            if (exitVal == 0) {
+                result.setMessage("Plugin JAR successfully installed: "+plugin.getName());
+            } else {
+                result.setResult(exitVal, "Maven error installing jar: "+exitVal);
+            }
+
+            result.setOutput(output.toString());
+        }
+        catch (IOException e) {
+            result.setResult(Result.ERROR, e.getMessage());
+        }
+        catch (InterruptedException e) {
+            result.setResult(Result.ERROR, e.getMessage());
+        }
+
+        return result;
     }
-*/
+
     /**
      * Install a plugin from a local file
      */
     public Result install(String jarFile) {
         Result result = new Result();
 
+        // Get plugin info e specification
         logger.info("Getting plugin specification...");
         result = getSpecFromJAR(jarFile);
 
@@ -403,16 +474,39 @@ public class PluginService {
             return result;
         }
 
-        JSONObject jplugin = (JSONObject) result.getData();
+        Plugin plugin = (Plugin) result.getData();
 
-        Plugin plugin = new Plugin();
-        plugin.setName((String) jplugin.get("name"));
-        plugin.setVersion((String) jplugin.get("version"));
-        plugin.setClassName((String) jplugin.get("className"));
+        logger.info("Found: " + System.lineSeparator() +
+        "Name       : " + plugin.getName() + System.lineSeparator() +
+        "Group Id   : " + plugin.getGroupId() + System.lineSeparator() +
+        "Artifact Id: " + plugin.getArtifactId() + System.lineSeparator() +
+        "Version    : " + plugin.getVersion() + System.lineSeparator() +
+        "Class      : " + plugin.getClassName()
+        );
 
-        result.setData(plugin);
+        // Create dir
+        String pluginDir = Utils.getPluginsDir()+"/"+plugin.getName();
 
-        logger.info("Installing "+plugin.toString());
+        logger.info("Creating "+pluginDir);
+
+        if (!new File(pluginDir).mkdir()) {
+            result.setError("Unable to create directory for plugin: "+pluginDir);
+            return result;
+        }
+
+        // Install package
+        logger.info("Installing jar for "+plugin.toString());
+
+        result = mvnInstall(plugin);
+
+        if (!result.success()) {
+            return result;
+        }
+
+        logger.info(result.getMessage());
+
+        // Install specification
+        logger.info("Installing plugin specification...");
 
         return result;
     }
