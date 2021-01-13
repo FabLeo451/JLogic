@@ -65,7 +65,7 @@ public class PluginController {
         Result result = pluginService.install(jarFile);
 
         if (!result.success())
-            logger.error(result.getOutput());
+            logger.error(result.getMessage() + System.lineSeparator() + result.getOutput());
         else
             logger.info(result.getMessage());
 

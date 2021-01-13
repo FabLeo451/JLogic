@@ -249,7 +249,7 @@ public class Utils {
     return true;
   }
 
-    public static void extractFileFromJar(String jarFile, String jarFilePath, String destFilePath) throws IOException {
+    public static boolean extractFileFromJar(String jarFile, String jarFilePath, String destFilePath) throws IOException {
         JarFile jar = new JarFile(new File(jarFile));
         File f = new File(destFilePath);
         String currentPath = "/";
@@ -258,14 +258,29 @@ public class Utils {
 
         while (items.hasMoreElements()) {
             JarEntry file = (JarEntry) items.nextElement();
-/*
-            if (file.isDirectory())
-                currentPath += "/"+file.getName();
-            else {
-                System.out.println(currentPath+"/"+file.getName());
-            }*/
-            System.out.println(file.getName());
+
+            //System.out.println(file.getName());
+            if (file.getName().equals(jarFilePath)) {
+                try {
+                    //System.out.println("Extracting "+file.getName()+" to "+destFilePath);
+                    InputStream is = jar.getInputStream(file); // get the input stream
+                    OutputStream os = Files.newOutputStream(Paths.get(destFilePath));
+
+                    copyStream(is, os);
+
+                    os.close();
+                    is.close();
+
+                    return true;
+
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                } finally {
+                }
+            }
         }
+
+        return false;
     }
 
     public static void copyStream(InputStream input, OutputStream output)
