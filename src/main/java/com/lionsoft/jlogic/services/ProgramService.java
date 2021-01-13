@@ -147,7 +147,7 @@ public class ProgramService {
                  .replace("{mainClass}", program.getMainClass())
                  .replace("{dependencies}", deps);
 
-        System.out.println(pom);
+        //System.out.println(pom);
 
         try {
             Utils.saveFile(pom, program.getMyDir()+"/pom.xml");

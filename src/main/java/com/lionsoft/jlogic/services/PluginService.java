@@ -311,7 +311,9 @@ public class PluginService {
 
                             JSONObject jreferences = new JSONObject();
                             jreferences.put("variable", varName);
-                            jout.put("references", jreferences);
+                            JSONObject jjava = new JSONObject();
+                            jjava.put("references", jreferences);
+                            jout.put("java", jjava);
                         }
 
                         outConn.add(conn);
