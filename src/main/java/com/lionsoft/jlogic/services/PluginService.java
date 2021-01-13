@@ -340,7 +340,7 @@ public class PluginService {
                         args += "in{"+i+"}";
                     }
 
-                    call = methodName+"("+args+")";
+                    call = plugin.getClassName()+"."+methodName+"("+args+")";
 
                     if (!multipleOut) {
                         java = call;

@@ -87,7 +87,7 @@ public class BlueprintService {
   public void setCode(int c) {
     code = c;
   }
-  
+
   public String getMessage() {
     return message;
   }
@@ -95,7 +95,7 @@ public class BlueprintService {
   public void setMessage(String m) {
     message = m;
   }
-  
+
   public void setResult(int c, String m) {
     setCode(c);
     setMessage(m);
@@ -180,13 +180,13 @@ public class BlueprintService {
         } else {
           // Check local variable
           logger.info("Checking local "+v.getName());
-          
-          /* 
+
+          /*
            * If a local variable exists as global too, check if it's referenced only by this blueprint and delete the global.
            * This can occur when user changes a variable from global to local
            */
           Variable progVar = program.getVariable(v.getId());
-          
+
           if (progVar != null) {
             if (!program.variableIsReferenced(progVar, blueprint)) {
               programService.deleteVariable(program, progVar);
@@ -197,6 +197,15 @@ public class BlueprintService {
             }
           }
         }
+      } // Check variables
+
+      // Add dependencies
+      JSONArray jpackages = (JSONArray) jo.get("packages");
+
+      for (int k=0; k<jpackages.size(); k++) {
+          program.addDependency(new Plugin((String) ((JSONObject)jpackages.get(k)).get("groupId"),
+                                           (String) ((JSONObject)jpackages.get(k)).get("artifactId"),
+                                           (String) ((JSONObject)jpackages.get(k)).get("version")));
       }
     }
     catch (ParseException e) {
@@ -206,9 +215,10 @@ public class BlueprintService {
 
 
     // Update database
+    /*
     logger.info("Setting dependecies for "+blueprint.getName());
 
-    blueprint.setDependecies(jo.toString());
+    blueprint.setDependecies(jo.toString());*/
 
 	  // Save file
     logger.info("Writing "+filename);
@@ -221,7 +231,7 @@ public class BlueprintService {
       logger.error(e.getMessage());
       return(Code.ERR_IO);
     }
-    
+
     logger.info("Saved "+filename);
 
     return(Code.SUCCESS);
@@ -262,7 +272,7 @@ public class BlueprintService {
 	    String content = new String (Files.readAllBytes(Paths.get(templateFilename)));
 
       Code code = saveContent(program, blueprint.getFilename(), blueprint, content);
-      
+
       if (code == Code.SUCCESS)
         repository.save(blueprint);
       else
@@ -280,7 +290,7 @@ public class BlueprintService {
 
   public Code update (BlueprintEntity blueprint, String content) {
     Code code = saveContent(blueprint.getProgram(), blueprint.getFilename(), blueprint, content);
-    
+
     if (code == Code.SUCCESS) {
       logger.info("Storing "+blueprint.getName()+" to repository");
       repository.save(blueprint);
@@ -297,7 +307,7 @@ public class BlueprintService {
     File file = new File(getFilename(blueprint));
     file.delete();
   }
-  
+
   public JSONObject toJSON(BlueprintEntity blueprint) {
     String programId = blueprint.getProgram().getId();
     String programName = blueprint.getProgram().getName();
@@ -330,14 +340,14 @@ public class BlueprintService {
       return null;
     }
   }
-  
+
   public BlueprintEntity clone(BlueprintEntity blueprint) {
     BlueprintEntity clone = null;
     String cloneName = "Clone of "+blueprint.getName();
-    
+
     ProgramEntity program = blueprint.getProgram();
     clone = create(program, blueprint.getType(), cloneName);
-    
+
     Code code = update(clone, toJSON(blueprint).toString());
 
     if (code != Code.SUCCESS) {
@@ -345,19 +355,19 @@ public class BlueprintService {
       //setResult(ERROR, getMessage());
       return null;
     }
-    
+
     programService.refresh(program);
-         
+
     return clone;
   }
-  
+
   public JSONObject getSpec(BlueprintEntity blueprint) {
     JSONObject jspec = new JSONObject();
     JSONArray jinput = new JSONArray();
     JSONArray joutput = new JSONArray();
-                          
+
     JSONObject jbp = toJSON(blueprint);
-    
+
     jspec.put("id", jbp.get("id"));
     jspec.put("internalId", jbp.get("internalId"));
     jspec.put("name", jbp.get("name"));
@@ -370,48 +380,48 @@ public class BlueprintService {
     // Input
     jspec.put("input", jinput);
     //jinput.add(jexec);
-    
+
     JSONArray ja = (JSONArray) jbp.get("input");
 
     for (int i=0; i<ja.size(); i++) {
       JSONObject jo = (JSONObject) ja.get(i);
       System.out.println(jo.toString());
       JSONObject jitem = new JSONObject();
-      
+
       jitem.put("label", jo.get("label"));
       jitem.put("type", jo.get("type") != null ? jo.get("type") : jo.get("pinType"));
-      
+
       if (jo.get("id") != null)
         jitem.put("id", jo.get("id"));
-      
+
       if (jo.get("method") != null)
         jitem.put("method", jo.get("method"));
-      
+
       if (jo.get("dimensions") != null)
         jitem.put("dimensions", jo.get("dimensions"));
-      
+
       jinput.add(jitem);
     }
 
     // Output
-    jspec.put("output", joutput);  
-    
+    jspec.put("output", joutput);
+
     ja = (JSONArray) jbp.get("output");
 
     for (int i=0; i<ja.size(); i++) {
       JSONObject jo = (JSONObject) ja.get(i);
       System.out.println(jo.toString());
       JSONObject jitem = new JSONObject();
-      
+
       jitem.put("label", jo.get("label"));
       jitem.put("type", jo.get("type") != null ? jo.get("type") : jo.get("pinType"));
-      
+
       if (jo.get("id") != null)
         jitem.put("id", jo.get("id"));
-      
+
       if (jo.get("dimensions") != null)
         jitem.put("dimensions", jo.get("dimensions"));
-      
+
       joutput.add(jitem);
     }
 

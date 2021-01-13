@@ -127,6 +127,16 @@ public class ProgramService {
     public boolean createPOM(ProgramEntity program) {
         //File f = new File(program.getClassFilename());
         //return(f.exists());
+
+        String deps = "";
+
+        for (int i=0; i<program.getDependencies().size(); i++)
+            deps += "<dependency>"+ System.lineSeparator() +
+            "<groupId>"+program.getDependencies().get(i).getGroupId()+"</groupId>" + System.lineSeparator() +
+            "<artifactId>"+program.getDependencies().get(i).getArtifactId()+"</artifactId>" + System.lineSeparator() +
+            "<version>"+program.getDependencies().get(i).getVersion()+"</version>" + System.lineSeparator() +
+            "</dependency>" + System.lineSeparator();
+
         String pom = Utils.loadTextFileFromResources("pom-template.xml");
         pom = pom.replace("{name}", program.getName())
                  .replace("{version}", program.getVersion())
@@ -134,8 +144,10 @@ public class ProgramService {
                  .replace("{artifactId}", program.getArtifactId())
                  .replace("{jlogic-repository}", Utils.getHomeDir()+"/m2/repository")
                  //.replace("{standardPath}", Utils.getLibDir()+"/Standard.jar")
-                 .replace("{mainClass}", program.getMainClass());
-        //System.out.println(pom);
+                 .replace("{mainClass}", program.getMainClass())
+                 .replace("{dependencies}", deps);
+
+        System.out.println(pom);
 
         try {
             Utils.saveFile(pom, program.getMyDir()+"/pom.xml");
@@ -173,12 +185,13 @@ public class ProgramService {
         new File(treeResources).mkdirs();
 
         // pom
+        /*
         logger.info("Creating POM file ...");
 
         if (!createPOM(program)) {
             logger.error("Unable to create POM file");
             return null;
-        }
+        }*/
 
         // mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
 

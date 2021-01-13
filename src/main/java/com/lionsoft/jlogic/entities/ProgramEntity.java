@@ -117,17 +117,27 @@ public class ProgramEntity {
 
     @OneToMany(mappedBy="program", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Variable> variables = Collections.emptyList();
-
+/*
     @JsonIgnore
     @Transient
     private List<String> jarList;
 
     @JsonIgnore
     @Transient
-    private List<String> classPathList;
+    private List<String> classPathList;*/
 
     //@Transient
     //private List<String> dependencies;
+    /*
+    @ElementCollection
+    @CollectionTable(name = "packages", joinColumns = @JoinColumn(name = "program_id"))
+    @Column(name="package")
+    List<Plugin> dependencies = new ArrayList<Plugin>();*/
+    @OneToMany(mappedBy="program", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Plugin> dependencies = Collections.emptyList();
+
+    @JsonIgnore
+    public List<Plugin> getDependencies() { return dependencies; }
 
     @JsonIgnore
     @Transient
@@ -312,6 +322,23 @@ public class ProgramEntity {
         //return home.getDir()+"/../data/program/"+getId();
         //return(programDir != null ? programDir : home.getDir()+"/../data/program/"+getId());
         return(getHomeDir()+"/data/program/"+getId());
+    }
+
+    @JsonIgnore
+    public boolean hasDependency(Plugin p) {
+        for (int i=0; i<dependencies.size(); i++) {
+            if (p.equals(dependencies.get(i)))
+                return true;
+        }
+
+        return false;
+    }
+
+    public void addDependency(Plugin p) {
+        if (!hasDependency(p)) {
+            dependencies.add(p);
+            p.setProgram(this);
+        }
     }
 
     @JsonIgnore
@@ -836,6 +863,8 @@ public class ProgramEntity {
 	  return result;
 	}
 */
+
+/*
 	public boolean createManifest(String filename) {
 	  String manifest;
 
@@ -862,6 +891,7 @@ public class ProgramEntity {
 
     return true;
 	}
+*/
 
   boolean deleteDirectory(File directoryToBeDeleted) {
     File[] allContents = directoryToBeDeleted.listFiles();
