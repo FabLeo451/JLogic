@@ -30,6 +30,7 @@ class NodeBase {
     this.data = null;
     this.options = null;
     this.declare = null;
+    this.package = null;
   }
 
   getElement() {
@@ -408,6 +409,9 @@ class NodeBase {
     if (this.classpath)
       jo.classpath = this.classpath;
 
+    if (this.package)
+      jo.package = this.package;
+
     jo.input = [];
     jo.output = [];
 
@@ -472,6 +476,7 @@ class NodeBase {
     this.data = j.hasOwnProperty("data") ? j.data : this.data;
     this.options = j.hasOwnProperty("options") ? j.options : this.options;
     this.declare = j.hasOwnProperty("declare") ? j.declare : this.declare;
+    this.package = j.hasOwnProperty("package") ? j.package : this.package;
   }
 }
 

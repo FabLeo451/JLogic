@@ -218,6 +218,13 @@ public class PluginService {
                     //System.out.println(methodName+" multipleOut="+multipleOut+" "+method.getReturnType().toString());
 
                     JSONObject jnode = new JSONObject();
+
+                    JSONObject jpackage = new JSONObject();
+                    jpackage.put("artifactId", plugin.getArtifactId());
+                    jpackage.put("groupId", plugin.getGroupId());
+                    jpackage.put("version", plugin.getVersion());
+                    jnode.put("package", jpackage);
+
                     JSONArray jinput = new JSONArray();
                     JSONArray joutput = new JSONArray();
                     jnode.put("input", jinput);
