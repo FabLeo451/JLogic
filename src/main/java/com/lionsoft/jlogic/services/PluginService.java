@@ -558,6 +558,9 @@ public class PluginService {
             return(new Result().setError(e.getMessage()));
         }
 
+        result.setMessage("Plugin "+plugin.getName()+" successfully installed");
+        result.setData(plugin);
+
         return result;
     }
 }
