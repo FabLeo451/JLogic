@@ -68,7 +68,7 @@ public class PluginService {
     }
 
     /**
-     * Create JSON specification for plugin, given path and class file
+     * Create JSON specification for plugin, given a jar file
      */
     public Result getSpecFromJAR(String jarFile) {
         final int FUNCTION = 4;
@@ -162,12 +162,16 @@ public class PluginService {
             // Plugin info
             Annotation pluginAnnotation = c.getAnnotation(PluginAnnotation);
 
+            JSONArray jimport = new JSONArray();
+
             if (pluginAnnotation != null) {
-                /*Class<? extends Annotation> pluginInfo = pluginAnnotation.annotationType();
-                m = pluginInfo.getMethod("name");
-                jplugin.put("name", m.invoke(pluginAnnotation, (Object[])null));
-                m = pluginInfo.getMethod("version");
-                jplugin.put("version", m.invoke(pluginAnnotation, (Object[])null));*/
+                Class<? extends Annotation> pluginInfo = pluginAnnotation.annotationType();
+                m = pluginInfo.getMethod("importList");
+                Object obj = m.invoke(pluginAnnotation, (Object[])null);
+                String importList[] = (String[])obj;
+
+                for (int i=0; i<importList.length; i++)
+                    jimport.add(importList[i]);
             }
 
             //logger.info("Installing "+plugin.toString());
@@ -237,6 +241,7 @@ public class PluginService {
                     m = node.getMethod("name");
                     jnode.put("name", m.invoke(nodeAnnotation, (Object[])null));
                     jnode.put("type", multipleOut ? FUNCTION : OPERATOR);
+                    jnode.put("import", jimport);
 
                     // Input parameters
                     if (multipleOut) {

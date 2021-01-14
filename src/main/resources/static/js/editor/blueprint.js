@@ -1549,12 +1549,12 @@ class Blueprint {
         var node = this.nodes[i];
         jo.nodes.push(node.toJSON());
 
-      // Collect import items
-      /*
-			if (node.import) {
-				for (var k=0; k<node.import.length; k++)
-          this.addArrayUnique(jo.import, node.import[k]);
-        */
+        // Collect import items
+        if (node.import) {
+            for (var k=0; k<node.import.length; k++)
+                this.addArrayUnique(jo.import, node.import[k]);
+        }
+
         // Collect packages
         if (node.hasOwnProperty("package") && node.package) {
             this.addPackage(node.package);
