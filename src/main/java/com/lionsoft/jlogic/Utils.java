@@ -349,4 +349,57 @@ public class Utils {
 
       return true;
   	}
+
+    /**
+     * Execute a a shell command
+     */
+    public static Result execute(List<String> args, String workDir) {
+        Result result = new Result();
+
+        String s = "";
+
+        for (int i=0; i<args.size(); i++)
+            s += args.get(i) + " ";
+
+        logger.info(s);
+        
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        //processBuilder.inheritIO().command(args);
+        processBuilder.command(args);
+
+        if (workDir != null)
+            processBuilder.directory(new File(workDir));
+
+        try {
+            Process process = processBuilder.start();
+
+            StringBuilder output = new StringBuilder();
+            BufferedReader outReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader errReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            String line;
+
+            while ((line = outReader.readLine()) != null)
+                output.append(line + "\n");
+
+            while ((line = errReader.readLine()) != null)
+                output.append(line + "\n");
+
+            int exitVal = process.waitFor();
+
+            if (exitVal != 0) {
+                result.setResult(exitVal, "Maven error installing jar: "+exitVal);
+            }
+
+            result.setOutput(output.toString());
+        }
+        catch (IOException e) {
+            result.setResult(Result.ERROR, e.getMessage());
+        }
+        catch (InterruptedException e) {
+            result.setResult(Result.ERROR, e.getMessage());
+        }
+
+        return result;
+    }
 }

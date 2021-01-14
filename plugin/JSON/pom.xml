@@ -25,12 +25,12 @@
     </repositories>
 
 	<dependencies>
-		<dependency>
+		<!--dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency-->
 
     <dependency>
         <groupId>com.lionsoft.jlogic</groupId>
@@ -58,9 +58,10 @@
 					<manifest>
 						<mainClass>org.jlogic.plugin.json.JSON</mainClass>
 						<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        <addClasspath>true</addClasspath>
 					</manifest>
 					<manifestEntries>
-						<Class-Path>.</Class-Path>
+						<!--Class-Path>.</Class-Path-->
                         <artifactId>${project.artifactId}</artifactId>
                         <groupId>${project.groupId}</groupId>
 					</manifestEntries>
