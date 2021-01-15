@@ -290,7 +290,8 @@ public class PluginService {
                         JSONObject jparam = new JSONObject();
                         jparam.put("label", p.getName());
                         //jparam.put("type", parts[parts.length-1].replace(";", ""));
-                        jparam.put("type", Utils.getJavaTypeFromString(p.getType().toString()));
+                        String type = Utils.getJavaTypeFromString(p.getType().toString());
+                        jparam.put("type", type);
                         jparam.put("dimensions", Utils.getJavaArrayFromString(p.getType().toString()));
 
                         Annotation paramAnnotation = p.getAnnotation(InAnnotation);
@@ -301,6 +302,11 @@ public class PluginService {
                             Class<? extends Annotation> bpconnector = paramAnnotation.annotationType();
                             m = bpconnector.getMethod("label");
                             jparam.put("label", m.invoke(paramAnnotation, (Object[])null));
+
+                            m = bpconnector.getMethod("value");
+
+                            if (type.equals("String"))
+                                jparam.put("value", m.invoke(paramAnnotation, (Object[])null));
 
                             m = bpconnector.getMethod("single_line");
                             b = (boolean) m.invoke(paramAnnotation, (Object[])null);
@@ -437,7 +443,7 @@ public class PluginService {
         } catch (IllegalAccessException e) {
             logger.error(e.getMessage());
         } catch (NoSuchMethodException e) {
-            logger.error(e.getMessage());
+            logger.error("Method not found: "+e.getMessage());
         }
 
         //System.out.println(jplugin.toString());
@@ -446,7 +452,7 @@ public class PluginService {
     }
 
     /**
-     * Install a jar to Maven private repository
+     * Install a jar to Maven local repository
      */
     public Result mvnInstall(Plugin plugin) {
         Result result = new Result();
@@ -464,7 +470,7 @@ public class PluginService {
         args.add("-DartifactId="+plugin.getArtifactId());
         args.add("-Dversion="+plugin.getVersion());
         args.add("-Dpackaging=jar");
-        args.add("-DlocalRepositoryPath="+Utils.getM2RepositoryDir());
+        //args.add("-DlocalRepositoryPath="+Utils.getM2RepositoryDir());
         args.add("-DpomFile="+Utils.getPluginsDir()+"/"+plugin.getName()+"/pom.xml");
 
         result = Utils.execute(args, null);
