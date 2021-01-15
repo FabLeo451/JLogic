@@ -135,7 +135,7 @@ public class PluginService {
 
         Method m;
         String methodName;
-        List<OutConnector> outConn = new ArrayList<OutConnector>();
+        List<OutConnector> outConn;
         int nExec = 0;
         String spec = null;
         URL[] clUrls = null;
@@ -241,7 +241,6 @@ public class PluginService {
                 Annotation nodeAnnotation = method.getAnnotation(NodeAnnotation);
 
                 if (nodeAnnotation != null) {
-                    logger.info("Found node "+methodName);
 
                     String returnType = Utils.getJavaTypeFromString(method.getReturnType().toString());
                     int returnArray = Utils.getJavaArrayFromString(method.getReturnType().toString());
@@ -318,6 +317,8 @@ public class PluginService {
                     }
 
                     // Output
+                    nExec = 0;
+                    outConn = new ArrayList<OutConnector>();
                     for (Annotation outAnnotation : method.getAnnotationsByType(OutAnnotation)) {
                         Class<? extends Annotation> out = outAnnotation.annotationType();
 
@@ -361,6 +362,8 @@ public class PluginService {
 
                         joutput.add(jout);
                     }
+
+                    logger.info("Found node "+((String) jnode.get("name"))+" on method "+methodName+" Exec:"+nExec);
 
                     // Source code
                     int nIn = jinput.size();
