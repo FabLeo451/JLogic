@@ -282,46 +282,6 @@ public class ProgramService {
         result.setOutput(result.getOutput());
 
         return(result.success());
-/*
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        //processBuilder.inheritIO().command(args);
-        processBuilder.command(args);
-        processBuilder.directory(new File(program.getMyDir()));
-
-        try {
-            Process process = processBuilder.start();
-
-            StringBuilder output = new StringBuilder();
-            BufferedReader outReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            BufferedReader errReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-
-            String line;
-
-            while ((line = outReader.readLine()) != null)
-                output.append(line + "\n");
-
-            while ((line = errReader.readLine()) != null)
-                output.append(line + "\n");
-
-            int exitVal = process.waitFor();
-
-            if (exitVal == 0) {
-                result = true;
-            } else {
-                //setMessage ("Compiler error ("+exitVal+"): "+output);
-                result = false;
-            }
-
-            program.setOutput(output.toString());
-        }
-        catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-        catch (InterruptedException e) {
-            logger.error(e.getMessage());
-        }
-
-        return result;*/
     }
 
     /**
@@ -329,6 +289,8 @@ public class ProgramService {
      */
     public Result compile(ProgramEntity program, int mode) {
         Result result = new Result();
+
+        new File(program.getClasspathFile()).delete();
 
         if (program.generateJava()) {
             createPOM(program);
@@ -349,71 +311,17 @@ public class ProgramService {
                 program.setUpdateTime(new Date());
                 program.setStatus(ProgramStatus.COMPILED);
                 result.setMessage ("Successfully compiled "+program.getName());
-
+/*
                 logger.info("Creating classpath file...");
 
                 if (!createCP(program))
                     logger.error("Unable to create classpath file");
-
+*/
                 logger.info("Updating program...");
                 repository.save(program);
             } else {
                 result.setMessage("Compiler error (code "+result.getCode()+")");
             }
-
-/*
-
-            String s = "";
-
-            for (int i=0; i<args.size(); i++)
-                s += args.get(i) + " ";
-
-            logger.info(s);
-
-            ProcessBuilder processBuilder = new ProcessBuilder();
-            //processBuilder.inheritIO().command(args);
-            processBuilder.command(args);
-            processBuilder.directory(new File(program.getMyDir()));
-
-            try {
-                Process process = processBuilder.start();
-
-                StringBuilder output = new StringBuilder();
-                BufferedReader outReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                BufferedReader errReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-
-                String line;
-
-                while ((line = outReader.readLine()) != null)
-                    output.append(line + "\n");
-
-                while ((line = errReader.readLine()) != null)
-                    output.append(line + "\n");
-
-                int exitVal = process.waitFor();
-
-                if (exitVal == 0) {
-                    program.setBuildTime(new Date());
-                    program.setUpdateTime(new Date());
-                    program.setStatus(ProgramStatus.COMPILED);
-                    result.setMessage ("Successfully compiled "+program.getName());
-
-                    logger.info("Creating classpath file...");
-
-                    if (!createCP(program))
-                        logger.error("Unable to create classpath file");
-                } else {
-                    result.setResult(exitVal, "Compiler error (code "+exitVal+")");
-                }
-
-                result.setOutput(output.toString());
-      	    }
-      	    catch (IOException e) {
-      		    result.setResult(Result.ERROR, e.getMessage());
-      	    }
-      	    catch (InterruptedException e) {
-      		    result.setResult(Result.ERROR, e.getMessage());
-      	    }*/
         } else {
             result.setResult(Result.ERROR, "Can't generate source for "+program.getName());
         }
@@ -461,6 +369,9 @@ public class ProgramService {
      */
     public boolean run(ProgramEntity program, String methodName, Map<String, Object> actual, String logName, HttpServletRequest request) {
         boolean result = false;
+
+        if (!new File(program.getClasspathFile()).exists())
+            createCP(program);
 
         //sessionService.setActive(request, true);
         sessionService.setProgramUnit(request, program.getName()+"."+methodName);
