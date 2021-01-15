@@ -15,6 +15,8 @@ import org.json.simple.JSONArray;
 import java.util.*;
 import java.util.jar.*;
 import java.io.*;
+import java.net.URL;
+import java.net.MalformedURLException;
 import org.springframework.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -362,7 +364,7 @@ public class Utils {
             s += args.get(i) + " ";
 
         logger.info(s);
-        
+
         ProcessBuilder processBuilder = new ProcessBuilder();
         //processBuilder.inheritIO().command(args);
         processBuilder.command(args);
@@ -401,5 +403,31 @@ public class Utils {
         }
 
         return result;
+    }
+
+    /**
+    * Returns an array of dependency urls from a classpath file (cp1:cp2:cp3:...)
+    */
+    public static List<URL> getURLs(String filename) {
+        List<URL> urls = new ArrayList<>();
+        //URL[] clUrls = null;
+
+        try {
+            String cp = Utils.loadTextFile(filename);
+
+            String[] deps = cp.split(":");
+
+            for (int i=0; i<deps.length; i++) {
+                urls.add(new File(deps[i]).toURI().toURL());
+            }
+
+            //clUrls = new URL[urls.size()];
+            //clUrls = urls.toArray(clUrls);
+        } catch (MalformedURLException e) {
+            logger.error("Malformed URL: "+e.getMessage());
+            return null;
+        }
+
+        return urls;
     }
 }

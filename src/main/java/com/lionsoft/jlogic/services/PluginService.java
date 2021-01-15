@@ -76,6 +76,7 @@ public class PluginService {
 
         try {
             // Set classpath
+            /*
             List<URL> urls = new ArrayList<>();
             URL[] clUrls = null;
 
@@ -83,6 +84,9 @@ public class PluginService {
             urls.add(new File(jarFile).toURI().toURL());
             clUrls = new URL[urls.size()];
             clUrls = urls.toArray(clUrls);
+            */
+            URL[] clUrls = new URL[1];
+            clUrls[0] = new File(jarFile).toURI().toURL();
 
             //Class c = Class.forName(plugin.getClassName());
             URLClassLoader pluginCl = new URLClassLoader(clUrls);
@@ -92,7 +96,7 @@ public class PluginService {
                 URL url = pluginCl.findResource("META-INF/MANIFEST.MF");
 
                 if (url == null) {
-                    logger.error("Error getting manifest: Can't get META-INF/MANIFEST.MF");
+                    logger.error("Can't find META-INF/MANIFEST.MF");
                     return null;
                 }
 
@@ -125,21 +129,16 @@ public class PluginService {
     /**
      * Create JSON specification for plugin, given a jar file
      */
-    public Result getSpecFromJAR(String jarFile) {
+    public String getSpec(Plugin plugin) {
         final int FUNCTION = 4;
         final int OPERATOR = 5;
 
-        Plugin plugin = new Plugin();
-        plugin.setJarFile(jarFile);
-
         Method m;
-        //String className;
         String methodName;
-        //List<String> outGet = new ArrayList<String>();
         List<OutConnector> outConn = new ArrayList<OutConnector>();
         int nExec = 0;
-
-        Result result = new Result();
+        String spec = null;
+        URL[] clUrls = null;
 
         JSONObject jplugin = new JSONObject();
         JSONArray jnodes = new JSONArray();
@@ -149,73 +148,38 @@ public class PluginService {
         jplugin.put("nodes", jnodes);
 
         try {
-            // Set classpath
-            List<URL> urls = new ArrayList<>();
-            URL[] clUrls = null;
+            List<URL> urls = Utils.getURLs(Utils.getPluginsDir()+"/"+plugin.getName()+"/classpath");
 
-            // Classpath
-            //System.out.println(Utils.getM2RepositoryDir()+"/com/lionsoft/jlogic/standard/1.0.0/standard.jar");
-            //System.out.println("classPath = "+classPath);
-            urls.add(new File(jarFile).toURI().toURL());
-
-            clUrls = new URL[urls.size()];
-            clUrls = urls.toArray(clUrls);
-
-            //Class c = Class.forName(plugin.getClassName());
-            URLClassLoader pluginCl = new URLClassLoader(clUrls);
-
-            // Get Manifest
-            try {
-                URL url = pluginCl.findResource("META-INF/MANIFEST.MF");
-
-                if (url == null) {
-                    result.setError("Error getting manifest: Can't get META-INF/MANIFEST.MF");
-                    return result;
-                }
-
-                Manifest manifest = new Manifest(url.openStream());
-                Attributes attr = manifest.getMainAttributes();
-                plugin.setClassName(attr.getValue("Main-Class"));
-                //logger.info("Main-class = "+className);
-
-                plugin.setName(attr.getValue("Implementation-Title"));
-                plugin.setVersion(attr.getValue("Implementation-Version"));
-                //plugin.setClassName(className);
-                plugin.setArtifactId(attr.getValue("artifactId"));
-                plugin.setGroupId(attr.getValue("groupId"));
-
-                logger.info("Manifest found: " + System.lineSeparator() +
-                "Name       : " + plugin.getName() + System.lineSeparator() +
-                "Group Id   : " + plugin.getGroupId() + System.lineSeparator() +
-                "Artifact Id: " + plugin.getArtifactId() + System.lineSeparator() +
-                "Version    : " + plugin.getVersion() + System.lineSeparator() +
-                "Class      : " + plugin.getClassName()
-                );
-
-                if (plugin.getGroupId() == null || plugin.getArtifactId() == null || plugin.getVersion() == null) {
-                    result.setError("Missing manifest values");
-                    return result;
-                }
-
-                pluginCl.close();
-
-            } catch (IOException e) {
-                result.setError("Error getting manifest: "+e.getMessage());
-                return result;
+            if (urls == null) {
+                logger.error("Classpath file not found");
+                return null;
             }
 
+            // Add jar path
+            try {
+                urls.add(new File(plugin.getJarFile()).toURI().toURL());
+
+                clUrls = new URL[urls.size()];
+                clUrls = urls.toArray(clUrls);
+            } catch (MalformedURLException e) {
+                logger.error(e.getMessage());
+                return null;
+            }
+
+
             // Add Standard path ad create the main class loader with all classpaths
+            /*
             urls.add(new File(Utils.getM2RepositoryDir()+"/com/lionsoft/jlogic/standard/1.0.0/standard-1.0.0.jar").toURI().toURL());
             urls.add(new File(jarFile).toURI().toURL());
             clUrls = new URL[urls.size()];
-            clUrls = urls.toArray(clUrls);
+            clUrls = urls.toArray(clUrls);*/
 
             URLClassLoader cl = new URLClassLoader(clUrls);
 
             // Load class
             logger.info("Loading class "+plugin.getClassName()+"...");
-            //Class c = cl.loadClass(plugin.getClassName());
-            Class c = Class.forName(plugin.getClassName(), false, cl);
+            Class c = cl.loadClass(plugin.getClassName());
+            //Class c = Class.forName(plugin.getClassName(), false, cl);
 
             Class PluginAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Plugin");
             Class NodeAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Node");
@@ -455,34 +419,25 @@ public class PluginService {
                 }
             }
 
-            jplugin.put("className", plugin.getClassName());
-            jplugin.put("name", plugin.getName());
-            jplugin.put("version", plugin.getVersion());
-            jplugin.put("groupId", plugin.getGroupId());
-            jplugin.put("artifactId", plugin.getArtifactId());
-
-            plugin.setSpec(jplugin.toString());
-            result.setData(plugin);
+            spec = jplugin.toString();
 
             try {
                 cl.close();
             } catch (IOException e) { }
 
         } catch (ClassNotFoundException e) {
-            result.setResult(Result.ERROR, "Class not found: "+e.getMessage());
-        } catch (MalformedURLException e) {
-            result.setResult(Result.ERROR, e.getMessage());
+            logger.error("Class not found: "+e.getMessage());
         } catch (InvocationTargetException e) {
-            result.setResult(Result.ERROR, e.getMessage());
+            logger.error(e.getMessage());
         } catch (IllegalAccessException e) {
-            result.setResult(Result.ERROR, e.getMessage());
+            logger.error(e.getMessage());
         } catch (NoSuchMethodException e) {
-            result.setResult(Result.ERROR, e.getMessage());
+            logger.error(e.getMessage());
         }
 
         //System.out.println(jplugin.toString());
 
-        return result;
+        return spec;
     }
 
     /**
@@ -534,21 +489,10 @@ public class PluginService {
     public Result install(String jarFile) {
         Result result = new Result();
 
-        // Get plugin info e specification
-        /*
-        logger.info("Getting plugin specification...");
-        result = getSpecFromJAR(jarFile);
-
-        if (!result.success()) {
-            return result;
-        }
-
-        Plugin plugin = (Plugin) result.getData();*/
-
         Plugin plugin = getInfoFromJAR(jarFile);
 
         if (plugin == null) {
-            result.setError("Unable to to get plugin into");
+            result.setError("Unable to get plugin info");
             return result;
         }
 
@@ -604,8 +548,22 @@ public class PluginService {
 
         //logger.info(result.getMessage());
 
+        // Get plugin info e specification
+        logger.info("Getting plugin specification...");
+        String spec = getSpec(plugin);
+
+        if (spec == null) {
+            result.setError("Can't get plugin specification");
+            return result;
+        }
+
+
+        plugin.setSpec(spec);
+
+        //System.out.println(spec);
+
         // Install specification
-        /*
+
         logger.info("Installing plugin specification...");
 
         try (FileWriter file = new FileWriter(pluginDir+"/"+plugin.getName()+".json")) {
@@ -615,7 +573,7 @@ public class PluginService {
         } catch (IOException e) {
             logger.error(e.getMessage());
             return(new Result().setError(e.getMessage()));
-        }*/
+        }
 
         result.setMessage("Plugin "+plugin.getName()+" successfully installed");
         result.setData(plugin);
