@@ -26,7 +26,7 @@ while getopts "hu:p:i:" opt; do
     p) password=$OPTARG
         ;;
     i) request="install"
-       jarFile=$OPTARG
+       jarFile=$(realpath $OPTARG)
         ;;
     h) help
        exit 0
