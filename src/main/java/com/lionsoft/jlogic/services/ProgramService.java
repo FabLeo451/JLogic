@@ -269,7 +269,7 @@ public class ProgramService {
      * Create classpath file
      */
     public boolean createCP(ProgramEntity program) {
-        boolean result = false;
+        //boolean result = false;
         List<String> args = new ArrayList<String>();
 
         args.add("mvn");
@@ -277,6 +277,12 @@ public class ProgramService {
         args.add("dependency:build-classpath");
         args.add("-Dmdep.outputFile="+program.getClasspathFile());
 
+        Result result = Utils.execute(args, program.getMyDir());
+
+        result.setOutput(result.getOutput());
+
+        return(result.success());
+/*
         ProcessBuilder processBuilder = new ProcessBuilder();
         //processBuilder.inheritIO().command(args);
         processBuilder.command(args);
@@ -315,7 +321,7 @@ public class ProgramService {
             logger.error(e.getMessage());
         }
 
-        return result;
+        return result;*/
     }
 
     /**
@@ -335,6 +341,27 @@ public class ProgramService {
 
             if (mode == JAR)
                 args.add("assembly:single");
+
+            result = Utils.execute(args, program.getMyDir());
+
+            if (result.success()) {
+                program.setBuildTime(new Date());
+                program.setUpdateTime(new Date());
+                program.setStatus(ProgramStatus.COMPILED);
+                result.setMessage ("Successfully compiled "+program.getName());
+
+                logger.info("Creating classpath file...");
+
+                if (!createCP(program))
+                    logger.error("Unable to create classpath file");
+
+                logger.info("Updating program...");
+                repository.save(program);
+            } else {
+                result.setMessage("Compiler error (code "+result.getCode()+")");
+            }
+
+/*
 
             String s = "";
 
@@ -386,13 +413,14 @@ public class ProgramService {
       	    }
       	    catch (InterruptedException e) {
       		    result.setResult(Result.ERROR, e.getMessage());
-      	    }
+      	    }*/
         } else {
             result.setResult(Result.ERROR, "Can't generate source for "+program.getName());
         }
 
         if (result.success())
           repository.save(program);
+
 
         return (result);
     }

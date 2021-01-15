@@ -1230,6 +1230,7 @@ public class ProgramEntity {
     /**
     * Returns an array of dependency urls
     */
+    /*
     @Transient
     @JsonIgnore
     public URL[] getURLs() {
@@ -1244,13 +1245,7 @@ public class ProgramEntity {
             for (int i=0; i<deps.length; i++) {
                 urls.add(new File(deps[i]).toURI().toURL());
             }
-/*
-            for (int i = 0; i < classPathList.size(); i++) {
-                System.out.println("Adding classpath "+ classPathList.get(i));
-                File f = new File(classPathList.get(i));
-                urls.add(f.toURI().toURL());
-            }
-*/
+
             File file = new File(getClassesDir());
             urls.add(file.toURI().toURL());
 
@@ -1262,6 +1257,26 @@ public class ProgramEntity {
         }
 
         return clUrls;
+    }*/
+
+    /**
+    * Returns an array of dependency urls
+    */
+    @Transient
+    @JsonIgnore
+    public URL[] getURLs() {
+        List<URL> urls = Utils.getURLs(getClasspathFile());
+
+        try {
+            urls.add(new File(getClassesDir()).toURI().toURL());
+            System.out.println("Added classes dir "+new File(getClassesDir()).toURI().toURL().toString());
+        } catch (MalformedURLException e) {
+            logger.error("Malformed URL: "+e.getMessage());
+            return null;
+        }
+
+        URL[] clUrls = new URL[urls.size()];
+        return(urls.toArray(clUrls));
     }
 
 	public boolean run(String methodName, /*String data*/Map<String, Object> actualParams) {
@@ -1274,37 +1289,15 @@ public class ProgramEntity {
 
 	  //System.out.println("data = "+data);
 
-    List<URL> urls = new ArrayList<>();
-	  //System.setProperty("java.class.path", System.getProperty("java.class.path")+cp);
-
-    // Create a File object on the root of the directory containing the class file
-    //System.out.println("Loading class "+ getClassFilename() +"...");
+    //List<URL> urls = new ArrayList<>();
+    URL[] clUrls = getURLs();
 
     try {
-	    //System.out.println("Loading dependencies");
-/*
-	    loadDeps();
+        //URL[] clUrls = getURLs();
 
-        for (int i = 0; i < classPathList.size(); i++) {
-            System.out.println("Adding classpath "+ classPathList.get(i));
-            File f = new File(classPathList.get(i));
-            urls.add(f.toURI().toURL());
-        }
-
-        File file = new File(getClassesDir());
-        urls.add(file.toURI().toURL());
-
-        URL[] clUrls = new URL[urls.size()];
-        clUrls = urls.toArray(clUrls);
-*/
-        URL[] clUrls = getURLs();
-
-        // Convert File to a URL
-        //URL url = file.toURI().toURL();          // file:/c:/myclasses/
-        //URL[] urls = new URL[]{url};
 
         // Create a new class loader with the directory
-        ClassLoader cl = new URLClassLoader(/*urls*/clUrls);
+        URLClassLoader cl = new URLClassLoader(/*urls*/clUrls);
 
         // Load in the class; MyClass.class should be located in
         // the directory file:/c:/myclasses/com/mycompany
@@ -1336,8 +1329,8 @@ public class ProgramEntity {
         // Set program properties
         setProgramProperties.invoke(context, getMyDir()+"/Program.properties", this.getProperties());
 
-        Class cls = cl.loadClass("Program");
-        //Class cls = Class.forName("Program", false, cl);
+        //Class cls = cl.loadClass("Program");
+        Class cls = Class.forName(getMainClass(), false, cl);
 
         //System.out.println("Loaded class : " + cls.getName());
 
