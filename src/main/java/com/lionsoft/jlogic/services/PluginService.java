@@ -345,11 +345,13 @@ public class PluginService {
                             m = out.getMethod("variable");
                             String varName = (String) m.invoke(outAnnotation, (Object[])null);
 
-                            JSONObject jreferences = new JSONObject();
-                            jreferences.put("variable", varName);
-                            JSONObject jjava = new JSONObject();
-                            jjava.put("references", jreferences);
-                            jout.put("java", jjava);
+                            if (!varName.isEmpty()) {
+                                JSONObject jreferences = new JSONObject();
+                                jreferences.put("variable", varName);
+                                JSONObject jjava = new JSONObject();
+                                jjava.put("references", jreferences);
+                                jout.put("java", jjava);
+                            }
                         }
 
                         outConn.add(conn);
