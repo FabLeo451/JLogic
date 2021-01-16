@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.jlogic.plugin</groupId>
-	<artifactId>json</artifactId>
+	<artifactId>oracle</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
-	<name>JSON</name>
+	<name>Oracle</name>
 	<url></url>
 
 	<properties>
@@ -22,7 +22,7 @@
         <id>jlogic-repo</id>
         <url>file:///media/data/Source/JLogic-all/JLogic/m2/repository</url>
       </repository>
-    </repositories>
+     </repositories>
 
 	<dependencies>
 		<!--dependency>
@@ -37,12 +37,14 @@
         <artifactId>standard</artifactId>
         <version>1.0.0</version>
     </dependency>
-    
-		<dependency>
-			<groupId>com.googlecode.json-simple</groupId>
-			<artifactId>json-simple</artifactId>
-			<version>1.1.1</version>
-		</dependency>
+
+<!-- https://mvnrepository.com/artifact/com.oracle.jdbc/ojdbc8 -->
+<dependency>
+    <groupId>com.oracle.jdbc</groupId>
+    <artifactId>ojdbc8</artifactId>
+    <version>12.2.0.1</version>
+</dependency>
+
 
 	</dependencies>
 
@@ -56,7 +58,7 @@
 			<configuration>
 				<archive>
 					<manifest>
-						<mainClass>org.jlogic.plugin.json.JSON</mainClass>
+						<mainClass>org.jlogic.plugin.oracle.Oracle</mainClass>
 						<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         <addClasspath>true</addClasspath>
 					</manifest>
@@ -76,7 +78,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>org.jlogic.plugin.json.JSON</mainClass>
+              <mainClass>org.jlogic.plugin.oracle.Oracle</mainClass>
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>
             <manifestEntries>

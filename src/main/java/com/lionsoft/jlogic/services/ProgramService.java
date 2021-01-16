@@ -292,7 +292,12 @@ public class ProgramService {
 
         new File(program.getClasspathFile()).delete();
 
-        if (program.generateJava()) {
+        result = program.generateJava();
+
+        System.out.println("bp2java result: "+result.getCode());
+        System.out.println("bp2java success: "+result.success());
+
+        if (result.success()) {
             createPOM(program);
 
             List<String> args = new ArrayList<String>();
@@ -304,6 +309,8 @@ public class ProgramService {
             if (mode == JAR)
                 args.add("assembly:single");
 
+            logger.info("Compiling "+program.getName()+"...");
+            
             result = Utils.execute(args, program.getMyDir());
 
             if (result.success()) {
@@ -323,12 +330,11 @@ public class ProgramService {
                 result.setMessage("Compiler error (code "+result.getCode()+")");
             }
         } else {
-            result.setResult(Result.ERROR, "Can't generate source for "+program.getName());
+            result.setResult(Result.ERROR, "Can't generate source for "+program.getName()+": "+result.getMessage());
         }
 
         if (result.success())
           repository.save(program);
-
 
         return (result);
     }

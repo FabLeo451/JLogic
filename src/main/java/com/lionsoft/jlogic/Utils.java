@@ -390,7 +390,7 @@ public class Utils {
             int exitVal = process.waitFor();
 
             if (exitVal != 0) {
-                result.setResult(exitVal, "Maven error installing jar: "+exitVal);
+                result.setResult(exitVal, "Exit code: "+exitVal);
             }
 
             result.setOutput(output.toString());

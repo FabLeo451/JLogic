@@ -690,93 +690,29 @@ public class ProgramEntity {
     return (pm);
 	}
 
-	public boolean generateJava() {
-	  String code = "", command;//, bpFilename;
-	  //JSONObject jindex = getIndex();
-	  boolean result = true;
+	public Result generateJava() {
+        List<String> args = new ArrayList<String>();
+        args.add("java");
+        args.add("-jar");
+        args.add(home.getDir() + "/bp2java");
+        args.add("-P");
+        args.add(getName());
+        args.add("--root");
+        args.add(getHomeDir());
+        /*args.add("-m");
+        args.add("MANIFEST.MF");*/
+        /*args.add("--deps");
+        args.add(getDepsFilename());*/
+        args.add("--format");
+        args.add("-O");
+        args.add(getJavaFile());
 
-	  List<String> args = new ArrayList<String>();
-    args.add("java");
-    args.add("-jar");
-    args.add(home.getDir() + "/bp2java");
-    args.add("-P");
-    args.add(getName());
-    args.add("--root");
-    args.add(getHomeDir());
-    args.add("-m");
-    args.add("MANIFEST.MF");
-    /*args.add("--deps");
-    args.add(getDepsFilename());*/
-    args.add("--format");
-    args.add("-O");
-    args.add(getJavaFile());
+        for (BlueprintEntity b: blueprints) {
+            args.add("-b");
+            args.add(getMyDir() + "/BP_" + b.getId() + ".json");
+        }
 
-	  //JSONObject jitem = null;
-	  /*
-    Iterator<String> keys = jindex.keys();
-
-    while(keys.hasNext()) {
-      String k = keys.next();
-      //jitem = jindex.optJSONObject(k);
-
-      if (k.equals("_index"))
-        continue;
-
-      bpFilename = getDir() + "/" + Blueprint.getFileName(k);
-
-      args.add("-b");
-      args.add(bpFilename);
-    }*/
-
-    for (BlueprintEntity b: blueprints) {
-      args.add("-b");
-      args.add(getMyDir() + "/BP_" + b.getId() + ".json");
-    }
-
-    ProcessBuilder processBuilder = new ProcessBuilder();
-    //processBuilder.inheritIO().command(args);
-    processBuilder.command(args);
-    processBuilder.directory(new File(getMyDir()));
-
-    try {
-      Process process = processBuilder.start();
-
-		  StringBuilder output = new StringBuilder();
-
-		  BufferedReader outReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-		  BufferedReader errReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-
-		  String line;
-
-		  while ((line = outReader.readLine()) != null)
-			  output.append(line + "\n");
-
-		  while ((line = errReader.readLine()) != null)
-			  output.append(line + "\n");
-
-		  int exitVal = process.waitFor();
-
-      System.out.println(output.toString());
-      logger.info("Java code generation: "+exitVal);
-
-		  if (exitVal == 0) {
-		  } else {
-			  logger.error ("Error generating Java code ("+exitVal+"): "+output.toString());
-			  result = false;
-		  }
-
-  	  setOutput(output.toString());
-	  }
-	  catch (IOException e) {
-		  logger.error (e.getMessage());
-		  result = false;
-	  }
-	  catch (InterruptedException e) {
-		  logger.error (e.getMessage());
-		  result = false;
-	  }
-
-	  return result;
+        return(Utils.execute(args, getMyDir()));
 	}
 /*
 	public boolean compile() {

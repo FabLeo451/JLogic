@@ -309,8 +309,16 @@ public class PluginService {
                             m = bpconnector.getMethod("value");
 
                             if (inArray == 0) {
-                                if (type.equals("String") || type.equals("Integer") || type.equals("Long") || type.equals("Boolean"))
-                                    jparam.put("value", m.invoke(paramAnnotation, (Object[])null));
+                                String value = (String) m.invoke(paramAnnotation, (Object[])null);
+
+                                if (type.equals("String"))
+                                    jparam.put("value", value);
+                                else if (type.equals("Integer"))
+                                    jparam.put("value", value.isEmpty() ? 0 : Integer.parseInt(value));
+                                else if (type.equals("Long"))
+                                    jparam.put("value", value.isEmpty() ? 0 : Long.parseLong(value));
+                                else if (type.equals("Boolean"))
+                                    jparam.put("value", value.isEmpty() ? false : value.equalsIgnoreCase("false") ? false : true);
                             }
 
                             m = bpconnector.getMethod("single_line");
@@ -318,10 +326,29 @@ public class PluginService {
                             if (b)
                                 jparam.put("single_line", true);
 
+                            m = bpconnector.getMethod("not_null");
+                            b = (boolean) m.invoke(paramAnnotation, (Object[])null);
+                            if (b)
+                                jparam.put("not_null", true);
+
                             m = bpconnector.getMethod("password");
                             b = (boolean) m.invoke(paramAnnotation, (Object[])null);
                             if (b)
                                 jparam.put("password", true);
+
+                            m = bpconnector.getMethod("enumValues");
+                            Object obj = m.invoke(paramAnnotation, (Object[])null);
+                            String enumValues[] = (String[])obj;
+
+                            if (enumValues.length > 1) {
+                                JSONArray jenum = new JSONArray();
+
+                                for (int i=0; i<enumValues.length; i++)
+                                    jenum.add(enumValues[i]);
+
+                                jparam.put("enum", jenum);
+                            }
+
                         }
 
                         jinput.add(jparam);
