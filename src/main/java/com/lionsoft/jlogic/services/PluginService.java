@@ -391,7 +391,7 @@ public class PluginService {
                         jout.put("type", conn.type);
 
                         if (conn.array > 0)
-                            jout.put("array", conn.array);
+                            jout.put("dimensions", conn.array);
 
                         joutput.add(jout);
                     }
@@ -425,7 +425,7 @@ public class PluginService {
                             if (outConn.get(i).exec || !outConn.get(i).assign)
                                 continue;
 
-                            outVals += "out{"+i+"} = ("+outConn.get(i).type+")_{node.id}_out["+i+"];"+System.lineSeparator();
+                            outVals += "out{"+i+"} = ("+outConn.get(i).type+   (outConn.get(i).array > 0 ? "[]" : "")   +")_{node.id}_out["+i+"];"+System.lineSeparator();
                         }
 
                         // Following exec
