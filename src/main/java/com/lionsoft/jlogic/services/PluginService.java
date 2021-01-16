@@ -132,7 +132,7 @@ public class PluginService {
      * Create JSON specification for plugin, given a jar file
      */
     public String getSpec(Plugin plugin) {
-        final int FUNCTION = 4;
+        final int PROCEDURE = 4;
         final int OPERATOR = 5;
 
         Method m;
@@ -247,10 +247,10 @@ public class PluginService {
                     String returnType = Utils.getJavaTypeFromString(method.getReturnType().toString());
                     int returnArray = Utils.getJavaArrayFromString(method.getReturnType().toString());
 
-                    boolean multipleOut = method.getReturnType().equals(Void.TYPE) ||
-                                          (returnType.equals("Object") && returnArray == 1);
+                    boolean multipleOut = returnType.equals("Object") && returnArray == 1;
+                    boolean isProcedure = method.getReturnType().equals(Void.TYPE) || multipleOut;
 
-                    //System.out.println(methodName+" multipleOut="+multipleOut+" "+method.getReturnType().toString());
+                    System.out.println(methodName+" isProcedure="+isProcedure+" multipleOut="+multipleOut+" "+method.getReturnType().toString());
 
                     JSONObject jnode = new JSONObject();
 
@@ -271,11 +271,11 @@ public class PluginService {
                     // Name, type etc.
                     m = node.getMethod("name");
                     jnode.put("name", m.invoke(nodeAnnotation, (Object[])null));
-                    jnode.put("type", multipleOut ? FUNCTION : OPERATOR);
+                    jnode.put("type", isProcedure ? PROCEDURE : OPERATOR);
                     jnode.put("import", jimport);
 
                     // Input parameters
-                    if (multipleOut) {
+                    if (isProcedure) {
                         JSONObject jexec = new JSONObject();
                         jexec.put("label", "");
                         jexec.put("type", "Exec");
@@ -428,7 +428,7 @@ public class PluginService {
                     // Source code
                     int nIn = jinput.size();
                     int nOut = joutput.size();
-                    int start = multipleOut ? 1 : 0;
+                    int start = isProcedure ? 1 : 0;
 
                     //System.out.println(methodName+" nIn="+nIn+" nOut="+nOut+" start="+start);
 
@@ -441,39 +441,47 @@ public class PluginService {
                     }
 
                     call = plugin.getClassName()+"."+methodName+"("+args+")";
-
-                    if (!multipleOut) {
+/*
+                    if (!isProcedure) {
                         java = call;
-                    } else {
-                        retVals = "Object[] _{node.id}_out = ";
+                    } else {*/
 
-                        // Assing output values
-                        for (int i=0; i<outConn.size(); i++) {
-                            if (outConn.get(i).exec || !outConn.get(i).assign)
-                                continue;
+                    if (isProcedure) {
+                        if (multipleOut) {
+                            retVals = "Object[] _{node.id}_out = ";
 
-                            outVals += "out{"+i+"} = ("+outConn.get(i).type+   (outConn.get(i).array > 0 ? "[]" : "")   +")_{node.id}_out["+i+"];"+System.lineSeparator();
-                        }
-
-                        // Following exec
-                        if (nExecOut > 1) {
-                            int added = 0;
-
+                            // Assing output values
                             for (int i=0; i<outConn.size(); i++) {
-                                if (outConn.get(i).exec) {
-                                    execAfter += "if ((Boolean) _{node.id}_out["+i+"]) { exec{"+i+"} }";
-                                    added ++;
+                                if (outConn.get(i).exec || !outConn.get(i).assign)
+                                    continue;
 
-                                    if (added < nExecOut)
-                                    execAfter += " else ";
+                                outVals += "out{"+i+"} = ("+outConn.get(i).type+   (outConn.get(i).array > 0 ? "[]" : "")   +")_{node.id}_out["+i+"];"+System.lineSeparator();
+                            }
+
+                            // Following exec
+                            if (nExecOut > 1) {
+                                int added = 0;
+
+                                for (int i=0; i<outConn.size(); i++) {
+                                    if (outConn.get(i).exec) {
+                                        execAfter += "if ((Boolean) _{node.id}_out["+i+"]) { exec{"+i+"} }";
+                                        added ++;
+
+                                        if (added < nExecOut)
+                                        execAfter += " else ";
+                                    }
                                 }
                             }
+                        } else {
+                            java = call + ";";
                         }
-
-                        java = retVals + call + ";" + System.lineSeparator() +
-                             outVals + System.lineSeparator() +
-                             execAfter;
+                    } else {
+                        java = call;
                     }
+
+                    java = retVals + call + ";" + System.lineSeparator() +
+                         outVals + System.lineSeparator() +
+                         execAfter;
 
                     jnode.put("java", java);
 
