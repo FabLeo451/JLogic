@@ -51,14 +51,16 @@ public class PluginService {
         public String type;
         public int array;
         public boolean exec;
+        public boolean assign;
 
         public OutConnector() {
-        exec = false;
+            exec = false;
+            assign = true;
         }
 
         public void setExec() {
-        exec = true;
-        type = "Exec";
+            exec = true;
+            type = "Exec";
         }
     }
 
@@ -136,7 +138,7 @@ public class PluginService {
         Method m;
         String methodName;
         List<OutConnector> outConn;
-        int nExec = 0;
+        int nExecOut = 0;
         String spec = null;
         URL[] clUrls = null;
 
@@ -292,7 +294,8 @@ public class PluginService {
                         //jparam.put("type", parts[parts.length-1].replace(";", ""));
                         String type = Utils.getJavaTypeFromString(p.getType().toString());
                         jparam.put("type", type);
-                        jparam.put("dimensions", Utils.getJavaArrayFromString(p.getType().toString()));
+                        int inArray = Utils.getJavaArrayFromString(p.getType().toString());
+                        jparam.put("dimensions", inArray);
 
                         Annotation paramAnnotation = p.getAnnotation(InAnnotation);
 
@@ -305,8 +308,10 @@ public class PluginService {
 
                             m = bpconnector.getMethod("value");
 
-                            if (type.equals("String"))
-                                jparam.put("value", m.invoke(paramAnnotation, (Object[])null));
+                            if (inArray == 0) {
+                                if (type.equals("String") || type.equals("Integer") || type.equals("Long") || type.equals("Boolean"))
+                                    jparam.put("value", m.invoke(paramAnnotation, (Object[])null));
+                            }
 
                             m = bpconnector.getMethod("single_line");
                             b = (boolean) m.invoke(paramAnnotation, (Object[])null);
@@ -323,7 +328,7 @@ public class PluginService {
                     }
 
                     // Output
-                    nExec = 0;
+                    nExecOut = 0;
                     outConn = new ArrayList<OutConnector>();
                     for (Annotation outAnnotation : method.getAnnotationsByType(OutAnnotation)) {
                         Class<? extends Annotation> out = outAnnotation.annotationType();
@@ -339,15 +344,21 @@ public class PluginService {
                         if ((boolean) m.invoke(outAnnotation, (Object[])null)) {
                             // Exec
                             conn.setExec();
-                            nExec ++;
+                            nExecOut ++;
                         } else {
                             // Data
                             m = out.getMethod("type");
-                            conn.type = (String) m.invoke(outAnnotation, (Object[])null);
+                            String varType = (String) m.invoke(outAnnotation, (Object[])null);
+
+                            if (varType.isEmpty())
+                                conn.type = returnType + (returnArray > 0 ? "[]" : "");
+                            else
+                                conn.type = varType;
 
                             m = out.getMethod("array");
                             conn.array = (Integer) m.invoke(outAnnotation, (Object[])null);
 
+                            // Declare a new variable and assign value
                             m = out.getMethod("variable");
                             String varName = (String) m.invoke(outAnnotation, (Object[])null);
 
@@ -358,6 +369,20 @@ public class PluginService {
                                 jjava.put("references", jreferences);
                                 jout.put("java", jjava);
                             }
+
+                            // References an input parameter
+                            m = out.getMethod("input");
+                            int inputRef = (int) m.invoke(outAnnotation, (Object[])null);
+
+                            if (inputRef >= 0) {
+                                conn.assign = false;
+                                JSONObject jreferences = new JSONObject();
+                                jreferences.put("input", inputRef);
+                                JSONObject jjava = new JSONObject();
+                                jjava.put("references", jreferences);
+                                jout.put("java", jjava);
+                            }
+
                         }
 
                         outConn.add(conn);
@@ -371,7 +396,7 @@ public class PluginService {
                         joutput.add(jout);
                     }
 
-                    logger.info("Found node "+((String) jnode.get("name"))+" on method "+methodName+" Exec:"+nExec);
+                    logger.info("Found node "+((String) jnode.get("name"))+" on method "+methodName+" Exec:"+nExecOut);
 
                     // Source code
                     int nIn = jinput.size();
@@ -397,14 +422,14 @@ public class PluginService {
 
                         // Assing output values
                         for (int i=0; i<outConn.size(); i++) {
-                            if (outConn.get(i).exec)
+                            if (outConn.get(i).exec || !outConn.get(i).assign)
                                 continue;
 
                             outVals += "out{"+i+"} = ("+outConn.get(i).type+")_{node.id}_out["+i+"];"+System.lineSeparator();
                         }
 
                         // Following exec
-                        if (nExec > 1) {
+                        if (nExecOut > 1) {
                             int added = 0;
 
                             for (int i=0; i<outConn.size(); i++) {
@@ -412,7 +437,7 @@ public class PluginService {
                                     execAfter += "if ((Boolean) _{node.id}_out["+i+"]) { exec{"+i+"} }";
                                     added ++;
 
-                                    if (added < nExec)
+                                    if (added < nExecOut)
                                     execAfter += " else ";
                                 }
                             }
