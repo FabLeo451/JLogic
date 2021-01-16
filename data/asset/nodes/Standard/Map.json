@@ -1,0 +1,37 @@
+
+{
+  "types": [
+    { "name":"Map<String, Object>", "color":"darkgreen", "init":"new HashMap<String, Object>()" }
+  ],
+  "nodes": [
+    {
+      "name": "Map Put",
+      "type": 4,
+      "import": ["java.util.Map"],
+      "java": "in{1}.put(in{2}, in{3});",
+      "input": [
+        { "type": "Exec", "label": ""},
+        { "type": "Map<String, Object>", "label": "Map" },
+        { "type": "String", "label": "key", "value":"", "single_line":true },
+        { "type": "Any", "label": "Object"}
+      ],
+      "output": [
+        { "type": "Exec", "label": ""},
+        { "type": "Map<String, Object>", "label": "Map", "java":{ "references": {"input":1}}}
+      ]
+    },
+    {
+      "name": "Map Get",
+      "type": 5,
+      "import": ["java.util.Map"],
+      "java": "in{0}.get(in{1})",
+      "input": [
+        { "type": "Map<String, Object>", "label": "Map" },
+        { "type": "String", "label": "key", "value":"", "single_line":true }
+      ],
+      "output": [
+        { "type": "Object", "label": "Object" }
+      ]
+    }
+  ]
+}
