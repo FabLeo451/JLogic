@@ -723,9 +723,14 @@ class Blueprint {
 
       //console.log(JSON.stringify(node));
 
-      itemStr = '{ "id": '+i+', "item": "'+node["name"].replace (/"/g,'\\"')+'" }';
-      //console.log(itemStr);
-      menu["items"].push (JSON.parse(itemStr));
+      if (node.name) {
+          itemStr = '{ "id": '+i+', "item": "'+node["name"].replace (/"/g,'\\"')+'" }';
+          //console.log(itemStr);
+          menu["items"].push (JSON.parse(itemStr));
+      } else {
+          console.error("Missing name:");
+          console.error(node);
+      }
     }
 
     menu["items"].sort(function(a, b) {
