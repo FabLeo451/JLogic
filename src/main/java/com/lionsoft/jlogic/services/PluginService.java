@@ -244,13 +244,14 @@ public class PluginService {
 
                 if (nodeAnnotation != null) {
 
-                    String returnType = Utils.getJavaTypeFromString(method.getReturnType().toString());
+                    String returnType = Utils.getJavaTypeAsString(method.getReturnType());
                     int returnArray = Utils.getJavaArrayFromString(method.getReturnType().toString());
 
                     boolean multipleOut = returnType.equals("Object") && returnArray == 1;
                     boolean isProcedure = method.getReturnType().equals(Void.TYPE) || multipleOut;
 
                     //System.out.println(methodName+" isProcedure="+isProcedure+" multipleOut="+multipleOut+" "+method.getReturnType().toString());
+                    //System.out.println(Utils.getJavaTypeAsString(method.getReturnType()));
 
                     JSONObject jnode = new JSONObject();
 
@@ -292,7 +293,7 @@ public class PluginService {
                         JSONObject jparam = new JSONObject();
                         jparam.put("label", p.getName());
                         //jparam.put("type", parts[parts.length-1].replace(";", ""));
-                        String type = Utils.getJavaTypeFromString(p.getType().toString());
+                        String type = Utils.getJavaTypeAsString(p.getType().toString());
                         jparam.put("type", type);
                         int inArray = Utils.getJavaArrayFromString(p.getType().toString());
                         jparam.put("dimensions", inArray);
@@ -423,7 +424,7 @@ public class PluginService {
                         joutput.add(jout);
                     }
 
-                    logger.info("Found node "+((String) jnode.get("name"))+" on method "+methodName+" Exec:"+nExecOut);
+                    logger.info("Found node "+((String) jnode.get("name"))+" on method "+methodName+" isProcedure="+isProcedure);
 
                     // Source code
                     int nIn = jinput.size();
@@ -479,7 +480,7 @@ public class PluginService {
                         java = call;
                     }
 
-                    java = retVals + call + ";" + System.lineSeparator() +
+                    java = retVals + call + System.lineSeparator() +
                          outVals + System.lineSeparator() +
                          execAfter;
 
