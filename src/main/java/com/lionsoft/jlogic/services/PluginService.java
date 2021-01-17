@@ -188,6 +188,7 @@ public class PluginService {
             Class InAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.In");
             Class OutAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Out");
             Class TypeAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Type");
+            Class InputArrayAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.InputArray");
 
             // Plugin info
             Annotation pluginAnnotation = c.getAnnotation(PluginAnnotation);
@@ -243,7 +244,7 @@ public class PluginService {
                 Annotation nodeAnnotation = method.getAnnotation(NodeAnnotation);
 
                 if (nodeAnnotation != null) {
-
+                    boolean includeInputArray = false;
                     String returnType = Utils.getJavaTypeAsString(method.getReturnType());
                     int returnArray = Utils.getJavaArrayFromString(method.getReturnType().toString());
 
@@ -285,10 +286,12 @@ public class PluginService {
                     }
 
                     // Input
+                    int nIn = 0;
+
                     for (Parameter p : method.getParameters()) {
                         //System.out.println(p.toString());
 
-                        //String[] parts = p.getType().toString().split("\\.");
+                        nIn ++;
 
                         JSONObject jparam = new JSONObject();
                         jparam.put("label", p.getName());
@@ -298,61 +301,92 @@ public class PluginService {
                         int inArray = Utils.getJavaArrayFromString(p.getType().toString());
                         jparam.put("dimensions", inArray);
 
-                        Annotation paramAnnotation = p.getAnnotation(InAnnotation);
+                        Annotation inputArrayAnnotation = p.getAnnotation(InputArrayAnnotation);
 
-                        if (paramAnnotation != null) {
-                            boolean b;
-
-                            Class<? extends Annotation> bpconnector = paramAnnotation.annotationType();
-                            m = bpconnector.getMethod("label");
-                            jparam.put("label", m.invoke(paramAnnotation, (Object[])null));
-
-                            m = bpconnector.getMethod("value");
-
-                            if (inArray == 0) {
-                                String value = (String) m.invoke(paramAnnotation, (Object[])null);
-
-                                if (type.equals("String"))
-                                    jparam.put("value", value);
-                                else if (type.equals("Integer"))
-                                    jparam.put("value", value.isEmpty() ? 0 : Integer.parseInt(value));
-                                else if (type.equals("Long"))
-                                    jparam.put("value", value.isEmpty() ? 0 : Long.parseLong(value));
-                                else if (type.equals("Boolean"))
-                                    jparam.put("value", value.isEmpty() ? false : value.equalsIgnoreCase("false") ? false : true);
-                            }
-
-                            m = bpconnector.getMethod("single_line");
-                            b = (boolean) m.invoke(paramAnnotation, (Object[])null);
-                            if (b)
-                                jparam.put("single_line", true);
-
-                            m = bpconnector.getMethod("not_null");
-                            b = (boolean) m.invoke(paramAnnotation, (Object[])null);
-                            if (b)
-                                jparam.put("not_null", true);
-
-                            m = bpconnector.getMethod("password");
-                            b = (boolean) m.invoke(paramAnnotation, (Object[])null);
-                            if (b)
-                                jparam.put("password", true);
-
-                            m = bpconnector.getMethod("enumValues");
-                            Object obj = m.invoke(paramAnnotation, (Object[])null);
-                            String enumValues[] = (String[])obj;
-
-                            if (enumValues.length > 1) {
-                                JSONArray jenum = new JSONArray();
-
-                                for (int i=0; i<enumValues.length; i++)
-                                    jenum.add(enumValues[i]);
-
-                                jparam.put("enum", jenum);
-                            }
-
+                        if (inputArrayAnnotation != null) {
+                            // "options": { "javaInputArray": true }
+                            JSONObject jopt = new JSONObject();
+                            jopt.put("javaInputArray", true);
+                            jnode.put("options", jopt);
+                            includeInputArray = true;
                         }
 
-                        jinput.add(jparam);
+                        Annotation inAnnotation = p.getAnnotation(InAnnotation);
+
+                        if (inAnnotation != null) {
+                            boolean b, addMore = false;
+
+                            Class<? extends Annotation> bpconnector = inAnnotation.annotationType();
+/*
+                            m = bpconnector.getMethod("inputArray");
+                            if ((boolean) m.invoke(inAnnotation, (Object[])null)) {
+                                // "options": { "javaInputArray": true }
+                                JSONObject jopt = new JSONObject();
+                                jopt.put("javaInputArray", true);
+                                jnode.put("options", jopt);
+                                includeInputArray = true;
+                                includeParam = false;
+                            }*/
+
+                            m = bpconnector.getMethod("addMore");
+                            addMore = (boolean) m.invoke(inAnnotation, (Object[])null);
+
+                            //if (includeParam) {
+                                // Normal parameter
+                                m = bpconnector.getMethod("label");
+                                jparam.put("label", m.invoke(inAnnotation, (Object[])null));
+
+                                m = bpconnector.getMethod("value");
+
+                                if (inArray == 0) {
+                                    String value = (String) m.invoke(inAnnotation, (Object[])null);
+
+                                    if (type.equals("String"))
+                                        jparam.put("value", value);
+                                    else if (type.equals("Integer"))
+                                        jparam.put("value", value.isEmpty() ? 0 : Integer.parseInt(value));
+                                    else if (type.equals("Long"))
+                                        jparam.put("value", value.isEmpty() ? 0 : Long.parseLong(value));
+                                    else if (type.equals("Boolean"))
+                                        jparam.put("value", value.isEmpty() ? false : value.equalsIgnoreCase("false") ? false : true);
+                                }
+
+                                m = bpconnector.getMethod("single_line");
+                                b = (boolean) m.invoke(inAnnotation, (Object[])null);
+                                if (b)
+                                    jparam.put("single_line", true);
+
+                                m = bpconnector.getMethod("not_null");
+                                b = (boolean) m.invoke(inAnnotation, (Object[])null);
+                                if (b)
+                                    jparam.put("not_null", true);
+
+                                m = bpconnector.getMethod("password");
+                                b = (boolean) m.invoke(inAnnotation, (Object[])null);
+                                if (b)
+                                    jparam.put("password", true);
+
+                                m = bpconnector.getMethod("enumValues");
+                                Object obj = m.invoke(inAnnotation, (Object[])null);
+                                String enumValues[] = (String[])obj;
+
+                                if (enumValues.length > 1) {
+                                    JSONArray jenum = new JSONArray();
+
+                                    for (int i=0; i<enumValues.length; i++)
+                                        jenum.add(enumValues[i]);
+
+                                    jparam.put("enum", jenum);
+                                }
+
+                                jinput.add(jparam);
+
+                                if (addMore) {
+                                    // "addInput": { "type": "String", "label": "Key", "value": "", "single_line": true },
+                                    jnode.put("addInput", jparam);
+                                }
+                            //}
+                        }
                     }
 
                     // Output
@@ -427,7 +461,6 @@ public class PluginService {
                     logger.info("Found node '"+((String) jnode.get("name"))+"' on method '"+methodName+"' isProcedure="+isProcedure);
 
                     // Source code
-                    int nIn = jinput.size();
                     int nOut = joutput.size();
                     int start = isProcedure ? 1 : 0;
 
@@ -440,6 +473,9 @@ public class PluginService {
                         args += i > start ? ", " : "";
                         args += "in{"+i+"}";
                     }
+
+                    if (includeInputArray)
+                        args += ", _{node.id}_in";
 
                     call = plugin.getClassName()+"."+methodName+"("+args+")";
 /*
@@ -474,9 +510,10 @@ public class PluginService {
                                 }
                             }
                         } //else {
-                            java = retVals + call + ";" + System.lineSeparator() +
-                                 outVals + System.lineSeparator() +
-                                 execAfter;
+
+                        java = retVals + call + ";" + System.lineSeparator() +
+                             outVals + System.lineSeparator() +
+                             execAfter;
                         //}
                     } else {
                         java = call;
