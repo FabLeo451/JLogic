@@ -292,8 +292,8 @@ public class PluginService {
 
                         JSONObject jparam = new JSONObject();
                         jparam.put("label", p.getName());
-                        //jparam.put("type", parts[parts.length-1].replace(";", ""));
-                        String type = Utils.getJavaTypeAsString(p.getType().toString());
+                        //String type = Utils.getJavaTypeAsString(p.getType().toString());
+                        String type = Utils.getJavaTypeAsString(p.getType());
                         jparam.put("type", type);
                         int inArray = Utils.getJavaArrayFromString(p.getType().toString());
                         jparam.put("dimensions", inArray);

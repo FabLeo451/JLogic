@@ -21,6 +21,38 @@
       ]
     },
     {
+      "name": "Map Put String",
+      "type": 4,
+      "import": ["java.util.Map"],
+      "java": "in{1}.put(in{2}, in{3});",
+      "input": [
+        { "type": "Exec", "label": ""},
+        { "type": "Map<String, Object>", "label": "Map" },
+        { "type": "String", "label": "key", "value":"", "single_line":true },
+        { "type": "String", "label": "String", "value":"" }
+      ],
+      "output": [
+        { "type": "Exec", "label": ""},
+        { "type": "Map<String, Object>", "label": "Map", "java":{ "references": {"input":1}}}
+      ]
+    },
+    {
+      "name": "Map Put Integer",
+      "type": 4,
+      "import": ["java.util.Map"],
+      "java": "in{1}.put(in{2}, in{3});",
+      "input": [
+        { "type": "Exec", "label": ""},
+        { "type": "Map<String, Object>", "label": "Map" },
+        { "type": "String", "label": "key", "value":"", "single_line":true },
+        { "type": "Integer", "label": "Integer", "value":0 }
+      ],
+      "output": [
+        { "type": "Exec", "label": ""},
+        { "type": "Map<String, Object>", "label": "Map", "java":{ "references": {"input":1}}}
+      ]
+    },
+    {
       "name": "Map Get",
       "type": 5,
       "import": ["java.util.Map"],
