@@ -481,17 +481,19 @@ public class PluginService {
 
                     // Source code
                     int nOut = joutput.size();
+                    /* isProcedure ? 1..n : 0..n-1 */
                     int start = isProcedure ? 1 : 0;
+                    int end = isProcedure ? nIn : nIn - 1;
 
                     //System.out.println(methodName+" nIn="+nIn+" nOut="+nOut+" start="+start);
 
                     String java = ""; // Final source code
                     String retVals = "", call = "", args = "", outVals = "", execAfter = "";
 
-                    for (int i=start; i<=nIn; i++) {
+                    for (int i=start; i<=end; i++) {
                         args += i > start ? ", " : "";
 
-                        if (includeInputArray && i == nIn)
+                        if (includeInputArray && i == end)
                             args += ", _{node.id}_in";
                         else
                             args += "in{"+i+"}";
