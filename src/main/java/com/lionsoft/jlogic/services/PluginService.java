@@ -250,7 +250,7 @@ public class PluginService {
                     boolean multipleOut = returnType.equals("Object") && returnArray == 1;
                     boolean isProcedure = method.getReturnType().equals(Void.TYPE) || multipleOut;
 
-                    System.out.println(methodName+" isProcedure="+isProcedure+" multipleOut="+multipleOut+" "+method.getReturnType().toString());
+                    //System.out.println(methodName+" isProcedure="+isProcedure+" multipleOut="+multipleOut+" "+method.getReturnType().toString());
 
                     JSONObject jnode = new JSONObject();
 
@@ -464,7 +464,7 @@ public class PluginService {
 
                                 for (int i=0; i<outConn.size(); i++) {
                                     if (outConn.get(i).exec) {
-                                        execAfter += "if ((Boolean) _{node.id}_out["+i+"]) { exec{"+i+"} }";
+                                        execAfter += "if ( _{node.id}_out["+i+"] != null) { exec{"+i+"} }";
                                         added ++;
 
                                         if (added < nExecOut)
