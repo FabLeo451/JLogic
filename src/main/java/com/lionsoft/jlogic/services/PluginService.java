@@ -424,7 +424,7 @@ public class PluginService {
                         joutput.add(jout);
                     }
 
-                    logger.info("Found node "+((String) jnode.get("name"))+" on method "+methodName+" isProcedure="+isProcedure);
+                    logger.info("Found node '"+((String) jnode.get("name"))+"' on method '"+methodName+"' isProcedure="+isProcedure);
 
                     // Source code
                     int nIn = jinput.size();
@@ -473,16 +473,16 @@ public class PluginService {
                                     }
                                 }
                             }
-                        } else {
-                            java = call + ";";
-                        }
+                        } //else {
+                            java = retVals + call + ";" + System.lineSeparator() +
+                                 outVals + System.lineSeparator() +
+                                 execAfter;
+                        //}
                     } else {
                         java = call;
                     }
 
-                    java = retVals + call + System.lineSeparator() +
-                         outVals + System.lineSeparator() +
-                         execAfter;
+
 
                     jnode.put("java", java);
 
