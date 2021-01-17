@@ -29,6 +29,8 @@ import java.util.zip.ZipOutputStream;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 
+import java.lang.reflect.TypeVariable;
+
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Utils {
@@ -59,9 +61,24 @@ public class Utils {
     	return home.getDir()+"/../temp";
     }
 
-    static String getJavaTypeFromString(String type) {
-        String[] parts = type.split("\\.");
+    static String getJavaTypeAsString(String typeString) {
+        String[] parts = typeString.split("\\.");
         return(parts[parts.length-1].replace(";", ""));
+    }
+
+    static String getJavaTypeAsString(Class<?> c) {
+        String type = getJavaTypeAsString(c.toString());
+
+        if (type.equals("Map")) {
+            TypeVariable[] t = c.getTypeParameters();
+/*
+            for (int i=0; i<t.length; i++)
+                System.out.println("    "+t[i].getBounds()[0].getTypeName());
+*/
+            type += "<"+/*t[0].getBounds()[0].getTypeName()*/"String"+", "+getJavaTypeAsString(t[1].getBounds()[0].getTypeName())+">";
+        }
+
+        return type;
     }
 
     static int getJavaArrayFromString(String type) {
