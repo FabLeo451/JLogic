@@ -488,13 +488,17 @@ public class PluginService {
                     String java = ""; // Final source code
                     String retVals = "", call = "", args = "", outVals = "", execAfter = "";
 
-                    for (int i=start; i<nIn; i++) {
+                    for (int i=start; i<=nIn; i++) {
                         args += i > start ? ", " : "";
-                        args += "in{"+i+"}";
+
+                        if (includeInputArray && i == nIn)
+                            args += ", _{node.id}_in";
+                        else
+                            args += "in{"+i+"}";
                     }
 
-                    if (includeInputArray)
-                        args += ", _{node.id}_in";
+                    /*if (includeInputArray)
+                        args += ", _{node.id}_in";*/
 
                     call = plugin.getClassName()+"."+methodName+"("+args+")";
 /*
