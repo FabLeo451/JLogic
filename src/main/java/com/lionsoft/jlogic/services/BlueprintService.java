@@ -202,10 +202,12 @@ public class BlueprintService {
       // Add dependencies
       JSONArray jpackages = (JSONArray) jo.get("packages");
 
-      for (int k=0; k<jpackages.size(); k++) {
-          program.addDependency(new Plugin((String) ((JSONObject)jpackages.get(k)).get("groupId"),
-                                           (String) ((JSONObject)jpackages.get(k)).get("artifactId"),
-                                           (String) ((JSONObject)jpackages.get(k)).get("version")));
+      if (jpackages != null) {
+          for (int k=0; k<jpackages.size(); k++) {
+              program.addDependency(new Plugin((String) ((JSONObject)jpackages.get(k)).get("groupId"),
+                                               (String) ((JSONObject)jpackages.get(k)).get("artifactId"),
+                                               (String) ((JSONObject)jpackages.get(k)).get("version")));
+          }
       }
     }
     catch (ParseException e) {
