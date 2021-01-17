@@ -225,8 +225,8 @@ public class MainController {
           JSONArray ja = new JSONArray(content);
 
           for (int j = 0; j < ja.length(); j++) {
-            //jnode = (JSONObject)ja.get(j);
-            jnode = addNodeData((JSONObject)ja.get(j), "path", path);
+            jnode = (JSONObject)ja.get(j);
+            //jnode = addNodeData((JSONObject)ja.get(j), "path", path);
             jNodesArray.put(processNode(jnode, parentDirName));
           }
         }
@@ -250,8 +250,8 @@ public class MainController {
             JSONArray jn = jo.getJSONArray("nodes");
 
             for (int j = 0; j < jn.length(); j++) {
-              //jnode = (JSONObject)jn.get(j);
-              jnode = addNodeData((JSONObject)jn.get(j), "path", path);
+              jnode = (JSONObject)jn.get(j);
+              //jnode = addNodeData((JSONObject)jn.get(j), "path", path);
 
               jNodesArray.put(processNode(jnode, parentDirName));
             }
@@ -260,7 +260,7 @@ public class MainController {
           }
 
           if (!hasNodes && !hasTypes && !jo.has("node_types")) {
-            jo = addNodeData(jo, "path", path);
+            //jo = addNodeData(jo, "path", path);
             jNodesArray.put(processNode(jo, parentDirName));
           }
         }
@@ -322,19 +322,19 @@ public class MainController {
     @PostMapping(value="/stop/{threadId}/session/{sessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> stop(@PathVariable("threadId") Long threadId, @PathVariable("sessionId") String sessionId) {
         Request r = sessionService.getRequestById(threadId);
-        
+
         if (r == null || !r.getSessionId().equals(sessionId)) {
             logger.error("Thread "+threadId+"/"+sessionId+" not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Thread not found");
         }
-        
+
         if (sessionService.stop(r))
             logger.warn("Request "+threadId+" stopped by user");
         else {
             logger.error("Can't stop request "+threadId+"/"+sessionId);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't stop thread");
         }
-            
+
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 
@@ -344,19 +344,19 @@ public class MainController {
     @PostMapping(value="/stop/clientId/{clientId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> stopClientId(@PathVariable("clientId") String clientId) {
         Request r = sessionService.getRequestByClientId(clientId);
-        
+
         if (r == null) {
             logger.error("Thread with client id "+clientId+" not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Thread not found");
         }
-        
+
         if (sessionService.stop(r))
             logger.warn("Request with client id "+clientId+" stopped by user");
         else {
             logger.error("Can't stop request with client id "+clientId);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't stop thread");
         }
-            
+
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 
