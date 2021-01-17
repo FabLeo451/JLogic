@@ -189,6 +189,7 @@ public class PluginService {
             Class OutAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Out");
             Class TypeAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Type");
             Class InputArrayAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.InputArray");
+            Class IncludeAnnotation = cl.loadClass("com.lionsoft.jlogic.standard.annotation.Include");
 
             // Plugin info
             Annotation pluginAnnotation = c.getAnnotation(PluginAnnotation);
@@ -234,6 +235,32 @@ public class PluginService {
                 jtypes.add(jtype);
             }
 
+            // Include
+            for (Annotation includeAnnotation : c.getAnnotationsByType(IncludeAnnotation)) {
+                JSONObject jinclude = new JSONObject();
+
+                Class<? extends Annotation> include = includeAnnotation.annotationType();
+                m = include.getMethod("file");
+                String resourceName = (String) m.invoke(includeAnnotation, (Object[])null);
+
+                try {
+                    InputStream inputStream = cl.getResourceAsStream(resourceName);
+
+                    JSONParser jsonParser = new JSONParser();
+                    JSONObject jitem = (JSONObject)jsonParser.parse(new InputStreamReader(inputStream, "UTF-8"));
+                    jnodes.add(jitem);
+
+                    logger.info("Included "+resourceName);
+                } catch (IllegalArgumentException e) {
+                    logger.error("File not found: "+resourceName+": "+e.getMessage());
+                } catch (IOException e) {
+                    logger.error("IOException: "+e.getMessage());
+                } catch (ParseException e) {
+                    logger.error("ParseException: "+e.getMessage());
+                }
+            }
+
+
             // Nodes
             logger.info("Getting plugin nodes...");
             Method[] methods = c.getDeclaredMethods();
@@ -273,6 +300,8 @@ public class PluginService {
                     // Name, type etc.
                     m = node.getMethod("name");
                     jnode.put("name", m.invoke(nodeAnnotation, (Object[])null));
+                    m = node.getMethod("icon");
+                    jnode.put("icon", m.invoke(nodeAnnotation, (Object[])null));
                     jnode.put("type", isProcedure ? PROCEDURE : OPERATOR);
                     jnode.put("import", jimport);
 
@@ -317,16 +346,6 @@ public class PluginService {
                             boolean b, addMore = false;
 
                             Class<? extends Annotation> bpconnector = inAnnotation.annotationType();
-/*
-                            m = bpconnector.getMethod("inputArray");
-                            if ((boolean) m.invoke(inAnnotation, (Object[])null)) {
-                                // "options": { "javaInputArray": true }
-                                JSONObject jopt = new JSONObject();
-                                jopt.put("javaInputArray", true);
-                                jnode.put("options", jopt);
-                                includeInputArray = true;
-                                includeParam = false;
-                            }*/
 
                             m = bpconnector.getMethod("addMore");
                             addMore = (boolean) m.invoke(inAnnotation, (Object[])null);
