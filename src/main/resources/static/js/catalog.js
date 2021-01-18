@@ -91,7 +91,7 @@ function hideContextMenu(evt) {
  */
 function refreshProgramData(id) {
     console.log("Refreshing "+id+"...");
-    
+
     var programId = document.getElementById("programId").value;
 
     $.get("/program/"+programId+"/edit?element="+id).done(function(fragment) { // get from controller
@@ -111,7 +111,7 @@ function refreshBlueprints() {
     console.log("Refreshing blueprints...");
 
     var programId = document.getElementById("programId").value;
-    
+
     $.get("/program/"+programId+"/edit?element=blueprints").done(function(fragment) {
         $("#blueprints").replaceWith(fragment);
     });
@@ -154,7 +154,7 @@ function processResponse(xhttp) {
               //refreshBlueprints();
             }
         }
-      
+
         return true;
     }
     else {
@@ -170,7 +170,7 @@ function processResponse(xhttp) {
       else
         showSnacknar(BPResult.ERROR, 'Failed: '+xhttp.status, 2000);
     }
-    
+
     return false;
   }
   else {
@@ -278,7 +278,7 @@ function cloneProgram (programId) {
 }
 
 function createJAR (programId) {
-  dialogWorking = dialogMessage ('Working', 'Creating JAR with all dependencies.<br>This will take a while...', DialogButtons.NONE, DialogIcon.RUNNING, null);
+  dialogWorking = dialogMessage ('Working', 'Creating JAR with all dependencies...', DialogButtons.NONE, DialogIcon.RUNNING, null);
   callServer ("POST", '/program/'+programId+'/jar', null, function(xhttp) {
         if (xhttp.readyState == 4) {
             if (processResponse(xhttp))
@@ -304,15 +304,15 @@ function renameProgram_deprecated (programId, programName) {
 function renameProgram() {
     var name = document.getElementById("programName").value;
     var programId = document.getElementById("programId").value;
-    
+
     if (name == "")
         return;
-        
+
     dialogWorking = dialogMessage ('Working', 'Renaming program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
     callServer ("PUT", '/program/'+programId+'/rename/'+name, null, function (xhttp) {
           if (xhttp.readyState == 4) {
             dialogWorking.destroy();
-            
+
             if (xhttp.status == 200) {
               resetNameCtrl();
             }
@@ -397,29 +397,29 @@ function deleteBlueprint(id, name) {
 
 function importBlueprint (programId) {
   var input = document.getElementById('file-dialog');
-  
+
   input.onchange = function(e) {
     var file = e.target.files[0];
-    //console.log("file = "+e.target.value);  
-    
+    //console.log("file = "+e.target.value);
+
     if (!file)
       return;
-    
+
     var reader = new FileReader();
 
     reader.onload = function(e) {
       var contents = e.target.result;
-      
+
       dialogWorking = dialogMessage ('Working', 'Importing ...', DialogButtons.NONE, DialogIcon.RUNNING, null);
       callServer ("PUT", '/program/'+programId+'/import/blueprint?tree=1', contents, blueprintCallback);
-  
+
       /* Reset so 'changed' event triggers again */
       document.getElementById('file-dialog').value="";
     };
 
     reader.readAsText(file);
   }
-  
+
   input.click();
 }
 
@@ -444,32 +444,32 @@ function exportProgram (programId) {
  */
 function importProgram () {
   var input = document.getElementById('file-dialog');
-  
+
   input.onchange = function(e) {
     var file = e.target.files[0];
-    //console.log("file = "+e.target.value);  
-    
+    //console.log("file = "+e.target.value);
+
     if (!file)
       return;
-    
+
     var reader = new FileReader();
     //var fileByteArray = [];
-    
+
 
     reader.onload = function(e) {
       var contents = e.target.result;
-      
+
       dialogWorking = dialogMessage ('Working', 'Importing program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
       //callServer ("POST", '/program/import?tree=1', contents, blueprintCallback);
       var xhttp = new XMLHttpRequest();
-      
+
       xhttp.onreadystatechange = function() { catalogCallback(this); }
       xhttp.open("POST", '/program/import?tree=1', true);
       xhttp.setRequestHeader ("Content-Type", "application/octet-stream");
-      //xhttp.setRequestHeader ('Client', detectBrowser()/*+'/'+navigator.appVersion*/+' ('+detectPlatform()+')');   
-      
+      //xhttp.setRequestHeader ('Client', detectBrowser()/*+'/'+navigator.appVersion*/+' ('+detectPlatform()+')');
+
       xhttp.send(contents);
-        
+
       /* Reset so 'changed' event triggers again */
       document.getElementById('file-dialog').value="";
     };
@@ -477,7 +477,6 @@ function importProgram () {
     //reader.readAsText(file);
     reader.readAsArrayBuffer(file);
   }
-  
+
   input.click();
 }
-
