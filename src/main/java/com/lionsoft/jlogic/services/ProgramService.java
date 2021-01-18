@@ -289,6 +289,7 @@ public class ProgramService {
         Result result = new Result();
 
         new File(program.getClasspathFile()).delete();
+        program.setStatus(ProgramStatus.ERRORS);
 
         result = program.generateJava();
 
