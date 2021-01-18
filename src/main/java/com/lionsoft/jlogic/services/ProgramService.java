@@ -279,8 +279,6 @@ public class ProgramService {
 
         Result result = Utils.execute(args, program.getMyDir());
 
-        result.setOutput(result.getOutput());
-
         return(result.success());
     }
 
@@ -310,7 +308,7 @@ public class ProgramService {
                 args.add("assembly:single");
 
             logger.info("Compiling "+program.getName()+"...");
-            
+
             result = Utils.execute(args, program.getMyDir());
 
             if (result.success()) {
@@ -318,14 +316,6 @@ public class ProgramService {
                 program.setUpdateTime(new Date());
                 program.setStatus(ProgramStatus.COMPILED);
                 result.setMessage ("Successfully compiled "+program.getName());
-/*
-                logger.info("Creating classpath file...");
-
-                if (!createCP(program))
-                    logger.error("Unable to create classpath file");
-*/
-                logger.info("Updating program...");
-                repository.save(program);
             } else {
                 result.setMessage("Compiler error (code "+result.getCode()+")");
             }
@@ -333,8 +323,9 @@ public class ProgramService {
             result.setResult(Result.ERROR, "Can't generate source for "+program.getName()+": "+result.getMessage());
         }
 
-        if (result.success())
-          repository.save(program);
+        logger.info("Updating program info...");
+
+        repository.save(program);
 
         return (result);
     }
