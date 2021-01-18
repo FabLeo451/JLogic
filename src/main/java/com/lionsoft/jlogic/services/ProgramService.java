@@ -274,6 +274,7 @@ public class ProgramService {
 
         args.add("mvn");
         args.add("--batch-mode"); // Disable ansi colors
+        args.add("--quiet");
         args.add("dependency:build-classpath");
         args.add("-Dmdep.outputFile="+program.getClasspathFile());
 
