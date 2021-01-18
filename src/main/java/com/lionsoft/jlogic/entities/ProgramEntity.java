@@ -1225,6 +1225,7 @@ public class ProgramEntity {
 
 	  //System.out.println("data = "+data);
 
+      logger.info("Collecting URLs...");
     //List<URL> urls = new ArrayList<>();
     URL[] clUrls = getURLs();
 
