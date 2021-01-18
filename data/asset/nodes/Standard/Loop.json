@@ -23,7 +23,7 @@
     "version": 1,
     "input": [
       { "type": "Exec", "label": "" },
-      { "type": "Boolean", "label": "Condition" }
+      { "type": "Boolean", "label": "Condition", "value":true }
     ],
     "output": [
       { "type": "Exec", "label": "Iteration" },
