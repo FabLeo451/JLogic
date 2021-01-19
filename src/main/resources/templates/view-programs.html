@@ -65,15 +65,16 @@
     <!--button class="btnApp" onclick="createFolder (null);"><i class="icon i-folder"></i> Create folder</button-->
     <button class="btnApp w3-right" onclick="refreshPrograms();"><i class="icon i-refresh"></i> Refresh</button>
     <!--div id="catalog"></div-->
-    
+
     <div id="programs" class="w3-container w3-stretch">
       <table class="table1">
-        <tr><th class="th1">Program</th><th class="th1">Status</th><th class="th1">Updated</th><th class="th1" /><tr>
+        <tr><th class="th1">Program</th><th class="th1">Version</th><th class="th1">Status</th><th class="th1">Updated</th><th class="th1" /><tr>
         <tr class="tr1" th:each="p : ${#lists.sort(programs, byName)}">
             <td class="td1">
                 <i class="icon i-cogs w3-text-blue-gray" style="width:1.5em;"></i>
                 <a th:text="${p.name}" th:href="@{${'/program/'+p.id+'/edit'}}" style="cursor:pointer;">Name</a>
             </td>
+            <td class="td1" th:text="${p.version}"></td>
             <td class="td1" th:switch="${p.status.name()}">
                 <span th:case="'READY'"><i class="icon i-clock w3-text-green"></i></span>
                 <span th:case="'COMPILED'"><i class="icon i-check w3-text-green"></i></span>

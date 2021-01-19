@@ -95,11 +95,13 @@ public class ProgramController {
     return (catalogService.getCatalog().toString());
   }*/
 
-	// PUT /program
-	@PutMapping(value = "/program", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<ProgramEntity> put(@RequestBody String data) {
+    /**
+     * Create a program
+     */
+	@PostMapping(value = "/program", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<ProgramEntity> create(@RequestBody /*String data*/ProgramEntity programIn) {
         String response;
-        JSONObject jo;
+        /*JSONObject jo;
 
         JSONParser jsonParser = new JSONParser();
 
@@ -107,14 +109,37 @@ public class ProgramController {
             jo = (JSONObject) jsonParser.parse(data);
         } catch (ParseException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
+        }*/
 
         //response = createProgram(null, jo.optString("name"));
-        logger.info("Creating program "+ (String) jo.get("name"));
+        logger.info("Creating program "+ /*(String) jo.get("name")*/programIn.getName());
 
-        ProgramEntity program = programService.create( (String) jo.get("name"));
+        ProgramEntity program = programService.create(/*(String) jo.get("name")*/programIn.getName());
 
         return (catalogService.getPrograms());
+	}
+
+    /**
+     * Update name and version
+     */
+	@PutMapping(value = "/program/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> update(@PathVariable("id") String id, @RequestBody ProgramEntity programIn) {
+        Optional<ProgramEntity> program = programService.findById(id);
+
+        if (!program.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        logger.info("Updating "+program.get().toString()+ " to "+programIn.toString());
+
+        if (programIn.getName() != null)
+            program.get().setName(programIn.getName());
+
+        if (programIn.getVersion() != null)
+            program.get().setVersion(programIn.getVersion());
+
+        programService.save(program.get());
+
+        return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	// PUT /program/{programId}/blueprint/{name}

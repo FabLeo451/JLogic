@@ -254,6 +254,10 @@ public class ProgramService {
         repository.save(program);
     }
 
+    public void save (ProgramEntity program) {
+        repository.save(program);
+    }
+
     /**
      * Compile program with JDK
      */

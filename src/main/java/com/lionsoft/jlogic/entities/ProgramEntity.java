@@ -193,7 +193,7 @@ public class ProgramEntity {
 
     @Override
     public String toString() {
-        return "ProgramEntity [id=" + id + ", name=" + name + ", status=" + status + "]";
+        return "ProgramEntity [id=" + id + ", name=" + name + ", version=" + version + ", status=" + status + "]";
     }
 
     public String getTag() { return (tag); }
@@ -216,11 +216,14 @@ public class ProgramEntity {
     public String getPackage() { return (groupId+"."+artifactId); }
     public String getMainClass() { return (getPackage()+".Program"); }
 
+    @JsonIgnore
     public String getSrcDir() {
         return ("/src/main/java/"+getGroupId().replace(".", "/")+"/"+getArtifactId());
     }
 
+    @JsonIgnore
     public String getClasspathFile() { return (getMyDir()+"/cp.txt"); }
+    @JsonIgnore
     public String getClassesDir() { return (getMyDir()+"/target/classes"); }
 
     @JsonIgnore
@@ -417,6 +420,7 @@ public class ProgramEntity {
 	  return null;
 	}
 
+    @JsonIgnore
 	public Variable getVariable(String name) {
 	  for (Variable v: variables)
 	    if (v.getName().equals(name))
@@ -492,6 +496,7 @@ public class ProgramEntity {
 	  return (null);
 	}
 
+  @JsonIgnore
   public int getNewInternalId() {
     int newId = 10;
 
@@ -843,6 +848,7 @@ public class ProgramEntity {
 
 
 
+  @JsonIgnore
 	public boolean getJar() {
         File f = new File(getJARFilename());
         return(f.exists());
@@ -1078,6 +1084,7 @@ public class ProgramEntity {
 	}
 */
 
+@JsonIgnore
 	Object[] getParams(Method m, Map<String, Object> actualParams) {
 	  Object[] args = null;
 	  int len = actualParams.size();

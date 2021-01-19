@@ -267,7 +267,7 @@ function createProgram (parentId) {
   editFolderDialog ('Create program', 'New program', function (data) {
       var resource = parentId == null ? "/program" : "/program/parent/"+parentId;
       dialogWorking = dialogMessage ('Working', 'Creating program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-      callServer ("PUT", resource, JSON.stringify(data), catalogCallback);
+      callServer ("POST", resource, JSON.stringify(data), catalogCallback);
     }
   );
 }
@@ -301,20 +301,26 @@ function renameProgram_deprecated (programId, programName) {
   );
 }
 */
-function renameProgram() {
+function updateProgram() {
     var name = document.getElementById("programName").value;
+    var version = document.getElementById("programVersion").value;
     var programId = document.getElementById("programId").value;
 
-    if (name == "")
+    if (name == "" || version == "" || programId == "")
         return;
 
+    var data = { id: programId, name: name, version: version };
+
+    //console.log(data);
+
     dialogWorking = dialogMessage ('Working', 'Renaming program...', DialogButtons.NONE, DialogIcon.RUNNING, null);
-    callServer ("PUT", '/program/'+programId+'/rename/'+name, null, function (xhttp) {
+    //callServer ("PUT", '/program/'+programId+'/rename/'+name, null, function (xhttp) {
+    callServer ("PUT", '/program/'+programId, JSON.stringify(data), function (xhttp) {
           if (xhttp.readyState == 4) {
             dialogWorking.destroy();
 
             if (xhttp.status == 200) {
-              resetNameCtrl();
+              resetCtrl();
             }
             else {
               dialogError (xhttp.statusText);
@@ -329,14 +335,21 @@ function nameChanged() {
     document.getElementById("programName").style.backgroundColor = "yellow";
 }
 
-function resetNameCtrl() {
-    document.getElementById("renameCtrl").style.visibility = "hidden";
-    document.getElementById("programName").style.backgroundColor = "white";
+function versionChanged() {
+    document.getElementById("renameCtrl").style.visibility = "visible";
+    document.getElementById("programVersion").style.backgroundColor = "yellow";
 }
 
-function revertName(name) {
+function resetCtrl() {
+    document.getElementById("renameCtrl").style.visibility = "hidden";
+    document.getElementById("programName").style.backgroundColor = "white";
+    document.getElementById("programVersion").style.backgroundColor = "white";
+}
+
+function revert(name, version) {
     document.getElementById("programName").value = name;
-    resetNameCtrl();
+    document.getElementById("programVersion").value = version;
+    resetCtrl();
 }
 
 function deleteProgram (id, name) {
