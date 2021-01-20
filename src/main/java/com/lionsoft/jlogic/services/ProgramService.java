@@ -130,12 +130,15 @@ public class ProgramService {
 
         String deps = "";
 
-        for (int i=0; i<program.getDependencies().size(); i++)
+        for (int i=0; i<program.getDependencies().size(); i++) {
+            logger.info("Found dependency: "+program.getDependencies().get(i).getGroupId()+"."+program.getDependencies().get(i).getArtifactId());
+            
             deps += "<dependency>"+ System.lineSeparator() +
             "<groupId>"+program.getDependencies().get(i).getGroupId()+"</groupId>" + System.lineSeparator() +
             "<artifactId>"+program.getDependencies().get(i).getArtifactId()+"</artifactId>" + System.lineSeparator() +
             "<version>"+program.getDependencies().get(i).getVersion()+"</version>" + System.lineSeparator() +
             "</dependency>" + System.lineSeparator();
+        }
 
         String pom = Utils.loadTextFileFromResources("pom-template.xml");
         pom = pom.replace("{name}", program.getName())

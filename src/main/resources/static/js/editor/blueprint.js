@@ -1440,8 +1440,8 @@ class Blueprint {
 
   hasPackage (jp) {
     for (var i=0; i<this.packages.length; i++) {
-      if (jp.artifactId == this.packages[i].artifactId ||
-          jp.groupId == this.packages[i].groupId ||
+      if (jp.artifactId == this.packages[i].artifactId &&
+          jp.groupId == this.packages[i].groupId &&
           jp.version == this.packages[i].version
          )
         return (true);
@@ -1562,6 +1562,7 @@ class Blueprint {
 
         // Collect packages
         if (node.hasOwnProperty("package") && node.package) {
+            //console.log(node.package);
             this.addPackage(node.package);
             this.addArrayUnique(jo.import, node.package.groupId+"."+node.package.artifactId+".*");
         }
