@@ -20,7 +20,7 @@
     "name": "While Loop",
     "icon": "<i class=\"icon i-retweet\"></i>",
     "type": 13,
-    "version": 1,
+    "java": "while (in{1}) { exec{0} }\nexec{1}\n",
     "input": [
       { "type": "Exec", "label": "" },
       { "type": "Boolean", "label": "Condition", "value":true }
