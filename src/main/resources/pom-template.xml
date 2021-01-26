@@ -68,6 +68,7 @@
                     <archive>
                         <manifest>
                             <mainClass>{mainClass}</mainClass>
+                            <addClasspath>true</addClasspath>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>.</Class-Path>
@@ -82,8 +83,12 @@
                     <archive>
                         <manifest>
                             <mainClass>{mainClass}</mainClass>
+                            <addClasspath>true</addClasspath>
                         </manifest>
-                    </archive>
+                         <manifestEntries>
+                            <Class-Path>.</Class-Path>
+                        </manifestEntries>
+                   </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>

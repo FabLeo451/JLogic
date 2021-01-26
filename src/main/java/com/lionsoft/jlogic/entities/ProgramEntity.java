@@ -1281,7 +1281,7 @@ public class ProgramEntity {
         setGlobalProperties.invoke(context, gProp.getProperties());
 
         // Set program properties
-        setProgramProperties.invoke(context, getMyDir()+"/Program.properties", this.getProperties());
+        setProgramProperties.invoke(context, getPropertiesFile(), this.getProperties());
 
         //Class cls = cl.loadClass("Program");
         Class cls = Class.forName(getMainClass(), false, cl);

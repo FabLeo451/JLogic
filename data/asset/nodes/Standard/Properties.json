@@ -5,10 +5,10 @@
       "type": 4,
       "version": 1,
       "import": ["java.util.Properties"],
-      "java":"switch(in{1}) { case 0: out{1} = System.getProperty(in{2}); break; case 1: out{1} = context.globalProperties.getProperty(in{2}); break; default: out{1} = context.programProperties.getProperty(in{2}); break; }",
+      "java":"switch(in{1}) { case 0: out{1} = System.getProperty(in{2}); break; default: out{1} = context.programProperties.getProperty(in{2}); break; }",
       "input": [
         { "type": "Exec", "label": "" },
-        { "type": "Integer", "label": "Properties", "value": 0, "enum": [ "System", "Global", "Program" ] },
+        { "type": "Integer", "label": "Properties", "value": 0, "enum": [ "System", "Program" ] },
         { "type": "String", "label": "Key", "value": "", "single_line": true, "not_null":true }
       ],
       "output": [
