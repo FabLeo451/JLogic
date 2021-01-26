@@ -222,6 +222,16 @@ public class ProgramEntity {
     }
 
     @JsonIgnore
+    public String getResourcesDir() {
+        return ("/src/main/resources");
+    }
+
+    @JsonIgnore
+    public String getPropertiesFile() {
+        return (getMyDir()+"/"+getResourcesDir()+"/application.propertes");
+    }
+
+    @JsonIgnore
     public String getClasspathFile() { return (getMyDir()+"/cp.txt"); }
     @JsonIgnore
     public String getClassesDir() { return (getMyDir()+"/target/classes"); }
@@ -671,7 +681,7 @@ public class ProgramEntity {
 
 	public boolean createProperties() {
     try {
-      FileWriter file = new FileWriter(getMyDir()+"/Program.properties");
+      FileWriter file = new FileWriter(getPropertiesFile());
       file.write("# Properties of program "+getName());
       file.flush();
       file.close();
@@ -685,13 +695,13 @@ public class ProgramEntity {
 
   @JsonIgnore
 	public Properties getProperties() {
-    PropertiesManager pm = new PropertiesManager(getMyDir()+"/Program.properties");
+    PropertiesManager pm = new PropertiesManager(getPropertiesFile());
     return (pm.getProperties());
 	}
 
   @JsonIgnore
 	public PropertiesManager getPropertiesManager() {
-    PropertiesManager pm = new PropertiesManager(getMyDir()+"/Program.properties");
+    PropertiesManager pm = new PropertiesManager(getPropertiesFile());
     return (pm);
 	}
 
@@ -702,8 +712,8 @@ public class ProgramEntity {
         args.add(home.getDir() + "/bp2java");
         args.add("-P");
         args.add(getName());
-        args.add("--root");
-        args.add(getHomeDir());
+        /*args.add("--root");
+        args.add(getHomeDir());*/
         /*args.add("-m");
         args.add("MANIFEST.MF");*/
         /*args.add("--deps");
