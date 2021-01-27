@@ -228,7 +228,7 @@ public class ProgramEntity {
 
     @JsonIgnore
     public String getPropertiesFile() {
-        return (getMyDir()+"/"+getResourcesDir()+"/application.propertes");
+        return (getMyDir()+"/"+getResourcesDir()+"/application.properties");
     }
 
     @JsonIgnore
