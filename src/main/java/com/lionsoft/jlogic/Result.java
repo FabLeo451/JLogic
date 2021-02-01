@@ -45,4 +45,5 @@ public class Result {
     }
 
     public boolean success() { return(code == SUCCESS); }
+    public boolean errors() { return(code != SUCCESS); }
 }
