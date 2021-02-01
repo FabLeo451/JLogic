@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.concurrent.atomic.AtomicLong;
 import java.lang.*;
 import java.io.FileNotFoundException;
-import java.util.Date;
+import java.util.*;
 import java.time.Instant;
 
 import org.springframework.web.bind.annotation.*;
@@ -73,5 +73,18 @@ public class PluginController {
         logger.info(result.getMessage());
 
         return new ResponseEntity<>(result.getMessage(), HttpStatus.OK);
+    }
+
+    /**
+     * List installed plugins
+     */
+    @GetMapping(value = "/plugins", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Plugin> list() {
+        List<Plugin> list = pluginService.list();
+
+        if (list == null)
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to get plugin list");
+
+        return list;
     }
 }
