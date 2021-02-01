@@ -3,6 +3,7 @@ import ssl
 import json
 import getopt, sys, os
 from base64 import b64encode
+from prettytable import PrettyTable
 
 version = "1.0.0"
 
@@ -19,12 +20,54 @@ def usage():
     print("  -u, --user     <user>          : Set HTTP user")
     print("  -p, --password <password>      : Set HTTP password")
     print("  -i, --install  <jar-file>      : Install the given plugin")
+    print("  -l, --list                     : List installes plugins")
     print("  -v, --version                  : Show versionn")
 
 def getConnection():
     connection = http.client.HTTPSConnection(host, port, timeout=10, context = ssl._create_unverified_context())
     #connection = http.client.HTTPConnection(host, 1234)
     return(connection)
+
+def error(response):
+    try:
+        jo = json.loads(response.read().decode('utf-8'))
+        message = jo["message"]
+    except ValueError as e:
+        message = str(response.status)
+
+    print("Failed: "+message)
+
+# List plugins
+def list():
+    connection = getConnection();
+    userAndPass = b64encode(str.encode(user+":"+password)).decode("ascii")
+    headers = { 'Authorization' : 'Basic %s' %  userAndPass }
+    try:
+        connection.request("GET", "/plugins", headers=headers)
+        response = connection.getresponse()
+
+        if response.status == 200:
+            jo = json.loads(response.read().decode('utf-8'))
+
+            table = PrettyTable()
+            table.field_names = ["Plugin", "Version"]
+            table.align["Plugin"] = "l"
+
+            for plugin in jo:
+                name = plugin['name']
+                version = plugin["version"]
+                table.add_row([name, version])
+
+            print(table)
+        else:
+            error(response)
+
+    except ConnectionRefusedError:
+        print("Failed: Unable to connect");
+        sys.exit(1)
+
+    finally:
+        connection.close()
 
 # Install a plugin
 def install(jarFile):
@@ -44,16 +87,11 @@ def install(jarFile):
     try:
         connection.request("POST", "/plugin/install", body=bytes, headers=headers)
         response = connection.getresponse()
-        #print("Status: {} and reason: {}".format(response.status, response.reason))
-
-        responseStr = response.read().decode('utf-8')
-        #print(responseStr)
 
         if response.status == 200:
             print('Plugin successfully installed')
         else:
-            jo = json.loads(responseStr)
-            print("Failed: "+jo['message'])
+            error(response)
 
     except ConnectionRefusedError:
         print("Failed: Unable to connect");
@@ -67,7 +105,7 @@ def main():
     global user, password
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hu:p:i:v", ["help", "user=", "password=", "install=", "version"])
+        opts, args = getopt.getopt(sys.argv[1:], "hu:p:i:vl", ["help", "user=", "password=", "install=", "version", "list"])
     except getopt.GetoptError as err:
         # print help information and exit:
         print(err)  # will print something like "option -a not recognized"
@@ -88,6 +126,8 @@ def main():
             password = a
         elif o in ("-i", "--install"):
             install(a)
+        elif o in ("-l", "--list"):
+            list()
         else:
             assert False, "unhandled option"
     # ...
