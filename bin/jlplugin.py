@@ -16,10 +16,15 @@ def usage():
     os.path.basename
     print(os.path.basename(sys.argv[0]) + " " + version)
     print("Usage: " + sys.argv[0] + " [options]")
-    print("  -u, --user <user>              : Set HTTP user")
+    print("  -u, --user     <user>          : Set HTTP user")
     print("  -p, --password <password>      : Set HTTP password")
-    print("  -i, --install <jar-file>       : Install the given plugin")
+    print("  -i, --install  <jar-file>      : Install the given plugin")
     print("  -v, --version                  : Show versionn")
+
+def getConnection():
+    connection = http.client.HTTPSConnection(host, port, timeout=10, context = ssl._create_unverified_context())
+    #connection = http.client.HTTPConnection(host, 1234)
+    return(connection)
 
 # Install a plugin
 def install(jarFile):
@@ -27,9 +32,7 @@ def install(jarFile):
 
     filename = os.path.abspath(jarFile)
 
-    connection = http.client.HTTPSConnection(host, port, timeout=10, context = ssl._create_unverified_context())
-    #connection = http.client.HTTPConnection(host, 1234)
-
+    connection = getConnection();
     userAndPass = b64encode(str.encode(user+":"+password)).decode("ascii")
     headers = { 'Authorization' : 'Basic %s' %  userAndPass, 'Content-type': 'application/x-www-form-urlencoded' }
 
