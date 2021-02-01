@@ -372,6 +372,13 @@ public class Utils {
     /**
      * Execute a a shell command
      */
+    public static Result execute(List<String> args) {
+        return(execute(args, null));
+    }
+
+    /**
+     * Execute a a shell command. Set working directory
+     */
     public static Result execute(List<String> args, String workDir) {
         Result result = new Result();
 
