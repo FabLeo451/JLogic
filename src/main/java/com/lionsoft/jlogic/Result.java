@@ -7,6 +7,7 @@ public class Result {
     int code;
     String message;
     String output;
+    String stdout, stderr;
     Object data;
 
     public Result() {
@@ -22,6 +23,12 @@ public class Result {
 
     public String getOutput() { return output; }
     public void setOutput(String output) { this.output = output; }
+
+    public String getStdErr() { return stderr; }
+    public void setStdErr(String stderr) { this.stderr = stderr; }
+
+    public String getStdOut() { return stdout; }
+    public void setStdOut(String stdout) { this.stdout = stdout; }
 
     public Object getData() { return data; }
     public void setData(Object data) { this.data = data; }

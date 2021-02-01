@@ -392,17 +392,23 @@ public class Utils {
         try {
             Process process = processBuilder.start();
 
-            StringBuilder output = new StringBuilder();
+            StringBuilder output = new StringBuilder(); // Everything (stdout + stderr)
+            StringBuilder stdout = new StringBuilder(); // Standard output
+            StringBuilder stderr = new StringBuilder(); // Standard error
             BufferedReader outReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             BufferedReader errReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
             String line;
 
-            while ((line = outReader.readLine()) != null)
+            while ((line = outReader.readLine()) != null) {
                 output.append(line + "\n");
+                stdout.append(line + "\n");
+            }
 
-            while ((line = errReader.readLine()) != null)
+            while ((line = errReader.readLine()) != null) {
                 output.append(line + "\n");
+                stderr.append(line + "\n");
+            }
 
             int exitVal = process.waitFor();
 
@@ -410,6 +416,8 @@ public class Utils {
                 result.setResult(exitVal, "Exit code: "+exitVal);
             }
 
+            result.setStdOut(stdout.toString());
+            result.setStdErr(stderr.toString());
             result.setOutput(output.toString());
         }
         catch (IOException e) {
