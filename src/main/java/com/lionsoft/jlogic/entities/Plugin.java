@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name="PLUGINS")
+@Table(name="PLUGIN_DEPS")
 public class Plugin {
 
     @Id
