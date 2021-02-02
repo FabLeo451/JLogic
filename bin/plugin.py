@@ -21,7 +21,6 @@ password = "" if os.getenv('JLOGIC_PASSWORD') is None else os.getenv('JLOGIC_PAS
 
 # Usage
 def usage():
-    os.path.basename
     print(os.path.basename(sys.argv[0]) + " " + version)
     print("Usage: " + sys.argv[0] + " [options]")
     print("  -u, --user     USER          : Set HTTP user")
