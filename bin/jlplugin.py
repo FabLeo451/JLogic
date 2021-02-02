@@ -9,21 +9,22 @@ version = "1.0.0"
 
 host = 'localhost';
 port = 8443;
-user = ""
-password = ""
+user = "" if os.getenv('JLOGIC_USER') is None else os.getenv('JLOGIC_USER')
+password = "" if os.getenv('JLOGIC_PASSWORD') is None else os.getenv('JLOGIC_PASSWORD')
 
 # Usage
 def usage():
     os.path.basename
     print(os.path.basename(sys.argv[0]) + " " + version)
     print("Usage: " + sys.argv[0] + " [options]")
-    print("  -u, --user     <user>          : Set HTTP user")
-    print("  -p, --password <password>      : Set HTTP password")
-    print("  -i, --install  <jar-file>      : Install the given plugin")
-    print("  -l, --list                     : List installes plugins")
-    print("  -v, --version                  : Show versionn")
+    print("  -u, --user     USER          : Set HTTP user")
+    print("  -p, --password PASSWORD      : Set HTTP password")
+    print("  -i, --install  JARFILE       : Install the given plugin")
+    print("  -l, --list                   : List installed plugins")
+    print("  -v, --version                : Show version")
 
 def getConnection():
+    print("Connecting as "+user)
     connection = http.client.HTTPSConnection(host, port, timeout=10, context = ssl._create_unverified_context())
     #connection = http.client.HTTPConnection(host, 1234)
     return(connection)
