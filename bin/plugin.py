@@ -1,9 +1,16 @@
+#!/usr/bin/env python3
+
+# Plugin utility
+# Written by Fabio Leone
+
 import http.client
+from http.client import responses
 import ssl
 import json
 import getopt, sys, os
 from base64 import b64encode
 from prettytable import PrettyTable
+from prettytable import PLAIN_COLUMNS
 
 version = "1.0.0"
 
@@ -24,7 +31,7 @@ def usage():
     print("  -v, --version                : Show version")
 
 def getConnection():
-    print("Connecting as "+user)
+    # print("Connecting as "+user)
     connection = http.client.HTTPSConnection(host, port, timeout=10, context = ssl._create_unverified_context())
     #connection = http.client.HTTPConnection(host, 1234)
     return(connection)
@@ -34,9 +41,10 @@ def error(response):
         jo = json.loads(response.read().decode('utf-8'))
         message = jo["message"]
     except ValueError as e:
-        message = str(response.status)
+        message = "Error " + str(response.status) + ": "+ responses[response.status]
 
-    print("Failed: "+message)
+    print(message)
+    sys.exit(1)
 
 # List plugins
 def list():
@@ -51,8 +59,10 @@ def list():
             jo = json.loads(response.read().decode('utf-8'))
 
             table = PrettyTable()
-            table.field_names = ["Plugin", "Version"]
-            table.align["Plugin"] = "l"
+            table.field_names = ["PLUGIN", "VERSION"]
+            table.set_style(PLAIN_COLUMNS)
+            table.align["PLUGIN"] = "l"
+            table.align["VERSION"] = "l"
 
             for plugin in jo:
                 name = plugin['name']
@@ -104,6 +114,10 @@ def install(jarFile):
 # Main
 def main():
     global user, password
+
+    if len(sys.argv) == 1:
+        usage()
+        sys.exit
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hu:p:i:vl", ["help", "user=", "password=", "install=", "version", "list"])
