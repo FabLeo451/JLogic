@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>JLogic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo">
+<link rel="stylesheet" href="/JLogic/css/jlogic.css">
+<link rel="stylesheet" href="/JLogic/css/toc.css">
+
+<script src="/JLogic/js/utils.js"></script>
+<script src="/JLogic/js/toc.js"></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <div w3-include-html="/JLogic/header.html"></div>
+
+  <!-- Table of contents -->
+  <div class="toc w3-myFont">
+      <b>Table of contents</b>
+      <br><br>
+      <div id="toc"></div>
+  </div>
+
+  <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:15%; margin-right:10%">
+    <h3 class="w3-myFont">Installing plugins</h3>
+    <p>
+        Plugins can be installed using the command line tool <b>plugin</b>.
+        <div class="w3-code notranslate">
+          cd jlogic-&lt;version&gt;/bin<br>
+          ./plugin -u <i>user</i> -p <i>password</i> -i <i>/path/to/jar/file</i><br>
+        </div>
+        Example:<br>
+        <div class="w3-code notranslate">
+          ./plugin -u foo -p bar -i /data/Downloads/json-1.0.0.jar<br>
+        </div>
+        User must have administration privileges.<br>
+        To see other options type<br>
+        <div class="w3-code notranslate">
+          ./plugin --help<br>
+        </div>
+
+    </p>
+    <hr>
+  </div>
+
+  <script>
+    includeHTML();
+    toc();
+  </script>
+
+</body>
+</html>
