@@ -42,7 +42,9 @@ function toc(id) {
             ]
         },
         { "title": "Flow control", "url":"flow.html"},
-        { "title": "Installing plugins", "url":"plugins.html"}
+        { "title": "Command line tools", "url":"cli.html", "children": [
+            { "title": "Installing plugins", "url":"cli.html#plugins"}
+        ]}
     ];
 
     buildTOC(document.getElementById(id ? id : "toc"), jtoc);
