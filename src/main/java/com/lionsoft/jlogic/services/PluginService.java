@@ -717,29 +717,37 @@ public class PluginService {
 	 */
 	public List<Plugin> list() {
         // Get local repository path
-        List<String> args = new ArrayList<String> ();
 
-        // mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout
-        args.add("mvn");
-        args.add("--batch-mode"); // Disable ansi colors
-        args.add("help:evaluate");
-        args.add("-Dexpression=settings.localRepository");
-        args.add("-q");
-        args.add("-DforceStdout");
+		String localRepPath = Utils.getLocalRepositoryDir();
 
-        Result result = Utils.execute(args);
+		if (localRepPath == null) {
+	        List<String> args = new ArrayList<String> ();
 
-        if (result.errors()) {
-            logger.error("Unable to get Maven local repository path:");
-            logger.error(result.getStdErr());
-            return null;
-        }
+	        // mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout
+	        args.add("mvn");
+	        args.add("--batch-mode"); // Disable ansi colors
+	        args.add("help:evaluate");
+	        args.add("-Dexpression=settings.localRepository");
+	        args.add("-q");
+	        args.add("-DforceStdout");
 
-        logger.info("Maven local repository: "+result.getStdOut());
+	        Result result = Utils.execute(args);
+
+	        if (result.errors()) {
+	            logger.error("Unable to get Maven local repository path:");
+	            logger.error(result.getStdErr());
+	            return null;
+	        }
+
+			localRepPath = result.getStdOut().replace("\n", "");
+			Utils.setLocalRepositoryDir(localRepPath);
+		}
+
+        logger.info("Maven local repository: "+localRepPath);
 
         List<Plugin> plugins = new ArrayList<Plugin>();
 
-        String pluginPath = result.getStdOut().replace("\n", "") + "/org/jlogic/plugin";
+        String pluginPath = localRepPath + "/org/jlogic/plugin";
 
         try (Stream<Path> paths = Files.walk(Paths.get(pluginPath))) {
             List<String> list = paths.map(p -> p.toString()).filter(f -> f.endsWith(".pom")).collect(Collectors.toList());

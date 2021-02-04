@@ -38,6 +38,8 @@ public class Utils {
     static ApplicationHome home = new ApplicationHome(Utils.class);
     static Logger logger = LoggerFactory.getLogger(Utils.class);
 
+    static String localRepositoryDir;
+
     //@Autowired
     //private static ResourceLoader resourceLoader;
 
@@ -56,6 +58,9 @@ public class Utils {
     static String getLibDir() { return getHomeDir()+"/lib"; }
     static String getPluginsDir() { return getHomeDir()+"/plugin"; }
     static String getM2RepositoryDir() { return getHomeDir()+"/m2/repository"; }
+
+    static String getLocalRepositoryDir() { return localRepositoryDir; }
+    static void setLocalRepositoryDir(String d) { localRepositoryDir = d; }
 
     static String getTempDirectory() {
     	return home.getDir()+"/../temp";
