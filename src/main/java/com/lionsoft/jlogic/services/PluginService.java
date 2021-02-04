@@ -72,6 +72,10 @@ public class PluginService {
 
 	public PluginService() {}
 
+	public String getPluginDir(Plugin plugin) {
+		return(Utils.getPluginsDir() + "/" + plugin.getName());
+	}
+
 	/**
 	 * Get plugin info from jar file
 	 */
@@ -153,7 +157,7 @@ public class PluginService {
 		jplugin.put("nodes", jnodes);
 
 		try {
-			List<URL> urls = Utils.getURLs(Utils.getPluginsDir() + "/" + plugin.getName() + "/classpath");
+			List<URL> urls = Utils.getURLs(getPluginDir(plugin) + "/classpath");
 
 			if (urls == null) {
 				logger.error("Classpath file not found");
@@ -593,7 +597,7 @@ public class PluginService {
 		args.add("-Dversion=" + plugin.getVersion());
 		args.add("-Dpackaging=jar");
 		//args.add("-DlocalRepositoryPath="+Utils.getM2RepositoryDir());
-		args.add("-DpomFile=" + Utils.getPluginsDir() + "/" + plugin.getName() + "/pom.xml");
+		args.add("-DpomFile=" + getPluginDir(plugin) + "/pom.xml");
 
 		result = Utils.execute(args, null);
 		return result;
@@ -604,7 +608,7 @@ public class PluginService {
 	 */
 	public Result createCP(Plugin plugin) {
 		Result result = new Result();
-		String pluginDir = Utils.getPluginsDir() + "/" + plugin.getName();
+		String pluginDir = getPluginDir(plugin);
 		List<String> args = new ArrayList<String> ();
 
 		args.add("mvn");
@@ -643,7 +647,7 @@ public class PluginService {
 		}
 
 		// Create dir
-		String pluginDir = Utils.getPluginsDir() + "/" + plugin.getName();
+		String pluginDir = getPluginDir(plugin);
 
 		logger.info("Creating " + pluginDir);
 
@@ -717,7 +721,7 @@ public class PluginService {
 	 */
 	public List<Plugin> list() {
         // Get local repository path
-
+/*
 		String localRepPath = Utils.getLocalRepositoryDir();
 
 		if (localRepPath == null) {
@@ -744,13 +748,14 @@ public class PluginService {
 		}
 
         logger.info("Maven local repository: "+localRepPath);
-
+*/
         List<Plugin> plugins = new ArrayList<Plugin>();
 
-        String pluginPath = localRepPath + "/org/jlogic/plugin";
+        //String pluginPath = localRepPath + "/org/jlogic/plugin";
 
-        try (Stream<Path> paths = Files.walk(Paths.get(pluginPath))) {
-            List<String> list = paths.map(p -> p.toString()).filter(f -> f.endsWith(".pom")).collect(Collectors.toList());
+        try (Stream<Path> paths = Files.walk(Paths.get(/*pluginPath*/Utils.getPluginsDir()))) {
+			//List<String> list = paths.map(p -> p.toString()).filter(f -> f.endsWith(".pom")).collect(Collectors.toList());
+			List<String> list = paths.map(p -> p.toString()).filter(f -> f.endsWith("/pom.xml")).collect(Collectors.toList());
 
             for (String pom: list) {
                 //System.out.println("Found "+pom);
