@@ -767,7 +767,8 @@ public class PluginService {
                 p.setVersion(model.getVersion());
                 p.setGroupId(model.getGroupId());
 				p.setArtifactId(model.getArtifactId());
-				p.setDescription(model.getDescription());
+                p.setDescription(model.getDescription());
+                p.setUrl(model.getUrl());
                 plugins.add(p);
             }
         } catch (XmlPullParserException e) {
