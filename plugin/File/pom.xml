@@ -9,6 +9,15 @@
 
 	<name>File</name>
 	<url></url>
+	<description>Filesystem utilities</description>
+
+	<developers>
+      <developer>
+        <id>fableo</id>
+        <name>Fabio Leone</name>
+        <email>fab.leo@gmail.com</email>
+      </developer>
+    </developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

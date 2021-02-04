@@ -28,6 +28,7 @@ public class Plugin {
     private String path;
     private String className;
     private String spec;
+    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="program_id")
@@ -69,6 +70,9 @@ public class Plugin {
 
     public String getVersion() { return(version); }
     public void setVersion(String version) { this.version = version; }
+
+    public String getDescription() { return(description); }
+    public void setDescription(String description) { this.description = description; }
 
     public boolean equals(Plugin p) {
         return(p.getGroupId().equals(this.groupId) &&

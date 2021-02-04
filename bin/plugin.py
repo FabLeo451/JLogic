@@ -58,15 +58,17 @@ def list():
             jo = json.loads(response.read().decode('utf-8'))
 
             table = PrettyTable()
-            table.field_names = ["PLUGIN", "VERSION"]
+            table.field_names = ["PLUGIN", "VERSION", "DESCRIPTION"]
             table.set_style(PLAIN_COLUMNS)
             table.align["PLUGIN"] = "l"
             table.align["VERSION"] = "l"
+            table.align["DESCRIPTION"] = "l"
 
             for plugin in jo:
                 name = plugin['name']
                 version = plugin["version"]
-                table.add_row([name, version])
+                description = plugin["description"]
+                table.add_row([name, version, description])
 
             print(table)
         else:
