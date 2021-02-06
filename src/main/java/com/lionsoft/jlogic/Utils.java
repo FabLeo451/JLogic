@@ -39,6 +39,7 @@ public class Utils {
     static Logger logger = LoggerFactory.getLogger(Utils.class);
 
     static String localRepositoryDir;
+    static String MAVEN_HOME = "/usr";
 
     //@Autowired
     //private static ResourceLoader resourceLoader;

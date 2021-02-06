@@ -52,6 +52,15 @@ import java.util.zip.ZipOutputStream;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.DefaultInvoker;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.apache.maven.shared.invoker.InvocationResult;
+
+import org.apache.maven.cli.MavenCli;
+
 @Service
 public class ProgramService {
 
@@ -132,7 +141,7 @@ public class ProgramService {
 
         for (int i=0; i<program.getDependencies().size(); i++) {
             logger.info("Found dependency: "+program.getDependencies().get(i).getGroupId()+"."+program.getDependencies().get(i).getArtifactId());
-            
+
             deps += "<dependency>"+ System.lineSeparator() +
             "<groupId>"+program.getDependencies().get(i).getGroupId()+"</groupId>" + System.lineSeparator() +
             "<artifactId>"+program.getDependencies().get(i).getArtifactId()+"</artifactId>" + System.lineSeparator() +
@@ -277,6 +286,8 @@ public class ProgramService {
      */
     public boolean createCP(ProgramEntity program) {
         //boolean result = false;
+        logger.info("Creating classpath file...");
+
         List<String> args = new ArrayList<String>();
 
         args.add("mvn");
@@ -288,6 +299,31 @@ public class ProgramService {
         Result result = Utils.execute(args, program.getMyDir());
 
         return(result.success());
+/*
+
+        InvocationRequest request = new DefaultInvocationRequest();
+        request.setBatchMode(true);
+        request.setPomFile(new File(program.getMyDir()+"/pom.xml"));
+        request.setGoals(Collections.singletonList("dependency:build-classpath"));
+        request.setBaseDirectory(new File(program.getMyDir()));
+        request.setMavenOpts("-Dmdep.outputFile="+program.getClasspathFile());
+
+        Invoker invoker = new DefaultInvoker();
+
+        try {
+            invoker.setMavenHome(new File(Utils.MAVEN_HOME));
+            //invoker.setMavenExecutable("")
+            System.out.println("MAVEN_HOME = "+invoker.getMavenHome());
+            invoker.execute(request);
+            InvocationResult res = invoker.execute(request);
+
+            result = res.getExitCode() == 0 ? true : false;
+        } catch (MavenInvocationException e) {
+            logger.error("Unable to execute Maven: "+e.getMessage());
+        }
+
+        return(result);
+        */
     }
 
     /**
@@ -305,7 +341,10 @@ public class ProgramService {
         System.out.println("bp2java success: "+result.success());
 
         if (result.success()) {
-            createPOM(program);
+            if (!createPOM(program)) {
+                result.setResult(1, "Unable to create POM file");
+                return(result);
+            }
 
             List<String> args = new ArrayList<String>();
 
@@ -328,9 +367,46 @@ public class ProgramService {
             } else {
                 result.setMessage("Compiler error (code "+result.getCode()+")");
             }
+
+/*
+            InvocationRequest request = new DefaultInvocationRequest();
+            request.setBatchMode(true);
+            request.setPomFile(new File(program.getMyDir()+"/pom.xml"));
+            //request.setBaseDirectory(new File(program.getMyDir()));
+            request.setGoals(Collections.singletonList("compile"));
+            //request.setMavenOpts("--quiet");
+
+            Invoker invoker = new DefaultInvoker();
+
+            try {
+                invoker.setMavenHome(new File(Utils.MAVEN_HOME));
+                invoker.execute(request);
+                InvocationResult res = invoker.execute(request);
+
+                if (res.getExitCode() == 0) {
+                    program.setBuildTime(new Date());
+                    program.setUpdateTime(new Date());
+                    program.setStatus(ProgramStatus.COMPILED);
+                    result.setMessage ("Successfully compiled "+program.getName());
+                } else {
+                    result.setMessage("Compiler error (code "+res.getExitCode()+")");
+                }
+            } catch (MavenInvocationException e) {
+                result.setMessage("Unable to execute Maven: "+e.getMessage());
+            }
+*/
+/*
+            System.setProperty("maven.multiModuleProjectDirectory", Utils.MAVEN_HOME);
+            MavenCli maven = new MavenCli();
+            int res = maven.doMain(new String[]{"package", "--quiet", "--batch-mode"}, program.getMyDir(), System.out, System.out);
+            logger.info("Result code: "+res);
+*/
+
         } else {
             result.setResult(Result.ERROR, "Can't generate source for "+program.getName()+": "+result.getMessage());
         }
+
+
 
         logger.info("Updating program info...");
 
@@ -376,8 +452,12 @@ public class ProgramService {
     public boolean run(ProgramEntity program, String methodName, Map<String, Object> actual, String logName, HttpServletRequest request) {
         boolean result = false;
 
-        if (!new File(program.getClasspathFile()).exists())
-            createCP(program);
+        if (!new File(program.getClasspathFile()).exists()){
+            if (!createCP(program)) {
+                logger.error("Unable to create classpath file");
+                return(result);
+            }
+        }
 
         //sessionService.setActive(request, true);
         sessionService.setProgramUnit(request, program.getName()+"."+methodName);
