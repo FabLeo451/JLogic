@@ -91,7 +91,7 @@
   ];
 
   var notes = {
-      "oracle":"Needs ojdbc8.jar installed separately."
+      "oracle":"ojdbc8.jar should be installed separately. <a href=\"https://mkyong.com/maven/how-to-add-oracle-jdbc-driver-in-your-maven-local-repository/\" target=\"blank\">See how</a>"
   }
 
 /*
@@ -137,12 +137,15 @@ var pluginsOld = [
       listElem.appendChild(item);
     }
 */
+    var urlBase = '/plugin/repository';
+
     plugins.sort(GetSortOrder("name"));
 
     var table = document.getElementById("table");
 
     for (var i=0; i<plugins.length; i++) {
       var p = plugins[i];
+      var url = urlBase+"/"+p.artifactId+"-"+p.version+".jar";
 
       var row = document.createElement('tr');
       row.classList.add("w3-border-bottom");
@@ -150,7 +153,7 @@ var pluginsOld = [
                       '<td>'+p.version+'</td>'+
                       '<td>'+p.description+'</td>'+
                       '<td>'+(notes.hasOwnProperty(p.artifactId) ? notes[p.artifactId] : "")+'</td>'+
-                      '<td><a href="'+p.url+'" target="_blank"><i class="fas fa-download w3-text-gray"></i></a></td>';
+                      '<td><a href="'+url+'" target="_blank"><i class="fas fa-download w3-text-gray"></i></a></td>';
 
       table.appendChild(row);
     }
