@@ -8,17 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import eu.bitwalker.useragentutils.*;
 
-import javax.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+//import javax.persistence.*;
+//import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Entity
-@Table(name="PLUGIN_DEPS")
 public class Plugin {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    //private UUID id;
 
     private String jarFile;
     private String groupId;
@@ -31,9 +29,9 @@ public class Plugin {
     private String description;
     private String url;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="program_id")
-    private ProgramEntity program;
+    //@ManyToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name="program_id")
+    //private ProgramEntity program;
 
     public Plugin() {
         version = "1.0.0";
@@ -66,8 +64,8 @@ public class Plugin {
     public String getSpec() { return(spec); }
     public void setSpec(String spec) { this.spec = spec; }
 
-    public ProgramEntity getProgram() { return(program); }
-    public void setProgram(ProgramEntity program) { this.program = program; }
+    //public ProgramEntity getProgram() { return(program); }
+    //public void setProgram(ProgramEntity program) { this.program = program; }
 
     public String getVersion() { return(version); }
     public void setVersion(String version) { this.version = version; }
