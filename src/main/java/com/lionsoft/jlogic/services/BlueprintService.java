@@ -204,9 +204,9 @@ public class BlueprintService {
 
       if (jpackages != null) {
           for (int k=0; k<jpackages.size(); k++) {
-              program.addDependency(new Plugin((String) ((JSONObject)jpackages.get(k)).get("groupId"),
-                                               (String) ((JSONObject)jpackages.get(k)).get("artifactId"),
-                                               (String) ((JSONObject)jpackages.get(k)).get("version")));
+              program.addDependency(new Dependency((String) ((JSONObject)jpackages.get(k)).get("groupId"),
+                                                   (String) ((JSONObject)jpackages.get(k)).get("artifactId"),
+                                                   (String) ((JSONObject)jpackages.get(k)).get("version")));
           }
       }
     }

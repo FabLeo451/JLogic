@@ -133,10 +133,10 @@ public class ProgramEntity {
 	@Column(name="package")
 	List<Plugin> dependencies = new ArrayList<Plugin>();*/
 	@OneToMany(mappedBy = "program", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Plugin> dependencies = Collections.emptyList();
+	private List<Dependency> dependencies = Collections.emptyList();
 
 	@JsonIgnore
-	public List<Plugin> getDependencies() {
+	public List<Dependency> getDependencies() {
 		return dependencies;
 	}
 
@@ -369,19 +369,19 @@ public class ProgramEntity {
 	}
 
 	@JsonIgnore
-	public boolean hasDependency(Plugin p) {
+	public boolean hasDependency(Dependency d) {
 		for (int i = 0; i<dependencies.size(); i++) {
-			if (p.equals(dependencies.get(i)))
+			if (d.equals(dependencies.get(i)))
 				return true;
 		}
 
 		return false;
 	}
 
-	public void addDependency(Plugin p) {
-		if (!hasDependency(p)) {
-			dependencies.add(p);
-			p.setProgram(this);
+	public void addDependency(Dependency d) {
+		if (!hasDependency(d)) {
+			dependencies.add(d);
+			d.setProgram(this);
 		}
 	}
 
