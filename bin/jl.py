@@ -27,6 +27,7 @@ def usage():
     print("  -p, --password PASSWORD      : Set HTTP password")
     print("  -l, --list                   : List programs")
     print("  -c, --compile  ID            : Compile program with the given ID")
+    print("      --ping                   : Check if server is alive")
     print("  -v, --version                : Show version")
 
 def getConnection():
@@ -107,6 +108,27 @@ def compile(id):
     finally:
         connection.close()
 
+# Compile a program
+def ping():
+    connection = getConnection();
+
+    try:
+        connection.request("GET", "/")
+        response = connection.getresponse()
+
+        if response.status == 200:
+            jo = json.loads(response.read().decode('utf-8'))
+            print(jo["name"]+" "+jo["version"])
+        else:
+            error(response)
+
+    except ConnectionRefusedError:
+        print("Failed: Unable to connect");
+        sys.exit(1)
+
+    finally:
+        connection.close()
+
 # Main
 def main():
     global user, password
@@ -116,7 +138,8 @@ def main():
         sys.exit
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hu:p:c:vl", ["help", "user=", "password=", "compile=", "version", "list"])
+        opts, args = getopt.getopt(sys.argv[1:], "hu:p:c:vl",
+            ["help", "user=", "password=", "compile=", "version", "list", "ping"])
     except getopt.GetoptError as err:
         # print help information and exit:
         print(err)  # will print something like "option -a not recognized"
@@ -139,6 +162,8 @@ def main():
             compile(a)
         elif o in ("-l", "--list"):
             list()
+        elif o in ("--ping"):
+            ping()
         else:
             assert False, "unhandled option"
     # ...
