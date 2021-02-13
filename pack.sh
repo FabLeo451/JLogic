@@ -1,7 +1,7 @@
 #!/bin/bash
 
 name=jlogic
-version=0.1.0-alpha-8
+version=0.2.0-alpha1
 dist_dir=$name-$version
 jarfile=$name-$version.jar
 source_dir=$name
@@ -29,6 +29,7 @@ echo "Target directory: ${target_dir}"
 echo "Creating directories..."
 
 mkdir -p ${target_dir}/bin
+mkdir -p ${target_dir}/m2
 mkdir -p ${target_dir}/log
 mkdir -p ${target_dir}/lib
 mkdir -p ${target_dir}/plugin
@@ -49,28 +50,31 @@ done
 
 # lib
 
-for f in lib/java-getopt-1.0.13.jar  lib/json-simple-1.1.1.jar  lib/log4j-1.2.12.jar  lib/Standard.jar
-do
-  src=$f
-  dst=${target_dir}/lib
-
-  echo "Copying $src to $dst ..."
-  cp -p $src $dst
-done
+#for f in lib/java-getopt-1.0.13.jar  lib/json-simple-1.1.1.jar  lib/log4j-1.2.12.jar  lib/Standard.jar
+#do
+#  src=$f
+#  dst=${target_dir}/lib
+#
+#  echo "Copying $src to $dst ..."
+#  cp -p $src $dst
+#done
 
 #mv ${target_dir}/bin/$name-0.0.1.jar ${target_dir}/bin/$name
 
 cp -rp data/blueprint ${target_dir}/data
 
 cp -p data/asset/*.json ${target_dir}/data/asset/
-cp -rp data/asset/nodes/Standard ${target_dir}/data/asset/nodes
-cp -rp data/asset/nodes/JSON ${target_dir}/data/asset/nodes
-cp -rp data/asset/nodes/File ${target_dir}/data/asset/nodes
+#cp -rp data/asset/nodes/Standard ${target_dir}/data/asset/nodes
+cp -rp plugin/Json ${target_dir}/plugin
+cp -rp plugin/File ${target_dir}/plugin
+cp -rp m2 ${target_dir}
 
 cp -p LICENSE ${target_dir}
 cp -p env.sh ${target_dir}/bin
+cp -p bin/dist/plugin ${target_dir}/bin
+cp -p bin/dist/jl ${target_dir}/bin
 
-echo "# Global properties" > ${target_dir}/data/global.properties
+#echo "# Global properties" > ${target_dir}/data/global.properties
 
 #--------Begin here document-----------#
 (
