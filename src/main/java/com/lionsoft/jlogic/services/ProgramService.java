@@ -37,6 +37,7 @@ import java.net.URLClassLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -87,6 +88,9 @@ public class ProgramService {
 
     int code = 0;
     String message;
+
+    @Value("${maven.home}")
+    String MAVEN_HOME;
 
 	public ProgramService() {
 	}
@@ -310,7 +314,7 @@ public class ProgramService {
         Invoker invoker = new DefaultInvoker();
 
         try {
-            invoker.setMavenHome(new File(Utils.MAVEN_HOME));
+            invoker.setMavenHome(new File(MAVEN_HOME));
             //invoker.setMavenExecutable("")
             System.out.println("MAVEN_HOME = "+invoker.getMavenHome());
             //invoker.execute(request);
@@ -379,7 +383,7 @@ public class ProgramService {
             Invoker invoker = new DefaultInvoker();
 
             try {
-                invoker.setMavenHome(new File(Utils.MAVEN_HOME));
+                invoker.setMavenHome(new File(MAVEN_HOME));
                 InvocationResult res = invoker.execute(request);
 
                 if (res.getExitCode() == 0) {
@@ -392,10 +396,10 @@ public class ProgramService {
                         logger.error("Unable to create classpath file");
 
                 } else {
-                    result.setMessage("Compiler error (code "+res.getExitCode()+")");
+                    result.setResult(Result.ERROR, "Compiler error (code "+res.getExitCode()+")");
                 }
             } catch (MavenInvocationException e) {
-                result.setMessage("Unable to execute Maven: "+e.getMessage());
+                result.setResult(Result.ERROR, "Unable to execute Maven: "+e.getMessage());
             }
 
 /*

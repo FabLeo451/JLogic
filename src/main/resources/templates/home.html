@@ -40,14 +40,14 @@
   <div class="w3-panel w3-margin">
     <center>
       <img class="logo" src="img/logo.png" width="10%">
-    </center>    
+    </center>
       <!--h3>
         <div style="padding-bottom:1em; border-bottom: 1px dotted grey"><strong><span class="title"/></strong></div>
       </h3-->
       <br>
   </div>
 
-  
+
   <!--div class="w3-panel w3-round w3-margin">
   <p>
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
@@ -62,7 +62,7 @@ You will receive a copy of the GNU General Public License along with the program
 
   <div class="w3-container">
     <div class="w3-panel w3-round w3-margin w3-light-grey">
-      <h6 style="border-bottom: 1px dotted grey"><!--i class="icon i-project-diagram" style="color: orange;"></i--> <b th:text="${name}"></b><!--b class="title"></b--></h6> 
+      <h6 style="border-bottom: 1px dotted grey"><!--i class="icon i-project-diagram" style="color: orange;"></i--> <b th:text="${name}"></b><!--b class="title"></b--></h6>
       <table class="w3-table w3-bordered" style="padding-right:40%">
         <tr><th class="td1-short">Version</th><td><span th:text="${version}"></span></td></tr>
         <tr><th class="td1-short">Start time</th><td><span th:text="${buildTime}"></span></td></tr>
@@ -79,23 +79,24 @@ You will receive a copy of the GNU General Public License along with the program
     </div>
 
     <div class="w3-panel w3-round w3-margin w3-light-grey">
-      <h6 style="border-bottom: 1px dotted grey"><b>Java Runtime Environment</b></h6> 
+      <h6 style="border-bottom: 1px dotted grey"><b>Java Runtime Environment</b></h6>
       <table class="w3-table w3-bordered" style="padding-right:40%">
         <tr><th class="td1-short">Vendor</th><td><span th:text="${java_vendor}"></span></td></tr>
         <tr><th class="td1-short">Vendor URL</th><td><span th:text="${java_vendor_url}"></span></td></tr>
         <tr><th class="td1-short">Version</th><td><span th:text="${java_version}"></span></td></tr>
         <tr><th class="td1-short">Home</th><td><span th:text="${java_home}"></span></td></tr>
         <tr><th class="td1-short">Classpath</th><td><span th:text="${java_class_path}"></span></td></tr>
+        <tr><th class="td1-short">Maven home</th><td><span th:text="${maven_home}"></span></td></tr>
       </table>
     </div>
-    
+
     <!--div class="w3-panel w3-round w3-margin w3-light-grey">
-      <h6 style="border-bottom: 1px dotted grey"><i class="icon i-puzzle-piece" style="color: orange;"></i> <b>Plugins</b></h6>    
+      <h6 style="border-bottom: 1px dotted grey"><i class="icon i-puzzle-piece" style="color: orange;"></i> <b>Plugins</b></h6>
       <table id="plugin-table" class="w3-table w3-bordered" style="padding-right:40%">
         <tr><td><i class="icon i-spinner w3-spin"></i> Scanning...</td></tr>
       </table>
     </div-->
-    
+
     <div class="w3-panel w3-round w3-margin">
         <div class="w3-right" style="color:dimgray;"><i>Copyright (c) 2020 Fabio Leone</i></div>
     </div>
@@ -129,13 +130,13 @@ function secondsToDhms(seconds) {
 /*
 callServer ("GET", "/actuator/env", null, function (xhttp) {
   var jsonResponse;
-  
+
   if (xhttp.readyState == 4) {
     if (xhttp.status == 200) {
       jsonResponse = JSON.parse(xhttp.responseText);
-    
-      document.getElementById('system').innerHTML = jsonResponse.propertySources[2].properties['os.name'].value + ' ' + 
-                                                    jsonResponse.propertySources[2].properties['os.version'].value + ' ' + 
+
+      document.getElementById('system').innerHTML = jsonResponse.propertySources[2].properties['os.name'].value + ' ' +
+                                                    jsonResponse.propertySources[2].properties['os.version'].value + ' ' +
                                                     jsonResponse.propertySources[2].properties['os.arch'].value;
       //document.getElementById('kernel').innerHTML = __SERVER['uname']['release'];
     }
@@ -149,7 +150,7 @@ callServer ("GET", "/actuator/env", null, function (xhttp) {
 );
 */
 </script>
-  
+
 </body>
 
 </html>

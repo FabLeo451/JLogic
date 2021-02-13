@@ -6,6 +6,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -39,7 +40,6 @@ public class Utils {
     static Logger logger = LoggerFactory.getLogger(Utils.class);
 
     static String localRepositoryDir;
-    static String MAVEN_HOME = "/usr";
 
     //@Autowired
     //private static ResourceLoader resourceLoader;

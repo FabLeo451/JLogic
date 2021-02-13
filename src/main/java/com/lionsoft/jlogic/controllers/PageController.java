@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.boot.autoconfigure.info.ProjectInfoAutoConfiguration;
 import org.springframework.ui.Model;
 import org.springframework.boot.info.BuildProperties;
+import org.springframework.beans.factory.annotation.Value;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +67,9 @@ public class PageController {
 
     public String COPYRIGHT = "Copyright (c) 2020,2021 Fabio Leone";
 
+    @Value("${maven.home}")
+    String MAVEN_HOME;
+
     @RequestMapping("/home")
     public String home(HttpServletRequest request, Model model) {
 
@@ -79,6 +84,7 @@ public class PageController {
         model.addAttribute("java_vendor", System.getProperty("java.vendor"));
         model.addAttribute("java_vendor_url", System.getProperty("java.vendor.url"));
         model.addAttribute("java_version", System.getProperty("java.version"));
+        model.addAttribute("maven_home", MAVEN_HOME);
 
         // OS info
         model.addAttribute("os", System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
@@ -134,10 +140,10 @@ public class PageController {
     @RequestMapping("/perform_login")
     public String perform_login(HttpServletRequest request, Model model) {
         HttpSession httpSession = request.getSession(false);
-        
+
         if (httpSession != null) {
           httpSession.setAttribute("webApplication", true);
-          
+
           String username = request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown";
           //logger.info(username+" logged in ("+httpSession.getId()+")");
           logger.info("Log in "+(new Session(httpSession).toString()));
@@ -162,28 +168,28 @@ public class PageController {
         logger.info(username+" requested log out");
         \/*
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        
+
         if (auth != null) {
             logger.info("Logged out "+(request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "Unknown")+" "+request.getSession().getId());
             sessionService.deleteSession(request);
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }*\/
-        
+
         return "redirect:/login?logout";
 	}
 */
 
 	@RequestMapping("/view-programs")
 	public String getBlueprints(Model model,
-                                @RequestParam(value = "element", required=false) String element) { 
+                                @RequestParam(value = "element", required=false) String element) {
         String resource = "view-programs";
 
         model.addAttribute("programs", programService.findAll());
         model.addAttribute("byName", Comparator.comparing(ProgramEntity::getName));
-        
+
         if (element != null)
           resource += " :: #"+element;
-          
+
         //System.out.println("resource = " + resource);
 
         return resource;
@@ -193,8 +199,8 @@ public class PageController {
      * Edit program
      */
 	@RequestMapping("/program/{id}/edit")
-    public String editProgram(HttpServletRequest request, 
-                              Model model, 
+    public String editProgram(HttpServletRequest request,
+                              Model model,
                               @PathVariable("id") String id,
                               @RequestParam(value = "element", required=false) String element) {
         String resource = "edit-program";
@@ -202,13 +208,13 @@ public class PageController {
 
         if (!program.isPresent())
             return "bp";
-        
+
         /*
          * Clone blueprint list to avoid
          * org.hibernate.LazyInitializationException: failed to lazily initialize a collection, could not initialize proxy - no Session
          */
         List<BlueprintEntity> blueprints = new ArrayList<BlueprintEntity>(program.get().getBlueprints());
-            
+
         //System.out.println("Program " + program.get().getName() + " has " + blueprints.size() + " blueprints");
 
         model.addAttribute("title", "Edit program");
@@ -217,10 +223,10 @@ public class PageController {
         model.addAttribute("creating", false);
         model.addAttribute("updating", true);
         model.addAttribute("byName", Comparator.comparing(BlueprintEntity::getName));
-        
+
         if (element != null)
           resource += " :: #"+element;
-          
+
         //System.out.println("resource = " + resource);
 
         return resource;
@@ -230,15 +236,15 @@ public class PageController {
 	public String getApiPanel(Model model,
                               @RequestParam(value = "id", required=false) String id) {
         String resource = "view-apis";
-        
+
         model.addAttribute("apis", APIService.findAll());
         model.addAttribute("byName", Comparator.comparing(APIEntity::getName));
-        
+
         if (id != null)
           resource += " :: #"+id;
-          
+
         //System.out.println("resource = " + resource);
-        
+
         return resource;
     }
 
@@ -277,7 +283,7 @@ public class PageController {
         model.addAttribute("updating", true);
         model.addAttribute("programs", catalogService.getPrograms());
         model.addAttribute("blueprints", api.get().getBlueprint().getProgram().getBlueprints());
-        
+
         return "edit-api";
 	}
 
@@ -308,9 +314,9 @@ public class PageController {
         model.addAttribute("copyright", COPYRIGHT);
         model.addAttribute("clientId", UUID.randomUUID().toString());
 
-        return "edit"; 
+        return "edit";
     }
-  
+
     /**
      * Edit properties
      */
@@ -343,10 +349,10 @@ public class PageController {
         //model.addAttribute("byLoginTime", Comparator.comparing(Session::getLoginTime));
         model.addAttribute("top", sessionService.getTOP());
         model.addAttribute("byTimestamp", Comparator.comparing(Request::getTimestamp));
-        
+
         if (element != null)
           resource += " :: #"+element;
-          
+
         //System.out.println("resource = " + resource);
 
         return resource;
