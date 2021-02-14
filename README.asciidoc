@@ -20,8 +20,9 @@ image:https://fableo451.github.io/JLogic/img/bp-cover.png["Cover"]
 
 === Requirements
 
-* JDK to create, compile and execute blueprints
-* JRE to only execute blueprints
+* Linux based operating system
+* JDK 1.7 or later
+* Maven 3.2 or later
 
 == Getting started
 https://fableo451.github.io/JLogic/download.html[Download] and unzip the package. Then start the server:
