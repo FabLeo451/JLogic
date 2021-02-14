@@ -293,12 +293,13 @@ class Blueprint {
       else if (node.type == BPNodeTypeID.RETURN)
         this.jsonReturn = node;
     }
-
+/*
     this.jsonEntryPoint.x = 2 * this.grid;
     this.jsonEntryPoint.y = 2 * this.grid;
 
     this.jsonReturn.x = 15 * this.grid;
     this.jsonReturn.y = this.jsonEntryPoint.y;
+*/
   }
 
   getAsset() {
