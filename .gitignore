@@ -6,3 +6,7 @@ plugin/**
 plugin/**/*.jar
 plugin/**/*.tar.xz
 temp/**
+bin/dist/**
+bin/build/**
+bin/__pycache__/**
+bin/*.spec

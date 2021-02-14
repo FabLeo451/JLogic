@@ -35,7 +35,7 @@ mkdir -p ${target_dir}/lib
 mkdir -p ${target_dir}/plugin
 mkdir -p ${target_dir}/temp
 mkdir -p ${target_dir}/data/program
-mkdir -p ${target_dir}/data/asset/nodes
+#mkdir -p ${target_dir}/data/asset/nodes
 
 # bin
 
@@ -63,7 +63,7 @@ done
 
 cp -rp data/blueprint ${target_dir}/data
 
-cp -p data/asset/*.json ${target_dir}/data/asset/
+cp -rp data/asset ${target_dir}/data/
 #cp -rp data/asset/nodes/Standard ${target_dir}/data/asset/nodes
 cp -rp plugin/Json ${target_dir}/plugin
 cp -rp plugin/File ${target_dir}/plugin
@@ -83,7 +83,7 @@ cat << EOF
 
 source \`dirname \$0\`/env.sh
 
-java -jar \$JL_BIN/$jarfile
+java -jar \$JL_BIN/$jarfile "\$@"
 
 EOF
 ) > ${target_dir}/bin/$name
