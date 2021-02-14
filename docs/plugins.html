@@ -24,7 +24,7 @@
     <br>
     <div id="list"></div>
     <table class="w3-table" id="table">
-        <tr class="w3-border-bottom"><th>Plugin</th><th>Version</th><th>Description</th><th>Notes</th><th></th></tr>
+        <tr class="w3-border-bottom"><th>Plugin</th><th>Version</th><th>Built-in</th><th>Description</th><th>Notes</th><th></th></tr>
     </table>
 
     <!------------------------------------------------------------------------------->
@@ -94,50 +94,9 @@
       "oracle":"ojdbc8.jar should be installed separately. <a href=\"https://mkyong.com/maven/how-to-add-oracle-jdbc-driver-in-your-maven-local-repository/\" target=\"blank\">See how</a>"
   }
 
-/*
-var pluginsOld = [
-  {
-    "name": "SFTP",
-    "filename": "SFTP.tar.xz",
-    "description":"Transfer files using SFTP protocol.",
-    "url":"https://drive.google.com/file/d/1JkrwRSxdyqDeoFPBYw4Tg6obv2pm8ENs/view?usp=sharing"
-  },
-  {
-    "name": "Oracle",
-    "filename": "Oracle.tar.xz",
-    "description":"Connect to Oracle databases and execute queries.<br>Needed ojdbc8.jar (not included in the plugin) in the lib folder.<br>",
-    "url":"https://drive.google.com/file/d/1Wv_5GopS2hnLE_v06uvekGLbSyh2ohpp/view?usp=sharing"
-  },
-  {
-    "name": "Elasticsearch",
-    "filename": "Elasticsearch.tar.xz",
-    "description":"Connect to Elasticsearch. Read and write data.",
-    "url":"https://drive.google.com/file/d/1-ywuGnSy7ZB4D4SaceabCGDV1tG_YfZk/view?usp=sharing"
-  }
-];
+  var builtin = ["json", "file"];
 
-    pluginsOld.sort(GetSortOrder("name"));
-
-    var listElem = document.getElementById("list");
-
-    for (var i=0; i<pluginsOld.length; i++) {
-      var p = plugins[i];
-
-      //console.log(p.name+" "+p.description);
-
-      var item = document.createElement('div');
-
-      item.innerHTML = `
-        <h3 class="w3-myFont">`+p.name+`</h3>
-        <p>`+p.description+`</p>
-        <i class="fas fa-download w3-text-gray"></i> <a href="`+p.url+`" target="_blank">`+p.filename+`</a>
-        <hr>
-      `;
-
-      listElem.appendChild(item);
-    }
-*/
-    var urlBase = '/plugin/repository';
+    var urlBase = '/JLogic/repository';
 
     plugins.sort(GetSortOrder("name"));
 
@@ -151,9 +110,10 @@ var pluginsOld = [
       row.classList.add("w3-border-bottom");
       row.innerHTML = '<td><b>'+p.name+'</b></td>'+
                       '<td>'+p.version+'</td>'+
+                      '<td>'+(builtin.includes(p.artifactId) ? "Yes" : "")+'</td>'+
                       '<td>'+p.description+'</td>'+
                       '<td>'+(notes.hasOwnProperty(p.artifactId) ? notes[p.artifactId] : "")+'</td>'+
-                      '<td><a href="'+url+'" target="_blank"><i class="fas fa-download w3-text-gray"></i></a></td>';
+                      '<td><a href="'+url+'"><i class="fas fa-download w3-text-gray"></i></a></td>';
 
       table.appendChild(row);
     }
