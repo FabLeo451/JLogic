@@ -4,6 +4,7 @@
   "type": 3,
   "version": 1,
   "can_delete": true,
+  "java": "if (in{1}) { exec{0} } else { exec{1} }",
   "input": [
     { "type": "Exec", "label": "" },
     { "type": "Boolean", "label": "Condition" }

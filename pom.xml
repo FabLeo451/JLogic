@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.lionsoft</groupId>
 	<artifactId>jlogic</artifactId>
-	<version>0.1.0-alpha-8</version>
+	<version>0.2.0-alpha1</version>
 	<name>JLogic</name>
 	<description>Visual scripting</description>
 
@@ -161,6 +161,27 @@
     <version>${spring.version}</version>
 </dependency>
 
+<dependency>
+  <groupId>org.apache.maven</groupId>
+  <artifactId>maven-model</artifactId>
+  <version>3.3.9</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.apache.maven.shared/maven-invoker -->
+<dependency>
+    <groupId>org.apache.maven.shared</groupId>
+    <artifactId>maven-invoker</artifactId>
+    <version>3.0.1</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.apache.maven/maven-embedder -->
+<!--dependency>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-embedder</artifactId>
+    <version>3.6.3</version>
+</dependency-->
+
+
 	</dependencies>
 
 	<build>
@@ -176,6 +197,34 @@
             </execution>
         </executions>
 			</plugin>
+
+
+            <plugin>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <version>3.2.0</version>
+              <configuration>
+                <archive>
+                  <manifest>
+                    <mainClass>com.lionsoft.jlogic.JLogicApplication</mainClass>
+                  </manifest>
+                </archive>
+                <descriptorRefs>
+                  <descriptorRef>jar-with-dependencies</descriptorRef>
+                </descriptorRefs>
+              </configuration>
+            </plugin>
+
+      <!--plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <compilerArgs>
+            <arg>-verbose</arg>
+            <arg>-Xlint:all,-options,-path</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin-->
 		</plugins>
 	</build>
 

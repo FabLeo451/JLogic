@@ -30,11 +30,11 @@
     Let's create a classic "Hello world" program to have a look at the basic functions.<br>
     Click on <img src="img/labs/nav-programs.png"> in the navigation bar to access the catalog where you can manage programs and blueprints.<br>
 
-    Click the <img src="img/labs/new-program.png"> button to create a new program. Name it as you want (or leave "New program").<br>
-    Expand the program item and you'll see there are two predefined blueprints: "Main" and "Events".<br>
-    Left click on "Main" item.<br>
+    Click the <img src="img/labs/new-program.png"> button to create a new program. Name it "Hello" and click OK.<br>
+    Click on the new item "Hello" to enter the program. <br>
+    There are to predefined blueprints: "Main" and "Events".<br>
+    Left click on the "Main" item to access edit the blueprint.<br>
 
-    The new window is a blueprint editor.
     A blueprint has at least two nodes: an entry point (where execution starts) and a return node (where execution ends).<br>
     To add more nodes right-click on a blank point of the grid and a selector will appear.<br>
     A search field helps to find a specific node.
@@ -61,22 +61,22 @@
     Hello world!
     </div>
 
-    Go back to the catalog panel and refresh.<br>
-    The status of the program is now "Compiled".
-    Click on the dots and select "Create JAR".
-    <div class="w3-panel"><img src="img/labs/bp-menu-jar.png"></div>
-    Wait until the popup with the spinning wheel disappears and you'll see a download button on the program row: <img src="img/labs/download-jar.png"><br>
+    Return to the program window and refresh.<br>
+    The status of the program is now "COMPILED".
+    Click on the "Create" to create the jar file.
+    <!--div class="w3-panel"><img src="img/labs/bp-menu-jar.png"></div-->
+    Wait until the popup with the spinning wheel disappears and you're gonna see a download button.
     Click on it and save the JAR file wherever you want.<br>
     Open a Linux terminal and move into the directory where the file has been saved.<br>
     Execute the JAR:
     <div class="w3-code notranslate">
-    $ java -jar "New program.jar"<br>
+    $ java -jar Hello.jar<br>
     Hello world!
     </div>
 
     Every exported jar has some options. Try this:
     <div class="w3-code notranslate">
-    $ java -jar "New program.jar" --help<br>
+    $ java -jar Hello.jar --help<br>
     </div>
 
     This example has shown how a program can be created using the blueprint editor and exported as an executable JAR.<br>
@@ -84,25 +84,30 @@
     <hr>
     <h3 class="w3-myFont">Lab 2: Creating a REST API</h3>
 
-    In this exercise we will create an HTTP end point that executes a blueprint and returns a JSON response.<br>
-    Click the <img src="img/labs/new-blueprint.png"> button to create a new blueprint.<br>
+    In this exercise we'are going to create an HTTP API that executes a blueprint and returns a response.<br>
+    Edit the Main blueprint again, and replace the "Print String" node with the "HTTP Set Response" node:<br>
 
-    Name it "BPLab" and click OK.<br>
-    The blueprint editor for BPLab will open.<br>
-    Create a JSON object and add a string item called "message".<br>
-    Then set the object as the HTTP response.<br>
-    The blueprint should be as shown in the following picture:<br>
     <div class="w3-panel"><img src="img/labs/bp-http.png"></div>
 
     Compile the program by clicking <img src="img/labs/compile.png"> and close the editor tab.<br>
     Click on <img src="img/labs/nav-apis.png"> in the navigation bar to access the API management.<br>
     Click on <img src="img/labs/new-api.png"> button.<br>
     Here you create an API and bind it to a blueprint of a given program.<br>
-    Name the API "lab", select the program we created and the blueprint "BPLab". Then hit "OK".<br>
-    <div class="w3-card w3-margin" style="width:40%"><img src="img/labs/create-api.png" style="width:100%"></div>
 
-    Now make a GET request to <a href="https://localhost:8443/api/lab">https://localhost:8443/api/lab</a><br>
-    This will execute the blueprint that is linked to the API "lab", and the response will be returned to the client.
+    <!--div class="w3-card w3-margin" style="width:40%"><img src="img/labs/create-api.png" style="width:100%"></div-->
+    Set parameters as shown below:<br><br>
+
+    <table class="w3-class" style="border: 1px solid lightgray;border-collapse: collapse;">
+        <tr><td style="border: 1px solid lightgray;">Method</td><td style="border: 1px solid lightgray;">GET (read)</td></tr>
+        <tr><td style="border: 1px solid lightgray;">Path</td><td style="border: 1px solid lightgray;">lab</td></tr>
+        <tr><td style="border: 1px solid lightgray;">Program</td><td style="border: 1px solid lightgray;">Hello</td></tr>
+        <tr><td style="border: 1px solid lightgray;">Blueprint</td><td style="border: 1px solid lightgray;">Main</td></tr>
+    </table>
+    <br>
+    Click "Create".<br>
+
+    Make a GET request to <a href="https://localhost:8443/api/lab">https://localhost:8443/api/lab</a><br>
+    This executes the blueprint that is linked to the API "lab", and the response will be returned to the client.
 
 
     <!------------------------------------------------------------------------------->

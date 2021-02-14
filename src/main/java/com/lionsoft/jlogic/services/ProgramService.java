@@ -37,6 +37,7 @@ import java.net.URLClassLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,11 +53,23 @@ import java.util.zip.ZipOutputStream;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.DefaultInvoker;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.apache.maven.shared.invoker.InvocationResult;
+
+//import org.apache.maven.cli.MavenCli;
+
 @Service
 public class ProgramService {
 
     final static int SUCCESS = 0;
     final static int ERROR = 1;
+
+    final static int COMPILE = 1;
+    final static int JAR = 2;
 
     @Autowired
     ProgramRepository repository;
@@ -75,6 +88,9 @@ public class ProgramService {
 
     int code = 0;
     String message;
+
+    @Value("${maven.home}")
+    String MAVEN_HOME;
 
 	public ProgramService() {
 	}
@@ -115,40 +131,94 @@ public class ProgramService {
 	public void refresh(ProgramEntity program) {
 		repository.refresh(program);
 	}
-	
-	public boolean compiled(ProgramEntity program) {
-    File f = new File(program.getClassFilename());
-    return(f.exists());
+
+    public boolean compiled(ProgramEntity program) {
+        File f = new File(program.getClassFilename());
+        return(f.exists());
+	}
+
+    public boolean createPOM(ProgramEntity program) {
+        //File f = new File(program.getClassFilename());
+        //return(f.exists());
+
+        String deps = "";
+
+        for (int i=0; i<program.getDependencies().size(); i++) {
+            logger.info("Found dependency: "+program.getDependencies().get(i).getGroupId()+"."+program.getDependencies().get(i).getArtifactId());
+
+            deps += "<dependency>"+ System.lineSeparator() +
+            "<groupId>"+program.getDependencies().get(i).getGroupId()+"</groupId>" + System.lineSeparator() +
+            "<artifactId>"+program.getDependencies().get(i).getArtifactId()+"</artifactId>" + System.lineSeparator() +
+            "<version>"+program.getDependencies().get(i).getVersion()+"</version>" + System.lineSeparator() +
+            "</dependency>" + System.lineSeparator();
+        }
+
+        String pom = Utils.loadTextFileFromResources("pom-template.xml");
+        pom = pom.replace("{name}", program.getName())
+                 .replace("{version}", program.getVersion())
+                 .replace("{groupId}", program.getGroupId())
+                 .replace("{artifactId}", program.getArtifactId())
+                 .replace("{jlogic-repository}", Utils.getHomeDir()+"/m2/repository")
+                 //.replace("{standardPath}", Utils.getLibDir()+"/Standard.jar")
+                 .replace("{mainClass}", program.getMainClass())
+                 .replace("{dependencies}", deps);
+
+        //System.out.println(pom);
+
+        try {
+            Utils.saveFile(pom, program.getMyDir()+"/pom.xml");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            return false;
+        }
+
+        return true;
 	}
 
 	public ProgramEntity createEmpty(String name) {
-	  ProgramEntity program = new ProgramEntity(UUID.randomUUID().toString(), name);
+        ProgramEntity program = new ProgramEntity(UUID.randomUUID().toString(), name);
 
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-    program.setOwner(((User) auth.getPrincipal()).getUsername());
-    program = repository.save(program);
+        program.setOwner(((User) auth.getPrincipal()).getUsername());
 
-    logger.info("Successfully created "+program.toString());
+        // Create directory tree
+        String progDir = getProgramBaseDirectory()+"/"+program.getId();
 
-    String progDir = getProgramBaseDirectory()+"/"+program.getId();
+        logger.info("Creating project directory "+progDir+" ...");
 
-    File progFile = new File(progDir);
+        if (!new File(progDir).mkdir()) {
+            repository.refresh(program);
+            return null;
+        }
 
-    if (progFile.mkdir()) {
-      //program.createIndex();
-      //program.createProperties();
+        String treeJava = progDir+"/"+program.getSrcDir();
+        String treeResources = progDir+"/src/main/resources";
 
-      // Create blueprints
-	    //BlueprintEntity main = blueprintService.create(program, BlueprintType.MAIN, "Main");
-	    //BlueprintEntity events = blueprintService.create(program, BlueprintType.EVENTS, "Events");
+        logger.info("Creating project directory tree ...");
 
-	    repository.refresh(program);
+        new File(treeJava).mkdirs();
+        new File(treeResources).mkdirs();
 
-      return program;
-    }
+        // pom
+        /*
+        logger.info("Creating POM file ...");
 
-    return null;
+        if (!createPOM(program)) {
+            logger.error("Unable to create POM file");
+            return null;
+        }*/
+
+        // mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+
+
+        // Save program
+        logger.info("Saving program into database..");
+        program = repository.save(program);
+
+        logger.info("Successfully created "+program.toString());
+
+        return program;
 	}
 
 	public ProgramEntity create(String name) {
@@ -172,24 +242,11 @@ public class ProgramService {
         return program;
 	}
 
-    boolean deleteDirectory(File directoryToBeDeleted) {
-        File[] allContents = directoryToBeDeleted.listFiles();
 
-        if (allContents != null) {
-            for (File file : allContents) {
-                //deleteDirectory(file);
-                file.delete();
-            }
-        }
-        return directoryToBeDeleted.delete();
-    }
-
-    boolean deleteDirectory(String d) {
-        File dir = new File(d);
-        return(deleteDirectory(dir));
-    }
 
 	public boolean delete (ProgramEntity program) {
+        logger.info("Deleting program "+program.getName());
+
         for (BlueprintEntity b: program.getBlueprints())
             blueprintService.delete(b);
 
@@ -197,7 +254,7 @@ public class ProgramService {
 
         File programDir = new File(program.getMyDir());
 
-        if (deleteDirectory(programDir)) {
+        if (Utils.deleteDirectory(programDir)) {
           return true;
         }
 
@@ -213,14 +270,172 @@ public class ProgramService {
         repository.save(program);
     }
 
+    public void save (ProgramEntity program) {
+        repository.save(program);
+    }
+
     /**
-     * Compile program
+     * Compile program with JDK
      */
-    public boolean compile(ProgramEntity program) {
+    /*
+    public boolean compileJDK(ProgramEntity program) {
         boolean result = program.compile();
         repository.save(program);
         repository.refresh(program);
         return (result);
+    }*/
+
+    /**
+     * Create classpath file
+     */
+    public boolean createCP(ProgramEntity program) {
+        logger.info("Creating classpath file...");
+/*
+        List<String> args = new ArrayList<String>();
+
+        args.add("mvn");
+        args.add("--batch-mode"); // Disable ansi colors
+        args.add("--quiet");
+        args.add("dependency:build-classpath");
+        args.add("-Dmdep.outputFile="+program.getClasspathFile());
+
+        Result result = Utils.execute(args, program.getMyDir());
+
+        return(result.success());
+*/
+        boolean result = false;
+        InvocationRequest request = new DefaultInvocationRequest();
+        request.setBatchMode(true);
+        request.setPomFile(new File(program.getMyDir()+"/pom.xml"));
+        request.setGoals(Collections.singletonList("dependency:build-classpath"));
+        request.setBaseDirectory(new File(program.getMyDir()));
+        request.setMavenOpts("-Dmdep.outputFile="+program.getClasspathFile());
+
+        Invoker invoker = new DefaultInvoker();
+
+        try {
+            invoker.setMavenHome(new File(MAVEN_HOME));
+            //invoker.setMavenExecutable("")
+            System.out.println("MAVEN_HOME = "+invoker.getMavenHome());
+            //invoker.execute(request);
+            InvocationResult res = invoker.execute(request);
+
+
+            result = res.getExitCode() == 0 ? true : false;
+        } catch (MavenInvocationException e) {
+            logger.error("Unable to execute Maven: "+e.getMessage());
+        }
+
+        return(result);
+    }
+
+    /**
+     * Compile program with Maven
+     */
+    public Result compile(ProgramEntity program, int mode) {
+        Result result = new Result();
+
+        new File(program.getClasspathFile()).delete();
+        program.setStatus(ProgramStatus.ERRORS);
+
+        result = program.generateJava();
+
+        System.out.println("bp2java result: "+result.getCode());
+        System.out.println("bp2java success: "+result.success());
+
+        if (result.success()) {
+            if (!createPOM(program)) {
+                result.setResult(1, "Unable to create POM file");
+                return(result);
+            }
+/*
+            List<String> args = new ArrayList<String>();
+
+            args.add("mvn");
+            args.add("--batch-mode"); // Disable ansi colors
+            args.add("compile");
+
+            if (mode == JAR)
+                args.add("assembly:single");
+
+            logger.info("Compiling "+program.getName()+"...");
+
+            result = Utils.execute(args, program.getMyDir());
+
+            if (result.success()) {
+                program.setBuildTime(new Date());
+                program.setUpdateTime(new Date());
+                program.setStatus(ProgramStatus.COMPILED);
+                result.setMessage ("Successfully compiled "+program.getName());
+            } else {
+                result.setMessage("Compiler error (code "+result.getCode()+")");
+            }
+            */
+
+
+            InvocationRequest request = new DefaultInvocationRequest();
+            request.setBatchMode(true);
+            request.setPomFile(new File(program.getMyDir()+"/pom.xml"));
+            //request.setBaseDirectory(new File(program.getMyDir()));
+            request.setGoals(Collections.singletonList("compile"));
+            //request.setMavenOpts("--quiet");
+
+            Invoker invoker = new DefaultInvoker();
+
+            try {
+                invoker.setMavenHome(new File(MAVEN_HOME));
+                InvocationResult res = invoker.execute(request);
+
+                if (res.getExitCode() == 0) {
+                    program.setBuildTime(new Date());
+                    program.setUpdateTime(new Date());
+                    program.setStatus(ProgramStatus.COMPILED);
+                    result.setMessage ("Successfully compiled "+program.getName());
+
+                    if (!createCP(program))
+                        logger.error("Unable to create classpath file");
+
+                } else {
+                    result.setResult(Result.ERROR, "Compiler error (code "+res.getExitCode()+")");
+                }
+            } catch (MavenInvocationException e) {
+                result.setResult(Result.ERROR, "Unable to execute Maven: "+e.getMessage());
+            }
+
+/*
+            System.setProperty("maven.multiModuleProjectDirectory", Utils.MAVEN_HOME);
+            MavenCli maven = new MavenCli();
+            int res = maven.doMain(new String[]{"package", "--quiet", "--batch-mode"}, program.getMyDir(), System.out, System.out);
+            logger.info("Result code: "+res);
+*/
+
+        } else {
+            result.setResult(Result.ERROR, "Can't generate source for "+program.getName()+": "+result.getMessage());
+        }
+
+
+
+        logger.info("Updating program info...");
+
+        repository.save(program);
+
+        return (result);
+    }
+
+    /**
+     * Compile program (only class)
+     */
+    public Result compile(ProgramEntity program) {
+        logger.info("Compiling program "+program.getName());
+        return(compile(program, COMPILE));
+    }
+
+    /**
+     * Compile program (only class)
+     */
+    public Result createJAR(ProgramEntity program) {
+        logger.info("Creating jar for "+program.getName());
+        return(compile(program, JAR));
     }
 
     /**
@@ -237,12 +452,19 @@ public class ProgramService {
             return false;
         }
 	}
-	
+
     /**
      * Run program with input parameters as Map
      */
     public boolean run(ProgramEntity program, String methodName, Map<String, Object> actual, String logName, HttpServletRequest request) {
         boolean result = false;
+
+        if (!new File(program.getClasspathFile()).exists()){
+            if (!createCP(program)) {
+                logger.error("Unable to create classpath file");
+                return(result);
+            }
+        }
 
         //sessionService.setActive(request, true);
         sessionService.setProgramUnit(request, program.getName()+"."+methodName);
@@ -360,7 +582,7 @@ public class ProgramService {
 
         return(jindex);
     }
-  
+
   public JSONObject getIndexFromClass(ProgramEntity program) {
     JSONObject jprogram = new JSONObject();
 
@@ -496,7 +718,7 @@ public class ProgramService {
 
     return jprogram;
   }
-  
+
   /**
    * Get blueprint by internal id
    */
@@ -508,7 +730,7 @@ public class ProgramService {
 
     return null;
 	}
-	
+
 	/**
 	 * Import a bluerint
 	 */
@@ -544,10 +766,10 @@ public class ProgramService {
         } catch (ParseException e) {
             setResult(1, e.getMessage());
         }
-          
+
         return null;
 	}
-	
+
 	public BlueprintEntity importBlueprintFile(ProgramEntity program, String filename) {
         try {
             String content = new String (Files.readAllBytes(Paths.get(filename)));
@@ -556,18 +778,18 @@ public class ProgramService {
         catch (IOException e) {
             logger.error(e.getMessage());
         }
-        
+
         return null;
 	}
-	
+
 	/**
 	 * Pack program into a given zip file
 	 */
 	public boolean pack(ProgramEntity program, String packFilename) {
         List<String> srcFiles = new ArrayList<String>();
-	  
+
         logger.info("Packing "+program.getName()+" into "+packFilename);
-      
+
         JSONObject jinfo = new JSONObject();
         jinfo.put("name", program.getName());
         jinfo.put("fromVersion", buildProperties.getVersion());
@@ -588,7 +810,7 @@ public class ProgramService {
         jinfo.put("blueprints", jbpa);
 
         srcFiles.add(program.getMyDir()+"/Program.properties");
-    
+
         try {
             FileOutputStream fos = new FileOutputStream(packFilename);
             ZipOutputStream zipOut = new ZipOutputStream(fos);
@@ -613,8 +835,8 @@ public class ProgramService {
             // Pack info file
             ZipEntry zipEntry = new ZipEntry("info.json");
             zipOut.putNextEntry(zipEntry);
-            zipOut.write(jinfo.toString().getBytes("UTF-8"), 
-                       0, 
+            zipOut.write(jinfo.toString().getBytes("UTF-8"),
+                       0,
                        jinfo.toString().getBytes("UTF-8").length);
 
             zipOut.close();
@@ -624,60 +846,43 @@ public class ProgramService {
             return false;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;    
+            return false;
         }
-                  
+
         return true;
 	}
-	
+
 	/**
 	 * Pack program
 	 */
 	public String pack(ProgramEntity program) {
 	  String packFileBase = program.getName().replaceAll("[ .;]", "_")+".zip";
 	  String packFile = getTempDirectory()+"/"+packFileBase;
-	  
+
 	  if (!pack(program, packFile))
 	    return null;
-	    
+
 	  return packFile;
 	}
 
-	
+
     public Optional<String> getExtensionByStringHandling(String filename) {
         return Optional.ofNullable(filename)
           .filter(f -> f.contains("."))
           .map(f -> f.substring(filename.lastIndexOf(".") + 1));
     }
 
-	/**
-	 * This method guards against writing files to the file system outside of the target folder. 
-	 * This vulnerability is called Zip Slip.
-	 */
-  public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-      File destFile = new File(destinationDir, zipEntry.getName());
-   
-      String destDirPath = destinationDir.getCanonicalPath();
-      String destFilePath = destFile.getCanonicalPath();
-   
-      if (!destFilePath.startsWith(destDirPath + File.separator)) {
-          throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-      }
-   
-      return destFile;
-  }
-  
   /*public String getInfoFromZip(ZipInputStream zis) {
     String info = null;
-    
+
     try {
       ZipEntry zipEntry = zis.getNextEntry();
-      
+
       while (zipEntry != null) {
         if (zipEntry.getName().equals("info.json")) {
           info = "Found";
         }
-        
+
         zipEntry = zis.getNextEntry();
       }
 
@@ -685,147 +890,98 @@ public class ProgramService {
 
     return info;
   }*/
-  
-  public boolean unpack(String zipFile, String targetDir) {
-    File destDir = new File(targetDir);
-    byte[] buffer = new byte[1024];
-    
-    try {
-      ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
-      ZipEntry zipEntry = zis.getNextEntry();
-
-      while (zipEntry != null) {
-         File newFile = newFile(destDir, zipEntry);
-         
-         if (zipEntry.isDirectory()) {
-           if (!newFile.isDirectory() && !newFile.mkdirs()) {
-               logger.error("Failed to create directory " + newFile);
-               return false;
-           }
-         } else {
-           logger.info("Extracting "+zipEntry.getName());
-
-           File parent = newFile.getParentFile();
-           if (!parent.isDirectory() && !parent.mkdirs()) {
-               logger.error("Failed to create directory " + parent);
-           }
-           
-           // write file content
-           FileOutputStream fos = new FileOutputStream(newFile);
-           int len;
-           while ((len = zis.read(buffer)) > 0) {
-               fos.write(buffer, 0, len);
-           }
-           fos.close();
-         }
-         
-         zipEntry = zis.getNextEntry();
-      }
-      
-      zis.closeEntry();
-      zis.close();
-    } catch (FileNotFoundException e) {
-        logger.error(e.getMessage());
-        return false;
-    } catch (IOException e) {
-        logger.error(e.getMessage());
-        return false;
-    }
-    
-    return true;
-  }
 
 	/**
 	 * Import program from file
 	 */
 	public ProgramEntity importProgramFromFile(String importId, String zipFile) {
-	  ProgramEntity program = null;
-	  String unzippedDir = getTempDirectory()+"/"+importId;
-    
-    // Unpack file
-    logger.info("Unpacking "+zipFile);
+        ProgramEntity program = null;
+        String unzippedDir = getTempDirectory()+"/"+importId;
 
-    if (unpack(zipFile, unzippedDir)) {
-      // Load info file
-      JSONObject jinfo = Utils.loadJsonFile(unzippedDir+"/info.json");
-      
-      if (jinfo != null) {
-        // Create new program
-        String programName = (String) jinfo.get("name");
-        logger.info("Creating program "+programName);
-        
-        program = createEmpty(programName);
-        
-        if (program != null) {
-          // Import blueprints
-          JSONArray jblueprints = (JSONArray) jinfo.get("blueprints");
-          
-          for (int k=0; k<jblueprints.size(); k++) {
-              JSONObject jbp = (JSONObject) jblueprints.get(k);
-              
-              int internalId = ((Long) jbp.get("internalId")).intValue();
-              String bpfile = (String) jbp.get("name");
+        // Unpack file
+        logger.info("Unpacking "+zipFile);
 
-              logger.info("Importing "+bpfile);
-              BlueprintEntity b = importBlueprintFile(program, unzippedDir+"/"+bpfile);
-              b.setInternalId(internalId);
-          }
-          
-          // Copy propertes file
-          try {
-            Path propsFrom = Paths.get(unzippedDir+"/Program.properties");
-            Path propsTo = Paths.get(program.getMyDir()+"/Program.properties");
-            Files.copy(propsFrom, propsTo, StandardCopyOption.REPLACE_EXISTING);
-          } catch (IOException e) {
-            logger.error(e.getMessage());
-          }
+        if (Utils.unpack(zipFile, unzippedDir)) {
+            // Load info file
+            JSONObject jinfo = Utils.loadJsonFile(unzippedDir+"/info.json");
+
+            if (jinfo != null) {
+                // Create new program
+                String programName = (String) jinfo.get("name");
+                logger.info("Creating program "+programName);
+
+                program = createEmpty(programName);
+
+                if (program != null) {
+                    // Import blueprints
+                    JSONArray jblueprints = (JSONArray) jinfo.get("blueprints");
+
+                    for (int k=0; k<jblueprints.size(); k++) {
+                        JSONObject jbp = (JSONObject) jblueprints.get(k);
+
+                        int internalId = ((Long) jbp.get("internalId")).intValue();
+                        String bpfile = (String) jbp.get("name");
+
+                        logger.info("Importing "+bpfile);
+                        BlueprintEntity b = importBlueprintFile(program, unzippedDir+"/"+bpfile);
+                        b.setInternalId(internalId);
+                    }
+
+                    // Copy propertes file
+                    try {
+                        Path propsFrom = Paths.get(unzippedDir+"/Program.properties");
+                        Path propsTo = Paths.get(program.getMyDir()+"/Program.properties");
+                        Files.copy(propsFrom, propsTo, StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException e) {
+                        logger.error(e.getMessage());
+                    }
+                } else {
+                    logger.error("Can't create program");
+                }
+            } else {
+                logger.error("Unable to load info file");
+            }
+
+            logger.info("Deleting temporary dir "+unzippedDir);
+            Utils.deleteDirectory(unzippedDir);
+
+            File file = new File(zipFile);
+            file.delete();
         } else {
-          logger.error("Can't create program");
+            logger.error("Unable to unzip file");
         }
-      } else {
-        logger.error("Unable to load info file");
-      }
-      
-      logger.info("Deleting temporary dir "+unzippedDir);
-      deleteDirectory(unzippedDir);
-      
-      File file = new File(zipFile);
-      file.delete();
-    } else {
-      logger.error("Unable to unzip file");
-    }
-            
-	  return program;
+
+        return program;
 	}
 
 	public ProgramEntity clone(ProgramEntity program) {
-	  ProgramEntity clone = null;
-	  String cloneName = "Clone of "+program.getName();
+        ProgramEntity clone = null;
+        String cloneName = "Clone of "+program.getName();
 
-    logger.info("Creating program "+cloneName);
+        logger.info("Creating program "+cloneName);
 
-    clone = createEmpty(cloneName);
+        clone = createEmpty(cloneName);
 
-    if (clone == null) {
-      logger.error("Can't create program "+cloneName);
-      return null;
-    }
+        if (clone == null) {
+            logger.error("Can't create program "+cloneName);
+            return null;
+        }
 
-    // Import blueprints
-    for (BlueprintEntity sourceBP: program.getBlueprints()) {
-      BlueprintEntity b = importBlueprintFile(clone, sourceBP.getFilename());
-      b.setInternalId(sourceBP.getInternalId());
-    }
-    
-    // Copy propertes file
-    try {
-      Path propsFrom = Paths.get(program.getMyDir()+"/Program.properties");
-      Path propsTo = Paths.get(clone.getMyDir()+"/Program.properties");
-      Files.copy(propsFrom, propsTo, StandardCopyOption.REPLACE_EXISTING);
-    } catch (IOException e) {
-      logger.error(e.getMessage());
-    }
+        // Import blueprints
+        for (BlueprintEntity sourceBP: program.getBlueprints()) {
+            BlueprintEntity b = importBlueprintFile(clone, sourceBP.getFilename());
+            b.setInternalId(sourceBP.getInternalId());
+        }
 
-	  return(clone);
+        // Copy propertes file
+        try {
+            Path propsFrom = Paths.get(program.getMyDir()+"/Program.properties");
+            Path propsTo = Paths.get(clone.getMyDir()+"/Program.properties");
+            Files.copy(propsFrom, propsTo, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+
+        return(clone);
 	}
 }

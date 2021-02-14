@@ -124,25 +124,26 @@ class Blueprint {
     this.programId = null;
     this.selectionRect = null;
     this.svg = null;
+    this.packages = [];
   }
-  
+
   setMessage(m) {
     this.message = m;
   }
-  
+
   getMessage() {
     return(this.message);
   }
-  
+
   getCode() {
     return(this.code);
   }
-  
+
   setResult(c, m) {
     this.code = c;
     this.setMessage(m);
   }
-  
+
   getSVG() { return this.svg; }
 
   clear () {
@@ -233,7 +234,7 @@ class Blueprint {
     if (this.callbackError)
       this.callbackError(message);
   }
-  
+
   getVariables() {
     return(this.variables);
   }
@@ -244,7 +245,7 @@ class Blueprint {
 
     this.bgElement.style.backgroundPosition = blueprint.x0+'px '+blueprint.y0+'px';
   }
-  
+
   getOrigin() {
     return({ x:this.x0, y:this.y0 });
   }
@@ -292,12 +293,13 @@ class Blueprint {
       else if (node.type == BPNodeTypeID.RETURN)
         this.jsonReturn = node;
     }
-
+/*
     this.jsonEntryPoint.x = 2 * this.grid;
     this.jsonEntryPoint.y = 2 * this.grid;
 
     this.jsonReturn.x = 15 * this.grid;
     this.jsonReturn.y = this.jsonEntryPoint.y;
+*/
   }
 
   getAsset() {
@@ -409,13 +411,13 @@ class Blueprint {
       return;
 
     text = this.clipboard;*/
-    
+
     //var selfBlueprint = this;
 
     navigator.clipboard.readText()
       .then(text => {
           // WARNING: this process is asyncronous
-          
+
           var jdata = JSON.parse(text);
           var jnodes = jdata.nodes, jedges = jdata.edges;
           var addedNodes = [];
@@ -430,9 +432,9 @@ class Blueprint {
             // Nodes
             for (var i=0; i<jnodes.length; i++) {
               //console.log('Paste node '+jnodes[i].name);
-              
+
               var pasteOK = true;
-              
+
               switch (jnodes[i].type) {
                 case BPNodeTypeID.GET:
                   // Check if variable exists
@@ -441,7 +443,7 @@ class Blueprint {
                     pasteOK = false;
                   }
                   break;
-                
+
                 case BPNodeTypeID.SET:
                   // Check if variable exists
                   if (blueprint.getVariable(jnodes[i].input[1].references) == null) {
@@ -457,7 +459,7 @@ class Blueprint {
                   }
                   break;
               }
-              
+
               if (pasteOK) {
                 var node = blueprint.addNodeFromJson(jnodes[i], false);
 
@@ -474,7 +476,7 @@ class Blueprint {
             for (var i=0; i<jedges.length; i++) {
               var from = substitutions[jedges[i]["from"]];
               var to = substitutions[jedges[i]["to"]];
-              
+
               if (from && to)
                 this.connectByID (from, to);
             }
@@ -483,13 +485,13 @@ class Blueprint {
 
             for (var i=0; i<addedNodes.length; i++)
               blueprint.addToSelection (addedNodes[i]);
-              
+
             // Don't call this.onModified() here since this routine is asyncronous
             // Notify end of job
             if (cbfunction)
               cbfunction();
           }
- 
+
       })
       .catch(err => {
         // maybe user didn't grant access to read from clipboard
@@ -517,14 +519,14 @@ class Blueprint {
       this.addToSelection (this.nodes[i]);
     }
   }
-  
+
   selectByBox() {
     for (var i=0; i<this.nodes.length; i++) {
       var n = this.nodes[i];
-      
+
       if (n.getSelected())
         continue;
-        
+
       if (this.selectionRect.contains(n.getPosition())) {
         //console.log(n.getName());
         this.selectionRect.add(n);
@@ -645,7 +647,7 @@ class Blueprint {
     //var variables = j["variables"]; //Added by application
 
 		this.programId = j.programId;
-    
+
     for (var i=0; i<j["variables"].length; i++) {
       var v = new Variable();
       v.fromJSON(j.variables[i]);
@@ -653,7 +655,7 @@ class Blueprint {
       console.log ("Adding variable "+v.getName());
       this.addVariable (v);
     }
-    
+
     var nodes = j["nodes"];
     var edges = j["edges"];
 
@@ -722,9 +724,14 @@ class Blueprint {
 
       //console.log(JSON.stringify(node));
 
-      itemStr = '{ "id": '+i+', "item": "'+node["name"].replace (/"/g,'\\"')+'" }';
-      //console.log(itemStr);
-      menu["items"].push (JSON.parse(itemStr));
+      if (node.name) {
+          itemStr = '{ "id": '+i+', "item": "'+node["name"].replace (/"/g,'\\"')+'" }';
+          //console.log(itemStr);
+          menu["items"].push (JSON.parse(itemStr));
+      } else {
+          console.error("Missing name:");
+          console.error(node);
+      }
     }
 
     menu["items"].sort(function(a, b) {
@@ -962,11 +969,11 @@ class Blueprint {
   getVariableByNameAndScope (name, scope) {
     for (var i=0; i<this.variables.length; i++) {
       var v = this.variables[i];
-      
+
       if (!v.getName().localeCompare(name)) {
         if (scope == Scope.ALL)
           return (v);
-          
+
         if ((scope == Scope.LOCAL && !v.isGlobal()) || (scope == Scope.GLOBAL && v.isGlobal())) {
           console.log("Found "+v.getName()+" "+scope+" "+v.isGlobal());
           return (v);
@@ -1259,7 +1266,7 @@ class Blueprint {
             this.dragX = e.pageX;
             this.dragY = e.pageY;
             break;
-          
+
         case BPStatus.SELECTING:
             e.preventDefault();
             blueprint.selectionRect.setP1({ x:blueprint.mouse.x, y:blueprint.mouse.y});
@@ -1300,20 +1307,20 @@ class Blueprint {
     }
 
   }
-  
+
   destroySelectionBox() {
     if (this.selectionRect)
       this.selectionRect.destroy();
-      
+
     this.selectionRect = null;
   }
-    
+
   notifyMouseUp(e) {
     //console.log("Mouse up");
-    
+
     if (blueprint.getStatus() != BPStatus.READY)
       e.preventDefault();
-      
+
     this.mouse = { x:e.offsetX, y:e.offsetY };
 
     switch (blueprint.getStatus()) {
@@ -1332,24 +1339,24 @@ class Blueprint {
       case BPStatus.BP_DRAGGING:
         blueprint.setStatus(BPStatus.READY);
         break;
-        
+
       case BPStatus.SELECTING:
         if (this.selectionRect) {
           console.log(this.selectionRect.toString());
           //this.selectionRect.setOrigin({ x:this.x0, y:this.y0 });
           var list = this.selectionRect.getSelection();
-          
+
           for (var i=0; i<list.length; i++)
             this.addToSelection(list[i]);
         }
-        
+
         this.destroySelectionBox();
         blueprint.setStatus(BPStatus.READY);
         break;
-        
+
       default:
         break;
-    }        
+    }
   }
 
   setZoom (x) {
@@ -1369,7 +1376,7 @@ class Blueprint {
 
     this.bgElement.style.backgroundSize = (100 * this.zoom)+'px '+(100 * this.zoom)+'px';
   }
-  
+
   getZoom() { return this.zoom; }
 
   zoomIn () {
@@ -1425,11 +1432,31 @@ class Blueprint {
     return (JSON.stringify(this.getInputArray ()));
   }
 
-	addArrayUnique(a, x) {
+  addArrayUnique(a, x) {
     if (x && !a.includes(x)) {
 			//console.log ("import "+x);
 			a.push(x);
     }
+  }
+
+  hasPackage (jp) {
+    for (var i=0; i<this.packages.length; i++) {
+      if (jp.artifactId == this.packages[i].artifactId &&
+          jp.groupId == this.packages[i].groupId &&
+          jp.version == this.packages[i].version
+         )
+        return (true);
+    }
+
+    return (false);
+  }
+
+  addPackage(jp) {
+      if (!jp)
+        return;
+
+      if (!this.hasPackage(jp))
+        this.packages.push(jp);
   }
 
   toJson () {
@@ -1446,8 +1473,8 @@ class Blueprint {
     jo.variables = [];
     jo.types = [];
     jo.import = [];
-    jo.classpath = [];
-    jo.jar = [];
+    //jo.classpath = [];
+    //jo.jar = [];
 
     //console.log (this.variables);
 
@@ -1525,33 +1552,43 @@ class Blueprint {
     jo.nodes = [];
 
     for (var i=0; i<this.nodes.length; i++) {
-      var node = this.nodes[i];
-      jo.nodes.push(node.toJSON());
+        var node = this.nodes[i];
+        jo.nodes.push(node.toJSON());
 
-      // Collect import items
-			if (node.import) {
-				for (var k=0; k<node.import.length; k++)
-          this.addArrayUnique(jo.import, node.import[k]);
-      }
-      
-      // Collect classpaths
-      var path = "";
-      
-      if (node.data) {
-        path = node.data.hasOwnProperty("path") ? node.data.path : "";
-      }
-      
-			if (node.classpath) {
-				for (var k=0; k<node.classpath.length; k++)
-          this.addArrayUnique(jo.classpath, node.classpath[k].replace("{path}", path));
-      }      
-      
-			if (node.jar) {
-				for (var k=0; k<node.jar.length; k++)
-          this.addArrayUnique(jo.jar, node.jar[k].replace("{path}", path));
-      }      
+        // Collect import items
+        if (node.import) {
+            for (var k=0; k<node.import.length; k++)
+                this.addArrayUnique(jo.import, node.import[k]);
+        }
+
+        // Collect packages
+        if (node.hasOwnProperty("package") && node.package) {
+            //console.log(node.package);
+            this.addPackage(node.package);
+            this.addArrayUnique(jo.import, node.package.groupId+"."+node.package.artifactId+".*");
+        }
+
+        // Collect classpaths
+        /*
+        var path = "";
+
+        if (node.data) {
+            path = node.data.hasOwnProperty("path") ? node.data.path : "";
+        }
+
+        if (node.classpath) {
+            for (var k=0; k<node.classpath.length; k++)
+              this.addArrayUnique(jo.classpath, node.classpath[k].replace("{path}", path));
+        }
+
+        if (node.jar) {
+            for (var k=0; k<node.jar.length; k++)
+              this.addArrayUnique(jo.jar, node.jar[k].replace("{path}", path));
+        }*/
     }
-    
+
+    jo.packages = this.packages;
+
     /* Edges */
     jo.edges = [];
 

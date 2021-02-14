@@ -57,14 +57,24 @@
                 <td>
                     <div class="w3-row">
                         <div class="w3-third">
-                            <input id="programName" class="w3-input w3-border w3-round" type="text" th:value="${program.name}" th:attr="oninput=|nameChanged()|"> 
+                            <input id="programName" class="w3-input w3-border w3-round" type="text" th:value="${program.name}" th:attr="oninput=|nameChanged()|">
                         </div>
                         <div id="renameCtrl" class="w3-third" style="visibility: hidden;">
-                            <i th:attr="onclick=|revertName('${program.name}')|" style="cursor:pointer;" class="icon i-revert w3-text-gray w3-margin-left w3-margin-right" title="Revert"></i>
-                            <button th:if="${updating}" class="w3-button w3-round-medium w3-green" onclick="renameProgram();">Rename</button>
+                            <i th:attr="onclick=|revert('${program.name}', '${program.version}')|" style="cursor:pointer;" class="icon i-revert w3-text-gray w3-margin-left w3-margin-right" title="Revert"></i>
+                            <button th:if="${updating}" class="w3-button w3-round-medium w3-green" onclick="updateProgram();">Update</button>
                         </div>
                     </div>
                 </td>
+            </tr>
+            <!-- Version -->
+            <tr>
+                <td style="vertical-align: middle;">Version</td>
+                <td>
+                    <div class="w3-row">
+                        <div class="w3-third">
+                            <input id="programVersion" class="w3-input w3-border w3-round" type="text" th:value="${program.version}" th:attr="oninput=|versionChanged()|">
+                        </div>
+                    </div>
             </tr>
             <!-- Status -->
             <tr>
@@ -90,7 +100,7 @@
     <!-- Blueprints -->
     <button sec:authorize="hasAuthority('EDITOR')" class="btnApp" th:attr="onclick=|addBlueprint('${program.id}')|"><i class="icon i-add"></i> New blueprint</button>
     <button sec:authorize="hasAuthority('EDITOR')" class="btnApp" th:attr="onclick=|importBlueprint('${program.id}')|"><i class="icon i-upload"></i> Import blueprint</button>
-    
+
     <div id="blueprints">
         <table class="table1">
             <tr><th class="th1">Blueprint</th><th class="th1">Modified</th><th class="th1" /><tr>

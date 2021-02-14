@@ -95,11 +95,13 @@ public class ProgramController {
     return (catalogService.getCatalog().toString());
   }*/
 
-	// PUT /program
-	@PutMapping(value = "/program", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<ProgramEntity> put(@RequestBody String data) {
+    /**
+     * Create a program
+     */
+	@PostMapping(value = "/program", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<ProgramEntity> create(@RequestBody /*String data*/ProgramEntity programIn) {
         String response;
-        JSONObject jo;
+        /*JSONObject jo;
 
         JSONParser jsonParser = new JSONParser();
 
@@ -107,14 +109,37 @@ public class ProgramController {
             jo = (JSONObject) jsonParser.parse(data);
         } catch (ParseException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
+        }*/
 
         //response = createProgram(null, jo.optString("name"));
-        logger.info("Creating program "+ (String) jo.get("name"));
+        logger.info("Creating program "+ /*(String) jo.get("name")*/programIn.getName());
 
-        ProgramEntity program = programService.create( (String) jo.get("name"));
+        ProgramEntity program = programService.create(/*(String) jo.get("name")*/programIn.getName());
 
         return (catalogService.getPrograms());
+	}
+
+    /**
+     * Update name and version
+     */
+	@PutMapping(value = "/program/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> update(@PathVariable("id") String id, @RequestBody ProgramEntity programIn) {
+        Optional<ProgramEntity> program = programService.findById(id);
+
+        if (!program.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        logger.info("Updating "+program.get().toString()+ " to "+programIn.toString());
+
+        if (programIn.getName() != null)
+            program.get().setName(programIn.getName());
+
+        if (programIn.getVersion() != null)
+            program.get().setVersion(programIn.getVersion());
+
+        programService.save(program.get());
+
+        return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	// PUT /program/{programId}/blueprint/{name}
@@ -141,7 +166,7 @@ public class ProgramController {
 
         return new ResponseEntity<>("{\"id\":\""+blueprint.getId()+"\"}", HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Import a blueprint
 	 * PUT /program/{programId}/import/blueprint
@@ -151,19 +176,19 @@ public class ProgramController {
 	                                           @RequestBody String content,
 	                                           @RequestParam(value = "tree", defaultValue = "0") String tree) {
 	  Optional<ProgramEntity> program = programService.findById(programId);
-	  
+
 	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found: "+programId);
-	    
+
 	  logger.info("Importing blueprint into "+program.get().getName()+"...");
-	    
+
 	  BlueprintEntity blueprint = programService.importBlueprint(program.get(), content);
-	  
+
 	  if (blueprint == null)
 	    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't import blueprint");
-	    
+
 	  logger.info("Successfully imported "+blueprint.toString());
-	  
+
 	  return(tree.equals("0") ? null : catalogService.getPrograms());
 	}
 
@@ -199,61 +224,63 @@ public class ProgramController {
 	@PostMapping(value = "/program/{id}/compile", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> compile(@PathVariable("id") String id) {
 
-	  HttpStatus responseStatus = HttpStatus.OK;
-	  JSONObject jresponse = new JSONObject();
+        HttpStatus responseStatus = HttpStatus.OK;
+        JSONObject jresponse = new JSONObject();
 
-	  Optional<ProgramEntity> program = programService.findById(id);
+        Optional<ProgramEntity> program = programService.findById(id);
 
-	  if (program.isPresent()) {
-	      logger.info("Compiling program "+program.get().getName());
+        if (program.isPresent()) {
+            Result result = programService.compile(program.get());
 
-        if (programService.compile(program.get())) {
-          logger.info(program.get().getMessage());
+            if (result.success()) {
+                logger.info("Successfully compiled "+program.get().getName());
+                jresponse.put("output", "");
+            }
+            else {
+                responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error(result.getMessage());
+                jresponse.put("output", result.getOutput());
+            }
+
+            jresponse.put("status", program.get().getStatus().name());
+            jresponse.put("message", result.getMessage());
+        } else {
+            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
         }
-        else {
-          responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-          logger.error(program.get().getMessage());
-        }
 
-        jresponse.put("status", program.get().getStatus().name());
-        jresponse.put("message", program.get().getMessage());
-        jresponse.put("output", program.get().getOutput());
-	  } else {
-	    return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
-	  }
-
-	  return new ResponseEntity<>(jresponse.toString(), responseStatus);
+        return new ResponseEntity<>(jresponse.toString(), responseStatus);
 	}
 
 	// POST /program/{id}/jar
-	@PostMapping(value = "/program/{id}/jar")
-	public List<ProgramEntity> createJAR(@PathVariable("id") String id) {
+    @PostMapping(value = "/program/{id}/jar")
+    public List<ProgramEntity> createJAR(@PathVariable("id") String id) {
+        HttpStatus responseStatus = HttpStatus.OK;
+        JSONObject jresponse = new JSONObject();
 
-	  HttpStatus responseStatus = HttpStatus.OK;
-	  JSONObject jresponse = new JSONObject();
+        Optional<ProgramEntity> program = programService.findById(id);
 
-	  Optional<ProgramEntity> program = programService.findById(id);
+        if (!program.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found");
 
-	  if (!program.isPresent())
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found");
+        if (program.get().getStatus() != ProgramStatus.COMPILED)
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Program not compiled");
 
-    if (program.get().getStatus() != ProgramStatus.COMPILED)
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Program not compiled");
+        Result result = programService.createJAR(program.get());
 
-    if (program.get().createJAR()) {
-      logger.info(program.get().getMessage());
+        if (result.success()) {
+            logger.info(result.getMessage());
+            jresponse.put("output", "");
+        }
+        else {
+            logger.error(result.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, result.getMessage());
+        }
+
+        jresponse.put("status", program.get().getStatus().name());
+        jresponse.put("message", result.getMessage());
+
+        return (catalogService.getPrograms());
     }
-    else {
-      logger.error(program.get().getMessage());
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, program.get().getMessage());
-    }
-
-    jresponse.put("status", program.get().getStatus().name());
-    jresponse.put("message", program.get().getMessage());
-    jresponse.put("output", program.get().getOutput());
-
-		return (catalogService.getPrograms());
-	}
 
 	// GET /program/{id}/java
 	@GetMapping(value = "/program/{id}/java")
@@ -341,7 +368,7 @@ public class ProgramController {
             Optional<BlueprintEntity> blueprint = blueprintService.findByNameAndProgram(method, program.get());
 
             if (blueprint.isPresent()) {
-                
+
                 // clientId is set by the blueprint editor when running blueprints
                 if (clientId != null) {
                     Request r = sessionService.getCurrentRequest();
@@ -400,7 +427,7 @@ public class ProgramController {
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
 
     JSONObject jo = programService.getIndex(program.get());
-    
+
     if (jo == null)
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to get program index.");
 
@@ -567,12 +594,12 @@ public class ProgramController {
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found.");
 
     BlueprintEntity b = programService.getBlueprint(program.get(), internalId);
-    
+
     if (b == null)
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Blueprint not found.");
-      
+
     JSONObject jo = blueprintService.toJSON(b);
-    
+
     if (jo == null)
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't get blueprint json.");
 
@@ -591,13 +618,13 @@ public class ProgramController {
 
     // Pack files
     logger.info("Packing "+program.get().getName());
-    
+
     JSONObject jo = null;
     String packFile = programService.pack(program.get());
-    
+
     if (packFile == null)
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to pack progam for export.");
-      
+
     // Export zip file
     File file = new File(packFile);
     ByteArrayResource resource;
@@ -622,7 +649,7 @@ public class ProgramController {
             .contentType(MediaType.APPLICATION_OCTET_STREAM)
             .body(resource);
 	}
-	
+
 	/**
    * Import program
    */
@@ -631,23 +658,23 @@ public class ProgramController {
 	                                         @RequestParam(value = "tree", defaultValue = "0") String tree) {
     String importId = UUID.randomUUID().toString();
     String zipFile = programService.getTempDirectory()+"/import-"+importId+".zip";
-    
+
     logger.info("Saving zip file to " + zipFile + " ...");
-    
+
     try {
       Files.copy(request.getInputStream(), Paths.get(zipFile));
     } catch (IOException e) {
       logger.error ("Unable to write file "+zipFile);
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
     }
-     
+
     //logger.info("Importing program ...");
-    
+
     ProgramEntity program = programService.importProgramFromFile(importId, zipFile);
-    
+
     return (tree.equals("0") ? null : catalogService.getPrograms());
 	}
-	
+
 	/**
    * Clone program
    */
@@ -659,10 +686,10 @@ public class ProgramController {
 
 	  if (!program.isPresent())
 	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found: "+id);
-    
+
     if (programService.clone(program.get()) == null)
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to clone program.");
-    
+
     return (tree ? catalogService.getPrograms() : null);
 	}
 }

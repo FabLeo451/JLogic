@@ -18,7 +18,7 @@
 <body>
   <!-- Header -->
   <div w3-include-html="/JLogic/header.html"></div>
-  
+
   <!-- Table of contents -->
   <div class="toc w3-myFont">
       <b>Table of contents</b>
@@ -26,14 +26,15 @@
       <div id="toc"></div>
   </div>
 
-  <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:15%; margin-right:10%">    
+  <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:15%; margin-right:10%">
     <h3 class="w3-myFont">Getting started</h3>
-    
+
     <p id="requirements">
         <h4 class="w3-myFont">Requirements</h4>
         <ul>
           <li>Linux based operating system</li>
-          <li>Java Development Kit</li>
+          <li>JDK 1.7 or later</li>
+          <li>Maven 3.2 or later</li>
         </ul>
     </p>
 
@@ -47,10 +48,17 @@
         </div>
         Go to <a href="https://localhost:8443/home">https://localhost:8443/home</a> with your browser.<br>
         To start on a different port:<br>
-        
+
         <div class="w3-code notranslate">
           bin/jlogic --server.port=<i>myport</i>
         </div>
+
+        Default Maven home is /usr. If your Maven installation is somewhere else provide the path when launching:
+
+        <div class="w3-code notranslate">
+          bin/jlogic --maven.home=/opt/apache-maven-3.6.3
+        </div>
+
     </p>
 
     <p id="first-access">
@@ -60,7 +68,7 @@
             <li>User: <i>admin</i></li>
             <li>Password: <i>admin</i></li>
         </ul>
-        
+
         It's recommended that you change the password as soon as possible.<br>
         User <i>admin</i> has grants to create other users.
     </p>
@@ -71,12 +79,11 @@
     </p>
     <hr>
   </div>
-  
+
   <script>
     includeHTML();
     toc();
   </script>
-  
+
 </body>
 </html>
-

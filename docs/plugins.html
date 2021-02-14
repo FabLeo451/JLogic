@@ -20,11 +20,12 @@
   <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:10%; margin-right:10%">
 
     <h2 class="w3-myFont">Plugin</h2>
-    To install a plugin download the archive and uncompress it in the <b>plugin</b> folder.<br>
-    If you are already editing a blueprint, reload the page to see new nodes.
-    <hr>
-
+    See <a href="tutorial/cli.html#plugin">how to install plugins.</a><br>
+    <br>
     <div id="list"></div>
+    <table class="w3-table" id="table">
+        <tr class="w3-border-bottom"><th>Plugin</th><th>Version</th><th>Built-in</th><th>Description</th><th>Notes</th><th></th></tr>
+    </table>
 
     <!------------------------------------------------------------------------------->
 
@@ -36,58 +37,87 @@
 
     includeHTML();
 
-    function GetSortOrder(prop) {    
-        return function(a, b) {    
-            if (a[prop] > b[prop]) {    
-                return 1;    
-            } else if (a[prop] < b[prop]) {    
-                return -1;    
-            }    
-            return 0;    
-        }    
+    function GetSortOrder(prop) {
+        return function(a, b) {
+            if (a[prop] > b[prop]) {
+                return 1;
+            } else if (a[prop] < b[prop]) {
+                return -1;
+            }
+            return 0;
+        }
     }
 
     var plugins = [
       {
-        "name": "SFTP",
-        "filename": "SFTP.tar.xz",
-        "description":"Transfer files using SFTP protocol.",
-        "url":"https://drive.google.com/file/d/1JkrwRSxdyqDeoFPBYw4Tg6obv2pm8ENs/view?usp=sharing"
-      },
-      {
+        "jarFile": null,
+        "groupId": "org.jlogic.plugin",
+        "artifactId": "oracle",
         "name": "Oracle",
-        "filename": "Oracle.tar.xz",
-        "description":"Connect to Oracle databases and execute queries.<br>Needed ojdbc8.jar (not included in the plugin) in the lib folder.<br>",
-        "url":"https://drive.google.com/file/d/1Wv_5GopS2hnLE_v06uvekGLbSyh2ohpp/view?usp=sharing"
+        "version": "1.0.0",
+        "path": null,
+        "className": null,
+        "spec": null,
+        "description": "Connect to Oracle database and perform queries",
+        "url": "",
+        "program": null
       },
       {
-        "name": "Elasticsearch",
-        "filename": "Elasticsearch.tar.xz",
-        "description":"Connect to Elasticsearch. Read and write data.",
-        "url":"https://drive.google.com/file/d/1-ywuGnSy7ZB4D4SaceabCGDV1tG_YfZk/view?usp=sharing"
+        "jarFile": null,
+        "groupId": "org.jlogic.plugin",
+        "artifactId": "file",
+        "name": "File",
+        "version": "1.0.0",
+        "path": null,
+        "className": null,
+        "spec": null,
+        "description": "Filesystem utilities",
+        "url": "",
+        "program": null
+      },
+      {
+        "jarFile": null,
+        "groupId": "org.jlogic.plugin",
+        "artifactId": "json",
+        "name": "Json",
+        "version": "1.0.0",
+        "path": null,
+        "className": null,
+        "spec": null,
+        "description": "Create and read Json objects",
+        "url": "json-1.0.0.jar",
+        "program": null
       }
-    ];
-    
+  ];
+
+  var notes = {
+      "oracle":"ojdbc8.jar should be installed separately. <a href=\"https://mkyong.com/maven/how-to-add-oracle-jdbc-driver-in-your-maven-local-repository/\" target=\"blank\">See how</a>"
+  }
+
+  var builtin = ["json", "file"];
+
+    var urlBase = '/JLogic/repository';
+
     plugins.sort(GetSortOrder("name"));
 
-    var listElem = document.getElementById("list");
+    var table = document.getElementById("table");
 
     for (var i=0; i<plugins.length; i++) {
       var p = plugins[i];
+      var url = urlBase+"/"+p.artifactId+"-"+p.version+".jar";
 
-      //console.log(p.name+" "+p.description);
+      var row = document.createElement('tr');
+      row.classList.add("w3-border-bottom");
+      row.innerHTML = '<td><b>'+p.name+'</b></td>'+
+                      '<td>'+p.version+'</td>'+
+                      '<td>'+(builtin.includes(p.artifactId) ? "Yes" : "")+'</td>'+
+                      '<td>'+p.description+'</td>'+
+                      '<td>'+(notes.hasOwnProperty(p.artifactId) ? notes[p.artifactId] : "")+'</td>'+
+                      '<td><a href="'+url+'"><i class="fas fa-download w3-text-gray"></i></a></td>';
 
-      var item = document.createElement('div');
-
-      item.innerHTML = `
-        <h3 class="w3-myFont">`+p.name+`</h3>
-        <p>`+p.description+`</p>
-        <i class="fas fa-download w3-text-gray"></i> <a href="`+p.url+`" target="_blank">`+p.filename+`</a>
-        <hr>
-      `;
-
-      listElem.appendChild(item);
+      table.appendChild(row);
     }
+
   </script>
 
 </body>

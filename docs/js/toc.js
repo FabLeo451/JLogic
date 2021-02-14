@@ -4,21 +4,21 @@ function buildTOC(container, jsections, prefix, depth) {
 
     if (!prefix)
         prefix = null;
-        
+
     prefix = prefix ? prefix : '';
-        
+
     var t = 1;
-        
+
     for (var i=0; i<jsections.length; i++) {
         elem = document.createElement('div');
         elem.style.marginLeft = depth + "em";
         elem.innerHTML = '<a href="'+jsections[i].url+'">'+prefix + t + ' ' + jsections[i].title+'</a>';
         container.appendChild(elem);
-        
+
         if (jsections[i].hasOwnProperty("children")) {
             buildTOC(container, jsections[i].children, prefix + t + '.', depth+1);
         }
-        
+
         t ++;
     }
 }
@@ -41,8 +41,11 @@ function toc(id) {
                 { "title": "The <i>Events</i> blueprint", "url":"programs.html#events"}
             ]
         },
-        { "title": "Flow control", "url":"flow.html"}
+        { "title": "Flow control", "url":"flow.html"},
+        { "title": "Command line interface", "url":"cli.html", "children": [
+            { "title": "Plugin tool", "url":"cli.html#plugins"}
+        ]}
     ];
-    
+
     buildTOC(document.getElementById(id ? id : "toc"), jtoc);
 }

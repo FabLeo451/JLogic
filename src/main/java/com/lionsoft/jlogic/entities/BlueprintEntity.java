@@ -81,16 +81,17 @@ public class BlueprintEntity {
     @Column(name="content", columnDefinition = "TEXT")
     String content;
 */
+
     @ElementCollection
     @CollectionTable(name = "jar", joinColumns = @JoinColumn(name = "blueprint_id"))
     @Column(name="jar")
     List<String> jarList = new ArrayList<String>();//Collections.emptyList();
-
+/*
     @ElementCollection
     @CollectionTable(name = "classpath", joinColumns = @JoinColumn(name = "blueprint_id"))
     @Column(name="classpath")
     List<String> classPathList = new ArrayList<String>();//Collections.emptyList();
-
+*/
     @JsonIgnore
     @Transient
     private List<Variable> variables = Collections.emptyList();
@@ -263,7 +264,7 @@ public class BlueprintEntity {
         }
       }
     }
-
+/*
     public void setDependecies(String content) {
       JSONObject jcontent;
       JSONParser jsonParser = new JSONParser();
@@ -274,44 +275,20 @@ public class BlueprintEntity {
 
       try {
         jcontent = (JSONObject) jsonParser.parse(content);
-        
+
         // First check overall classpath
         if (jcontent.containsKey("classpath")) {
           addDependency(classPathList, (JSONArray) jcontent.get("classpath"), "");
         }
-        
+
         // Overall jar list
         if (jcontent.containsKey("jar")) {
           addDependency(jarList, (JSONArray) jcontent.get("jar"), "");
         }
-/*
-        // Get dependencies from every node
-        JSONArray jnodes = (JSONArray) jcontent.get("nodes");
-
-        for (int i=0; i<jnodes.size(); i++) {
-          JSONObject jn = (JSONObject) jnodes.get(i);
-
-          //System.out.println("Node: "+(String) jn.get("name"));
-
-          // If path is present maybe we have "jar":"{path}/jarname.jar"
-          String path = null;
-
-          if (jn.containsKey("data")) {
-            JSONObject jdata = (JSONObject) jn.get("data");
-            path = jdata.containsKey("path") ? (String) jdata.get("path") : null;
-          }
-
-          if (jn.containsKey("jar"))
-            addDependency(jarList, (JSONArray) jn.get("jar"), path);
-
-          if (jn.containsKey("classpath"))
-            addDependency(classPathList, (JSONArray) jn.get("classpath"), path);
-        }
-        */
       } catch (ParseException e) {
         logger.error(e.getMessage());
       }
-    }
+  }*/
     /*
     public String getContent() {
       return content;
@@ -322,11 +299,11 @@ public class BlueprintEntity {
     public List<String> getJARList() {
       return jarList;
     }
-
+/*
     @JsonIgnore
     public List<String> getClassPath() {
       return classPathList;
-    }
+  }*/
 
     public boolean referencesVariable(Variable v) {
       JSONObject jo = loadJson();
