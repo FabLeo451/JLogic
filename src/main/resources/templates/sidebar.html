@@ -36,8 +36,8 @@
     <!--a class="w3-bar-item w3-button w3-padding" th:each="item : ${items}" th:utext="${item.label}" th:href="${item.href}"></a-->
     <a class="w3-bar-item w3-button w3-padding" href="/home" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-home" style="color:lightslategray; min-width: 1.5em;"></i> Home</a>
     <a class="w3-bar-item w3-button w3-padding" href="/view-programs" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-project-diagram" style="color:lightslategray; min-width: 1.5em;"></i> Programs</a>
-    <a class="w3-bar-item w3-button w3-padding" href="/apipanel" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-cube" style="color:lightslategray; min-width: 1.5em;"></i> APIs</a>
-    <a class="w3-bar-item w3-button w3-padding" href="/edit-properties" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-sliders-h" style="color:lightslategray; min-width: 1.5em;"></i> Properties</a>
+    <a class="w3-bar-item w3-button w3-padding" href="/apipanel" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-cog" style="color:lightslategray; min-width: 1.5em;"></i> APIs</a>
+    <!--a class="w3-bar-item w3-button w3-padding" href="/edit-properties" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-sliders-h" style="color:lightslategray; min-width: 1.5em;"></i> Properties</a-->
     <a class="w3-bar-item w3-button w3-padding" href="/view-top" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-list" style="color:lightslategray; min-width: 1.5em;"></i> Processes</a>
     <a class="w3-bar-item w3-button w3-padding" href="/metrics" sec:authorize="hasAuthority('VIEWER')"><i class="icon i-chart-bar" style="color:lightslategray; min-width: 1.5em;"></i> Metrics</a>
     <a class="w3-bar-item w3-button w3-padding" href="/view-users" sec:authorize="hasAuthority('ADMIN')"><i class="icon i-users" style="color:lightslategray; min-width: 1.5em;"></i> Users</a>
