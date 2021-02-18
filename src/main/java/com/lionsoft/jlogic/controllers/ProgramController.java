@@ -229,24 +229,24 @@ public class ProgramController {
 
         Optional<ProgramEntity> program = programService.findById(id);
 
-        if (program.isPresent()) {
-            Result result = programService.compile(program.get());
+        if (!program.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Program not found");
 
-            if (result.success()) {
-                logger.info("Successfully compiled "+program.get().getName());
-                jresponse.put("output", "");
-            }
-            else {
-                responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-                logger.error(result.getMessage());
-                jresponse.put("output", result.getOutput());
-            }
+        Result result = programService.compile(program.get());
 
-            jresponse.put("status", program.get().getStatus().name());
-            jresponse.put("message", result.getMessage());
-        } else {
-            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
+        if (result.success()) {
+            logger.info("Successfully compiled "+program.get().getName());
+            jresponse.put("output", "");
         }
+        else {
+            responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            logger.error(result.getMessage());
+            jresponse.put("output", result.getOutput());
+        }
+
+        jresponse.put("status", program.get().getStatus().name());
+        jresponse.put("message", result.getMessage());
+
 
         return new ResponseEntity<>(jresponse.toString(), responseStatus);
 	}
