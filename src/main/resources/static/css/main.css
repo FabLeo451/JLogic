@@ -280,3 +280,6 @@ legend {
 .i-calculator:before { content: "\f1ec" }
 .i-hashtag:before { content: "\f292" }
 .i-code:before { content: "\f121" }
+
+.i-toggle-on:before { content: "\f205" }
+.i-toggle-off:before { content: "\f204" }
