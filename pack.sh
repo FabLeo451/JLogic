@@ -71,8 +71,9 @@ cp -rp m2 ${target_dir}
 
 cp -p LICENSE ${target_dir}
 cp -p env.sh ${target_dir}/bin
-cp -p bin/dist/plugin ${target_dir}/bin
-cp -p bin/dist/jl ${target_dir}/bin
+#cp -p bin/dist/plugin ${target_dir}/bin
+#cp -p bin/dist/jl ${target_dir}/bin
+cp -p $GOBIN/jl ${target_dir}/bin
 
 #echo "# Global properties" > ${target_dir}/data/global.properties
 
