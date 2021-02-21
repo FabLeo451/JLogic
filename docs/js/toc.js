@@ -43,7 +43,7 @@ function toc(id) {
         },
         { "title": "Flow control", "url":"flow.html"},
         { "title": "Command line interface", "url":"cli.html", "children": [
-            { "title": "Plugin tool", "url":"cli.html#plugins"}
+            { "title": "Installing a plugin", "url":"cli.html#plugins"}
         ]}
     ];
 

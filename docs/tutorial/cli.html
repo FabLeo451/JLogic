@@ -27,40 +27,35 @@
   </div>
 
   <div class="w3-container w3-myFont" style="margin-top:3em; margin-left:15%; margin-right:10%">
-        <h3 class="w3-myFont">Command line tools</h3>
+        <h3 class="w3-myFont">Command line interface</h3>
         <p>
-            Some operations can be performed in the terminal.<br>
-            Optionally, you can set to environmental variables with user and password to avoid passing them each time as command line arguments:
+            Some operations can be performed by the command line utility <b>jl</b>.<br>
+            Optionally, you can set user and password as environment variables to avoid passing them as command line arguments:
 
             <div class="w3-code notranslate">
                 export JLOGIC_USER=<i>user</i><br>
                 export JLOGIC_PASSWORD=<i>password</i><br>
             </div>
+            
+            To see all options type:
 
-            Currently available tools are:
-
-            <ul>
-                <li><b>plugin</b> For plugin management</li>
-            </ul>
-        </p>
-
-        <h4 class="w3-myFont" id="plugins">Installing plugins</h4>
-        <p>
-            Plugins can be installed using the plugin script.
             <div class="w3-code notranslate">
               cd jlogic-&lt;version&gt;/bin<br>
-              ./plugin --user <i>user</i> --password <i>password</i> --install <i>/path/to/jar/file</i><br>
+              ./jl -h
+            </div>
+        </p>
+
+        <h4 class="w3-myFont" id="plugins">Installing a plugin</h4>
+        <p>
+            Plugins can be installed as shown below:
+            <div class="w3-code notranslate">
+              ./jl -u <i>user</i> -p <i>password</i> install <i>/path/to/jar/file</i><br>
             </div>
             Example:<br>
             <div class="w3-code notranslate">
-              ./plugin -u foo -p bar -i /data/Downloads/json-1.0.0.jar<br>
+              ./jl -u foo -p bar install /data/Downloads/json-1.0.0.jar<br>
             </div>
             User must have administration privileges to install or uninstall a plugin.<br>
-            To see other options type<br>
-            <div class="w3-code notranslate">
-              ./plugin --help<br>
-            </div>
-
         </p>
     <hr>
   </div>
