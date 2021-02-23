@@ -377,7 +377,12 @@ public class ProgramService {
             request.setBatchMode(true);
             request.setPomFile(new File(program.getMyDir()+"/pom.xml"));
             //request.setBaseDirectory(new File(program.getMyDir()));
-            request.setGoals(Collections.singletonList("compile"));
+
+            if (mode == COMPILE)
+                request.setGoals(Collections.singletonList("compile"));
+            else if (mode == JAR)
+                request.setGoals(Arrays.asList("compile", "assembly:single"));
+
             //request.setMavenOpts("--quiet");
 
             Invoker invoker = new DefaultInvoker();
