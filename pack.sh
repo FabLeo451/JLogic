@@ -1,7 +1,7 @@
 #!/bin/bash
 
 name=jlogic
-version=0.2.0-alpha3
+version=0.2.0-alpha4
 dist_dir=$name-$version
 jarfile=$name-$version.jar
 source_dir=$name
