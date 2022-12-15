@@ -17,7 +17,7 @@
 	<properties>
 		<java.version>1.8</java.version>
         <failOnMissingWebXml>false</failOnMissingWebXml>
-        <spring.version>5.2.0.RELEASE</spring.version>
+        <spring.version>5.2.20.RELEASE</spring.version>
 	</properties>
 
 	<dependencies>
